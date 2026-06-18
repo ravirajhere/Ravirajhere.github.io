@@ -397,9 +397,19 @@ section{
 .hero-subtitle {
   text-align: center;
   }
-/* Clean CSS for PDF Print */
+/* PDF Print - Photo Colorful, Text Black & White */
 @media print {
-  /* Hide these elements in PDF */
+  /* Force everything to black & white except images */
+    * {
+    background: white !important;
+    background-color: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ddd !important;
+  }
+  
+  /* Hide elements not needed in PDF */
   nav, 
   #matrix-bg, 
   .hero-badge, 
@@ -407,36 +417,35 @@ section{
   #contact,
   .btn,
   footer,
-  a[onclick="window.print();return false;"] { 
+  a[onclick="window.print();return false;"],
+  .skills-tags,
+  .hero-buttons { 
     display: none !important; 
   }
   
-  /* Set background to white and text to black for PDF */
-  body, html { 
-    background: white !important; 
-    color: black !important; 
-  }
-  
-  /* Make card backgrounds white */
-  .card, .project-card, .achievement-card, .hero, .section {
-    background: white !important;
-    box-shadow: none !important;
-    border: 1px solid #ddd !important;
-  }
-  
-  /* Prevent sections from breaking between pages */
-  .section, .hero, .project-card { 
-    page-break-inside: avoid; 
-  }
-  
-  /* Convert gradient text to normal black */
-  .hero-name, h2, .hero-subtitle span {
+  /* Remove all gradients from text */
+  .hero-name, h1, h2, h3, .hero-subtitle span, p, span, div {
     background: none !important;
+    -webkit-background-clip: unset !important;
     -webkit-text-fill-color: black !important;
     color: black !important;
   }
   
-  /* Change link color from blue to black */
+  /* Make cards and sections clean */
+  .card, .project-card, .achievement-card, .hero, .section, .container {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Keep images colorful - override the * rule */
+  img, .hero-photo img {
+    filter: none !important;
+    background: transparent !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  /* Links black */
   a {
     color: black !important;
     text-decoration: none !important;
