@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ravi Raj | Student Portfolio</title>
+<title>Ravi Raj | Academic Portfolio</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -540,6 +540,116 @@ body.light-mode .btn:hover {
   color: #fff;
   }
 </style>
+  .contact-card {
+   max-width: 600px;
+   margin: 40px auto 0;
+   padding: 35px;
+   background: linear-gradient(145deg, #1e293b, #0f172a);
+   border: 1px solid #334155;
+   border-radius: 16px;
+   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.form-title {
+   font-size: 24px;
+   font-weight: 700;
+   color: #f1f5f9;
+   margin: 0 0 8px 0;
+   text-align: center;
+}
+.form-subtitle {
+   color: #94a3b8;
+   text-align: center;
+   margin: 0 0 30px 0;
+   font-size: 15px;
+}
+.input-row {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 20px;
+   margin-bottom: 20px;
+}
+.input-group {
+   position: relative;
+   margin-bottom: 20px;
+}
+.input-group input,
+.input-group textarea {
+   width: 100%;
+   padding: 16px;
+   background: #0f172a;
+   border: 2px solid #334155;
+   border-radius: 10px;
+   color: #f1f5f9;
+   font-size: 16px;
+   outline: none;
+   transition: 0.3s;
+}
+.input-group label {
+   position: absolute;
+   left: 16px;
+   top: 16px;
+   color: #64748b;
+   pointer-events: none;
+   transition: 0.3s;
+}
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group input:valid,
+.input-group textarea:valid {
+   border-color: #0ea5e9;
+}
+.input-group input:focus + label,
+.input-group textarea:focus + label,
+.input-group input:valid + label,
+.input-group textarea:valid + label {
+   top: -10px;
+   left: 12px;
+   font-size: 12px;
+   color: #0ea5e9;
+   background: #0f172a;
+   padding: 0 6px;
+}
+.input-group textarea {
+   resize: vertical;
+   min-height: 120px;
+}
+.btn-glow {
+   width: 100%;
+   padding: 16px;
+   background: linear-gradient(90deg, #0ea5e9, #0284c7);
+   color: white;
+   border: none;
+   border-radius: 10px;
+   font-size: 16px;
+   font-weight: 600;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+   transition: 0.3s;
+   box-shadow: 0 4px 20px rgba(14, 165, 233, 0.4);
+}
+.btn-glow:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 8px 30px rgba(14, 165, 233, 0.6);
+}
+.btn-glow:disabled {
+   background: #475569;
+   box-shadow: none;
+   transform: none;
+   cursor: not-allowed;
+}
+@media (max-width: 600px) {
+   .input-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+   }
+   .contact-card {
+      padding: 25px 20px;
+      margin: 30px 15px 0;
+   }
+}
   </head><body>
 <canvas id="matrix-bg"></canvas>
 
@@ -823,10 +933,31 @@ body.light-mode .btn:hover {
         I'm currently available for freelance work and open to new opportunities.
         Feel free to reach out if you want to collaborate!
       </p>
-      <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;">
-        <a href="mailto:rravirajhere@gmail.com" class="btn">📧 Email Me</a>
-        <a href="https://github.com/raviraj2k09" target="_blank" class="btn btn-secondary">💻 GitHub</a>
-        <a href="https://linkedin.com/in/ravirajhere" target="_blank" class="btn btn-secondary">💼 LinkedIn</a>
+      <div class="contact-card">
+   <h3 class="form-title">Send me a message</h3>
+   <p class="form-subtitle">I'll reply within 24 hours</p>
+   
+   <form id="contact-form">
+      <div class="input-row">
+         <div class="input-group">
+            <input type="text" name="from_name" id="name" required>
+            <label for="name">Your Name</label>
+         </div>
+         <div class="input-group">
+            <input type="email" name="from_email" id="email" required>
+            <label for="email">Your Email</label>
+         </div>
+      </div>
+      
+      <div class="input-group">
+         <textarea name="message" id="message" rows="5" required></textarea>
+         <label for="message">Your Message</label>
+      </div>
+      
+      <button type="submit" class="btn-glow">
+         <span>Send Message</span>
+      </button>
+   </form>
       </div>
     </div>
   </section>
@@ -977,12 +1108,6 @@ themeToggle.addEventListener('click', () => {
   }
 });
 </script>
-    <form id="contact-form">
-   <input type="text" name="from_name" placeholder="Your Name" required>
-   <input type="email" name="from_email" placeholder="Your Email" required>
-   <textarea name="message" placeholder="Your Message" required></textarea>
-   <button type="submit">Send Message</button>
-    </form>
   <!-- EmailJS SDK -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="text/javascript">
