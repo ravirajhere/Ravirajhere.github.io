@@ -451,6 +451,33 @@ section{
     text-decoration: none !important;
   }
   }
+  /* Airplane Fly-in Animation */
+.fly-in-photo {
+  opacity: 0;
+  transform: translateX(-100vw) translateY(-50px) rotate(-45deg) scale(0.5);
+}
+
+.fly-in-photo.animate {
+  animation: planeEntry 2s ease-out forwards;
+}
+
+@keyframes planeEntry {
+  0% {
+    opacity: 0;
+    transform: translateX(-100vw) translateY(-50px) rotate(-45deg) scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(20px) translateY(10px) rotate(10deg) scale(1.1);
+  }
+  80% {
+    transform: translateX(-10px) translateY(-5px) rotate(-5deg) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+  }
+    }
 </style>
   </head><body>
 <canvas id="matrix-bg"></canvas>
@@ -473,7 +500,7 @@ section{
 
   <section id="home" class="hero">
     <div class="hero-badge">@rravirajhere</div>
-    <img src="ravi.jpg" alt="Ravi Raj" class="hero-image" style="width:160px;height:160px;border-radius:50%;border:3px solid #00d9ff;margin:0 auto 20px;display:block;object-fit:cover;box-shadow:0 0 30px rgba(0,217,255,0.4);">
+    <img src="ravi.jpg" alt="Ravi Raj" id="hero-photo" class="hero-image fly-in-photo" style="width:160px;height:160px;border-radius:50%;border:3px solid #00d9ff;margin:0 auto 20px;display:block;object-fit:cover;box-shadow:0 0 30px rgba(0,217,255,0.4);">
     <h1 class="hero-title">RaviRaj</h1>
     <h2 class="hero-subtitle">I'm a <span>Student</span> from Begusarai Bihar</h2>
     <p class="hero-desc">
@@ -811,6 +838,14 @@ window.addEventListener('resize', () => {
 });
 </script>
 
-</body>
+<script>
+// Trigger animation after 5 seconds
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('hero-photo').classList.add('animate');
+  }, 5000); // 5000ms = 5 seconds
+});
+</script>
+    </body>
   </html>
                                                                               </section>
