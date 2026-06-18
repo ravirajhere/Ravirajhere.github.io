@@ -1148,6 +1148,45 @@ document.getElementById('contact-form').addEventListener('submit', function(even
      });
 });
 </script>
+      <!-- EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("ZKEUMhGSjznurQRAI");
+   })();
+</script>
+
+<!-- Contact Form Script -->
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(event) {
+   event.preventDefault();
+   
+   const btn = this.querySelector('button[type="submit"]');
+   const originalText = btn.innerHTML;
+   btn.innerHTML = 'Sending...';
+   btn.disabled = true;
+
+   emailjs.send('service_kc0cti5', 'template_s53pk7r', {
+       name: this.from_name.value,
+       email: this.from_email.value,
+       message: this.message.value
+   })
+   .then(function() {
+       btn.innerHTML = 'Sent Successfully ✅';
+       alert('Message sent successfully!');
+       document.getElementById('contact-form').reset();
+   }, function(error) {
+       btn.innerHTML = 'Failed ❌';
+       alert('Failed to send: ' + error.text);
+   })
+   .finally(function() {
+       setTimeout(() => {
+           btn.innerHTML = originalText;
+           btn.disabled = false;
+       }, 3000);
+   });
+});
+</script>
   </body>
   </html>
                                                                               </section>
