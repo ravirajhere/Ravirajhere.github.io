@@ -6,6 +6,32 @@
   <title>Ravi Raj | Academic Portfolio</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+  /* Mobile - ABOUT ME Section Stack */
+@media only screen and (max-width: 768px) {
+    
+    /* Pehle wala code waisa hi rehne de... */
+    
+    /* ABOUT ME section ka layout theek karo */
+    section:first-of-type > div {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    
+    /* Paragraph wala div full width */
+    section:first-of-type > div > div:first-child {
+        width: 100% !important;
+        min-width: 100% !important;
+        order: 1;
+    }
+    
+    /* Quick Info wala div full width + neeche */
+    section:first-of-type > div > div:last-child {
+        width: 100% !important;
+        min-width: 100% !important;
+        order: 2;
+    }
+}
   /* Mobile Scroll Fix - Universal */
 @media only screen and (max-width: 768px) {
     
