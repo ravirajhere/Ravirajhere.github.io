@@ -7,46 +7,46 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   /* Timeline/Education Cards Horizontal Scroll Fix */
-/* Mobile Horizontal Scroll Fix - No Class Name Needed */
+/* ===== Mobile Zoom + Horizontal Scroll Fix - Final ===== */
 @media only screen and (max-width: 768px) {
     
-    /* Learning Path/Education section ke cards ko pakdo */
+    /* Cards ke parent ko scrollable banao */
     main section:nth-of-type(2) > div,
-    section:has(h2) > div:where(:has(> div > h3)),
-    .container > div > div:has(h3) {
+    section:nth-of-type(2) > div {
         overflow-x: auto !important;
         overflow-y: hidden !important;
         -webkit-overflow-scrolling: touch !important;
         display: flex !important;
         flex-wrap: nowrap !important;
-        gap: 15px !important;
+        gap: 20px !important;
         padding: 10px 20px 25px 20px !important;
-        scroll-snap-type: x mandatory !important;
-        scrollbar-width: none; /* Firefox scrollbar hide */
+        scroll-snap-type: x proximity !important;
+        scroll-padding: 0 20px !important;
+        touch-action: pan-x !important;
+        scrollbar-width: none;
     }
     
-    /* Scrollbar hide karo Chrome me */
+    /* Scrollbar hide karo */
     main section:nth-of-type(2) > div::-webkit-scrollbar,
-    section:has(h2) > div::-webkit-scrollbar {
+    section:nth-of-type(2) > div::-webkit-scrollbar {
         display: none;
     }
     
     /* Cards ka size fix */
     main section:nth-of-type(2) > div > div,
-    section:has(h2) > div > div,
-    .container > div > div > div {
-        min-width: 280px !important;
-        max-width: 280px !important;
+    section:nth-of-type(2) > div > div {
+        min-width: 80% !important;
+        max-width: 80% !important;
         flex-shrink: 0 !important;
-        scroll-snap-align: center !important;
+        scroll-snap-align: start !important;
     }
     
-    /* Body ka scroll theek karo */
+    /* Body fix */
     body {
         overflow-x: hidden !important;
-        touch-action: pan-y pinch-zoom !important;
+        touch-action: manipulation !important;
     }
-}
+      }
   /* Print PDF Gap Fix */
 @media print {
     .section, section, div {
