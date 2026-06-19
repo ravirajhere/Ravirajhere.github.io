@@ -6,6 +6,30 @@
 <title>Ravi Raj | Academic Portfolio</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+  /* Print PDF Gap Fix */
+@media print {
+    .section, section, div {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    .work-section, .education-section, .skills-section {
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+        padding-top: 0 !important;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+    }
+}
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
