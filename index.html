@@ -1222,10 +1222,45 @@ document.getElementById('contact-form').addEventListener('submit', function(even
      });
 });
 </script>
+    
       <!-- Live Date Time Bar -->
 <div id="live-time-bar">
     <span id="current-date-time">Loading...</span>
 </div>
+
+<script>
+// Live Date Time - Error Proof Version
+document.addEventListener('DOMContentLoaded', function() {
+    function updateDateTime() {
+        const now = new Date();
+        
+        const day = String(now.getDate()).padStart(2, '0');
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[now.getMonth()];
+        const year = now.getFullYear();
+        
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        const dateTimeString = `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
+        
+        const timeElement = document.getElementById('current-date-time');
+        if(timeElement) {
+            timeElement.textContent = dateTimeString;
+        }
+    }
+    
+    // Page load pe chalao
+    updateDateTime();
+    // Har second update
+    setInterval(updateDateTime, 1000);
+});
+</script>
+
+</body>
+</html>
   </body>
   </html>
                                                                               
