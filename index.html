@@ -6,6 +6,47 @@
   <title>Ravi Raj | Academic Portfolio</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
+  /* Timeline/Education Cards Horizontal Scroll Fix */
+/* Mobile Horizontal Scroll Fix - No Class Name Needed */
+@media only screen and (max-width: 768px) {
+    
+    /* Learning Path/Education section ke cards ko pakdo */
+    main section:nth-of-type(2) > div,
+    section:has(h2) > div:where(:has(> div > h3)),
+    .container > div > div:has(h3) {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 15px !important;
+        padding: 10px 20px 25px 20px !important;
+        scroll-snap-type: x mandatory !important;
+        scrollbar-width: none; /* Firefox scrollbar hide */
+    }
+    
+    /* Scrollbar hide karo Chrome me */
+    main section:nth-of-type(2) > div::-webkit-scrollbar,
+    section:has(h2) > div::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Cards ka size fix */
+    main section:nth-of-type(2) > div > div,
+    section:has(h2) > div > div,
+    .container > div > div > div {
+        min-width: 280px !important;
+        max-width: 280px !important;
+        flex-shrink: 0 !important;
+        scroll-snap-align: center !important;
+    }
+    
+    /* Body ka scroll theek karo */
+    body {
+        overflow-x: hidden !important;
+        touch-action: pan-y pinch-zoom !important;
+    }
+}
   /* Print PDF Gap Fix */
 @media print {
     .section, section, div {
