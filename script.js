@@ -1,5 +1,5 @@
 /* ============================================
-   SCRIPT.JS - COMPLETE PORTFOLIO FUNCTIONALITY
+   SCRIPT.JS - COMPLETE PORTFOLIO FUNCTIONALITY (FIXED)
    ============================================ */
 
 (function() {
@@ -113,7 +113,6 @@
         }
 
         bindEvents() {
-            // Debounced resize
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
@@ -123,7 +122,6 @@
                 }, 250);
             });
 
-            // Pause when tab is inactive
             document.addEventListener('visibilitychange', () => {
                 this.toggle(!document.hidden);
             });
@@ -143,12 +141,10 @@
             this.elements = elements;
             this.speed = speed;
             this.observer = null;
-
             this.init();
         }
 
         init() {
-            // Only target heading elements for performance
             const targets = this.elements.filter(el => 
                 ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)
             );
@@ -212,7 +208,6 @@
         constructor(bars) {
             this.bars = bars;
             this.observer = null;
-
             this.init();
         }
 
@@ -248,33 +243,55 @@
         }
     }
 
-    // SUPER SIMPLE THEME TOGGLE
-document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('theme-toggle');
-    const body = document.body;
-    
-    if(!btn) { console.log('Button nahi mila'); return; }
-    
-    // Load saved theme
-    if(localStorage.getItem('theme') === 'light') {
-        body.classList.add('light-mode');
-        btn.textContent = 'Light'; // ☀️ ki jagah
-    }
-    
-    // Click pe toggle
-    btn.onclick = function() {
-        body.classList.toggle('light-mode');
-        if(body.classList.contains('light-mode')) {
-            btn.textContent = 'Light'; // ☀️ ki jagah
-            localStorage.setItem('theme', 'light');
-        } else {
-            btn.textContent = 'Dark'; // 🌙 ki jagah
-            localStorage.setItem('theme', 'dark');
+    /* ============================================
+       THEME MANAGER - FIXED
+       ============================================ */
+    class ThemeManager {
+        constructor(button, body) {
+            this.button = button;
+            this.body = body;
+            this.init();
         }
-        console.log('Toggle hua!');
+
+        init() {
+            if (!this.button) {
+                console.log('Theme button not found');
+                return;
+            }
+
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'light') {
+                this.body.classList.add('light-mode');
+                this.button.textContent = '☀️';
+            } else {
+                this.button.textContent = '🌙';
+            }
+
+            // Toggle on click
+            this.button.addEventListener('click', () => {
+                this.toggle();
+            });
+        }
+
+        toggle() {
+            this.body.classList.toggle('light-mode');
+            if (this.body.classList.contains('light-mode')) {
+                this.button.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                this.button.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+            console.log('Theme toggled!');
+        }
+
+        destroy() {
+            if (this.button) {
+                this.button.removeEventListener('click', this.toggle);
+            }
+        }
     }
-});
-   
+
     /* ============================================
        SMOOTH SCROLL
        ============================================ */
@@ -296,8 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             behavior: 'smooth', 
                             block: 'start' 
                         });
-                        
-                        // Update URL without page jump
                         history.pushState(null, '', targetId);
                     }
                 });
@@ -330,7 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.submitBtn = this.form.querySelector('button[type="submit"]');
             this.spinner = this.form.querySelector('.btn-spinner');
             
-            // Initialize EmailJS
             if (typeof emailjs !== 'undefined') {
                 emailjs.init("ZKEUMnGSjznurORAI");
             }
@@ -339,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.handleSubmit(e);
             });
 
-            // Real-time validation
             this.form.querySelectorAll('input, textarea').forEach(input => {
                 input.addEventListener('blur', () => {
                     this.validateField(input);
@@ -370,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (this.isSubmitting) return;
 
-            // Validate all fields
             let isValid = true;
             this.form.querySelectorAll('input, textarea').forEach(input => {
                 if (!this.validateField(input)) {
@@ -421,7 +433,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('✅ Message sent successfully! I\'ll get back to you within 24 hours.');
             this.form.reset();
             
-            // Reset border colors
             this.form.querySelectorAll('input, textarea').forEach(input => {
                 input.style.borderColor = '';
             });
@@ -505,14 +516,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* ============================================
-       PHOTO ANIMATION
+       PHOTO ANIMATION - FIXED
        ============================================ */
     function setupPhotoAnimation(photo) {
         if (!photo) return;
 
-        // Add animation class after delay
         setTimeout(() => {
-            photo.classList.add('animate');
+            photo.classList.add('fly-in-photo');
         }, CONFIG.animation.delay);
     }
 
@@ -537,6 +547,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const skillBars = new SkillBars(DOM.skillBars);
 
+        // Theme Manager - NOW FIXED
         const themeManager = new ThemeManager(
             DOM.themeToggle,
             DOM.body
@@ -556,12 +567,12 @@ document.addEventListener('DOMContentLoaded', function() {
             matrix.destroy();
             typewriter.destroy();
             skillBars.destroy();
+            themeManager.destroy();
             smoothScroll.destroy();
             contactForm.destroy();
             liveDateTime.destroy();
         });
 
-        // Handle errors globally
         window.addEventListener('error', function(e) {
             console.error('Global error caught:', e.message);
         });
