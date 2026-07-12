@@ -513,54 +513,6 @@ section{
   100%{transform:translateX(100%)}
 }
 
-/* Airplane Fly-in Animation */
-.fly-in-photo {
-  opacity: 0;
-  transform: translateX(-100vw) translateY(-50px) rotate(-45deg) scale(0.5);
-}
-.fly-in-photo.animate {
-  animation: planeEntry 2s ease-out forwards;
-}
-@keyframes planeEntry {
-  0% {
-    opacity: 0;
-    transform: translateX(-100vw) translateY(-50px) rotate(-45deg) scale(0.5);
-  }
-  60% {
-    opacity: 1;
-    transform: translateX(20px) translateY(10px) rotate(10deg) scale(1.1);
-  }
-  80% {
-    transform: translateX(-10px) translateY(-5px) rotate(-5deg) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) rotate(0deg) scale(1);
-  }
-}
-
-/* Theme Toggle Button */
-.theme-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(0, 217, 255, 0.2);
-  border: 2px solid #00d9ff;
-  color: #00d9ff;
-  font-size: 20px;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 999;
-  transition: all 0.3s ease;
-}
-.theme-btn:hover {
-  background: #00d9ff;
-  color: #0a0a0a;
-  transform: rotate(20deg);
-}
-
 /* Light Mode Colors */
 body.light-mode {
   background: #f5f5f5;
