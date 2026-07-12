@@ -134,72 +134,73 @@
     }
 
     /* ============================================
-       TYPEWRITER EFFECT
-       ============================================ */
-    class TypewriterEffect {
-        constructor(elements, speed) {
-            this.elements = elements;
-            this.speed = speed;
-            this.observer = null;
-            this.init();
-        }
+   TYPEWRITER EFFECT - FIXED
+   ============================================ */
+class TypewriterEffect {
+    constructor(elements, speed) {
+        this.elements = elements;
+        this.speed = speed;
+        this.observer = null;
+        this.init();
+    }
 
-        init() {
-            const targets = this.elements.filter(el => 
-                ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)
-            );
+    init() {
+        // FIX: Convert NodeList to Array
+        const targets = Array.from(this.elements).filter(el => 
+            ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)
+        );
 
-            targets.forEach(el => {
-                const text = el.textContent.trim();
-                if (text) {
-                    el.dataset.text = text;
-                    el.textContent = '';
-                    el.style.opacity = '0';
+        targets.forEach(el => {
+            const text = el.textContent.trim();
+            if (text) {
+                el.dataset.text = text;
+                el.textContent = '';
+                el.style.opacity = '0';
+            }
+        });
+
+        this.setupObserver(targets);
+    }
+
+    setupObserver(elements) {
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('typed')) {
+                    entry.target.classList.add('typed');
+                    this.typeWriter(entry.target);
                 }
             });
+        }, { threshold: CONFIG.typewriter.threshold });
 
-            this.setupObserver(targets);
-        }
-
-        setupObserver(elements) {
-            this.observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !entry.target.classList.contains('typed')) {
-                        entry.target.classList.add('typed');
-                        this.typeWriter(entry.target);
-                    }
-                });
-            }, { threshold: CONFIG.typewriter.threshold });
-
-            elements.forEach(el => {
-                if (el.dataset.text) {
-                    this.observer.observe(el);
-                }
-            });
-        }
-
-        typeWriter(element) {
-            const text = element.dataset.text;
-            let index = 0;
-            element.style.opacity = '1';
-
-            function typing() {
-                if (index < text.length) {
-                    element.textContent += text.charAt(index);
-                    index++;
-                    setTimeout(typing, CONFIG.typewriter.speed);
-                }
+        elements.forEach(el => {
+            if (el.dataset.text) {
+                this.observer.observe(el);
             }
+        });
+    }
 
-            typing();
+    typeWriter(element) {
+        const text = element.dataset.text;
+        let index = 0;
+        element.style.opacity = '1';
+
+        function typing() {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(typing, CONFIG.typewriter.speed);
+            }
         }
 
-        destroy() {
-            if (this.observer) {
-                this.observer.disconnect();
-            }
+        typing();
+    }
+
+    destroy() {
+        if (this.observer) {
+            this.observer.disconnect();
         }
     }
+}
 
     /* ============================================
        SKILL BARS ANIMATION
