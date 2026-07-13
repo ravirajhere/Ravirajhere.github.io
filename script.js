@@ -790,3 +790,57 @@ function openChatbox() {
             container.style.display = 'block';
         });
 }
+// ============================================
+// CONTACT OPTIONS FUNCTIONS
+// ============================================
+
+function showContactOptions() {
+    document.getElementById('contactOptionsModal').style.display = 'flex';
+}
+
+function closeContactOptions() {
+    document.getElementById('contactOptionsModal').style.display = 'none';
+}
+
+function openEmailForm() {
+    closeContactOptions();
+    document.getElementById('emailFormModal').style.display = 'flex';
+}
+
+function closeEmailForm() {
+    document.getElementById('emailFormModal').style.display = 'none';
+}
+
+// ============================================
+// EMAILJS FORM SUBMIT
+// ============================================
+
+document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const status = document.getElementById('formStatus');
+    status.style.display = 'block';
+    status.innerHTML = '⏳ Sending...';
+    status.style.color = 'var(--text-secondary, #aaa)';
+    
+    emailjs.sendForm(
+        'YOUR_SERVICE_ID',    // Apna service ID
+        'YOUR_TEMPLATE_ID',   // Apna template ID
+        this,
+        'YOUR_PUBLIC_KEY'     // Apna public key
+    )
+    .then(function() {
+        status.innerHTML = '✅ Message sent successfully!';
+        status.style.color = '#00ff88';
+        document.getElementById('contactForm').reset();
+        setTimeout(() => {
+            closeEmailForm();
+            status.style.display = 'none';
+        }, 3000);
+    })
+    .catch(function(error) {
+        status.innerHTML = '❌ Failed to send. Try again.';
+        status.style.color = '#ff4444';
+        console.log('EmailJS Error:', error);
+    });
+});
