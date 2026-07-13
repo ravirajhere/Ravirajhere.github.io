@@ -1,5 +1,5 @@
 /* ============================================
-   SCRIPT.JS - COMPLETE PORTFOLIO FUNCTIONALITY (IMPROVED)
+   SCRIPT.JS - COMPLETE PORTFOLIO FUNCTIONALITY
    ============================================ */
 
 (function() {
@@ -32,7 +32,6 @@
         heroPhoto: document.getElementById('hero-photo'),
         skillBars: document.querySelectorAll('.skill-bar-fill'),
         navLinks: document.querySelectorAll('a[href^="#"]'),
-        contactForm: document.getElementById('contact-form'),
         themeToggle: document.getElementById('theme-toggle'),
         lastUpdated: document.getElementById('lastUpdated'),
         timeDisplay: document.getElementById('current-date-time'),
@@ -325,130 +324,6 @@
     }
 
     /* ============================================
-       CONTACT FORM
-       ============================================ */
-    class ContactForm {
-        constructor(form) {
-            this.form = form;
-            this.submitBtn = null;
-            this.spinner = null;
-            this.isSubmitting = false;
-
-            if (this.form) {
-                this.init();
-            }
-        }
-
-        init() {
-            this.submitBtn = this.form.querySelector('button[type="submit"]');
-            this.spinner = this.form.querySelector('.btn-spinner');
-            
-            if (typeof emailjs !== 'undefined') {
-                emailjs.init("ZKEUMnGSjznurORAI");
-            }
-
-            this.form.addEventListener('submit', (e) => {
-                this.handleSubmit(e);
-            });
-
-            this.form.querySelectorAll('input, textarea').forEach(input => {
-                input.addEventListener('blur', () => {
-                    this.validateField(input);
-                });
-            });
-        }
-
-        validateField(input) {
-            if (input.hasAttribute('required') && !input.value.trim()) {
-                input.style.borderColor = '#ff4444';
-                return false;
-            }
-            
-            if (input.type === 'email' && input.value) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(input.value)) {
-                    input.style.borderColor = '#ff4444';
-                    return false;
-                }
-            }
-            
-            input.style.borderColor = '';
-            return true;
-        }
-
-        handleSubmit(e) {
-            e.preventDefault();
-
-            if (this.isSubmitting) return;
-
-            let isValid = true;
-            this.form.querySelectorAll('input, textarea').forEach(input => {
-                if (!this.validateField(input)) {
-                    isValid = false;
-                }
-            });
-
-            if (!isValid) {
-                alert('Please fill all required fields correctly.');
-                return;
-            }
-
-            this.setLoading(true);
-
-            const templateParams = {
-                name: this.form.from_name.value.trim(),
-                email: this.form.from_email.value.trim(),
-                message: this.form.message.value.trim(),
-                time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-            };
-
-            emailjs.send('service_kc0c1i5', 'template_s53pk7r', templateParams)
-                .then(() => {
-                    this.showSuccess();
-                })
-                .catch((error) => {
-                    this.showError(error);
-                })
-                .finally(() => {
-                    this.setLoading(false);
-                });
-        }
-
-        setLoading(loading) {
-            this.isSubmitting = loading;
-            this.submitBtn.disabled = loading;
-            
-            if (loading) {
-                this.submitBtn.querySelector('span:first-child').textContent = 'Sending...';
-                this.spinner.style.display = 'inline';
-            } else {
-                this.submitBtn.querySelector('span:first-child').textContent = 'Send Message';
-                this.spinner.style.display = 'none';
-            }
-        }
-
-        showSuccess() {
-            alert('✅ Message sent successfully! I\'ll get back to you within 24 hours.');
-            this.form.reset();
-            
-            this.form.querySelectorAll('input, textarea').forEach(input => {
-                input.style.borderColor = '';
-            });
-        }
-
-        showError(error) {
-            console.error('EmailJS Error:', error);
-            alert('❌ Failed to send message. Please try again later or contact me directly via social media.');
-        }
-
-        destroy() {
-            if (this.form) {
-                this.form.removeEventListener('submit', () => {});
-            }
-        }
-    }
-
-    /* ============================================
        LIVE DATE TIME
        ============================================ */
     class LiveDateTime {
@@ -629,7 +504,6 @@
         const skillBars = new SkillBars(DOM.skillBars);
         const themeManager = new ThemeManager(DOM.themeToggle, DOM.body);
         const smoothScroll = new SmoothScroll(DOM.navLinks);
-        const contactForm = new ContactForm(DOM.contactForm);
         const liveDateTime = new LiveDateTime(DOM.timeDisplay);
 
         setLastUpdated(DOM.lastUpdated);
@@ -641,7 +515,6 @@
             skillBars.destroy();
             themeManager.destroy();
             smoothScroll.destroy();
-            contactForm.destroy();
             liveDateTime.destroy();
         });
 
@@ -756,6 +629,7 @@ document.addEventListener('keydown', function(e) {
         closeRJModal();
     }
 });
+
 /* ============================================
    OPEN CHATBOX — LET'S TALK BUTTON
    ============================================ */
@@ -790,9 +664,10 @@ function openChatbox() {
             container.style.display = 'block';
         });
 }
-// ============================================
-// CONTACT OPTIONS FUNCTIONS
-// ============================================
+
+/* ============================================
+   CONTACT OPTIONS FUNCTIONS
+   ============================================ */
 
 function showContactOptions() {
     document.getElementById('contactOptionsModal').style.display = 'flex';
@@ -810,37 +685,3 @@ function openEmailForm() {
 function closeEmailForm() {
     document.getElementById('emailFormModal').style.display = 'none';
 }
-
-// ============================================
-// EMAILJS FORM SUBMIT
-// ============================================
-
-document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const status = document.getElementById('formStatus');
-    status.style.display = 'block';
-    status.innerHTML = '⏳ Sending...';
-    status.style.color = 'var(--text-secondary, #aaa)';
-    
-    emailjs.sendForm(
-        'YOUR_SERVICE_ID',    // Apna service ID
-        'YOUR_TEMPLATE_ID',   // Apna template ID
-        this,
-        'YOUR_PUBLIC_KEY'     // Apna public key
-    )
-    .then(function() {
-        status.innerHTML = '✅ Message sent successfully!';
-        status.style.color = '#00ff88';
-        document.getElementById('contactForm').reset();
-        setTimeout(() => {
-            closeEmailForm();
-            status.style.display = 'none';
-        }, 3000);
-    })
-    .catch(function(error) {
-        status.innerHTML = '❌ Failed to send. Try again.';
-        status.style.color = '#ff4444';
-        console.log('EmailJS Error:', error);
-    });
-});
