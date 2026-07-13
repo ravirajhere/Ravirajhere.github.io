@@ -791,3 +791,37 @@ function openChatbox() {
             container.style.display = 'block';
         });
 }
+/* ============================================
+   OPEN CHATBOX — LET'S TALK BUTTON
+   ============================================ */
+function openChatbox() {
+    const container = document.getElementById('chatbox-container');
+    if (!container) {
+        alert('❌ Chatbox container not found!');
+        return;
+    }
+
+    if (container.innerHTML.trim() !== '') {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    fetch('chatbox.html')
+        .then(res => {
+            if (!res.ok) throw new Error('File not found (404)');
+            return res.text();
+        })
+        .then(html => {
+            container.innerHTML = html;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            console.log('✅ Chatbox loaded!');
+        })
+        .catch(err => {
+            console.error('❌ Chatbox load failed:', err);
+            alert('❌ Chatbox could not load. Please check console for details.');
+            container.innerHTML = `<p style="color:var(--gray);text-align:center;padding:20px;">❌ Chatbox could not load.</p>`;
+            container.style.display = 'block';
+        });
+}
