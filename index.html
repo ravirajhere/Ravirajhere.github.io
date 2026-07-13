@@ -498,7 +498,15 @@
     <div id="live-time-bar" role="status" aria-live="polite">
         <span id="current-date-time">Loading...</span>
     </div>
-    
+    <!-- Chatbox - Alag file se load -->
+<div id="chatbox-container"></div>
+<script>
+    fetch('chatbox.html')
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById('chatbox-container').innerHTML = data;
+        });
+</script>
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="script.js"></script>
