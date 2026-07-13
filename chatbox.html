@@ -1,4 +1,4 @@
-<!-- chatbox.html - 20+ YEARS PROFESSIONAL ENTERPRISE CHATBOX -->
+<!-- chatbox.html - 20+ YEARS PROFESSIONAL CHATBOX (FIXED) -->
 <style>
     /* ============================================================
        20+ YEARS PROFESSIONAL CHATBOX - ENTERPRISE GRADE
@@ -22,93 +22,7 @@
     }
 
     /* ===== FLOATING BUTTON ===== */
-    .chatbox-button {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 68px;
-        height: 68px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--chat-primary), var(--chat-secondary));
-        border: none;
-        font-size: 30px;
-        cursor: pointer;
-        box-shadow: 0 8px 40px rgba(99, 102, 241, 0.45);
-        z-index: 9999;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
-
-    .chatbox-button::before {
-        content: '';
-        position: absolute;
-        inset: -4px;
-        border-radius: 50%;
-        padding: 2px;
-        background: linear-gradient(135deg, var(--chat-primary), var(--chat-secondary), var(--chat-accent));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        animation: spinGlow 4s linear infinite;
-    }
-
-    @keyframes spinGlow {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .chatbox-button::after {
-        content: '';
-        position: absolute;
-        inset: -8px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent 70%);
-        animation: pulseRing 2.5s ease-out infinite;
-        z-index: -1;
-    }
-
-    @keyframes pulseRing {
-        0% { transform: scale(1); opacity: 0.6; }
-        100% { transform: scale(1.6); opacity: 0; }
-    }
-
-    .chatbox-button:hover {
-        transform: scale(1.08) rotate(-6deg);
-        box-shadow: 0 12px 56px rgba(99, 102, 241, 0.6);
-    }
-
-    .chatbox-button:active {
-        transform: scale(0.92);
-    }
-
-    /* ===== BADGE ===== */
-    .chatbox-badge {
-        position: absolute;
-        top: -4px;
-        right: -4px;
-        background: #ef4444;
-        color: #fff;
-        border-radius: 50%;
-        min-width: 24px;
-        height: 24px;
-        font-size: 11px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Inter', -apple-system, sans-serif;
-        border: 2.5px solid #0f0f1a;
-        animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes badgePop {
-        0% { transform: scale(0); }
-        100% { transform: scale(1); }
-    }
+    /* Button hata diya — sirf index wala kaam karega */
 
     /* ===== CHAT WINDOW ===== */
     .chat-window {
@@ -226,7 +140,7 @@
         50% { opacity: 0.6; transform: scale(1.2); }
     }
 
-    /* ===== HEADER META (Battery + Time) ===== */
+    /* ===== HEADER META ===== */
     .chat-header-meta {
         display: flex;
         align-items: center;
@@ -291,7 +205,7 @@
         transform: scale(0.9);
     }
 
-    /* ===== MESSAGES AREA ===== */
+    /* ===== MESSAGES ===== */
     .chat-messages {
         flex: 1;
         padding: 20px 20px 12px;
@@ -313,7 +227,6 @@
         border-radius: 10px;
     }
 
-    /* ===== MESSAGES ===== */
     .message {
         max-width: 82%;
         padding: 12px 18px;
@@ -400,7 +313,6 @@
         30% { transform: translateY(-10px); opacity: 1; }
     }
 
-    /* ===== SYSTEM MESSAGE ===== */
     .message.system {
         align-self: center;
         background: rgba(74, 222, 128, 0.06);
@@ -709,7 +621,7 @@
         transform: translateX(-4px);
     }
 
-    /* ===== TOAST NOTIFICATION ===== */
+    /* ===== TOAST ===== */
     .chat-toast {
         position: absolute;
         bottom: 90px;
@@ -859,14 +771,6 @@
             border-radius: 16px;
         }
 
-        .chatbox-button {
-            width: 58px;
-            height: 58px;
-            font-size: 24px;
-            bottom: 20px;
-            right: 20px;
-        }
-
         .chat-header {
             padding: 14px 16px;
         }
@@ -956,14 +860,6 @@
             border-radius: 14px;
         }
 
-        .chatbox-button {
-            width: 52px;
-            height: 52px;
-            font-size: 20px;
-            bottom: 16px;
-            right: 16px;
-        }
-
         .chat-header-info .name {
             font-size: 13px;
         }
@@ -990,28 +886,19 @@
         }
     }
 
-    /* ============================================================
-       SCROLLBAR GRADIENT
-       ============================================================ */
-
+    /* ===== SCROLLBAR GRADIENT ===== */
     .chat-messages::-webkit-scrollbar-thumb {
         background: linear-gradient(135deg, var(--chat-primary), var(--chat-secondary));
         border-radius: 10px;
     }
 
-    /* ============================================================
-       SELECTION COLOR
-       ============================================================ */
-
+    /* ===== SELECTION COLOR ===== */
     .chat-messages ::selection {
         background: rgba(99, 102, 241, 0.3);
         color: #fff;
     }
 
-    /* ============================================================
-       FOCUS VISIBLE
-       ============================================================ */
-
+    /* ===== FOCUS VISIBLE ===== */
     .chat-send:focus-visible,
     .mode-btn:focus-visible,
     .contact-form .send-btn:focus-visible,
@@ -1023,8 +910,6 @@
 
 <!-- ===== CHATBOX HTML ===== -->
 <div id="chatbox">
-
-    <!-- Chat Window -->
     <div class="chat-window" id="chatWindow">
         <!-- Header -->
         <div class="chat-header">
