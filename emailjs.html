@@ -334,7 +334,7 @@
     </script>
 
     <!-- ============================================================
-       EMAILJS.JS — COMPLETE LOGIC
+       EMAILJS.JS — COMPLETE LOGIC (Template ke hisab se)
     ============================================================ -->
     <script>
         (function() {
@@ -396,11 +396,20 @@
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-                    // EmailJS send
-                    emailjs.sendForm(
+                    // ============================================
+                    // EMAILJS SEND — TEMPLATE KE HISAB SE
+                    // Template variables: {{name}}, {{email}}, {{message}}
+                    // ============================================
+                    const templateParams = {
+                        name: name,
+                        email: email,
+                        message: message
+                    };
+
+                    emailjs.send(
                             EMAILJS_CONFIG.serviceID,
                             EMAILJS_CONFIG.templateID,
-                            form,
+                            templateParams,
                             EMAILJS_CONFIG.publicKey
                         )
                         .then(function(response) {
