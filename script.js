@@ -2,7 +2,6 @@
    SCRIPT.JS - COMPLETE PORTFOLIO FUNCTIONALITY (FIXED)
    ============================================ */
 
-const API_KEY = process.env.GEMINI_API_KEY;
 (function() {
     'use strict';
 
