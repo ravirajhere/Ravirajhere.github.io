@@ -1,6 +1,6 @@
 // ============================================
-// FRIENDS CORNER — PROFESSIONAL JS
-// Version: 10.0 | Production Ready
+// FRIENDS CORNER — PROFESSIONAL JS (IMPROVED)
+// Version: 11.0 | Production Ready | Error Free
 // Author: Ravi Raj
 // ============================================
 
@@ -189,9 +189,10 @@ let stream = null;
 let webcamActive = false;
 let isDatabaseFriend = false;
 let dedicationMessage = '';
+let recognition = null;
 
 // ============================================
-// DOM REFERENCES (Cached for performance)
+// DOM REFERENCES
 // ============================================
 const DOM = {
     searchArea: document.getElementById('searchArea'),
@@ -248,13 +249,14 @@ const DOM = {
 // INITIALIZATION
 // ============================================
 function init() {
-    // Load dedication from localStorage
-    dedicationMessage = localStorage.getItem('dedication_' + (currentFriend?.firstName || '')) || '';
+    console.log('👥 Friends Corner JS loaded!');
     
     // Enter key to search
-    DOM.friendSearch.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') searchFriend();
-    });
+    if (DOM.friendSearch) {
+        DOM.friendSearch.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') searchFriend();
+        });
+    }
     
     // Escape to close modals
     document.addEventListener('keydown', function(e) {
@@ -262,14 +264,16 @@ function init() {
     });
     
     // Close message modal on outside click
-    DOM.messageModal.addEventListener('click', function(e) {
-        if (e.target === this) closeMessageModal();
-    });
+    if (DOM.messageModal) {
+        DOM.messageModal.addEventListener('click', function(e) {
+            if (e.target === this) closeMessageModal();
+        });
+    }
     
     // Preload jsPDF
     loadJSPDF();
     
-    console.log('✅ Friends Corner initialized!');
+    console.log('✅ Friends Corner initialized successfully!');
     console.log('📊 ' + friendsData.length + ' friends in database');
 }
 
@@ -277,11 +281,11 @@ function init() {
 // STEP 1: SEARCH FRIEND
 // ============================================
 function searchFriend() {
-    const input = DOM.friendSearch.value.trim();
+    const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
     hideAllScreens();
     
     if (!input) {
-        showAlert('Please enter a first name!');
+        showAlert('Please enter a first name! 🔍');
         return;
     }
     
@@ -301,27 +305,25 @@ function searchFriend() {
     }
     
     restoreDedication();
-    DOM.photoFriendName.textContent = currentFriend.firstName;
-    DOM.searchArea.style.display = 'none';
-    DOM.photoScreen.style.display = 'block';
+    if (DOM.photoFriendName) DOM.photoFriendName.textContent = currentFriend.firstName;
+    if (DOM.searchArea) DOM.searchArea.style.display = 'none';
+    if (DOM.photoScreen) DOM.photoScreen.style.display = 'block';
     startWebcam();
 }
 
 // ============================================
 // VOICE SEARCH
 // ============================================
-let recognition = null;
-
 function toggleVoiceSearch() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         showAlert('Voice search not supported. Please use Chrome or Edge.');
         return;
     }
     
-    if (recognition && DOM.voiceBtn.classList.contains('listening')) {
+    if (recognition && DOM.voiceBtn && DOM.voiceBtn.classList.contains('listening')) {
         recognition.stop();
-        DOM.voiceBtn.classList.remove('listening');
-        DOM.voiceStatus.classList.remove('show');
+        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
+        if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
         return;
     }
     
@@ -332,42 +334,47 @@ function toggleVoiceSearch() {
     recognition.interimResults = false;
     
     recognition.onstart = function() {
-        DOM.voiceBtn.classList.add('listening');
-        DOM.voiceStatus.classList.add('show');
-        DOM.voiceStatus.textContent = '🎤 Listening... Speak name';
+        if (DOM.voiceBtn) DOM.voiceBtn.classList.add('listening');
+        if (DOM.voiceStatus) {
+            DOM.voiceStatus.classList.add('show');
+            DOM.voiceStatus.textContent = '🎤 Listening... Speak name';
+        }
     };
     
     recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript.trim();
-        DOM.friendSearch.value = transcript;
-        DOM.voiceStatus.textContent = '✅ Heard: "' + transcript + '" — Searching...';
-        DOM.voiceBtn.classList.remove('listening');
+        if (DOM.friendSearch) DOM.friendSearch.value = transcript;
+        if (DOM.voiceStatus) {
+            DOM.voiceStatus.textContent = '✅ Heard: "' + transcript + '" — Searching...';
+        }
+        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
         setTimeout(function() {
-            DOM.voiceStatus.classList.remove('show');
+            if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
             searchFriend();
         }, 500);
     };
     
     recognition.onerror = function() {
-        DOM.voiceBtn.classList.remove('listening');
-        DOM.voiceStatus.textContent = '❌ Could not hear. Try again.';
-        setTimeout(function() {
-            DOM.voiceStatus.classList.remove('show');
-        }, 1500);
+        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
+        if (DOM.voiceStatus) {
+            DOM.voiceStatus.textContent = '❌ Could not hear. Try again.';
+            setTimeout(function() {
+                DOM.voiceStatus.classList.remove('show');
+            }, 1500);
+        }
     };
     
     recognition.onend = function() {
-        DOM.voiceBtn.classList.remove('listening');
+        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
     };
     
     recognition.start();
 }
 
 // ============================================
-// STEP 2: WEBCAM (WITH PERMISSION CHECK)
+// STEP 2: WEBCAM
 // ============================================
 async function startWebcam() {
-    // Check if permission was previously denied
     if (navigator.permissions) {
         try {
             const permission = await navigator.permissions.query({ name: 'camera' });
@@ -375,9 +382,7 @@ async function startWebcam() {
                 showCameraDenied('Camera permission permanently denied! Browser settings mein jaake camera allow karo.');
                 return;
             }
-        } catch (e) {
-            // Permissions API not supported, continue
-        }
+        } catch (e) {}
     }
     
     try {
@@ -386,12 +391,14 @@ async function startWebcam() {
             audio: false
         });
         
-        DOM.webcamVideo.srcObject = stream;
-        await DOM.webcamVideo.play();
+        if (DOM.webcamVideo) {
+            DOM.webcamVideo.srcObject = stream;
+            await DOM.webcamVideo.play();
+        }
         webcamActive = true;
-        DOM.webcamPlaceholder.style.display = 'none';
-        DOM.permissionDenied.style.display = 'none';
-        DOM.captureBtn.style.display = 'inline-block';
+        if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'none';
+        if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'none';
+        if (DOM.captureBtn) DOM.captureBtn.style.display = 'inline-block';
         
     } catch (error) {
         showCameraDenied('Camera start nahi ho paya. Please allow camera permission.');
@@ -400,22 +407,22 @@ async function startWebcam() {
 
 function showCameraDenied(message) {
     webcamActive = false;
-    DOM.webcamPlaceholder.style.display = 'flex';
-    DOM.permissionDenied.style.display = 'block';
-    DOM.permissionMessage.textContent = message;
-    DOM.captureBtn.style.display = 'none';
+    if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'flex';
+    if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'block';
+    if (DOM.permissionMessage) DOM.permissionMessage.textContent = message;
+    if (DOM.captureBtn) DOM.captureBtn.style.display = 'none';
 }
 
 function stopWebcam() {
     if (stream) {
         stream.getTracks().forEach(track => track.stop());
-        DOM.webcamVideo.srcObject = null;
+        if (DOM.webcamVideo) DOM.webcamVideo.srcObject = null;
         webcamActive = false;
     }
 }
 
 function retryCamera() {
-    DOM.permissionDenied.style.display = 'none';
+    if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'none';
     startWebcam();
 }
 
@@ -423,7 +430,7 @@ function retryCamera() {
 // STEP 3: CAPTURE PHOTO
 // ============================================
 function captureFriendPhoto() {
-    if (!webcamActive) {
+    if (!webcamActive || !DOM.webcamVideo) {
         showAlert('⚠️ Camera not active! Please allow camera access.');
         return;
     }
@@ -434,10 +441,8 @@ function captureFriendPhoto() {
     canvas.height = video.videoHeight || 300;
     const ctx = canvas.getContext('2d');
     
-    // Draw video frame
     ctx.drawImage(video, 0, 0);
     
-    // Add #friends watermark
     ctx.font = 'bold 28px "Space Grotesk", sans-serif';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
     ctx.textAlign = 'center';
@@ -448,7 +453,7 @@ function captureFriendPhoto() {
     
     capturedPhotoData = canvas.toDataURL('image/png');
     stopWebcam();
-    DOM.photoScreen.style.display = 'none';
+    if (DOM.photoScreen) DOM.photoScreen.style.display = 'none';
     
     if (isDatabaseFriend) {
         showFriendFound();
@@ -458,18 +463,22 @@ function captureFriendPhoto() {
 }
 
 function showFriendFound() {
-    DOM.foundAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo">';
-    DOM.foundName.textContent = currentFriend.firstName;
-    DOM.foundRating.innerHTML = generateStars(currentFriend.rating);
-    DOM.foundRatingLabel.textContent = currentFriend.tag || '';
+    if (DOM.foundAvatar) {
+        DOM.foundAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
+    }
+    if (DOM.foundName) DOM.foundName.textContent = currentFriend.firstName;
+    if (DOM.foundRating) DOM.foundRating.innerHTML = generateStars(currentFriend.rating);
+    if (DOM.foundRatingLabel) DOM.foundRatingLabel.textContent = currentFriend.tag || '';
     updateTimeline('found');
-    DOM.foundScreen.style.display = 'block';
+    if (DOM.foundScreen) DOM.foundScreen.style.display = 'block';
 }
 
 function showNewFriend() {
-    DOM.newFriendAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo">';
-    DOM.newFriendName.textContent = currentFriend.firstName;
-    DOM.newFriendScreen.style.display = 'block';
+    if (DOM.newFriendAvatar) {
+        DOM.newFriendAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
+    }
+    if (DOM.newFriendName) DOM.newFriendName.textContent = currentFriend.firstName;
+    if (DOM.newFriendScreen) DOM.newFriendScreen.style.display = 'block';
     launchConfetti();
 }
 
@@ -503,16 +512,19 @@ function updateTimeline(prefix) {
     const barId = prefix === 'found' ? 'timelineBar' : 'detailsTimelineBar';
     const textId = prefix === 'found' ? 'timelineText' : 'detailsTimelineText';
     
-    document.getElementById(barId).style.width = percent + '%';
-    document.getElementById(textId).textContent = 'Since Class ' + currentFriend.sinceClass + ' — ' + years + ' Years of Friendship ❤️';
+    const bar = document.getElementById(barId);
+    const text = document.getElementById(textId);
+    if (bar) bar.style.width = percent + '%';
+    if (text) text.textContent = 'Since Class ' + currentFriend.sinceClass + ' — ' + years + ' Years of Friendship ❤️';
 }
 
 // ============================================
-// CONFETTI ANIMATION
+// CONFETTI
 // ============================================
 function launchConfetti() {
     const container = DOM.confettiContainer;
-    container.innerHTML = ''; // Clear previous
+    if (!container) return;
+    container.innerHTML = '';
     
     const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#a29bfe', '#ff69b4', '#00ff64'];
     
@@ -529,43 +541,43 @@ function launchConfetti() {
         piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
         container.appendChild(piece);
         
-        // Auto cleanup
         setTimeout(function() {
-            piece.remove();
+            if (piece.parentNode) piece.remove();
         }, 3500);
     }
 }
 
 // ============================================
-// STEP 4: PROCEED TO DETAILS
+// PROCEED TO DETAILS
 // ============================================
 function proceedToDetails() {
-    DOM.foundScreen.style.display = 'none';
-    DOM.detailsScreen.style.display = 'block';
+    if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
+    if (DOM.detailsScreen) DOM.detailsScreen.style.display = 'block';
     
-    DOM.profileAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo">';
-    DOM.displayName.textContent = currentFriend.firstName;
-    DOM.displayPersonalName.textContent = currentFriend.personalName || '';
-    DOM.displayConnection.textContent = currentFriend.connection;
-    DOM.displayExperience.textContent = currentFriend.experience;
-    DOM.displayAge.textContent = currentFriend.age;
-    DOM.displaySchool.textContent = currentFriend.school;
-    DOM.displayHobby.textContent = currentFriend.hobby;
-    DOM.displaySinceClass.textContent = currentFriend.sinceClass;
-    DOM.displaySchoolClass.textContent = '📚 ' + currentFriend.school + ' — Since Class ' + currentFriend.sinceClass;
-    DOM.detailsRating.innerHTML = generateStars(currentFriend.rating) + ' <span style="font-size:12px;color:var(--text3);">' + (currentFriend.tag || '') + '</span>';
+    if (DOM.profileAvatar) {
+        DOM.profileAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
+    }
+    if (DOM.displayName) DOM.displayName.textContent = currentFriend.firstName;
+    if (DOM.displayPersonalName) DOM.displayPersonalName.textContent = currentFriend.personalName || '';
+    if (DOM.displayConnection) DOM.displayConnection.textContent = currentFriend.connection || '';
+    if (DOM.displayExperience) DOM.displayExperience.textContent = currentFriend.experience || '';
+    if (DOM.displayAge) DOM.displayAge.textContent = currentFriend.age || '';
+    if (DOM.displaySchool) DOM.displaySchool.textContent = currentFriend.school || '';
+    if (DOM.displayHobby) DOM.displayHobby.textContent = currentFriend.hobby || '';
+    if (DOM.displaySinceClass) DOM.displaySinceClass.textContent = currentFriend.sinceClass || '';
+    if (DOM.displaySchoolClass) DOM.displaySchoolClass.textContent = '📚 ' + (currentFriend.school || '') + ' — Since Class ' + (currentFriend.sinceClass || '');
+    if (DOM.detailsRating) DOM.detailsRating.innerHTML = generateStars(currentFriend.rating) + ' <span style="font-size:12px;color:var(--text3);">' + (currentFriend.tag || 'Friend') + '</span>';
     
     updateTimeline('details');
     updateLiveStats();
     
-    // Show nice message after 2 seconds
     setTimeout(function() {
-        DOM.msgFriendName.textContent = currentFriend.firstName;
-        DOM.dedicatedMessageText.textContent = dedicationMessage ? '"' + dedicationMessage + '"' : '';
-        DOM.niceMessage.style.display = 'block';
+        if (DOM.msgFriendName) DOM.msgFriendName.textContent = currentFriend.firstName;
+        if (DOM.dedicatedMessageText) DOM.dedicatedMessageText.textContent = dedicationMessage ? '"' + dedicationMessage + '"' : '';
+        if (DOM.niceMessage) DOM.niceMessage.style.display = 'block';
         
         setTimeout(function() {
-            DOM.niceMessage.style.display = 'none';
+            if (DOM.niceMessage) DOM.niceMessage.style.display = 'none';
         }, 3000);
     }, 2000);
 }
@@ -574,24 +586,26 @@ function proceedToDetails() {
 // MESSAGE DEDICATION
 // ============================================
 function openMessageModal() {
-    DOM.modalFriendName.textContent = currentFriend.firstName;
-    DOM.dedicationInput.value = dedicationMessage;
-    DOM.messageModal.classList.add('show');
+    if (DOM.modalFriendName) DOM.modalFriendName.textContent = currentFriend.firstName;
+    if (DOM.dedicationInput) DOM.dedicationInput.value = dedicationMessage;
+    if (DOM.messageModal) DOM.messageModal.classList.add('show');
 }
 
 function closeMessageModal() {
-    DOM.messageModal.classList.remove('show');
+    if (DOM.messageModal) DOM.messageModal.classList.remove('show');
 }
 
 function saveDedication() {
-    dedicationMessage = DOM.dedicationInput.value.trim();
-    localStorage.setItem('dedication_' + currentFriend.firstName, dedicationMessage);
+    if (DOM.dedicationInput) {
+        dedicationMessage = DOM.dedicationInput.value.trim();
+        localStorage.setItem('dedication_' + currentFriend.firstName, dedicationMessage);
+    }
     closeMessageModal();
     showAlert('💌 Message saved! It will appear on Certificate and Friend Card.');
 }
 
 // ============================================
-// RESTORE DEDICATION FROM LOCALSTORAGE
+// RESTORE DEDICATION
 // ============================================
 function restoreDedication() {
     if (currentFriend) {
@@ -601,16 +615,27 @@ function restoreDedication() {
 }
 
 // ============================================
-// PDF DOWNLOADS
+// NEW FRIEND CARD DOWNLOAD
 // ============================================
 function downloadNewFriendCard() {
+    if (!capturedPhotoData) {
+        showAlert('No photo captured! Please capture photo first.');
+        return;
+    }
     generateFriendCardPDF(false);
 }
 
 function downloadFriendCard() {
+    if (!capturedPhotoData) {
+        showAlert('No photo captured! Please capture photo first.');
+        return;
+    }
     generateFriendCardPDF(true);
 }
 
+// ============================================
+// FRIEND CARD PDF
+// ============================================
 function generateFriendCardPDF(isDBFriend) {
     if (!capturedPhotoData) {
         showAlert('No photo captured! Please capture photo first.');
@@ -631,7 +656,6 @@ function generateFriendCardPDF(isDBFriend) {
         const pw = 210;
         const ph = 297;
         
-        // Background
         pdf.setFillColor('#FFFEF7');
         pdf.rect(0, 0, pw, ph, 'F');
         
@@ -683,7 +707,6 @@ function generateFriendCardPDF(isDBFriend) {
             pdf.text('SINCE: Class ' + currentFriend.sinceClass + ' | HOBBY: ' + currentFriend.hobby, leftX, yPos);
             yPos += 12;
             
-            // Experience
             pdf.setFillColor('#f0edff');
             pdf.roundedRect(leftX - 2, yPos - 4, 128, 32, 2, 2, 'F');
             pdf.setTextColor('#6c5ce7');
@@ -695,7 +718,6 @@ function generateFriendCardPDF(isDBFriend) {
             pdf.text(lines, leftX, yPos + 6);
             yPos += 38;
             
-            // Timeline
             const cy = 2026;
             const sy = currentFriend.sinceClass <= 5 ? 2013 : currentFriend.sinceClass <= 10 ? 2019 : 2024;
             const yrs = cy - sy;
@@ -725,7 +747,6 @@ function generateFriendCardPDF(isDBFriend) {
             yPos += 28;
         }
         
-        // Dedication
         if (dedicationMessage && isDBFriend) {
             pdf.setFillColor('#fff0f0');
             pdf.roundedRect(12, yPos, pw - 24, 16, 2, 2, 'F');
@@ -738,7 +759,6 @@ function generateFriendCardPDF(isDBFriend) {
             yPos += 22;
         }
         
-        // Footer
         const footerY = 252;
         pdf.setDrawColor('#6c5ce7');
         pdf.setLineWidth(0.3);
@@ -752,9 +772,8 @@ function generateFriendCardPDF(isDBFriend) {
         
         pdf.setTextColor('#6c5ce7');
         pdf.setFontSize(9);
-        pdf.text('Verified by Ravi Raj | rravirajhere@gmail.com | #friends', pw / 2, footerY + 20, { align: 'center' });
+        pdf.text('Verified by Ravi Raj | #friends', pw / 2, footerY + 20, { align: 'center' });
         
-        // QR placeholder
         pdf.setDrawColor('#6c5ce7');
         pdf.setLineWidth(0.5);
         pdf.rect(pw - 42, footerY - 10, 30, 22);
@@ -794,18 +813,15 @@ function downloadCertificate() {
         const pw = 297;
         const ph = 210;
         
-        // Background
         pdf.setFillColor('#FFFEF7');
         pdf.rect(0, 0, pw, ph, 'F');
         
-        // Gold border
         pdf.setDrawColor('#DAA520');
         pdf.setLineWidth(3);
         pdf.rect(8, 8, pw - 16, ph - 16);
         pdf.setLineWidth(0.8);
         pdf.rect(12, 12, pw - 24, ph - 24);
         
-        // Header
         pdf.setTextColor('#B8860B');
         pdf.setFontSize(22);
         pdf.text('FRIENDSHIP CERTIFICATE', pw / 2, 32, { align: 'center' });
@@ -822,10 +838,8 @@ function downloadCertificate() {
         pdf.setFontSize(28);
         pdf.text(currentFriend.firstName.toUpperCase(), pw / 2, 60, { align: 'center' });
         
-        // Photo
         pdf.addImage(img, 'PNG', 25, 70, 65, 65);
         
-        // Rating Box
         const boxX = 105, boxY = 70, boxW = 85, boxH = 65;
         const rating = currentFriend.rating || 3;
         
@@ -855,7 +869,6 @@ function downloadCertificate() {
         pdf.setLineWidth(0.5);
         pdf.line(boxX + 10, boxY + 56, boxX + boxW - 10, boxY + 56);
         
-        // Info
         let infoY = 148;
         
         pdf.setTextColor('#555555');
@@ -884,7 +897,6 @@ function downloadCertificate() {
             infoY += 12;
         }
         
-        // Dedication
         if (dedicationMessage) {
             pdf.setFillColor('#fff0f0');
             pdf.setDrawColor('#ff6b6b');
@@ -901,7 +913,6 @@ function downloadCertificate() {
             infoY += 18;
         }
         
-        // Footer
         const footerY = ph - 20;
         pdf.setDrawColor('#DAA520');
         pdf.setLineWidth(0.3);
@@ -910,7 +921,7 @@ function downloadCertificate() {
         pdf.setTextColor('#999999');
         pdf.setFontSize(7);
         pdf.text('Awarded: ' + new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }), 25, footerY + 6);
-        pdf.text('Begusarai, Bihar, India | rravirajhere@gmail.com', pw / 2, footerY + 6, { align: 'center' });
+        pdf.text('Begusarai, Bihar, India', pw / 2, footerY + 6, { align: 'center' });
         
         pdf.setTextColor('#DAA520');
         pdf.setFontSize(9);
@@ -931,7 +942,7 @@ function downloadCertificate() {
 }
 
 // ============================================
-// DYNAMIC JSPDF LOADER
+// JSPDF LOADER
 // ============================================
 function loadJSPDF(callback) {
     if (window.jspdf || window.jsPDF) {
@@ -956,42 +967,50 @@ function loadJSPDF(callback) {
 // ============================================
 function updateLiveStats() {
     const now = new Date();
-    DOM.liveDate.textContent = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    DOM.liveTime.textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-    DOM.liveYear.textContent = now.getFullYear();
+    if (DOM.liveDate) DOM.liveDate.textContent = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    if (DOM.liveTime) DOM.liveTime.textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    if (DOM.liveYear) DOM.liveYear.textContent = now.getFullYear();
     
-    // Battery
     if ('getBattery' in navigator) {
         navigator.getBattery()
             .then(function(b) {
                 const lvl = Math.round(b.level * 100);
-                DOM.liveBattery.textContent = lvl + '%' + (b.charging ? ' ⚡' : '');
-                DOM.liveBattery.className = 'value ' + (lvl > 50 ? 'green' : lvl > 20 ? 'yellow' : 'red');
+                if (DOM.liveBattery) {
+                    DOM.liveBattery.textContent = lvl + '%' + (b.charging ? ' ⚡' : '');
+                    DOM.liveBattery.className = 'value ' + (lvl > 50 ? 'green' : lvl > 20 ? 'yellow' : 'red');
+                }
             })
             .catch(function() {
-                DOM.liveBattery.textContent = 'N/A';
-                DOM.liveBattery.className = 'value';
+                if (DOM.liveBattery) {
+                    DOM.liveBattery.textContent = 'N/A';
+                    DOM.liveBattery.className = 'value';
+                }
             });
     } else {
-        DOM.liveBattery.textContent = 'N/A';
+        if (DOM.liveBattery) {
+            DOM.liveBattery.textContent = 'N/A';
+            DOM.liveBattery.className = 'value';
+        }
     }
     
-    // Device
-    DOM.liveDevice.textContent = /Android/i.test(navigator.userAgent) ? 'Android' :
-        /iPhone|iPad/i.test(navigator.userAgent) ? 'iOS' : 'Desktop';
+    if (DOM.liveDevice) {
+        DOM.liveDevice.textContent = /Android/i.test(navigator.userAgent) ? 'Android' :
+            /iPhone|iPad/i.test(navigator.userAgent) ? 'iOS' : 'Desktop';
+    }
     
-    // Location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             function(pos) {
-                DOM.liveLocation.textContent = pos.coords.latitude.toFixed(2) + ', ' + pos.coords.longitude.toFixed(2);
+                if (DOM.liveLocation) {
+                    DOM.liveLocation.textContent = pos.coords.latitude.toFixed(2) + ', ' + pos.coords.longitude.toFixed(2);
+                }
             },
             function() {
-                DOM.liveLocation.textContent = 'N/A';
+                if (DOM.liveLocation) DOM.liveLocation.textContent = 'N/A';
             }, { timeout: 5000, maximumAge: 60000 }
         );
     } else {
-        DOM.liveLocation.textContent = 'N/A';
+        if (DOM.liveLocation) DOM.liveLocation.textContent = 'N/A';
     }
 }
 
@@ -1002,11 +1021,13 @@ function resetSearch() {
     hideAllScreens();
     stopWebcam();
     dedicationMessage = '';
-    DOM.searchArea.style.display = 'flex';
-    DOM.friendSearch.value = '';
-    DOM.friendSearch.focus();
-    DOM.voiceBtn.classList.remove('listening');
-    DOM.voiceStatus.classList.remove('show');
+    if (DOM.searchArea) DOM.searchArea.style.display = 'flex';
+    if (DOM.friendSearch) {
+        DOM.friendSearch.value = '';
+        DOM.friendSearch.focus();
+    }
+    if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
+    if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
     currentFriend = null;
     capturedPhotoData = null;
     isDatabaseFriend = false;
@@ -1016,12 +1037,12 @@ function resetSearch() {
 // HIDE ALL SCREENS
 // ============================================
 function hideAllScreens() {
-    DOM.photoScreen.style.display = 'none';
-    DOM.foundScreen.style.display = 'none';
-    DOM.newFriendScreen.style.display = 'none';
-    DOM.detailsScreen.style.display = 'none';
-    DOM.niceMessage.style.display = 'none';
-    DOM.messageModal.classList.remove('show');
+    if (DOM.photoScreen) DOM.photoScreen.style.display = 'none';
+    if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
+    if (DOM.newFriendScreen) DOM.newFriendScreen.style.display = 'none';
+    if (DOM.detailsScreen) DOM.detailsScreen.style.display = 'none';
+    if (DOM.niceMessage) DOM.niceMessage.style.display = 'none';
+    if (DOM.messageModal) DOM.messageModal.classList.remove('show');
 }
 
 // ============================================
