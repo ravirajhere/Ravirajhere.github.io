@@ -1,5 +1,5 @@
 /* ============================================
-   CHATBOX - COMPLETE FUNCTIONALITY
+   CHATBOX - COMPLETE FUNCTIONALITY (REAL EMAILJS - NO LIMIT)
    ============================================ */
 
 // Wait for DOM to load
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(html => {
             container.innerHTML = html;
             console.log('✅ Chatbox HTML loaded!');
-            initChatbox(); // Initialize chatbox after HTML is inserted
+            initChatbox();
         })
         .catch(err => {
             console.error('❌ Chatbox load failed:', err);
@@ -146,7 +146,7 @@ function initChatbox() {
 
     aiBackBtn.addEventListener('click', resetToModeSelection);
 
-    // ===== CONTACT MODE =====
+    // ===== CONTACT MODE - REAL EMAILJS =====
     contactModeBtn.addEventListener('click', () => {
         modeSelection.style.display = 'none';
         contactForm.style.display = 'flex';
@@ -165,6 +165,7 @@ function initChatbox() {
         const email = contactEmail.value.trim();
         const message = contactMessage.value.trim();
 
+        // Validation
         if (!name || !email || !message) {
             contactStatus.innerHTML = '⚠️ Please fill all fields.';
             contactStatus.style.color = '#ff4444';
@@ -181,25 +182,49 @@ function initChatbox() {
         contactStatus.innerHTML = '⏳ Sending your message...';
         contactStatus.style.color = '#ff9800';
 
-        setTimeout(() => {
-            contactStatus.innerHTML = '✅ Message sent successfully! I\'ll reply within 24 hours.';
-            contactStatus.style.color = '#00ff88';
+        // ===== REAL EMAILJS SEND =====
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init("ZKEUMnGSjznurORAI");
+        } else {
+            contactStatus.innerHTML = '❌ Email service not available. Please try again later.';
+            contactStatus.style.color = '#ff4444';
             contactSend.disabled = false;
-            contactName.value = '';
-            contactEmail.value = '';
-            contactMessage.value = '';
+            return;
+        }
 
-            chatMessages.innerHTML += `
-                <div class="message system">📧 Message sent! I\'ll reply within 24 hours.</div>
-            `;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        const templateParams = {
+            from_name: name,
+            from_email: email,
+            message: message,
+            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+        };
 
-            setTimeout(() => {
-                if (currentMode === 'contact') {
-                    resetToModeSelection();
-                }
-            }, 5000);
-        }, 1500);
+        emailjs.send('service_kc0c1i5', 'template_s53pk7r', templateParams)
+            .then(() => {
+                contactStatus.innerHTML = '✅ Message sent successfully! I\'ll reply within 24 hours.';
+                contactStatus.style.color = '#00ff88';
+                contactSend.disabled = false;
+                contactName.value = '';
+                contactEmail.value = '';
+                contactMessage.value = '';
+
+                chatMessages.innerHTML += `
+                    <div class="message system">📧 Message sent! I\'ll reply within 24 hours.</div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                setTimeout(() => {
+                    if (currentMode === 'contact') {
+                        resetToModeSelection();
+                    }
+                }, 5000);
+            })
+            .catch((error) => {
+                console.error('EmailJS Error:', error);
+                contactStatus.innerHTML = '❌ Failed to send. Please try again.';
+                contactStatus.style.color = '#ff4444';
+                contactSend.disabled = false;
+            });
     });
 
     console.log('✅ Chatbox initialized successfully!');
