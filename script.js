@@ -756,3 +756,38 @@ document.addEventListener('keydown', function(e) {
         closeRJModal();
     }
 });
+/* ============================================
+   OPEN CHATBOX — LET'S TALK BUTTON
+   ============================================ */
+function openChatbox() {
+    const container = document.getElementById('chatbox-container');
+    if (!container) {
+        console.warn('⚠️ Chatbox container not found!');
+        return;
+    }
+
+    // Agar already load hai toh sirf show karo
+    if (container.innerHTML.trim() !== '') {
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+
+    // Pehli baar load karo
+    fetch('chatbox.html')
+        .then(res => {
+            if (!res.ok) throw new Error('Chatbox file not found!');
+            return res.text();
+        })
+        .then(html => {
+            container.innerHTML = html;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            console.log('✅ Chatbox loaded and opened!');
+        })
+        .catch(err => {
+            console.error('❌ Chatbox load failed:', err);
+            container.innerHTML = `<p style="color:var(--gray);text-align:center;padding:20px;">❌ Chatbox could not load.</p>`;
+            container.style.display = 'block';
+        });
+}
