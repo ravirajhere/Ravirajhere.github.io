@@ -189,10 +189,10 @@
         <!-- STEP 1: SEARCH -->
         <div class="search-area" id="searchArea">
             <input type="text" id="friendSearch" placeholder="First name search karo ya mic dabao..." autocomplete="off" aria-label="Search friend name">
-            <button class="voice-btn" id="voiceBtn" title="Voice Search" aria-label="Voice search">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceSearch()" title="Voice Search" aria-label="Voice search">
                 <i class="fas fa-microphone"></i>
             </button>
-            <button>🔍 Search</button>
+            <button onclick="searchFriend()">🔍 Search</button>
         </div>
         <div class="voice-status" id="voiceStatus">🎤 Listening... Bol — "Sudhanshu"</div>
 
@@ -210,14 +210,14 @@
                     <p>Camera yahan dikhega</p>
                 </div>
             </div>
-            <button class="capture-btn" id="captureBtn">
+            <button class="capture-btn" id="captureBtn" onclick="captureFriendPhoto()">
                 <i class="fas fa-camera"></i> 📸 Capture Photo
             </button>
             <div class="permission-denied" id="permissionDenied">
                 <div style="font-size:50px;">🚫</div>
                 <h3>Camera Permission Required!</h3>
                 <p id="permissionMessage">Photo ke bina aage nahi badh sakte. Browser settings mein jaake camera allow karo.</p>
-                <button class="retry-btn">🔄 Try Again</button>
+                <button class="retry-btn" onclick="retryCamera()">🔄 Try Again</button>
             </div>
         </div>
 
@@ -239,7 +239,7 @@
                     </div>
                     <div class="timeline-text" id="timelineText">Since Class 7 — 7 Years of Friendship ❤️</div>
                 </div>
-                <button class="proceed-btn">Proceed to Information →</button>
+                <button class="proceed-btn" onclick="proceedToDetails()">Proceed to Information →</button>
             </div>
         </div>
 
@@ -250,8 +250,8 @@
                 <div class="found-avatar" id="newFriendAvatar">👤</div>
                 <h2 class="new-friend">NEW FRIEND!</h2>
                 <p><strong id="newFriendName">Friend</strong>, you're now a Friend of Ravi!</p>
-                <button class="proceed-btn">🪪 Download Friend Card</button>
-                <button class="search-again-btn">🔄 Search Another Name</button>
+                <button class="proceed-btn" onclick="downloadNewFriendCard()">🪪 Download Friend Card</button>
+                <button class="search-again-btn" onclick="resetSearch()">🔄 Search Another Name</button>
             </div>
         </div>
 
@@ -292,10 +292,10 @@
                     <div class="item">📱 Device<div class="value" id="liveDevice">--</div></div>
                     <div class="item">📍 Location<div class="value" id="liveLocation">--</div></div>
                 </div>
-                <button class="download-btn message-btn"><i class="fas fa-heart"></i> Dedicate a Message</button>
-                <button class="download-btn cert-btn"><i class="fas fa-scroll"></i> Download Certificate</button>
-                <button class="download-btn"><i class="fas fa-id-card"></i> Download Friend Card</button>
-                <button class="search-again-btn">🔄 Search Another Name</button>
+                <button class="download-btn message-btn" onclick="openMessageModal()"><i class="fas fa-heart"></i> Dedicate a Message</button>
+                <button class="download-btn cert-btn" onclick="downloadCertificate()"><i class="fas fa-scroll"></i> Download Certificate</button>
+                <button class="download-btn" onclick="downloadFriendCard()"><i class="fas fa-id-card"></i> Download Friend Card</button>
+                <button class="search-again-btn" onclick="resetSearch()">🔄 Search Another Name</button>
             </div>
         </div>
 
@@ -314,21 +314,25 @@
             <div class="message-modal-content">
                 <h3>💌 Your Message for <span id="modalFriendName">Friend</span></h3>
                 <textarea id="dedicationMessage" placeholder="Apna message likho friend ke liye..."></textarea>
-                <button class="save-btn">💾 Save & Add to Certificate</button>
-                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn" onclick="saveDedication()">💾 Save & Add to Certificate</button>
+                <button class="cancel-btn" onclick="closeMessageModal()">Cancel</button>
             </div>
         </div>
 
         <!-- CONFETTI CONTAINER -->
         <div class="confetti-container" id="confettiContainer"></div>
-        
+
         <!-- ===== BACK TO HOME ===== -->
-<div style="text-align:center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);">
-    <a href="index.html" style="color: var(--accent2); text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;">
-        ← Back to Home
-    </a>
-</div>
+        <div style="text-align:center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <a href="index.html" style="color: var(--accent2); text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;">
+                ← Back to Home
+            </a>
+        </div>
+
     </div>
+
+    <!-- ===== FRIENDS.JS ===== -->
+    <script src="friends.js"></script>
 
 </body>
 </html>
