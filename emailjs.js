@@ -1,118 +1,110 @@
-/* ============================================================
-   EMAILJS - CONTACT FORM (ALAG FILE)
-   ============================================================ */
+/* ============================================
+   EMAILJS.JS - SEND MESSAGE FUNCTIONALITY
+   ============================================ */
 
-// Wait for DOM to load
-document.addEventListener('DOMContentLoaded', function() {
-    initEmailJS();
-});
+(function() {
+    'use strict';
 
-function initEmailJS() {
-    // DOM Elements
-    const contactSend = document.getElementById('contactSend');
-    const contactName = document.getElementById('contactName');
-    const contactEmail = document.getElementById('contactEmail');
-    const contactMessage = document.getElementById('contactMessage');
-    const contactStatus = document.getElementById('contactStatus');
-    const chatMessages = document.getElementById('chatMessages');
+    // ============================================
+    // CONFIGURATION - APNI CREDENTIALS DAALO
+    // ============================================
+    const EMAILJS_CONFIG = {
+        publicKey: 'ZKEUMnGSjznurORAI',     // Apna Public Key
+        serviceID: 'service_kc0c1i5',        // Apna Service ID
+        templateID: 'template_s53pk7r'       // Apna Template ID
+    };
 
-    // Reset function
-    function resetToModeSelection() {
-        const modeSelection = document.getElementById('modeSelection');
-        const contactForm = document.getElementById('contactForm');
-        if (modeSelection) modeSelection.style.display = 'flex';
-        if (contactForm) {
-            contactForm.classList.remove('active');
-            contactForm.style.display = 'none';
-        }
-        if (chatMessages) {
-            chatMessages.innerHTML = `
-                <div class="message bot">👋 Arey bhai! Main Ravi — Bihar, Begusarai se hoon. <span class="time">Just now</span></div>
-                <div class="message bot">Kya help chahiye? Neeche se option choose karo. <span class="time">Just now</span></div>
-            `;
-        }
-        if (contactStatus) {
-            contactStatus.textContent = '';
-            contactStatus.style.color = '';
-        }
+    // ============================================
+    // INITIALIZE EMAILJS
+    // ============================================
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_CONFIG.publicKey);
+        console.log('✅ EmailJS initialized!');
+    } else {
+        console.warn('⚠️ EmailJS library not loaded!');
     }
 
-    if (!contactSend) {
-        console.warn('⚠️ Contact form elements not found!');
-        return;
-    }
+    // ============================================
+    // CONTACT OPTIONS FUNCTIONS
+    // ============================================
+    window.showContactOptions = function() {
+        const modal = document.getElementById('contactOptionsModal');
+        if (modal) modal.style.display = 'flex';
+    };
 
-    contactSend.addEventListener('click', function() {
-        const name = contactName.value.trim();
-        const email = contactEmail.value.trim();
-        const message = contactMessage.value.trim();
+    window.closeContactOptions = function() {
+        const modal = document.getElementById('contactOptionsModal');
+        if (modal) modal.style.display = 'none';
+    };
 
-        // ---- Validation ----
-        if (!name || !email || !message) {
-            contactStatus.textContent = '⚠️ Please fill all fields.';
-            contactStatus.style.color = '#ef4444';
+    window.openEmailForm = function() {
+        closeContactOptions();
+        const modal = document.getElementById('emailFormModal');
+        if (modal) modal.style.display = 'flex';
+    };
+
+    window.closeEmailForm = function() {
+        const modal = document.getElementById('emailFormModal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    // ============================================
+    // FORM SUBMIT HANDLER
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('contactForm');
+        const status = document.getElementById('formStatus');
+
+        if (!form) {
+            console.warn('⚠️ Contact form not found!');
             return;
         }
 
-        if (!email.includes('@') || !email.includes('.')) {
-            contactStatus.textContent = '⚠️ Please enter a valid email address.';
-            contactStatus.style.color = '#ef4444';
-            return;
-        }
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        // ---- Loading State ----
-        contactSend.disabled = true;
-        contactSend.textContent = '⏳ Sending...';
-        contactStatus.textContent = '';
-        contactStatus.style.color = '';
+            // Show loading
+            status.style.display = 'block';
+            status.innerHTML = '⏳ Sending...';
+            status.style.color = '#aaa';
 
-        // ---- EmailJS ----
-        if (typeof emailjs !== 'undefined') {
-            emailjs.init("ZKEUMnGSjznurORAI");
-        } else {
-            contactStatus.textContent = '❌ Email service not available.';
-            contactStatus.style.color = '#ef4444';
-            contactSend.disabled = false;
-            contactSend.textContent = 'Send Message';
-            return;
-        }
+            // Get form data
+            const name = document.getElementById('user_name')?.value || '';
+            const email = document.getElementById('user_email')?.value || '';
+            const message = document.getElementById('user_message')?.value || '';
 
-        const templateParams = {
-            from_name: name,
-            from_email: email,
-            message: message,
-            time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-        };
+            // Validate
+            if (!name || !email || !message) {
+                status.innerHTML = '❌ Please fill all fields!';
+                status.style.color = '#ff4444';
+                return;
+            }
 
-        emailjs.send('service_kc0c1i5', 'template_s53pk7r', templateParams)
-            .then(() => {
-                contactStatus.textContent = '✅ Message sent successfully! I\'ll reply within 24 hours.';
-                contactStatus.style.color = '#4ade80';
-                contactSend.disabled = false;
-                contactSend.textContent = 'Send Message';
-                contactName.value = '';
-                contactEmail.value = '';
-                contactMessage.value = '';
+            // EmailJS send
+            emailjs.sendForm(
+                EMAILJS_CONFIG.serviceID,
+                EMAILJS_CONFIG.templateID,
+                form,
+                EMAILJS_CONFIG.publicKey
+            )
+            .then(function(response) {
+                console.log('✅ Email sent!', response);
+                status.innerHTML = '✅ Message sent successfully!';
+                status.style.color = '#00ff88';
+                form.reset();
 
-                if (chatMessages) {
-                    chatMessages.innerHTML += `
-                        <div class="message system">📧 Message sent! I\'ll reply within 24 hours.</div>
-                    `;
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }
-
+                // Close after 3 seconds
                 setTimeout(() => {
-                    resetToModeSelection();
-                }, 5000);
+                    closeEmailForm();
+                    status.style.display = 'none';
+                }, 3000);
             })
-            .catch((error) => {
-                console.error('EmailJS Error:', error);
-                contactStatus.textContent = '❌ Failed to send. Please try again.';
-                contactStatus.style.color = '#ef4444';
-                contactSend.disabled = false;
-                contactSend.textContent = 'Send Message';
+            .catch(function(error) {
+                console.error('❌ EmailJS Error:', error);
+                status.innerHTML = '❌ Failed to send. Try again later.';
+                status.style.color = '#ff4444';
             });
+        });
     });
 
-    console.log('✅ EmailJS initialized successfully!');
-}
+})();
