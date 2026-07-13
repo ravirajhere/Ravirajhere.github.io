@@ -1560,3 +1560,78 @@ body.light-mode .social-icon-item:hover {
         font-size: 13px;
     }
 }
+/* ============================================
+   ACHIEVE FOOTER BUTTON - UNIQUE
+   ============================================ */
+.achieve-footer-btn {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px 10px;
+    position: relative;
+}
+
+.achieve-footer-btn::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 400px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    opacity: 0.3;
+}
+
+.btn-achieve {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 60px;
+    color: var(--dark);
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+}
+
+.btn-achieve::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.btn-achieve:hover::before {
+    opacity: 1;
+}
+
+.btn-achieve span {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-achieve:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 48px rgba(0, 217, 255, 0.5);
+}
+
+.btn-achieve:active {
+    transform: scale(0.96);
+}
+
+.btn-achieve .icon {
+    font-size: 26px;
+    position: relative;
+    z-index: 1;
+}
