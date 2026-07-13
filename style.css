@@ -1462,45 +1462,7 @@ body.light-mode .education-badge {
         height: 120px;
     }
 }
-/* ============================================
-   SOCIAL TRIGGER - @rravirajhere
-   ============================================ */
-.social-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    background: rgba(0, 217, 255, 0.1);
-    border: 2px solid #00d9ff;
-    border-radius: 50px;
-    color: #00d9ff;
-    font-family: 'Fira Code', monospace;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s;
-    user-select: none;
-}
 
-.social-trigger:hover {
-    background: rgba(0, 217, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
-}
-
-.social-trigger .arrow {
-    font-size: 12px;
-    transition: 0.3s;
-}
-
-.social-trigger.active .arrow {
-    transform: rotate(180deg);
-}
-
-/* Social Menu - Container ke liye */
-#socialContainer {
-    position: relative;
-    display: inline-block;
-}
 /* ============================================
    SOCIAL TRIGGER + HIDDEN GRID
    ============================================ */
