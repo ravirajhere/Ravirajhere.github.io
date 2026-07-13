@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends Corner — Ravi Raj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: rgba(255,255,255,0.03);
+            --bg3: rgba(255,255,255,0.05);
+            --text: #fff;
+            --text2: rgba(255,255,255,0.7);
+            --text3: rgba(255,255,255,0.4);
+            --border: rgba(255,255,255,0.08);
+            --accent: #6c5ce7;
+            --accent2: #a29bfe;
+            --grad: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --grad2: linear-gradient(135deg, #ffd93d, #ff9f43);
+            --grad3: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            --radius: 16px;
+            --radius2: 12px;
+            --font: 'Space Grotesk', sans-serif;
+            --shadow: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow2: 0 10px 30px rgba(108,92,231,0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .friends-container {
+            max-width: 580px;
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow: var(--shadow);
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 20px rgba(108,92,231,0.2); } 50% { box-shadow: 0 0 40px rgba(108,92,231,0.5); } }
+        @keyframes confettiFall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+        .friends-header { text-align: center; margin-bottom: 25px; }
+        .friends-header h2 { font-size: 28px; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+        .friends-header p { color: var(--text3); font-size: 14px; line-height: 1.5; }
+
+        /* SEARCH */
+        .search-area { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .search-area input { flex: 1; padding: 14px 18px; border-radius: var(--radius2); border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-family: var(--font); font-size: 15px; outline: none; transition: all 0.3s; min-width: 0; }
+        .search-area input:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(108,92,231,0.1); }
+        .search-area input::placeholder { color: var(--text3); }
+        .search-area button { padding: 14px 24px; border: none; border-radius: var(--radius2); background: var(--grad); color: #fff; font-weight: 600; cursor: pointer; font-family: var(--font); font-size: 15px; transition: all 0.3s; white-space: nowrap; }
+        .search-area button:hover { transform: scale(1.03); box-shadow: var(--shadow2); }
+        .voice-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg2); color: var(--text2); font-size: 20px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .voice-btn:hover { border-color: var(--accent); color: var(--accent2); }
+        .voice-btn.listening { background: #ff4444; border-color: #ff4444; color: #fff; animation: pulse 1s infinite; }
+        .voice-status { display: none; text-align: center; color: var(--accent2); font-size: 12px; margin-bottom: 10px; }
+        .voice-status.show { display: block; }
+
+        /* PHOTO SCREEN */
+        .photo-screen { display: none; text-align: center; animation: fadeIn 0.4s ease; }
+        .lock-icon { font-size: 30px; display: block; margin-bottom: 10px; }
+        .photo-header h3 { font-size: 18px; margin-bottom: 8px; }
+        .photo-header h3 span { color: var(--accent2); }
+        .warning { color: #ff6b6b; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
+        .webcam-box { position: relative; width: 100%; max-width: 320px; margin: 0 auto 20px; border-radius: var(--radius); overflow: hidden; border: 2px solid var(--border); background: #000; aspect-ratio: 4/3; }
+        .webcam-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .webcam-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text3); background: #111; }
+        .webcam-placeholder i { font-size: 40px; margin-bottom: 10px; }
+        .webcam-placeholder p { font-size: 14px; }
+        .capture-btn { padding: 16px 40px; border: none; border-radius: 30px; background: var(--grad); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font); animation: pulse 2s infinite; transition: all 0.3s; }
+        .capture-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(108,92,231,0.4); }
+        .permission-denied { display: none; text-align: center; padding: 20px; }
+        .permission-denied h3 { color: #ff6b6b; margin: 15px 0 10px; }
+        .permission-denied p { color: var(--text3); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+        .retry-btn { padding: 12px 30px; border: 2px solid var(--accent); border-radius: 25px; background: transparent; color: var(--accent2); font-weight: 600; cursor: pointer; font-family: var(--font); font-size: 15px; transition: all 0.3s; }
+        .retry-btn:hover { background: rgba(108,92,231,0.15); }
+
+        /* FOUND SCREEN */
+        .found-screen { display: none; text-align: center; animation: fadeIn 0.5s ease; }
+        .found-icon { font-size: 50px; margin-bottom: 15px; }
+        .found-avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 15px; border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 45px; overflow: hidden; background: var(--bg2); }
+        .found-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .found-card h2 { font-size: 24px; margin-bottom: 8px; }
+        .found-card h2.friend-found { color: #00ff64; }
+        .found-card h2.new-friend { color: #ffd93d; }
+        .found-card p { color: var(--text2); font-size: 16px; margin-bottom: 8px; }
+        .rating-display { font-size: 28px; margin: 8px 0; letter-spacing: 4px; }
+        .rating-display .star { color: #555; }
+        .rating-display .star.active { color: #ffd93d; }
+        .friendship-timeline { background: var(--bg2); border-radius: var(--radius2); padding: 12px 16px; margin: 12px 0; text-align: left; }
+        .timeline-label { color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .timeline-bar-bg { height: 10px; background: var(--bg3); border-radius: 10px; overflow: hidden; margin: 6px 0; }
+        .timeline-bar-fill { height: 100%; border-radius: 10px; background: var(--grad); transition: width 1s ease; }
+        .timeline-text { color: var(--text2); font-size: 13px; text-align: right; }
+        .proceed-btn { padding: 14px 35px; border: none; border-radius: 30px; background: var(--grad); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font); margin: 5px; transition: all 0.3s; }
+        .proceed-btn:hover { transform: scale(1.05); box-shadow: var(--shadow2); }
+
+        /* DETAILS */
+        .details-screen { display: none; animation: fadeIn 0.5s ease; }
+        .result-card { background: var(--bg2); border-radius: var(--radius); padding: 25px; border: 1px solid var(--border); }
+        .profile-row { display: flex; align-items: center; gap: 18px; margin-bottom: 15px; }
+        .avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 35px; overflow: hidden; flex-shrink: 0; background: var(--bg3); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .name { font-size: 22px; font-weight: 700; color: var(--accent2); }
+        .personal-name { font-size: 14px; color: #ffd93d; margin-top: 2px; }
+        .connection { font-size: 15px; color: var(--text2); margin-top: 4px; }
+        .experience { background: rgba(255,255,255,0.04); padding: 14px; border-radius: var(--radius2); margin: 12px 0; color: var(--text2); border-left: 3px solid var(--accent); font-style: italic; font-size: 14px; line-height: 1.6; }
+        .school-class { font-size: 14px; color: var(--accent2); margin-bottom: 15px; font-weight: 500; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .detail-grid .label { color: var(--text3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-grid .value { color: var(--text); font-weight: 600; font-size: 15px; }
+        .live-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; padding: 15px; background: var(--bg3); border-radius: var(--radius2); }
+        .live-section .item { text-align: center; font-size: 11px; color: var(--text3); }
+        .live-section .value { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 3px; }
+        .live-section .value.green { color: #00ff64; }
+        .live-section .value.yellow { color: #ffd93d; }
+        .download-btn { width: 100%; padding: 14px; border: none; border-radius: var(--radius2); background: var(--grad); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font); margin-top: 10px; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .download-btn:hover { transform: scale(1.02); box-shadow: var(--shadow2); }
+        .cert-btn { background: var(--grad2); color: #1a1a2e; }
+        .message-btn { background: var(--grad3); }
+        .search-again-btn { width: 100%; padding: 12px; border: 2px solid var(--accent); border-radius: var(--radius2); background: transparent; color: var(--accent2); font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); margin-top: 8px; transition: all 0.3s; }
+        .search-again-btn:hover { background: rgba(108,92,231,0.1); }
+
+        /* MESSAGE MODAL */
+        .message-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .message-modal.show { display: flex; animation: fadeIn 0.3s ease; }
+        .message-modal-content { background: #1a1a2e; border-radius: 20px; padding: 30px; max-width: 450px; width: 100%; border: 1px solid var(--border); text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .message-modal h3 { color: var(--accent2); margin-bottom: 15px; font-size: 18px; }
+        .message-modal textarea { width: 100%; height: 100px; padding: 12px; border-radius: var(--radius2); border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-family: var(--font); font-size: 14px; resize: vertical; outline: none; margin-bottom: 15px; transition: all 0.3s; }
+        .message-modal textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(108,92,231,0.15); }
+        .message-modal button { padding: 12px 30px; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; font-family: var(--font); font-size: 15px; margin: 5px; transition: all 0.3s; }
+        .message-modal .save-btn { background: var(--grad); color: #fff; }
+        .message-modal .cancel-btn { background: var(--bg2); color: var(--text2); border: 1px solid var(--border); }
+        .message-modal button:hover { transform: scale(1.03); }
+
+        /* NICE MESSAGE */
+        .nice-message { display: none; text-align: center; padding: 20px; animation: fadeInUp 0.6s ease; }
+        .message-card { background: var(--bg2); border-radius: var(--radius); padding: 30px 25px; border: 1px solid var(--accent); }
+        .message-emoji { font-size: 50px; margin-bottom: 12px; }
+        .message-card h2 { font-size: 20px; color: var(--text); margin-bottom: 6px; }
+        .message-card h2 span { color: var(--accent2); }
+        .message-card p { color: var(--text2); font-size: 16px; line-height: 1.5; }
+
+        /* CONFETTI */
+        .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 99999; }
+        .confetti-piece { position: absolute; width: 12px; height: 12px; animation: confettiFall 3s ease-out forwards; }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .friends-container { padding: 20px 15px; border-radius: 20px; }
+            .friends-header h2 { font-size: 22px; }
+            .search-area { flex-wrap: wrap; }
+            .search-area input { min-width: 140px; }
+            .search-area button { padding: 14px 18px; font-size: 14px; }
+            .profile-row { flex-direction: column; text-align: center; }
+            .live-section { grid-template-columns: repeat(2, 1fr); }
+            .detail-grid { grid-template-columns: 1fr; }
+            .webcam-box { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="friends-container">
+
+        <!-- HEADER -->
+        <div class="friends-header">
+            <h2>👥 Friends Corner</h2>
+            <p>🎤 Voice Search | ⭐ Rating | 📅 Timeline | 💌 Message | 📜 Certificate | 🪪 Friend Card</p>
+        </div>
+
+        <!-- STEP 1: SEARCH -->
+        <div class="search-area" id="searchArea">
+            <input type="text" id="friendSearch" placeholder="First name search karo ya mic dabao..." autocomplete="off" aria-label="Search friend name">
+            <button class="voice-btn" id="voiceBtn" title="Voice Search" aria-label="Voice search">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button>🔍 Search</button>
+        </div>
+        <div class="voice-status" id="voiceStatus">🎤 Listening... Bol — "Sudhanshu"</div>
+
+        <!-- STEP 2: PHOTO MANDATORY -->
+        <div class="photo-screen" id="photoScreen">
+            <div class="photo-header">
+                <span class="lock-icon">🔒</span>
+                <h3>📸 <span id="photoFriendName">Friend</span>, Pehle Apni Live Photo Kheencho!</h3>
+                <p class="warning">⚠️ Photo required to continue — No Skip!</p>
+            </div>
+            <div class="webcam-box">
+                <video id="webcamVideo" autoplay playsinline muted></video>
+                <div class="webcam-placeholder" id="webcamPlaceholder">
+                    <i class="fas fa-camera"></i>
+                    <p>Camera yahan dikhega</p>
+                </div>
+            </div>
+            <button class="capture-btn" id="captureBtn">
+                <i class="fas fa-camera"></i> 📸 Capture Photo
+            </button>
+            <div class="permission-denied" id="permissionDenied">
+                <div style="font-size:50px;">🚫</div>
+                <h3>Camera Permission Required!</h3>
+                <p id="permissionMessage">Photo ke bina aage nahi badh sakte. Browser settings mein jaake camera allow karo.</p>
+                <button class="retry-btn">🔄 Try Again</button>
+            </div>
+        </div>
+
+        <!-- STEP 3A: FRIEND FOUND -->
+        <div class="found-screen" id="foundScreen">
+            <div class="found-card">
+                <div class="found-icon">✅</div>
+                <div class="found-avatar" id="foundAvatar">👤</div>
+                <h2 class="friend-found">FRIEND FOUND!</h2>
+                <p><strong id="foundName">Friend</strong>, you're in Ravi's friend list!</p>
+                <div class="rating-display" id="foundRating">
+                    <span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span>
+                </div>
+                <p style="font-size:12px;color:var(--text3);" id="foundRatingLabel">Most Loyal</p>
+                <div class="friendship-timeline">
+                    <div class="timeline-label">📅 Friendship Timeline</div>
+                    <div class="timeline-bar-bg">
+                        <div class="timeline-bar-fill" id="timelineBar" style="width: 85%;"></div>
+                    </div>
+                    <div class="timeline-text" id="timelineText">Since Class 7 — 7 Years of Friendship ❤️</div>
+                </div>
+                <button class="proceed-btn">Proceed to Information →</button>
+            </div>
+        </div>
+
+        <!-- STEP 3B: NEW FRIEND -->
+        <div class="found-screen" id="newFriendScreen">
+            <div class="found-card">
+                <div class="found-icon">🤝</div>
+                <div class="found-avatar" id="newFriendAvatar">👤</div>
+                <h2 class="new-friend">NEW FRIEND!</h2>
+                <p><strong id="newFriendName">Friend</strong>, you're now a Friend of Ravi!</p>
+                <button class="proceed-btn">🪪 Download Friend Card</button>
+                <button class="search-again-btn">🔄 Search Another Name</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: DETAILS -->
+        <div class="details-screen" id="detailsScreen">
+            <div class="result-card">
+                <div class="profile-row">
+                    <div class="avatar" id="profileAvatar">👤</div>
+                    <div>
+                        <div class="name" id="displayName">Sudhanshu</div>
+                        <div class="personal-name" id="displayPersonalName"></div>
+                        <div class="connection" id="displayConnection">🤝 Best Friend</div>
+                    </div>
+                </div>
+                <div class="rating-display" id="detailsRating" style="text-align:center;">
+                    <span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span><span class="star active">⭐</span>
+                </div>
+                <div class="friendship-timeline">
+                    <div class="timeline-label">📅 Friendship Timeline</div>
+                    <div class="timeline-bar-bg">
+                        <div class="timeline-bar-fill" id="detailsTimelineBar" style="width: 85%;"></div>
+                    </div>
+                    <div class="timeline-text" id="detailsTimelineText">Since Class 7 — 7 Years of Friendship ❤️</div>
+                </div>
+                <div class="experience" id="displayExperience">We grew up together, played cricket every evening, and copied each other's homework 😂 He's the most loyal friend I have.</div>
+                <div class="school-class" id="displaySchoolClass">📚 Mother's Pride — Since Class 7</div>
+                <div class="detail-grid">
+                    <div><span class="label">Age</span><br><span class="value" id="displayAge">18</span></div>
+                    <div><span class="label">School</span><br><span class="value" id="displaySchool">Mother's Pride</span></div>
+                    <div><span class="label">Hobby</span><br><span class="value" id="displayHobby">Cricket, Coding</span></div>
+                    <div><span class="label">Since Class</span><br><span class="value" id="displaySinceClass">7</span></div>
+                </div>
+                <div class="live-section">
+                    <div class="item">📅 Date<div class="value" id="liveDate">--</div></div>
+                    <div class="item">⏰ Time<div class="value" id="liveTime">--:--</div></div>
+                    <div class="item">📆 Year<div class="value" id="liveYear">--</div></div>
+                    <div class="item">🔋 Battery<div class="value green" id="liveBattery">--%</div></div>
+                    <div class="item">📱 Device<div class="value" id="liveDevice">--</div></div>
+                    <div class="item">📍 Location<div class="value" id="liveLocation">--</div></div>
+                </div>
+                <button class="download-btn message-btn"><i class="fas fa-heart"></i> Dedicate a Message</button>
+                <button class="download-btn cert-btn"><i class="fas fa-scroll"></i> Download Certificate</button>
+                <button class="download-btn"><i class="fas fa-id-card"></i> Download Friend Card</button>
+                <button class="search-again-btn">🔄 Search Another Name</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: NICE MESSAGE -->
+        <div class="nice-message" id="niceMessage">
+            <div class="message-card">
+                <div class="message-emoji">🙂</div>
+                <h2>Nice to meet you <span id="msgFriendName">Friend</span></h2>
+                <p id="dedicatedMessageText"></p>
+                <p style="margin-top:8px;">from Raviraj 🙂</p>
+            </div>
+        </div>
+
+        <!-- MESSAGE DEDICATION MODAL -->
+        <div class="message-modal" id="messageModal">
+            <div class="message-modal-content">
+                <h3>💌 Your Message for <span id="modalFriendName">Friend</span></h3>
+                <textarea id="dedicationMessage" placeholder="Apna message likho friend ke liye..."></textarea>
+                <button class="save-btn">💾 Save & Add to Certificate</button>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- CONFETTI CONTAINER -->
+        <div class="confetti-container" id="confettiContainer"></div>
+    </div>
+
+</body>
+</html>
