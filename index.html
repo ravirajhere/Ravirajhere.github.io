@@ -499,14 +499,23 @@
         <span id="current-date-time">Loading...</span>
     </div>
     <!-- Chatbox -->
-<div id="chatbox-container"></div>
+    <div id="chatbox-container"></div>
+
 <script>
     fetch('chatbox.html')
         .then(res => res.text())
         .then(html => {
             document.getElementById('chatbox-container').innerHTML = html;
-        })
-        .catch(err => console.error('Chatbox load failed:', err));
+            
+            // MANUAL EXECUTE - Sirf 4 lines
+            const script = document.querySelector('#chatbox-container script');
+            if (script) {
+                const newScript = document.createElement('script');
+                newScript.textContent = script.textContent;
+                document.body.appendChild(newScript);
+                script.remove();
+            }
+        });
 </script>
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
