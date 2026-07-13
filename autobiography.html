@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Autobiography — Ravi Raj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           AUTOBIOGRAPHY PAGE — STYLING
+           ============================================================ */
+        :root {
+            --bg: #0a0a0f;
+            --bg2: rgba(255, 255, 255, 0.03);
+            --bg3: rgba(255, 255, 255, 0.05);
+            --text: #fff;
+            --text2: rgba(255, 255, 255, 0.7);
+            --text3: rgba(255, 255, 255, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #6c5ce7;
+            --accent2: #a29bfe;
+            --grad: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --radius: 16px;
+            --radius2: 12px;
+            --font: 'Space Grotesk', sans-serif;
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .autobio-wrapper {
+            max-width: 820px;
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px 35px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .autobio-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .autobio-header h1 {
+            font-size: 32px;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .autobio-header p {
+            color: var(--text3);
+            font-size: 14px;
+        }
+
+        /* ---- Language Buttons ---- */
+        .lang-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 18px 0 10px;
+        }
+
+        .lang-btn {
+            padding: 10px 28px;
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--accent2);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: var(--font);
+        }
+
+        .lang-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .translate-btn {
+            background: var(--grad);
+            color: #fff;
+            border: none;
+        }
+
+        .translate-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
+        }
+
+        /* ---- Content Box ---- */
+        .autobio-content {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            padding: 30px 28px;
+            border: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .autobio-content h3 {
+            color: var(--accent2);
+            font-size: 20px;
+            margin-top: 28px;
+            margin-bottom: 10px;
+        }
+
+        .autobio-content h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .autobio-content p {
+            color: var(--text2);
+            line-height: 1.9;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .autobio-content ul {
+            color: var(--text2);
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .autobio-content ul li {
+            margin-bottom: 6px;
+            padding-left: 6px;
+        }
+
+        .autobio-content ul li::before {
+            content: "▸ ";
+            color: var(--accent2);
+        }
+
+        /* ---- Back Link ---- */
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--accent2);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--text);
+            transform: translateX(-4px);
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .autobio-wrapper {
+                padding: 24px 16px;
+            }
+            .autobio-header h1 {
+                font-size: 24px;
+            }
+            .autobio-content {
+                padding: 20px 16px;
+            }
+            .lang-btn {
+                padding: 8px 18px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="autobio-wrapper">
+
+        <!-- HEADER -->
+        <div class="autobio-header">
+            <h1>📖 My Autobiography</h1>
+            <p>From Bandwar to the World — My Life Story</p>
+
+            <div class="lang-controls">
+                <button class="lang-btn active" id="btnEn" onclick="switchLang('en')">🇬🇧 English</button>
+                <button class="lang-btn" id="btnHi" onclick="switchLang('hi')">🗣️ Hinglish</button>
+                <button class="lang-btn translate-btn" onclick="openGoogleTranslate()">🌐 Translate</button>
+            </div>
+        </div>
+
+        <!-- ===== ENGLISH CONTENT ===== -->
+        <div class="autobio-content" id="contentEn">
+            <h3>🌅 Born in Bandwar, Begusarai — 13 March 2008</h3>
+            <p>I was born on 13 March 2008 in Bandwar, Begusarai, Bihar. My father told me that when I was born, my mother said, <em>"Name him Ravi, because he will bring light to this house."</em> Since then, I have been the light of my family.</p>
+
+            <h3>🏏 Childhood — Cricket, School & Papa's Cycle</h3>
+            <p>My childhood was simple and beautiful. Waking up at 6 AM, cycling to school with friends — this was my daily routine. I loved cricket. Once I played for the school team but got out early. That day my father said, <em>"Getting out is not a big deal, keep playing."</em> I still remember that line whenever I fail in coding.</p>
+
+            <h3>📚 School Days — Where Coding Started</h3>
+            <p>My favorite subject in school was Computer Science. I also loved Maths because it had logic — and coding is all about logic. In 8th grade, I saw HTML code for the first time in the computer lab. I thought, <em>"This is magic!"</em> My teacher said this is called coding. I wanted to build my first webpage that very day. In 10th grade, I built my first webpage — just a "Hello World." But when it appeared on screen, I felt pure joy. That day I decided — <em>"This is my career."</em></p>
+
+            <h3>👨‍👩‍👧 Family — My Biggest Strength</h3>
+            <p>My father is my role model. He taught me, <em>"Keep working hard, results will follow."</em> My mother taught me, <em>"Help others, it always comes back."</em> My younger sister calls me "bhaiya" with so much love. For me, family is the people who motivate me. Whenever I feel frustrated with coding, my mother says, <em>"Learn slowly, no one asks how much time you took."</em></p>
+
+            <h3>💻 Coding Journey — From 2023 to Today</h3>
+            <p>I started coding in 2023 with HTML and CSS. In 2024, I learned JavaScript and Python. In 2025, I explored React, Node.js, and backend. In 2024, I built my first portfolio website. It was simple, but it gave me the confidence that I can do something. In 2026, I launched this professional website that you are seeing now.</p>
+
+            <h3>🎯 My Dream — Full-Stack Developer</h3>
+            <p>I want to become a Full-Stack Developer — someone who builds real solutions. My next goals are: strengthen backend & databases, build real-world projects, and one day launch my own startup.</p>
+
+            <h3>❤️ Friends, Love & Life</h3>
+            <p>My friends — Sudhanshu, Rohit, Sitanashu — have never let me feel alone. I believe life is boring without friends. No love life yet, but I believe <em>"everything happens at the right time."</em></p>
+
+            <h3>🌍 My Message For Everyone</h3>
+            <p>If you come from a small village, don't think you can't achieve anything. I started from zero — with just one HTML tag. Today, I am writing my own website that can be seen from anywhere in the world. <strong>No struggle is permanent. Consistency and patience make everything possible.</strong></p>
+
+            <h3>📌 18 Years Journey — Summary</h3>
+            <ul>
+                <li><strong>0–5:</strong> Born in Bandwar, happiness with family</li>
+                <li><strong>6–10:</strong> School, friends, cricket, cycle</li>
+                <li><strong>11–14:</strong> First coding in computer lab</li>
+                <li><strong>15–16:</strong> Learned HTML/CSS, first webpage</li>
+                <li><strong>17:</strong> Learned JavaScript & Python</li>
+                <li><strong>18:</strong> Portfolio launch, professional journey begins</li>
+            </ul>
+        </div>
+
+        <!-- ===== HINGLISH CONTENT ===== -->
+        <div class="autobio-content" id="contentHi" style="display:none;">
+            <h3>🌅 Janam — Bandwar, Begusarai — 13 March 2008</h3>
+            <p>Mera janam 13 March 2008 ko Bandwar, Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
+
+            <h3>🏏 Bachpan — Cricket, School aur Papa Ki Cycle</h3>
+            <p>Mera bachpan bahut simple aur beautiful tha. Subah 6 baje uthna, cycle nikalna, aur doston ke saath school jaana — yeh mera daily routine tha. Mujhe cricket bahut pasand thi. Ek baar maine school team ke liye match khela tha, lekin main jaldi out ho gaya. Us din papa ne mujhe kaha, <em>"Out hona koi badi baat nahi, khelte rehna."</em> Aaj bhi main jab coding mein fail hota hoon, toh papa ki woh baat yaad aati hai.</p>
+
+            <h3>📚 School Days — Jahaan Coding Ki Shuruaat Hui</h3>
+            <p>School mein mera favourite subject Computer Science tha. Mujhe Maths bhi pasand thi, kyunki usme logic tha — aur coding bhi logic hi hai. 8th class mein maine pehli baar computer lab mein HTML code dekha. Mujhe laga — <em>"Yeh toh magic hai!"</em> Teacher ne bataya ki isko coding kehte hain. Main usi din apna pehla webpage banana chahta tha. 10th class mein maine apna pehla webpage banaya — bas ek "Hello World" tha. Lekin jab screen par aaya, toh mujhe bahut khushi mili. Tab se maine soch liya — <em>"Yahi mera career hai."</em></p>
+
+            <h3>👨‍👩‍👧 Family — Meri Sabse Badi Strength</h3>
+            <p>Papa mere role model hain. Unhone mujhe sikhaya — <em>"Mehnat karte raho, result apne aap aayega."</em> Mummy ne mujhe sikhaya — <em>"Dusron ki help karo, uska fal milta hai."</em> Meri chhoti behen mujhe "bhaiya" kehkar bahut pyaar karti hai. Mere liye family woh log hain jo mujhe motivate karte hain. Jab main coding mein frustrate hota hoon, toh mummy kehti hain — <em>"Dheere dheere seekho, koi nahi poochhta ki tumne kitna time liya."</em></p>
+
+            <h3>💻 Coding Journey — 2023 Se Lekar Aaj Tak</h3>
+            <p>Maine 2023 mein coding seekhna shuru kiya — HTML aur CSS. 2024 mein JavaScript aur Python seekha. 2025 mein React, Node.js, aur backend explore kiya. 2024 mein maine apna pehla portfolio website banaya. Woh simple tha, lekin usne mujhe confidence diya ki main kuch kar sakta hoon. 2026 mein maine yeh professional website launch ki — jo aap dekh rahe hain.</p>
+
+            <h3>🎯 Mera Sapna — Full-Stack Developer</h3>
+            <p>Main Full-Stack Developer banna chahta hoon — jo real problems solve kare. Mere next goals hain: backend aur databases strong karna, real-world projects banana, aur ek din apna startup launch karna.</p>
+
+            <h3>❤️ Friends, Love aur Life</h3>
+            <p>Mere dost hain — Sudhanshu, Rohit, Sitanashu. Unhone mujhe kabhi akela feel nahi karne diya. Main maanta hoon ki doston ke bina life boring hai. Abhi tak love life nahi hai, lekin main believe karta hoon — <em>"Sab kuch apne time pe hota hai."</em></p>
+
+            <h3>🌍 Mera Message — Sabhi Ke Liye</h3>
+            <p>Agar aap bhi kisi chhote gaon se hain, toh yeh mat sochiye ki aap kuch nahi kar sakte. Maine bhi zero se shuru kiya tha — ek HTML tag se. Aaj main apni website likh raha hoon, jo duniya ke kisi bhi kone se dekhi ja sakti hai. <strong>Koi bhi struggle permanent nahi hai. Consistency aur patience se sab kuch possible hai.</strong></p>
+
+            <h3>📌 18 Saal Ka Safar — Summary</h3>
+            <ul>
+                <li><strong>0–5:</strong> Bandwar mein janam, family ke saath khushiyan</li>
+                <li><strong>6–10:</strong> School, dost, cricket, cycle</li>
+                <li><strong>11–14:</strong> Computer lab mein pehli baar coding</li>
+                <li><strong>15–16:</strong> HTML/CSS seekha, pehla webpage</li>
+                <li><strong>17:</strong> JavaScript aur Python seekha</li>
+                <li><strong>18:</strong> Portfolio launch, professional journey shuru</li>
+            </ul>
+        </div>
+
+        <!-- BACK LINK -->
+        <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
+
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script src="autobiography.js"></script>
+</body>
+</html>
