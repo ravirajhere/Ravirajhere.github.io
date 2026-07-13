@@ -417,7 +417,9 @@
             </div>
         </section>
         
-        <!-- Contact Section -->
+                <!-- ============================================================
+               CONTACT SECTION
+        ============================================================ -->
         <section id="contact" aria-labelledby="contact-title">
             <div class="section-header">
                 <div class="section-label">GET IN TOUCH</div>
@@ -430,88 +432,102 @@
                     <h3>Ready to start your project?</h3>
                     <p>I'm currently available for freelance work and open to new opportunities. Feel free to reach out if you want to collaborate!</p>
                 </div>
-                <!-- ===== CONTACT ME BUTTON ===== -->
-<div class="footer-btn-wrapper">
-    <button onclick="openChatbox()" class="footer-btn footer-btn-chat">
-        <span class="footer-btn-icon">💬</span>
-        <span class="footer-btn-label"></span>
-        <span class="footer-btn-sub">Contact Me</span>
-    </button>
-</div>
             </div>
         </section>
-        
-    </main>
 
-    <!-- ===== RJ's ACHIEVE BUTTON (Footer ke upar) ===== -->
-    <div class="achieve-footer-btn">
-        <button onclick="openRJModal()" class="btn-achieve">
-            <span>🏆</span> RJ's Achieve
-        </button>
-    </div>
+        <!-- ============================================================
+               CHATBOX CONTAINER (Hidden by default, load on demand)
+        ============================================================ -->
+        <div id="chatbox-container" style="display:none;"></div>
 
-    <!-- ===== RJ ACHIEVE MODAL ===== -->
-    <div class="rj-modal" id="rjModal">
-        <div class="rj-modal-content">
-            <span class="rj-modal-close" onclick="closeRJModal()">✕</span>
-            <h2>🏆 RJ's Achieve</h2>
-            <p>Choose what you want to explore:</p>
-            <div class="rj-modal-grid">
-                
-                <div class="rj-modal-item" onclick="window.location.href='friends.html'">
-                    <span>👥</span>
-                    <h4>Friends</h4>
-                    <p>My circle of trust</p>
+        <!-- ============================================================
+               CONTACT ME BUTTON (Footer ke upar)
+        ============================================================ -->
+        <div class="contact-btn-wrapper">
+            <button onclick="openChatbox()" class="contact-btn">
+                <span class="contact-btn-icon">💬</span>
+                <span class="contact-btn-label">Let's Talk</span>
+                <span class="contact-btn-sub">Contact Me</span>
+            </button>
+        </div>
+
+        <!-- ============================================================
+               RJ's ACHIEVE BUTTON (Footer ke upar)
+        ============================================================ -->
+        <div class="achieve-footer-btn">
+            <button onclick="openRJModal()" class="btn-achieve">
+                <span>🏆</span> RJ's Achieve
+            </button>
+        </div>
+
+        <!-- ============================================================
+               RJ ACHIEVE MODAL
+        ============================================================ -->
+        <div class="rj-modal" id="rjModal">
+            <div class="rj-modal-content">
+                <span class="rj-modal-close" onclick="closeRJModal()">✕</span>
+                <h2>🏆 RJ's Achieve</h2>
+                <p>Choose what you want to explore:</p>
+                <div class="rj-modal-grid">
+                    
+                    <div class="rj-modal-item" onclick="window.location.href='friends.html'">
+                        <span>👥</span>
+                        <h4>Friends</h4>
+                        <p>My circle of trust</p>
+                    </div>
+
+                    <div class="rj-modal-item" onclick="openAchieveModal('experience')">
+                        <span>💼</span>
+                        <h4>Experience</h4>
+                        <p>📌 Updating Soon</p>
+                    </div>
+
+                    <div class="rj-modal-item" onclick="openAchieveModal('memories')">
+                        <span>📸</span>
+                        <h4>Photo Gallery</h4>
+                        <p>🛠️ Updating Soon</p>
+                    </div>
+
+                    <div class="rj-modal-item" onclick="window.location.href='autobiography.html'">
+                        <span>📖</span>
+                        <h4>Autobiography</h4>
+                        <p>My life story</p>
+                    </div>
+
                 </div>
-
-                <div class="rj-modal-item" onclick="openAchieveModal('experience')">
-                    <span>💼</span>
-                    <h4>Experience</h4>
-                    <p>📌 Updating Soon</p>
-                </div>
-
-                <div class="rj-modal-item" onclick="openAchieveModal('memories')">
-                    <span>📸</span>
-                    <h4>Photo Gallery</h4>
-                    <p>🛠️ Updating Soon</p>
-                </div>
-
-                <div class="rj-modal-item" onclick="window.location.href='autobiography.html'">
-    <span>📖</span>
-    <h4>Autobiography</h4>
-    <p>My life story</p>
-                </div>
-
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer role="contentinfo">
-        <p>© 2026 Ravi Raj</p>
-        <p>Patna, India</p>
-        <p>Last Updated: <span id="lastUpdated"></span></p>
-    </footer>
-    
-    <!-- Live Date Time Bar -->
-    <div id="live-time-bar" role="status" aria-live="polite">
-        <span id="current-date-time">Loading...</span>
-    </div>
+        <!-- ============================================================
+               FOOTER
+        ============================================================ -->
+        <footer role="contentinfo">
+            <p>© 2026 Ravi Raj</p>
+            <p>Patna, India</p>
+            <p>Last Updated: <span id="lastUpdated"></span></p>
+        </footer>
+        
+        <!-- ============================================================
+               LIVE DATE TIME BAR
+        ============================================================ -->
+        <div id="live-time-bar" role="status" aria-live="polite">
+            <span id="current-date-time">Loading...</span>
+        </div>
 
-    <script>
-        fetch('chatbox.html')
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById('chatbox-container').innerHTML = html;
-            })
-            .catch(err => console.error('Chatbox load failed:', err));
-    </script>
+        <!-- ============================================================
+               CHATBOX LOAD SCRIPT
+        ============================================================ -->
+        <script>
+            // Chatbox load on demand (pehle se nahi load hoga)
+            // openChatbox() function script.js mein define hai
+        </script>
 
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="script.js"></script>
-    <script src="chatbox.js"></script>
-    <script src="friends.js"></script>
-    
-</body>
+        <!-- JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+        <script src="script.js"></script>
+        <script src="chatbox.js"></script>
+        <script src="friends.js"></script>
+        <script src="autobiography.js"></script>
+        
+    </body>
 </html>
