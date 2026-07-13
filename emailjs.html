@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>✉️ Send a Message — Ravi Raj</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <style>
+        /* ==============================
+           ROOT VARIABLES
+        ============================== */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #13131a;
+            --bg-tertiary: #1a1a2e;
+            --bg-input: rgba(255,255,255,0.04);
+            --border-color: rgba(255,255,255,0.08);
+            --text-primary: #f0f0f5;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6a6a7a;
+            --primary: #00d9ff;
+            --secondary: #00ff88;
+            --accent: #7c3aed;
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), var(--primary));
+            --shadow: 0 8px 40px rgba(0, 217, 255, 0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ==============================
+           RESET
+        ============================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 217, 255, 0.05) 0%, transparent 70%);
+        }
+
+        /* ==============================
+           CONTAINER
+        ============================== */
+        .email-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 40px 36px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        /* ==============================
+           HEADER
+        ============================== */
+        .email-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .email-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .email-header h2 span {
+            font-size: 28px;
+        }
+
+        .email-header .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .email-header .close-btn:hover {
+            color: #ff4444;
+            transform: rotate(90deg);
+        }
+
+        .email-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* ==============================
+           FORM
+        ============================== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-group label .required {
+            color: #ff6b6b;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.08);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* ==============================
+           SUBMIT BUTTON
+        ============================== */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 6px;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.97);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==============================
+           STATUS
+        ============================== */
+        #formStatus {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 500;
+            display: none;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+        }
+
+        #formStatus.success {
+            display: block;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        #formStatus.error {
+            display: block;
+            background: rgba(255, 68, 68, 0.08);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        #formStatus.loading {
+            display: block;
+            background: rgba(0, 217, 255, 0.08);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* ==============================
+           FOOTER
+        ============================== */
+        .email-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .email-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .email-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+        @media (max-width: 500px) {
+            .email-container {
+                padding: 28px 20px;
+                border-radius: 12px;
+            }
+            .email-header h2 {
+                font-size: 20px;
+            }
+            .submit-btn {
+                font-size: 16px;
+                padding: 14px;
+            }
+            .form-group input,
+            .form-group textarea {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- ===== HEADER ===== -->
+        <div class="email-header">
+            <h2>
+                <span>✉️</span> Send a Message
+            </h2>
+            <button class="close-btn" onclick="goBack()" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <p class="email-subtitle">Fill in the details and I'll get back to you soon.</p>
+
+        <!-- ===== FORM ===== -->
+        <form id="contactForm">
+            <div class="form-group">
+                <label>Your Name <span class="required">*</span></label>
+                <input type="text" id="user_name" placeholder="e.g. Ravi Raj" required />
+            </div>
+
+            <div class="form-group">
+                <label>Your Email <span class="required">*</span></label>
+                <input type="email" id="user_email" placeholder="e.g. you@example.com" required />
+            </div>
+
+            <div class="form-group">
+                <label>Your Message <span class="required">*</span></label>
+                <textarea id="user_message" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+        </form>
+
+        <!-- ===== STATUS ===== -->
+        <div id="formStatus"></div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="email-footer">
+            Powered by <a href="#">Ravi Raj</a> &bull; Your message will be sent via EmailJS
+        </div>
+    </div>
+
+    <!-- ============================================================
+       EMAILJS LIBRARY
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+
+    <!-- ============================================================
+       EMAILJS.JS — COMPLETE LOGIC
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================
+            // CONFIGURATION — APNI CREDENTIALS DAALO
+            // ============================================
+            const EMAILJS_CONFIG = {
+                publicKey: 'ZKEUMnGSjznurORAI', // Apna Public Key
+                serviceID: 'service_kc0c1i5', // Apna Service ID
+                templateID: 'template_s53pk7r' // Apna Template ID
+            };
+
+            // ============================================
+            // INITIALIZE EMAILJS
+            // ============================================
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_CONFIG.publicKey);
+                console.log('✅ EmailJS initialized!');
+            } else {
+                console.warn('⚠️ EmailJS library not loaded!');
+            }
+
+            // ============================================
+            // DOM ELEMENTS
+            // ============================================
+            const form = document.getElementById('contactForm');
+            const status = document.getElementById('formStatus');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // ============================================
+            // FORM SUBMIT HANDLER
+            // ============================================
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Get form data
+                    const name = document.getElementById('user_name')?.value.trim() || '';
+                    const email = document.getElementById('user_email')?.value.trim() || '';
+                    const message = document.getElementById('user_message')?.value.trim() || '';
+
+                    // Validate
+                    if (!name || !email || !message) {
+                        showStatus('❌ Please fill all fields!', 'error');
+                        return;
+                    }
+
+                    // Email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showStatus('❌ Please enter a valid email address!', 'error');
+                        return;
+                    }
+
+                    // Show loading
+                    showStatus('⏳ Sending...', 'loading');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                    // EmailJS send
+                    emailjs.sendForm(
+                            EMAILJS_CONFIG.serviceID,
+                            EMAILJS_CONFIG.templateID,
+                            form,
+                            EMAILJS_CONFIG.publicKey
+                        )
+                        .then(function(response) {
+                            console.log('✅ Email sent!', response);
+                            showStatus('✅ Message sent successfully! I\'ll reply soon.', 'success');
+                            form.reset();
+
+                            // Reset button after 3 seconds
+                            setTimeout(() => {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                            }, 3000);
+                        })
+                        .catch(function(error) {
+                            console.error('❌ EmailJS Error:', error);
+                            showStatus('❌ Failed to send. Please try again later.', 'error');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                        });
+                });
+            } else {
+                console.warn('⚠️ Contact form not found!');
+            }
+
+            // ============================================
+            // HELPER: Show Status
+            // ============================================
+            function showStatus(message, type) {
+                status.textContent = message;
+                status.className = type;
+                status.style.display = 'block';
+
+                // Auto-hide after 5 seconds (except loading)
+                if (type !== 'loading') {
+                    setTimeout(() => {
+                        status.style.display = 'none';
+                        status.className = '';
+                    }, 5000);
+                }
+            }
+
+            // ============================================
+            // GO BACK FUNCTION
+            // ============================================
+            window.goBack = function() {
+                if (document.referrer) {
+                    window.location.href = document.referrer;
+                } else {
+                    window.history.back();
+                }
+            };
+
+            // ============================================
+            // KEYBOARD SHORTCUTS
+            // ============================================
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    goBack();
+                }
+            });
+
+            console.log('✅ EmailJS form ready!');
+
+        })();
+    </script>
+
+</body>
+</html>
