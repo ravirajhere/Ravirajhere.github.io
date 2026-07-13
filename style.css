@@ -1527,3 +1527,131 @@ body.light-mode .rj-modal-close:hover {
     section { page-break-inside: avoid !important; break-inside: avoid !important; }
     #contact { display: none !important; }
 }
+/* ============================================
+   CONTACT BUTTON — SIRF CONTACT KE LIYE
+   ============================================ */
+
+/* === Wrapper (Center) === */
+.contact-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px 6px;
+}
+
+/* === Main Button === */
+.contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 60px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* === Icon === */
+.contact-btn-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* === Label === */
+.contact-btn-label {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.contact-btn-sub {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.75;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 1;
+    margin-left: 2px;
+}
+
+/* === Hover Effect === */
+.contact-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.contact-btn:hover::before {
+    opacity: 1;
+}
+
+.contact-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+}
+
+.contact-btn:active {
+    transform: scale(0.95);
+}
+
+/* === COLORS (Blue Gradient) === */
+.contact-btn {
+    background: linear-gradient(135deg, #00d9ff, #0077ff);
+    color: #fff;
+    box-shadow: 0 6px 28px rgba(0, 119, 255, 0.35);
+}
+
+.contact-btn::before {
+    background: linear-gradient(135deg, #0077ff, #0055cc);
+}
+
+.contact-btn:hover {
+    box-shadow: 0 12px 48px rgba(0, 119, 255, 0.5);
+}
+
+.contact-btn .contact-btn-sub {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* === LIGHT MODE === */
+body.light-mode .contact-btn {
+    background: linear-gradient(135deg, #0077ff, #0055cc);
+    color: #fff;
+}
+
+body.light-mode .contact-btn::before {
+    background: linear-gradient(135deg, #0055cc, #003d99);
+}
+
+/* === MOBILE === */
+@media (max-width: 480px) {
+    .contact-btn {
+        padding: 14px 24px;
+        font-size: 16px;
+        max-width: 300px;
+        gap: 10px;
+    }
+    .contact-btn-icon {
+        font-size: 24px;
+    }
+    .contact-btn-label {
+        font-size: 16px;
+    }
+    .contact-btn-sub {
+        font-size: 11px;
+    }
+}
