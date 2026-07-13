@@ -615,3 +615,84 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+/* ============================================
+   RJ ACHIEVE MODAL - FUNCTIONS
+   ============================================ */
+
+function openRJModal() {
+    const modal = document.getElementById('rjModal');
+    if (modal) modal.classList.add('active');
+}
+
+function closeRJModal() {
+    const modal = document.getElementById('rjModal');
+    if (modal) modal.classList.remove('active');
+}
+
+function openAchieveModal(type) {
+    const modal = document.getElementById('rjModal');
+    const body = document.getElementById('achieveModalBody');
+
+    // Agar achieveModalBody nahi hai toh banao
+    if (!body) {
+        console.warn('⚠️ achieveModalBody not found!');
+        return;
+    }
+
+    const content = {
+        'experience': {
+            title: '💼 My Experience',
+            sub: 'Coming soon — I\'m currently updating this section.',
+            details: [
+                '📌 Available Soon',
+                '🛠️ I\'m working on adding my professional journey here.',
+                '⏳ Please check back later!'
+            ]
+        },
+        'memories': {
+            title: '📸 Photo Gallery',
+            sub: 'Coming soon — I\'m collecting my favorite moments.',
+            details: [
+                '📌 Available Soon',
+                '🛠️ This section is under development.',
+                '⏳ Stay tuned for updates!'
+            ]
+        },
+        'autobiography': {
+            title: '📖 Autobiography',
+            sub: 'Coming soon — my life story in words.',
+            details: [
+                '📝 Coming Soon',
+                '🛠️ I\'m currently writing my autobiography.',
+                '⏳ Please check back later for updates!'
+            ]
+        }
+    };
+
+    const data = content[type];
+    if (!data) {
+        body.innerHTML = `<p style="color: var(--gray);">❌ Section not found.</p>`;
+        return;
+    }
+
+    body.innerHTML = `
+        <h2>${data.title}</h2>
+        <p class="sub">${data.sub}</p>
+        ${data.details.map(item => `<div class="detail-item">${item}</div>`).join('')}
+    `;
+}
+
+// Close modal on outside click
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('rjModal');
+    if (modal && e.target === modal) {
+        closeRJModal();
+    }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeRJModal();
+    }
+});
