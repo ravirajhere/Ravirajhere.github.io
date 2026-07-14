@@ -1,6 +1,6 @@
 // ============================================================
 // EBOOK.JS — PROFESSIONAL BOOK GENERATOR (PREMIUM QUALITY)
-// DARK TEXT · PAGE NUMBERS · NO FADED TEXT
+// UNIFORM DARK TEXT · PAGE NUMBERS · 100% JPEG QUALITY
 // ============================================================
 
 // ============================================================
@@ -131,30 +131,10 @@ function waitForRender() {
 }
 
 // ============================================================
-// 6. GENERATE SECTION IMAGE
-// ============================================================
-function generateSectionImage(element) {
-    return new Promise((resolve) => {
-        html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            width: 595,
-            height: 842
-        }).then(canvas => {
-            resolve(canvas);
-        }).catch(() => {
-            resolve(null);
-        });
-    });
-}
-
-// ============================================================
-// 7. APPLY PROFESSIONAL BOOK STYLES (PREMIUM QUALITY)
+// 6. APPLY PROFESSIONAL BOOK STYLES (UNIFORM DARK TEXT)
 // ============================================================
 function applyProfessionalBookStyles(clone) {
-    // ---- PARAGRAPHS - DARK & CLEAR ----
+    // ---- ALL PARAGRAPHS - DARK BLACK ----
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -305,21 +285,21 @@ function applyProfessionalBookStyles(clone) {
 }
 
 // ============================================================
-// 8. DOWNLOAD EBOOK — ENGLISH
+// 7. DOWNLOAD EBOOK — ENGLISH
 // ============================================================
 async function downloadEnglishEbook() {
     await downloadEbook('en', 'English');
 }
 
 // ============================================================
-// 9. DOWNLOAD EBOOK — HINGLISH
+// 8. DOWNLOAD EBOOK — HINGLISH
 // ============================================================
 async function downloadHinglishEbook() {
     await downloadEbook('hi', 'Hinglish');
 }
 
 // ============================================================
-// 10. MAIN EBOOK GENERATOR (PREMIUM QUALITY)
+// 9. MAIN EBOOK GENERATOR (PREMIUM QUALITY)
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -385,7 +365,7 @@ async function downloadEbook(lang, langLabel) {
         el.textContent = '📸 Photo';
     });
     
-    // ---- APPLY PREMIUM STYLES ----
+    // ---- APPLY UNIFORM DARK STYLES ----
     applyProfessionalBookStyles(clone);
     
     // ---- CREATE SECTIONS ----
@@ -529,7 +509,7 @@ async function downloadEbook(lang, langLabel) {
     addPageNumber(overview);
     sections.push(overview);
     
-    // 6. Chapters
+    // 6. Chapters (UNIFORM DARK TEXT)
     const chapterElements = clone.querySelectorAll('.chapter');
     chapterElements.forEach((ch) => {
         const section = document.createElement('div');
@@ -614,7 +594,8 @@ async function downloadEbook(lang, langLabel) {
             }
             isFirstPage = false;
             
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            // ---- 100% JPEG QUALITY ----
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             pdf.addImage(imgData, 'JPEG', margin, margin, contentWidth, contentHeight);
         }
     }
@@ -624,7 +605,7 @@ async function downloadEbook(lang, langLabel) {
 }
 
 // ============================================================
-// 11. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 10. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.downloadEnglishEbook = downloadEnglishEbook;
 window.downloadHinglishEbook = downloadHinglishEbook;
