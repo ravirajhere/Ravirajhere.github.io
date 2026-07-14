@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Autobiography — Ravi Raj</title>
-   <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         /* ============================================================
@@ -258,6 +257,56 @@
             color: var(--accent2);
         }
 
+        /* ---- PHOTO PLACEHOLDER ---- */
+        .chapter-photo-placeholder {
+            margin: 20px 0 25px 0;
+            text-align: center;
+        }
+
+        .photo-slot {
+            width: 100%;
+            max-width: 500px;
+            height: 220px;
+            margin: 0 auto;
+            background: var(--bg3);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-slot:hover {
+            border-color: var(--gold);
+            background: rgba(218, 165, 32, 0.05);
+        }
+
+        .upload-hint {
+            color: var(--text3);
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: var(--bg2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .photo-slot.has-image {
+            border: 2px solid var(--gold);
+            background: transparent;
+            padding: 0;
+        }
+
+        .photo-slot.has-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         /* ---- QUOTE BOXES ---- */
         .quote-box {
             background: rgba(218, 165, 32, 0.06);
@@ -352,25 +401,53 @@
             margin-bottom: 12px;
         }
 
-        /* ---- NEXT BUTTON ---- */
-        .next-btn {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 12px 32px;
+        /* ---- NAVIGATION BUTTONS ---- */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 12px 28px;
             background: var(--grad);
             color: #0a0a0f;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             transition: 0.3s;
             font-family: var(--font);
             box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            min-width: 130px;
         }
-        .next-btn:hover {
+
+        .nav-btn:hover:not(:disabled) {
             transform: scale(1.04);
             box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .nav-btn.prev-btn {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text2);
+            box-shadow: none;
+            border: 1px solid var(--border);
+        }
+
+        .nav-btn.prev-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+            border-color: var(--accent2);
         }
 
         /* ---- BACK LINK ---- */
@@ -399,6 +476,7 @@
             .family-grid { grid-template-columns: 1fr; }
             .chapter { padding: 20px 16px; }
             .profile-photo { width: 100px; height: 100px; }
+            .photo-slot { height: 160px; }
         }
 
         @media (max-width: 480px) {
@@ -408,7 +486,19 @@
             .stat-number { font-size: 22px; }
             .lang-btn { padding: 6px 16px; font-size: 12px; }
             .quote-box { font-size: 15px; padding: 14px 16px; }
-            .next-btn { padding: 10px 24px; font-size: 14px; }
+            .nav-btn { 
+                padding: 10px 20px; 
+                font-size: 14px; 
+                min-width: 100px;
+            }
+            .nav-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .nav-btn {
+                width: 100%;
+                min-width: unset;
+            }
         }
     </style>
 </head>
@@ -421,8 +511,8 @@
             <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" class="profile-photo" />
             <h1>📖 My Autobiography</h1>
             <div class="intro-line">"A Boy Who Never Thought"</div>
-            <div class="sub-line">From Begusarai to the World</div>
-            <div class="bio-line">13 March 2008 · Patna, India</div>
+            <div class="sub-line">Safar Se Safar Tak</div>
+            <div class="bio-line">March 2008 · Patna, India</div>
         </div>
 
         <!-- ===== STATS ===== -->
@@ -445,88 +535,238 @@
         ============================================================= -->
         <div id="chaptersEn">
 
+            <!-- CHAPTER 1 -->
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008–2012)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch1-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="childhood.jpg" alt="Ravi as a child"> -->
+                    </div>
+                </div>
+                
                 <p>I was born on 13 March 2008 in Begusarai, Bihar. My father told me that when I was born, my mother said, <em>"Name him Ravi, because he will bring light to this house."</em> Since then, I have been the light of my family.</p>
                 <p>My childhood memories are as many as any child from a small village could have. Cycling in the courtyard, sitting on the roof in the evening, and eating food cooked by my mother — all of these are still alive in my mind.</p>
                 <p>One day, I stole my sister's cycle and joined a race — and fell straight into a gutter! My father picked me up and said, <em>"Beta, pehle balance seekh, phir speed."</em> Today, I still love cycling — but I avoid gutters.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 2 -->
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🏫</span> Chapter 2: School Days Begin (2013–2019)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="school.jpg" alt="School days"> -->
+                    </div>
+                </div>
+                
                 <p>My first school was <strong>Gautam Buddha Global School</strong>. But the day I still remember is 2019 — when I took admission in Class 6 at <strong>Mother's Pride International School</strong>. The first day was nerve-wracking. New school, new faces, new class. But slowly, everything became normal.</p>
                 <p><strong>First friend:</strong> Ayush Singh — the one who made me feel like a new person.</p>
                 <p><strong>Unforgettable teacher:</strong> Binod Sir — he taught Hindi and gave me a new way to see life.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 3 -->
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">📚</span> Chapter 3: Middle School & Discoveries (2016–2019)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="middle-school.jpg" alt="Middle school"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Favorite subjects:</strong> Science (with my mind) and Hindi Literature (with my heart).</p>
                 <p><strong>Favorite teacher:</strong> Binod Sir — he taught me that Hindi is not just a language, it's an emotion.</p>
                 <p><strong>Achievement:</strong> Passed 12th grade — a result of years of hard work.</p>
                 <p><strong>Failures:</strong> Many — but each one taught me something.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 4 -->
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">💻</span> Chapter 4: Coding Discovery (2020–2022)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="coding-discovery.jpg" alt="Coding discovery"> -->
+                    </div>
+                </div>
+                
                 <p><strong>First phone at home:</strong> 2019. <strong>My personal phone and laptop:</strong> 2024.</p>
                 <p><strong>First coding experience:</strong> I wrote my first HTML tag — "Hello World" — and felt like I had done magic.</p>
                 <p><strong>New hobby:</strong> Reading novels and literature.</p>
                 <p><strong>Important friends:</strong> Sudhanshu, Rohit, Sitanashu — they never let me feel alone.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 5 -->
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🚀</span> Chapter 5: Coding Journey Begins (2023–2024)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="coding-journey.jpg" alt="Coding journey"> -->
+                    </div>
+                </div>
+                
                 <p><strong>First coding day:</strong> I wrote "Hello World" and that day I knew — this is what I want to do.</p>
                 <p><strong>First project:</strong> My portfolio — simple, but my own.</p>
                 <p><strong>Struggle:</strong> CSS alignment, responsiveness — but every problem had a solution.</p>
                 <p><strong>First success:</strong> When something I built appeared on the screen — that joy was different.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 6 -->
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">🎯</span> Chapter 6: The Present (2025–2026)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="present.jpg" alt="Present"> -->
+                    </div>
+                </div>
+                
                 <p><strong>JavaScript struggle:</strong> Still learning — functions, arrays, objects — it's an ongoing journey.</p>
                 <p><strong>Portfolio launch:</strong> Glitches at first, but now it's my new home on the internet.</p>
                 <p><strong>Current feeling:</strong> Confident and curious — I know there's so much more to learn.</p>
                 <p><strong>Future plan:</strong> Master backend & databases, build real-world projects, and one day launch my own startup.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 7 -->
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 7: Family — My Anchor</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="family.jpg" alt="Family"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Parents' teaching:</strong> Honesty, hard work, and helping others.</p>
                 <p><strong>Siblings:</strong> 2 elder sisters and 2 younger brothers — each one has taught me patience and love.</p>
                 <p><strong>Family memory:</strong> Diwali nights when the whole family is together — that peace is unmatched.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 8 -->
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">💬</span> Chapter 8: Friends & Relationships</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="friends.jpg" alt="Friends"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Closest friends:</strong> Ayush, Sudhanshu, Rohit, Sitanashu.</p>
                 <p><strong>Memorable moment:</strong> The first time I showed my project to my friends — their appreciation gave me confidence.</p>
                 <p><strong>What friends changed:</strong> They pulled me out of loneliness and taught me that success feels better when shared.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 9 -->
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">💪</span> Chapter 9: Biggest Struggle</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="struggle.jpg" alt="Struggle"> -->
+                    </div>
+                </div>
+                
                 <p>Not knowing what to become, how to become — it was confusing. But I took it step by step, one chapter at a time.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 10 -->
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">😊</span> Chapter 10: Biggest Happiness</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="happiness.jpg" alt="Happiness"> -->
+                    </div>
+                </div>
+                
                 <p>When someone saw my website for the first time and said — <em>"Bhai, yeh tune banaya?"</em> That moment was pure joy.</p>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 11 -->
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">🌍</span> Chapter 11: Message & Motto</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch11-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="message.jpg" alt="Message"> -->
+                    </div>
+                </div>
+                
                 <div class="quote-box gold">
                     "Humi hum hain to kya hum hain! Tumhi tum ho to kya tum ho!!"
                     <span class="author">— Ravi Raj</span>
@@ -535,11 +775,25 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
-                <button class="next-btn" onclick="nextChapter('en')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 12 -->
             <div class="chapter" data-chapter="12">
                 <h3><span class="emoji-big">📖</span> Chapter 12: The Friend Memory — 12th Ke Last Pages</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch12-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="farewell.jpg" alt="Farewell"> -->
+                    </div>
+                </div>
+                
                 <div class="friend-memory-pdf">
                     <span class="pdf-label">📄 PDF — Friend Memory</span>
                     <p><strong>12th ke aakhri din...</strong></p>
@@ -551,6 +805,11 @@
                     No regrets in life — that's my biggest achievement.
                 </p>
                 <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
+                </div>
             </div>
 
         </div>
@@ -560,87 +819,237 @@
         ============================================================= -->
         <div id="chaptersHi" style="display:none;">
 
+            <!-- CHAPTER 1 -->
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008–2012)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch1-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="childhood.jpg" alt="Ravi as a child"> -->
+                    </div>
+                </div>
+                
                 <p>Mera janam 13 March 2008 ko Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
                 <p>Ek baar maine apni sister ki cycle chura kar race lagayi — aur gutter mein gir gaya! Papa ne mujhe uthaya aur bola, <em>"Beta, pehle balance seekh, phir speed."</em> Aaj bhi main cycle chalata hoon, but gutter avoid karta hoon!</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 2 -->
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🏫</span> Chapter 2: School Days (2013–2019)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="school.jpg" alt="School days"> -->
+                    </div>
+                </div>
+                
                 <p>Mera pehla school <strong>Gautam Buddha Global School</strong> tha. Par 2019 mein <strong>Mother's Pride International School</strong> mein Class 6 mein admission hua — pehla din bahut nervous tha.</p>
                 <p><strong>Pehle dost:</strong> Ayush Singh.</p>
                 <p><strong>Yaadgar teacher:</strong> Binod Sir — unhone Hindi padhaya aur zindagi dekhne ka nazariya diya.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 3 -->
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">📚</span> Chapter 3: Middle School (2016–2019)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="middle-school.jpg" alt="Middle school"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Favorite subjects:</strong> Science (dimag se) aur Hindi Literature (dil se).</p>
                 <p><strong>Favorite teacher:</strong> Binod Sir — unhone sikhaya ki Hindi sirf bhasha nahi, bhaavna hai.</p>
                 <p><strong>Achievement:</strong> 12th pass — saalon ki mehnat ka result.</p>
                 <p><strong>Failures:</strong> Bahut saare — par har failure ne kuch na kuch sikhaya.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 4 -->
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">💻</span> Chapter 4: Coding Discovery (2020–2022)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="coding-discovery.jpg" alt="Coding discovery"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Ghar mein pehla phone:</strong> 2019. <strong>Mera personal phone aur laptop:</strong> 2024.</p>
                 <p><strong>Pehli coding:</strong> HTML ka "Hello World" — mujhe laga jaise maine jaadu kar diya!</p>
                 <p><strong>Naya hobby:</strong> Novel aur literature padhna.</p>
                 <p><strong>Important dost:</strong> Sudhanshu, Rohit, Sitanashu — unhone kabhi akela feel nahi hone diya.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 5 -->
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🚀</span> Chapter 5: Coding Journey (2023–2024)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="coding-journey.jpg" alt="Coding journey"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Pehla coding din:</strong> "Hello World" likha — aur usi din pata chal gaya ki yeh mera cheez hai.</p>
                 <p><strong>Pehla project:</strong> Portfolio — simple, par apna.</p>
                 <p><strong>Struggle:</strong> CSS align, responsive — par har problem ka solution mila.</p>
                 <p><strong>Pehli success:</strong> Jab screen par kuch dikha — woh alag khushi thi.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 6 -->
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">🎯</span> Chapter 6: Aaj Ka Safar (2025–2026)</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="present.jpg" alt="Present"> -->
+                    </div>
+                </div>
+                
                 <p><strong>JavaScript struggle:</strong> Abhi bhi seekh raha hoon — functions, arrays, objects — yeh safar jari hai.</p>
                 <p><strong>Portfolio launch:</strong> Glitches the, par ab yeh mera naya ghar hai.</p>
                 <p><strong>Abhi ka feeling:</strong> Confident aur curious — bahut kuch seekhna baaki hai.</p>
                 <p><strong>Aage ka plan:</strong> Backend aur databases strong karna, real-world projects banana, aur ek din apna startup launch karna.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 7 -->
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 7: Family — Meri Anchor</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="family.jpg" alt="Family"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Parents ne sikhaya:</strong> Honesty, mehnat, aur dusron ki help.</p>
                 <p><strong>Siblings:</strong> 2 badi behenein aur 2 chhote bhai — sab ne sabar aur pyaar sikhaya.</p>
                 <p><strong>Family memory:</strong> Diwali ki raat jab poori family saath hoti hai — woh peace alag hai.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 8 -->
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">💬</span> Chapter 8: Friends</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="friends.jpg" alt="Friends"> -->
+                    </div>
+                </div>
+                
                 <p><strong>Sabse close dost:</strong> Ayush, Sudhanshu, Rohit, Sitanashu.</p>
                 <p><strong>Yaadgar moment:</strong> Pehla project doston ko dikhaya — unki taarif ne confidence diya.</p>
                 <p><strong>Friends ne kya change kiya:</strong> Tanhaai se nikaala, aur sikhaya ki success share karne par aur achhi lagti hai.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 9 -->
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">💪</span> Chapter 9: Biggest Struggle</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="struggle.jpg" alt="Struggle"> -->
+                    </div>
+                </div>
+                
                 <p>Kya banna hai, kaise banna hai — samajh nahi aata tha. Par ek step, ek chapter ke saath aage badhta raha.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 10 -->
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">😊</span> Chapter 10: Biggest Happiness</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="happiness.jpg" alt="Happiness"> -->
+                    </div>
+                </div>
+                
                 <p>Jab kisi ne pehli baar mera website dekha aur bola — <em>"Bhai, yeh tune banaya?"</em> Woh moment priceless tha.</p>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 11 -->
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">🌍</span> Chapter 11: Message</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch11-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="message.jpg" alt="Message"> -->
+                    </div>
+                </div>
+                
                 <div class="quote-box gold">
                     "Humi hum hain to kya hum hain! Tumhi tum ho to kya tum ho!!"
                     <span class="author">— Ravi Raj</span>
@@ -649,11 +1058,25 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
-                <button class="next-btn" onclick="nextChapter('hi')">→ Next Chapter</button>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
             </div>
 
+            <!-- CHAPTER 12 -->
             <div class="chapter" data-chapter="12">
                 <h3><span class="emoji-big">📖</span> Chapter 12: Friend Memory — 12th Ke Last Pages</h3>
+                
+                <!-- 📸 PHOTO PLACEHOLDER -->
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch12-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <!-- <img src="farewell.jpg" alt="Farewell"> -->
+                    </div>
+                </div>
+                
                 <div class="friend-memory-pdf">
                     <span class="pdf-label">📄 PDF — Friend Memory</span>
                     <p><strong>12th ke aakhri din...</strong></p>
@@ -665,6 +1088,11 @@
                     Life mein koi regret nahi — yeh meri sabse badi achievement hai.
                 </p>
                 <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
+                </div>
             </div>
 
         </div>
@@ -672,7 +1100,7 @@
     </div>
 
     <!-- =============================================================
-    JAVASCRIPT (autobiography.js)
+    JAVASCRIPT — External File
     ============================================================= -->
     <script src="autobiography.js"></script>
 
