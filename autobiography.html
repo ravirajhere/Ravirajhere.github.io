@@ -812,7 +812,7 @@
             color: #b8860b;
         }
 
-        /* ---- DOWNLOAD MODAL ---- */
+        /* ---- DOWNLOAD MODAL (UPDATED) ---- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1095,19 +1095,29 @@
     <!-- ===== TOAST NOTIFICATION ===== -->
     <div class="toast" id="toast"></div>
 
-    <!-- ===== DOWNLOAD MODAL ===== -->
+    <!-- ===== DOWNLOAD MODAL (UPDATED — 2 OPTIONS) ===== -->
     <div class="modal-overlay" id="downloadModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
-            <h2>📥 Download</h2>
-            <p class="modal-desc">Download your autobiography as a complete ebook.</p>
+            <h2>📥 Download Ebook</h2>
+            <p class="modal-desc">Choose your preferred language</p>
             
+            <!-- Option 1: English -->
             <div class="modal-option">
                 <div class="opt-info">
-                    <span class="opt-title">📄 Full Book PDF (Ebook)</span>
-                    <span class="opt-desc">Cover + TOC + About + All 12 Chapters + Last Page</span>
+                    <span class="opt-title">🇬🇧 English Ebook</span>
+                    <span class="opt-desc">All 12 chapters in English</span>
                 </div>
-                <button class="modal-btn" onclick="downloadFullPDF()">Download</button>
+                <button class="modal-btn" onclick="downloadEnglishEbook()">Download</button>
+            </div>
+            
+            <!-- Option 2: Hinglish -->
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🗣️ Hinglish Ebook</span>
+                    <span class="opt-desc">All 12 chapters in Hinglish</span>
+                </div>
+                <button class="modal-btn" onclick="downloadHinglishEbook()">Download</button>
             </div>
         </div>
     </div>
@@ -1140,7 +1150,7 @@
 
         <!-- ===== DOWNLOAD BUTTON ===== -->
         <div class="download-actions">
-            <button class="download-btn primary" onclick="openModal()">📥 Download Full Ebook</button>
+            <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
         </div>
 
         <!-- =============================================================
@@ -1152,11 +1162,9 @@
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008–2012)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch1-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="childhood.jpg" alt="Ravi as a child"> -->
                     </div>
                 </div>
                 
@@ -1177,11 +1185,9 @@
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🏫</span> Chapter 2: School Days Begin (2013–2019)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch2-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="school.jpg" alt="School days"> -->
                     </div>
                 </div>
                 
@@ -1202,11 +1208,9 @@
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">📚</span> Chapter 3: Middle School & Discoveries (2016–2019)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch3-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="middle-school.jpg" alt="Middle school"> -->
                     </div>
                 </div>
                 
@@ -1228,11 +1232,9 @@
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">💻</span> Chapter 4: Coding Discovery (2020–2022)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="coding-discovery.jpg" alt="Coding discovery"> -->
                     </div>
                 </div>
                 
@@ -1254,11 +1256,9 @@
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🚀</span> Chapter 5: Coding Journey Begins (2023–2024)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="coding-journey.jpg" alt="Coding journey"> -->
                     </div>
                 </div>
                 
@@ -1280,11 +1280,9 @@
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">🎯</span> Chapter 6: The Present (2025–2026)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="present.jpg" alt="Present"> -->
                     </div>
                 </div>
                 
@@ -1306,11 +1304,9 @@
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 7: Family — My Anchor</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="family.jpg" alt="Family"> -->
                     </div>
                 </div>
                 
@@ -1331,11 +1327,9 @@
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">💬</span> Chapter 8: Friends & Relationships</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="friends.jpg" alt="Friends"> -->
                     </div>
                 </div>
                 
@@ -1356,11 +1350,9 @@
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">💪</span> Chapter 9: Biggest Struggle</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="struggle.jpg" alt="Struggle"> -->
                     </div>
                 </div>
                 
@@ -1379,11 +1371,9 @@
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">😊</span> Chapter 10: Biggest Happiness</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="happiness.jpg" alt="Happiness"> -->
                     </div>
                 </div>
                 
@@ -1402,11 +1392,9 @@
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">🌍</span> Chapter 11: Message & Motto</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="message.jpg" alt="Message"> -->
                     </div>
                 </div>
                 
@@ -1432,11 +1420,9 @@
             <div class="chapter" data-chapter="12">
                 <h3><span class="emoji-big">📖</span> Chapter 12: The Friend Memory — 12th Ke Last Pages</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch12-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="farewell.jpg" alt="Farewell"> -->
                     </div>
                 </div>
                 
@@ -1472,11 +1458,9 @@
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008–2012)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch1-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="childhood.jpg" alt="Ravi as a child"> -->
                     </div>
                 </div>
                 
@@ -1496,11 +1480,9 @@
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🏫</span> Chapter 2: School Days (2013–2019)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch2-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="school.jpg" alt="School days"> -->
                     </div>
                 </div>
                 
@@ -1521,11 +1503,9 @@
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">📚</span> Chapter 3: Middle School (2016–2019)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch3-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="middle-school.jpg" alt="Middle school"> -->
                     </div>
                 </div>
                 
@@ -1547,11 +1527,9 @@
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">💻</span> Chapter 4: Coding Discovery (2020–2022)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="coding-discovery.jpg" alt="Coding discovery"> -->
                     </div>
                 </div>
                 
@@ -1573,11 +1551,9 @@
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🚀</span> Chapter 5: Coding Journey (2023–2024)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="coding-journey.jpg" alt="Coding journey"> -->
                     </div>
                 </div>
                 
@@ -1599,11 +1575,9 @@
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">🎯</span> Chapter 6: Aaj Ka Safar (2025–2026)</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="present.jpg" alt="Present"> -->
                     </div>
                 </div>
                 
@@ -1625,11 +1599,9 @@
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 7: Family — Meri Anchor</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="family.jpg" alt="Family"> -->
                     </div>
                 </div>
                 
@@ -1650,11 +1622,9 @@
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">💬</span> Chapter 8: Friends</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="friends.jpg" alt="Friends"> -->
                     </div>
                 </div>
                 
@@ -1675,11 +1645,9 @@
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">💪</span> Chapter 9: Biggest Struggle</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="struggle.jpg" alt="Struggle"> -->
                     </div>
                 </div>
                 
@@ -1698,11 +1666,9 @@
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">😊</span> Chapter 10: Biggest Happiness</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="happiness.jpg" alt="Happiness"> -->
                     </div>
                 </div>
                 
@@ -1721,11 +1687,9 @@
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">🌍</span> Chapter 11: Message</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="message.jpg" alt="Message"> -->
                     </div>
                 </div>
                 
@@ -1751,11 +1715,9 @@
             <div class="chapter" data-chapter="12">
                 <h3><span class="emoji-big">📖</span> Chapter 12: Friend Memory — 12th Ke Last Pages</h3>
                 
-                <!-- 📸 PHOTO PLACEHOLDER -->
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch12-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
-                        <!-- <img src="farewell.jpg" alt="Farewell"> -->
                     </div>
                 </div>
                 
