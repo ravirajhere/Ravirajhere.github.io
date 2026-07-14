@@ -400,48 +400,62 @@
     }
 
     /* ============================================
-       INITIALIZATION
-       ============================================ */
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Portfolio v2.0 - Ravi Raj');
-        console.log('📅 Loaded:', new Date().toLocaleString());
+   INITIALIZATION
+   ============================================ */
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Portfolio v2.0 - Ravi Raj');
+    console.log('📅 Loaded:', new Date().toLocaleString());
 
-        const matrix = new MatrixEffect(
-            DOM.matrixCanvas,
-            CONFIG.matrix.chars,
-            CONFIG.matrix.fontSize
-        );
+    // ============================================
+    // 🆕 AUTO-DETECT SYSTEM PREFERENCE (YAHAN DAALO)
+    // ============================================
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    if (!localStorage.getItem('theme')) {
+        if (prefersDark) {
+            document.body.classList.remove('light-mode');
+            if (themeToggle) themeToggle.textContent = '🌙';
+        } else {
+            document.body.classList.add('light-mode');
+            if (themeToggle) themeToggle.textContent = '☀️';
+        }
+    }
 
-        const typewriter = new TypewriterEffect(
-            document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-            CONFIG.typewriter.speed
-        );
+    const matrix = new MatrixEffect(
+        DOM.matrixCanvas,
+        CONFIG.matrix.chars,
+        CONFIG.matrix.fontSize
+    );
 
-        const skillBars = new SkillBars(DOM.skillBars);
-        const themeManager = new ThemeManager(DOM.themeToggle, DOM.body);
-        const smoothScroll = new SmoothScroll(DOM.navLinks);
-        const liveDateTime = new LiveDateTime(DOM.timeDisplay);
+    const typewriter = new TypewriterEffect(
+        document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
+        CONFIG.typewriter.speed
+    );
 
-        setLastUpdated(DOM.lastUpdated);
-        setupPhotoAnimation(DOM.heroPhoto);
+    const skillBars = new SkillBars(DOM.skillBars);
+    const themeManager = new ThemeManager(DOM.themeToggle, DOM.body);
+    const smoothScroll = new SmoothScroll(DOM.navLinks);
+    const liveDateTime = new LiveDateTime(DOM.timeDisplay);
 
-        window.addEventListener('beforeunload', function() {
-            matrix.destroy();
-            typewriter.destroy();
-            skillBars.destroy();
-            themeManager.destroy();
-            smoothScroll.destroy();
-            liveDateTime.destroy();
-        });
+    setLastUpdated(DOM.lastUpdated);
+    setupPhotoAnimation(DOM.heroPhoto);
 
-        window.addEventListener('error', function(e) {
-            console.error('Global error caught:', e.message);
-        });
-
-        console.log('✅ All systems ready!');
+    window.addEventListener('beforeunload', function() {
+        matrix.destroy();
+        typewriter.destroy();
+        skillBars.destroy();
+        themeManager.destroy();
+        smoothScroll.destroy();
+        liveDateTime.destroy();
     });
 
-})();
+    window.addEventListener('error', function(e) {
+        console.error('Global error caught:', e.message);
+    });
+
+    console.log('✅ All systems ready!');
+});
 
 /* ============================================
    SOCIAL TOGGLE - CLICK KARNE PAR ICONS
