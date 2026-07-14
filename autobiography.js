@@ -1,7 +1,7 @@
 // ============================================================
 // AUTOBOIOGRAPHY.JS — COMPLETE EBOOK GENERATOR
 // WITH LANGUAGE SELECTION · COVER IMAGE · SIGNATURE · ALL 12 CHAPTERS
-// FIXED: TEXT COLOR FOR INSIDE PAGES (BLACK ON WHITE)
+// FIXED: Each chapter starts on a new page (page-break-before: always)
 // ============================================================
 
 // ---- GLOBAL VARIABLES ----
@@ -639,6 +639,9 @@ async function downloadEbook(lang, langLabel) {
             ch.style.borderRadius = '12px';
             ch.style.padding = '30px 28px';
             ch.style.marginTop = '10px';
+            // ---- FIX: Each chapter starts on a new page ----
+            ch.style.pageBreakBefore = 'always';
+            ch.style.pageBreakAfter = 'avoid';
         });
     }
     
