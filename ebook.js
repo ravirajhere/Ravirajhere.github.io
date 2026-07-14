@@ -1,6 +1,7 @@
 // ============================================================
 // EBOOK.JS — PROFESSIONAL BOOK GENERATOR (30+ YEAR PRO TOUCH)
 // NO DOM ATTACH · NO BLANK PAGES · BOOK STANDARD
+// FIXED: LANGUAGE ISOLATION (ENGLISH PDF = ONLY ENGLISH CHAPTERS)
 // ============================================================
 
 // ============================================================
@@ -239,18 +240,33 @@ async function downloadEbook(lang, langLabel) {
         clone.querySelectorAll(selector).forEach(el => el.remove());
     });
     
-    // ---- LANGUAGE ISOLATION ----
+    // ---- LANGUAGE ISOLATION (CRITICAL FIX) ----
+    // Remove the other language container completely from clone
     const cloneEnContainer = clone.querySelector('#chaptersEn');
     const cloneHiContainer = clone.querySelector('#chaptersHi');
+    
     if (lang === 'en') {
-        if (cloneEnContainer) cloneEnContainer.style.display = 'block';
-        if (cloneHiContainer) cloneHiContainer.style.display = 'none';
+        // Remove Hinglish container completely
+        if (cloneHiContainer) {
+            cloneHiContainer.remove();
+        }
+        // Make English container visible
+        if (cloneEnContainer) {
+            cloneEnContainer.style.display = 'block';
+        }
     } else {
-        if (cloneEnContainer) cloneEnContainer.style.display = 'none';
-        if (cloneHiContainer) cloneHiContainer.style.display = 'block';
+        // Remove English container completely
+        if (cloneEnContainer) {
+            cloneEnContainer.remove();
+        }
+        // Make Hinglish container visible
+        if (cloneHiContainer) {
+            cloneHiContainer.style.display = 'block';
+        }
     }
     
     // ---- FORMAT CHAPTERS ----
+    // Get the container ID based on selected language
     const cloneContainerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
     const cloneContainer = clone.querySelector('#' + cloneContainerId);
     if (cloneContainer) {
