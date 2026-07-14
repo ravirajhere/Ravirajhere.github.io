@@ -1,6 +1,6 @@
 // ============================================================
 // EBOOK.JS — PROFESSIONAL EBOOK GENERATOR
-// 30+ YEAR PRO TOUCH · EVERY SECTION NEW PAGE
+// 30+ YEAR PRO TOUCH · CLEAN PAGE BREAKS · NO BLANK PAGES
 // COVER · TITLE · TOC · ABOUT · OVERVIEW · 12 CHAPTERS · EMOTIONAL MESSAGE
 // ============================================================
 
@@ -126,26 +126,7 @@ function waitForRender() {
 }
 
 // ============================================================
-// 6. CREATE PAGE BREAK DIV (PROFESSIONAL FIX)
-// ============================================================
-function createPageBreakDiv() {
-    const div = document.createElement('div');
-    div.style.cssText = `
-        page-break-before: always;
-        page-break-after: avoid;
-        height: 0;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        overflow: hidden;
-        display: block;
-        visibility: hidden;
-    `;
-    return div;
-}
-
-// ============================================================
-// 7. APPLY PROFESSIONAL BOOK STYLES
+// 6. APPLY PROFESSIONAL BOOK STYLES
 // ============================================================
 function applyProfessionalStyles(clone) {
     clone.querySelectorAll('.chapter p').forEach(el => {
@@ -294,21 +275,21 @@ function applyProfessionalStyles(clone) {
 }
 
 // ============================================================
-// 8. DOWNLOAD EBOOK — ENGLISH
+// 7. DOWNLOAD EBOOK — ENGLISH
 // ============================================================
 async function downloadEnglishEbook() {
     await downloadEbook('en', 'English');
 }
 
 // ============================================================
-// 9. DOWNLOAD EBOOK — HINGLISH
+// 8. DOWNLOAD EBOOK — HINGLISH
 // ============================================================
 async function downloadHinglishEbook() {
     await downloadEbook('hi', 'Hinglish');
 }
 
 // ============================================================
-// 10. MAIN EBOOK GENERATOR (30+ YEAR PRO TOUCH)
+// 9. MAIN EBOOK GENERATOR (30+ YEAR PRO TOUCH)
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -390,7 +371,6 @@ async function downloadEbook(lang, langLabel) {
     const coverSection = document.createElement('div');
     coverSection.style.cssText = `
         page-break-after: always;
-        page-break-before: auto;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -407,8 +387,8 @@ async function downloadEbook(lang, langLabel) {
     // ---- TITLE PAGE ----
     const titleSection = document.createElement('div');
     titleSection.style.cssText = `
-        page-break-after: always;
         page-break-before: always;
+        page-break-after: always;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -433,8 +413,8 @@ async function downloadEbook(lang, langLabel) {
     // ---- TABLE OF CONTENTS ----
     const tocSection = document.createElement('div');
     tocSection.style.cssText = `
-        page-break-after: always;
         page-break-before: always;
+        page-break-after: always;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -466,8 +446,8 @@ async function downloadEbook(lang, langLabel) {
     // ---- ABOUT THE AUTHOR ----
     const aboutSection = document.createElement('div');
     aboutSection.style.cssText = `
-        page-break-after: always;
         page-break-before: always;
+        page-break-after: always;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -507,8 +487,8 @@ async function downloadEbook(lang, langLabel) {
     // ---- OVERVIEW ----
     const overviewSection = document.createElement('div');
     overviewSection.style.cssText = `
-        page-break-after: always;
         page-break-before: always;
+        page-break-after: always;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -552,8 +532,8 @@ async function downloadEbook(lang, langLabel) {
     chapterElements.forEach((ch, index) => {
         const chapterSection = document.createElement('div');
         chapterSection.style.cssText = `
-            page-break-after: always;
             page-break-before: always;
+            page-break-after: always;
             min-height: 100vh;
             background: #ffffff;
             padding: 50px 70px;
@@ -571,16 +551,11 @@ async function downloadEbook(lang, langLabel) {
         
         chapterSection.appendChild(chapterClone);
         pdfDoc.appendChild(chapterSection);
-        
-        if (index < chapterElements.length - 1) {
-            pdfDoc.appendChild(createPageBreakDiv());
-        }
     });
     
     // ---- EMOTIONAL MESSAGE PAGE ----
     const emotionalSection = document.createElement('div');
     emotionalSection.style.cssText = `
-        page-break-after: always;
         page-break-before: always;
         min-height: 100vh;
         display: flex;
@@ -607,7 +582,7 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(emotionalSection);
     
-    // ---- ATTACH TO DOM (CRITICAL FIX) ----
+    // ---- ATTACH TO DOM ----
     document.body.appendChild(pdfDoc);
     
     // ---- GENERATE PDF ----
@@ -641,7 +616,7 @@ async function downloadEbook(lang, langLabel) {
 }
 
 // ============================================================
-// 11. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 10. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.downloadEnglishEbook = downloadEnglishEbook;
 window.downloadHinglishEbook = downloadHinglishEbook;
