@@ -243,53 +243,6 @@
     }
 
     /* ============================================
-       THEME MANAGER
-       ============================================ */
-    class ThemeManager {
-        constructor(button, body) {
-            this.button = button;
-            this.body = body;
-            this.init();
-        }
-
-        init() {
-            if (!this.button) {
-                console.log('Theme button not found');
-                return;
-            }
-
-            if (localStorage.getItem('theme') === 'light') {
-                this.body.classList.add('light-mode');
-                this.button.textContent = '☀️';
-            } else {
-                this.button.textContent = '🌙';
-            }
-
-            this.button.addEventListener('click', () => {
-                this.toggle();
-            });
-        }
-
-        toggle() {
-            this.body.classList.toggle('light-mode');
-            if (this.body.classList.contains('light-mode')) {
-                this.button.textContent = '☀️';
-                localStorage.setItem('theme', 'light');
-            } else {
-                this.button.textContent = '🌙';
-                localStorage.setItem('theme', 'dark');
-            }
-            console.log('Theme toggled!');
-        }
-
-        destroy() {
-            if (this.button) {
-                this.button.removeEventListener('click', this.toggle);
-            }
-        }
-    }
-
-    /* ============================================
        SMOOTH SCROLL
        ============================================ */
     class SmoothScroll {
@@ -400,62 +353,113 @@
     }
 
     /* ============================================
-   INITIALIZATION
-   ============================================ */
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Portfolio v2.0 - Ravi Raj');
-    console.log('📅 Loaded:', new Date().toLocaleString());
+       THEME MANAGER — TOGGLE SETTING (LAST MEIN)
+       ============================================ */
+    class ThemeManager {
+        constructor(button, body) {
+            this.button = button;
+            this.body = body;
+            this.init();
+        }
 
-    // ============================================
-    // 🆕 AUTO-DETECT SYSTEM PREFERENCE (YAHAN DAALO)
-    // ============================================
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const themeToggle = document.getElementById('theme-toggle');
-    
-    if (!localStorage.getItem('theme')) {
-        if (prefersDark) {
-            document.body.classList.remove('light-mode');
-            if (themeToggle) themeToggle.textContent = '🌙';
-        } else {
-            document.body.classList.add('light-mode');
-            if (themeToggle) themeToggle.textContent = '☀️';
+        init() {
+            if (!this.button) {
+                console.log('Theme button not found');
+                return;
+            }
+
+            // Check localStorage for saved theme
+            if (localStorage.getItem('theme') === 'light') {
+                this.body.classList.add('light-mode');
+                this.button.textContent = '☀️';
+            } else {
+                this.button.textContent = '🌙';
+            }
+
+            this.button.addEventListener('click', () => {
+                this.toggle();
+            });
+        }
+
+        toggle() {
+            this.body.classList.toggle('light-mode');
+            if (this.body.classList.contains('light-mode')) {
+                this.button.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                this.button.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+            console.log('Theme toggled!');
+        }
+
+        destroy() {
+            if (this.button) {
+                this.button.removeEventListener('click', this.toggle);
+            }
         }
     }
 
-    const matrix = new MatrixEffect(
-        DOM.matrixCanvas,
-        CONFIG.matrix.chars,
-        CONFIG.matrix.fontSize
-    );
+    /* ============================================
+       INITIALIZATION
+       ============================================ */
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Portfolio v2.0 - Ravi Raj');
+        console.log('📅 Loaded:', new Date().toLocaleString());
 
-    const typewriter = new TypewriterEffect(
-        document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
-        CONFIG.typewriter.speed
-    );
+        // ---- AUTO-DETECT SYSTEM PREFERENCE ----
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        if (!localStorage.getItem('theme')) {
+            if (prefersDark) {
+                document.body.classList.remove('light-mode');
+                if (themeToggle) themeToggle.textContent = '🌙';
+            } else {
+                document.body.classList.add('light-mode');
+                if (themeToggle) themeToggle.textContent = '☀️';
+            }
+        }
 
-    const skillBars = new SkillBars(DOM.skillBars);
-    const themeManager = new ThemeManager(DOM.themeToggle, DOM.body);
-    const smoothScroll = new SmoothScroll(DOM.navLinks);
-    const liveDateTime = new LiveDateTime(DOM.timeDisplay);
+        // ---- INITIALIZE ALL CLASSES ----
+        const matrix = new MatrixEffect(
+            DOM.matrixCanvas,
+            CONFIG.matrix.chars,
+            CONFIG.matrix.fontSize
+        );
 
-    setLastUpdated(DOM.lastUpdated);
-    setupPhotoAnimation(DOM.heroPhoto);
+        const typewriter = new TypewriterEffect(
+            document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
+            CONFIG.typewriter.speed
+        );
 
-    window.addEventListener('beforeunload', function() {
-        matrix.destroy();
-        typewriter.destroy();
-        skillBars.destroy();
-        themeManager.destroy();
-        smoothScroll.destroy();
-        liveDateTime.destroy();
+        const skillBars = new SkillBars(DOM.skillBars);
+        const smoothScroll = new SmoothScroll(DOM.navLinks);
+        const liveDateTime = new LiveDateTime(DOM.timeDisplay);
+
+        // ---- THEME MANAGER (LAST MEIN) ----
+        const themeManager = new ThemeManager(DOM.themeToggle, DOM.body);
+
+        setLastUpdated(DOM.lastUpdated);
+        setupPhotoAnimation(DOM.heroPhoto);
+
+        window.addEventListener('beforeunload', function() {
+            matrix.destroy();
+            typewriter.destroy();
+            skillBars.destroy();
+            smoothScroll.destroy();
+            liveDateTime.destroy();
+            themeManager.destroy();
+        });
+
+        window.addEventListener('error', function(e) {
+            console.error('Global error caught:', e.message);
+        });
+
+        console.log('✅ All systems ready!');
     });
 
-    window.addEventListener('error', function(e) {
-        console.error('Global error caught:', e.message);
-    });
-
-    console.log('✅ All systems ready!');
-});
+})();
 
 /* ============================================
    SOCIAL TOGGLE - CLICK KARNE PAR ICONS
