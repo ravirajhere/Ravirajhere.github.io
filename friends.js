@@ -585,8 +585,8 @@ function generateFriendCardPDF(isDBFriend) {
         const ph = 210;
         
       // ---- BACKGROUND: Dark Navy ----
-pdf.setFillColor('#0a0a0f');
-pdf.rect(0, 0, pw, ph, 'F');
+        pdf.setFillColor('#ffffff');
+        pdf.rect(0, 0, pw, ph, 'F');
         
 // ---- BORDER: Top ----
 pdf.setDrawColor('#00d9ff');
