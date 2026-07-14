@@ -588,15 +588,25 @@ function generateFriendCardPDF(isDBFriend) {
         pdf.setFillColor('#ffffff');
         pdf.rect(0, 0, pw, ph, 'F');
         
-        // ---- INDIAN FLAG BORDER (Top) ----
-        pdf.setFillColor('#FF9933'); pdf.rect(0, 0, pw, 3, 'F');
-        pdf.setFillColor('#FFFFFF'); pdf.rect(0, 3, pw, 3, 'F');
-        pdf.setFillColor('#138808'); pdf.rect(0, 6, pw, 3, 'F');
-        
-        // ---- INDIAN FLAG BORDER (Bottom) ----
-        pdf.setFillColor('#FF9933'); pdf.rect(0, ph - 9, pw, 3, 'F');
-        pdf.setFillColor('#FFFFFF'); pdf.rect(0, ph - 6, pw, 3, 'F');
-        pdf.setFillColor('#138808'); pdf.rect(0, ph - 3, pw, 3, 'F');
+        // FLAG Top
+pdf.setFillColor('#FF9933'); pdf.rect(0, 0, pw, 3, 'F');
+pdf.setFillColor('#FFFFFF'); pdf.rect(0, 3, pw, 3, 'F');
+pdf.setFillColor('#138808'); pdf.rect(0, 6, pw, 3, 'F');
+
+// Bottom
+pdf.setFillColor('#FF9933'); pdf.rect(0, ph - 9, pw, 3, 'F');
+pdf.setFillColor('#FFFFFF'); pdf.rect(0, ph - 6, pw, 3, 'F');
+pdf.setFillColor('#138808'); pdf.rect(0, ph - 3, pw, 3, 'F');
+
+// Left
+pdf.setFillColor('#FF9933'); pdf.rect(0, 0, 3, ph, 'F');
+pdf.setFillColor('#FFFFFF'); pdf.rect(3, 0, 3, ph, 'F');
+pdf.setFillColor('#138808'); pdf.rect(6, 0, 3, ph, 'F');
+
+// Right
+pdf.setFillColor('#FF9933'); pdf.rect(pw - 3, 0, 3, ph, 'F');
+pdf.setFillColor('#FFFFFF'); pdf.rect(pw - 6, 0, 3, ph, 'F');
+pdf.setFillColor('#138808'); pdf.rect(pw - 9, 0, 3, ph, 'F');
         
         // ---- HEADER ----
         pdf.setTextColor('#DAA520');
@@ -701,7 +711,7 @@ function generateFriendCardPDF(isDBFriend) {
         pdf.line(signX - 40, signY, signX + 40, signY);
         
         if (signImg.src && signImg.src !== '' && signImg.width > 0) {
-            const sW = 60;
+            const sW = 40;
             const sH = (signImg.height / signImg.width) * sW;
             try {
                 pdf.addImage(signImg, 'PNG', signX - sW/2, signY - sH - 2, sW, sH);
