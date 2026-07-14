@@ -58,8 +58,7 @@ function nextChapter(lang) {
     if (currentIndex !== -1 && currentIndex < chapters.length - 1) {
         chapters[currentIndex].classList.remove('active');
         chapters[currentIndex + 1].classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        
 }
 
 // ---- GOOGLE TRANSLATE ----
