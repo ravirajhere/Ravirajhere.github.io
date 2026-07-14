@@ -1,6 +1,6 @@
 // ============================================================
-// EBOOK.JS — SIMPLE & PROFESSIONAL EBOOK GENERATOR
-// EACH SECTION NEW PAGE · NO BLANK PAGES · BOOK STANDARD
+// EBOOK.JS — PROFESSIONAL BOOK GENERATOR (30+ YEAR PRO TOUCH)
+// NO DOM ATTACH · NO BLANK PAGES · BOOK STANDARD
 // ============================================================
 
 // ============================================================
@@ -112,9 +112,9 @@ function waitForRender() {
 }
 
 // ============================================================
-// 6. APPLY BOOK STYLES
+// 6. APPLY PROFESSIONAL BOOK STYLES
 // ============================================================
-function applyBookStyles(clone) {
+function applyProfessionalBookStyles(clone) {
     // Paragraphs
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#2d2d2d';
@@ -125,7 +125,7 @@ function applyBookStyles(clone) {
         el.style.marginBottom = '14px';
     });
     
-    // Headings
+    // Chapter Headings
     clone.querySelectorAll('.chapter h3').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Space Grotesk', 'Arial', sans-serif";
@@ -207,7 +207,7 @@ async function downloadHinglishEbook() {
 }
 
 // ============================================================
-// 9. MAIN EBOOK GENERATOR (SIMPLE & PROFESSIONAL)
+// 9. MAIN EBOOK GENERATOR (PROFESSIONAL BOOK)
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -264,6 +264,7 @@ async function downloadEbook(lang, langLabel) {
             ch.style.padding = '40px 50px';
             ch.style.marginTop = '0';
             ch.style.boxShadow = 'none';
+            ch.style.pageBreakInside = 'avoid';
         });
     }
     
@@ -272,8 +273,8 @@ async function downloadEbook(lang, langLabel) {
         el.textContent = '📸 Photo';
     });
     
-    // ---- APPLY BOOK STYLES ----
-    applyBookStyles(clone);
+    // ---- APPLY PROFESSIONAL STYLES ----
+    applyProfessionalBookStyles(clone);
     
     // ---- CREATE PDF DOCUMENT ----
     const pdfDoc = document.createElement('div');
@@ -428,14 +429,11 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(emotional);
     
-    // ---- ATTACH TO DOM ----
-    document.body.appendChild(pdfDoc);
-    
     // ---- GENERATE PDF ----
     const opt = {
-        margin: [15, 15, 15, 15],
+        margin: [20, 25, 20, 25],
         filename: `My_Autobiography_Ravi_Raj_${langLabel}.pdf`,
-        image: { type: 'jpeg', quality: 0.95 },
+        image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
             scale: 2,
             useCORS: true,
@@ -450,10 +448,8 @@ async function downloadEbook(lang, langLabel) {
     };
     
     html2pdf().set(opt).from(pdfDoc).save().then(() => {
-        document.body.removeChild(pdfDoc);
         showToast(`✅ ${langLabel} ebook downloaded!`, 'success');
     }).catch((err) => {
-        document.body.removeChild(pdfDoc);
         console.error('PDF Error:', err);
         showToast('❌ Download failed. Please try again.', 'error');
     });
