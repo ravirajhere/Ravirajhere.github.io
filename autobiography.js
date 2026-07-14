@@ -14,7 +14,6 @@ function switchLang(lang) {
         hiChapters.style.display = 'none';
         btnEn.classList.add('active');
         btnHi.classList.remove('active');
-        // Reset to Chapter 1
         resetChapters('en');
     } else {
         enChapters.style.display = 'none';
@@ -25,7 +24,7 @@ function switchLang(lang) {
     }
 }
 
-// ---- RESET CHAPTERS (Chapter 1 dikhe, baaki hidden) ----
+// ---- RESET CHAPTERS ----
 function resetChapters(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
     const container = document.getElementById(containerId);
@@ -37,7 +36,6 @@ function resetChapters(lang) {
             ch.classList.remove('active');
         }
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ---- NEXT CHAPTER ----
@@ -47,18 +45,16 @@ function nextChapter(lang) {
     const chapters = container.querySelectorAll('.chapter');
     let currentIndex = -1;
 
-    // Find current chapter
     chapters.forEach((ch, index) => {
         if (ch.classList.contains('active')) {
             currentIndex = index;
         }
     });
 
-    // Hide current, show next
     if (currentIndex !== -1 && currentIndex < chapters.length - 1) {
         chapters[currentIndex].classList.remove('active');
         chapters[currentIndex + 1].classList.add('active');
-        
+    }
 }
 
 // ---- GOOGLE TRANSLATE ----
@@ -69,7 +65,6 @@ function openGoogleTranslate() {
 
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded', function() {
-    // Default: English, Chapter 1 active
     resetChapters('en');
     document.getElementById('chaptersEn').style.display = 'block';
     document.getElementById('chaptersHi').style.display = 'none';
