@@ -6,6 +6,13 @@
     <title>My Autobiography — Ravi Raj</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- ===== QR CODE LIBRARY (Free, No API) ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- ===== PDF LIBRARY (html2pdf) ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <style>
         /* ============================================================
            ROOT VARIABLES — WEBSITE MATCH
@@ -142,6 +149,42 @@
         body.reading-mode .sub-line { color: rgba(0, 0, 0, 0.4); }
         body.reading-mode .bio-line { color: rgba(0, 0, 0, 0.6); }
         body.reading-mode .intro-line { color: #b8860b; }
+        body.reading-mode .download-actions { border-color: rgba(0, 0, 0, 0.08); }
+        body.reading-mode .download-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: #2a2a2a;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        body.reading-mode .download-btn:hover {
+            background: #b8860b;
+            color: #fff;
+            border-color: #b8860b;
+        }
+        body.reading-mode .qr-gallery {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.reading-mode .qr-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        body.reading-mode .modal-content {
+            background: #fff;
+            color: #1a1a1a;
+        }
+        body.reading-mode .modal-close {
+            color: #1a1a1a;
+        }
+        body.reading-mode .modal-close:hover {
+            color: #b8860b;
+        }
+        body.reading-mode .modal-btn {
+            background: #b8860b;
+            color: #fff;
+        }
+        body.reading-mode .modal-btn:hover {
+            background: #d4a017;
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
@@ -342,7 +385,7 @@
             gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
-            margin: 10px 0 20px;
+            margin: 10px 0 15px;
             position: relative;
             z-index: 1;
         }
@@ -397,6 +440,59 @@
             color: #0a0a0f;
             box-shadow: 0 0 30px rgba(218, 165, 32, 0.3);
             transform: scale(1.03);
+        }
+
+        /* ---- DOWNLOAD & QR ACTION BUTTONS (NEW) ---- */
+        .download-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 5px 0 20px;
+            padding: 12px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-btn {
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .download-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(218, 165, 32, 0.05);
+            transform: translateY(-2px);
+        }
+        .download-btn.primary {
+            background: var(--grad);
+            color: #0a0a0f;
+            border: none;
+        }
+        .download-btn.primary:hover {
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .download-btn.gold {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .download-btn.gold:hover {
+            background: var(--gold);
+            color: #0a0a0f;
         }
 
         /* ---- CHAPTER PROGRESS INFO ---- */
@@ -685,6 +781,36 @@
             margin-bottom: 12px;
         }
 
+        /* ---- CHAPTER QR CODE (NEW) ---- */
+        .chapter-qr {
+            margin: 14px 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .chapter-qr .qr-container {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius2);
+            padding: 8px;
+            display: inline-block;
+        }
+        .chapter-qr .qr-container canvas,
+        .chapter-qr .qr-container img {
+            display: block;
+            width: 80px;
+            height: 80px;
+        }
+        .chapter-qr .qr-label {
+            font-size: 12px;
+            color: var(--text3);
+        }
+        body.reading-mode .chapter-qr .qr-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
         /* ---- COPY LINK ---- */
         .copy-link-btn {
             display: inline-flex;
@@ -813,6 +939,238 @@
             color: #b8860b;
         }
 
+        /* ---- QR GALLERY SECTION (NEW) ---- */
+        .qr-gallery {
+            margin-top: 40px;
+            padding: 30px 28px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            position: relative;
+            z-index: 1;
+        }
+        .qr-gallery h3 {
+            text-align: center;
+            color: var(--accent2);
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        .qr-gallery .gallery-sub {
+            text-align: center;
+            color: var(--text3);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .qr-item {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius2);
+            padding: 12px;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .qr-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+        .qr-item .qr-number {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .qr-item canvas,
+        .qr-item img {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+        }
+        .qr-item .qr-label-small {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 6px;
+            display: block;
+        }
+        .qr-gallery .gallery-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        body.reading-mode .qr-gallery {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.reading-mode .qr-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        body.reading-mode .qr-item .qr-number { color: #2a2a2a; }
+
+        /* ---- DOWNLOAD MODAL (NEW) ---- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px 36px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.4s ease;
+            position: relative;
+        }
+        .modal-content h2 {
+            color: var(--text);
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .modal-content .modal-desc {
+            color: var(--text2);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text3);
+            background: none;
+            border: none;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+        .modal-close:hover {
+            color: var(--gold);
+            transform: rotate(90deg);
+        }
+        .modal-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius2);
+            margin-bottom: 10px;
+            transition: all var(--transition);
+        }
+        .modal-option:hover {
+            border-color: var(--gold);
+        }
+        .modal-option .opt-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .modal-option .opt-title {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .modal-option .opt-desc {
+            color: var(--text3);
+            font-size: 12px;
+        }
+        .modal-btn {
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: none;
+            background: var(--grad);
+            color: #0a0a0f;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+        }
+        .modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        body.reading-mode .modal-content {
+            background: #fff;
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.reading-mode .modal-content h2 { color: #1a1a1a; }
+        body.reading-mode .modal-option {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        body.reading-mode .modal-option .opt-title { color: #1a1a1a; }
+        body.reading-mode .modal-btn {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+            color: #fff;
+        }
+
+        /* ---- TOAST NOTIFICATION (NEW) ---- */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius2);
+            padding: 14px 28px;
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            font-family: var(--font);
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.success {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+        .toast.error {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        body.reading-mode .toast {
+            background: rgba(255, 252, 245, 0.95);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #2a2a2a;
+        }
+
         /* ---- RESPONSIVE ---- */
         @media (max-width: 700px) {
             .autobio-wrapper { padding: 28px 18px; }
@@ -835,6 +1193,26 @@
                 width: 44px;
                 height: 44px;
                 font-size: 20px;
+            }
+            .qr-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .qr-item canvas,
+            .qr-item img {
+                width: 80px;
+                height: 80px;
+            }
+            .download-actions {
+                gap: 8px;
+                padding: 10px 0;
+            }
+            .download-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .modal-content {
+                padding: 30px 20px;
             }
         }
 
@@ -879,6 +1257,41 @@
                 height: 40px;
                 font-size: 18px;
             }
+            .qr-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .qr-item canvas,
+            .qr-item img {
+                width: 60px;
+                height: 60px;
+            }
+            .qr-item .qr-number { font-size: 11px; }
+            .download-actions {
+                gap: 6px;
+                padding: 8px 0;
+            }
+            .download-btn {
+                padding: 5px 12px;
+                font-size: 11px;
+            }
+            .modal-content {
+                padding: 24px 16px;
+            }
+            .modal-content h2 { font-size: 20px; }
+            .modal-option {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .modal-btn {
+                padding: 4px 14px;
+                font-size: 12px;
+            }
+            .chapter-qr .qr-container canvas,
+            .chapter-qr .qr-container img {
+                width: 60px;
+                height: 60px;
+            }
         }
 
         /* ---- PRINT STYLES ---- */
@@ -891,7 +1304,12 @@
             .copy-link-btn,
             .surprise-btn,
             .progress-dots,
-            .chapter-progress-info {
+            .chapter-progress-info,
+            .download-actions,
+            .qr-gallery,
+            .chapter-qr,
+            .modal-overlay,
+            .toast {
                 display: none !important;
             }
             body {
@@ -950,6 +1368,50 @@
     <!-- ===== BACK TO TOP ===== -->
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
+    <!-- ===== TOAST NOTIFICATION ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== DOWNLOAD MODAL ===== -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h2>📥 Download Options</h2>
+            <p class="modal-desc">Choose how you want to download this autobiography.</p>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">📄 Full Book PDF</span>
+                    <span class="opt-desc">All 12 chapters + Cover + Table of Contents</span>
+                </div>
+                <button class="modal-btn" onclick="downloadFullPDF()">Download</button>
+            </div>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">📄 Current Chapter PDF</span>
+                    <span class="opt-desc" id="modalChapterName">Only this chapter</span>
+                </div>
+                <button class="modal-btn" onclick="downloadChapterPDF()">Download</button>
+            </div>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">📄 Download as TXT</span>
+                    <span class="opt-desc">Plain text — all chapters</span>
+                </div>
+                <button class="modal-btn" onclick="downloadTXT()">Download</button>
+            </div>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🖨️ Print</span>
+                    <span class="opt-desc">Print current chapter or full book</span>
+                </div>
+                <button class="modal-btn" onclick="printBook()">Print</button>
+            </div>
+        </div>
+    </div>
+
     <div class="autobio-wrapper">
 
         <!-- ===== HERO ===== -->
@@ -977,6 +1439,14 @@
             <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me!</button>
         </div>
 
+        <!-- ===== DOWNLOAD & QR ACTION BUTTONS (NEW) ===== -->
+        <div class="download-actions">
+            <button class="download-btn primary" onclick="openModal()">📥 Download</button>
+            <button class="download-btn gold" onclick="downloadChapterPDF()">📄 Chapter PDF</button>
+            <button class="download-btn" onclick="printBook()">🖨️ Print</button>
+            <button class="download-btn" onclick="scrollToQRGallery()">📱 QR Codes</button>
+        </div>
+
         <!-- =============================================================
         CHAPTERS — ENGLISH
         ============================================================= -->
@@ -1000,6 +1470,12 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime1">3</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
+                
+                <!-- CHAPTER QR CODE (NEW) -->
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch1-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
@@ -1025,6 +1501,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime2">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch2-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1052,6 +1533,11 @@
                 <div class="reading-time">⏱️ <span id="readTime3">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch3-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -1077,6 +1563,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime4">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch4-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1104,6 +1595,11 @@
                 <div class="reading-time">⏱️ <span id="readTime5">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch5-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -1130,6 +1626,11 @@
                 <div class="reading-time">⏱️ <span id="readTime6">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch6-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -1154,6 +1655,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime7">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch7-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1180,6 +1686,11 @@
                 <div class="reading-time">⏱️ <span id="readTime8">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch8-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -1203,6 +1714,11 @@
                 <div class="reading-time">⏱️ <span id="readTime9">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch9-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -1225,6 +1741,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime10">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch10-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1255,6 +1776,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime11">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch11-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1289,6 +1815,11 @@
                 <div class="reading-time">⏱️ <span id="readTime12">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch12-en"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
@@ -1320,6 +1851,11 @@
                 <div class="reading-time">⏱️ <span id="readTime1-hi">3</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch1-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1344,6 +1880,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime2-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch2-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1371,6 +1912,11 @@
                 <div class="reading-time">⏱️ <span id="readTime3-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch3-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1396,6 +1942,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime4-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch4-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1423,6 +1974,11 @@
                 <div class="reading-time">⏱️ <span id="readTime5-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch5-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1449,6 +2005,11 @@
                 <div class="reading-time">⏱️ <span id="readTime6-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch6-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1473,6 +2034,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime7-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch7-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1499,6 +2065,11 @@
                 <div class="reading-time">⏱️ <span id="readTime8-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch8-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1522,6 +2093,11 @@
                 <div class="reading-time">⏱️ <span id="readTime9-hi">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch9-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1544,6 +2120,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime10-hi">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch10-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1574,6 +2155,11 @@
                 
                 <div class="reading-time">⏱️ <span id="readTime11-hi">1</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
+                
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch11-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1608,6 +2194,11 @@
                 <div class="reading-time">⏱️ <span id="readTime12-hi">2</span> min read</div>
                 <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
                 
+                <div class="chapter-qr">
+                    <div class="qr-container" id="qr-ch12-hi"></div>
+                    <span class="qr-label">📱 Scan to read this chapter</span>
+                </div>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
@@ -1636,6 +2227,21 @@
             <span class="dot" data-dot="10"></span>
             <span class="dot" data-dot="11"></span>
             <span class="dot" data-dot="12"></span>
+        </div>
+
+        <!-- ===== QR CODE GALLERY SECTION (NEW) ===== -->
+        <div class="qr-gallery" id="qrGallery">
+            <h3>📱 Quick Access — Scan to Read</h3>
+            <p class="gallery-sub">Scan any QR code to jump directly to that chapter</p>
+            
+            <div class="qr-grid" id="qrGrid">
+                <!-- QR codes will be generated by JavaScript -->
+            </div>
+            
+            <div class="gallery-actions">
+                <button class="download-btn gold" onclick="downloadAllQR()">⬇️ Download All QR Codes</button>
+                <button class="download-btn" onclick="scrollToTop()">⬆️ Back to Top</button>
+            </div>
         </div>
 
     </div>
