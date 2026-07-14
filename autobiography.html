@@ -21,14 +21,20 @@
             --accent: #6c5ce7;
             --accent2: #a29bfe;
             --gold: #DAA520;
+            --gold-glow: rgba(218, 165, 32, 0.3);
             --grad: linear-gradient(135deg, #6c5ce7, #a29bfe);
             --radius: 16px;
             --radius2: 12px;
             --font: 'Space Grotesk', sans-serif;
             --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: var(--font);
@@ -41,12 +47,109 @@
             padding: 40px 20px;
             -webkit-font-smoothing: antialiased;
             background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 217, 255, 0.05) 0%, transparent 70%);
+            transition: background var(--transition);
         }
+
+        /* ---- READING MODE ---- */
+        body.reading-mode {
+            background: #f5f0e8;
+            color: #1a1a1a;
+        }
+        body.reading-mode .autobio-wrapper {
+            background: rgba(255, 252, 245, 0.95);
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        body.reading-mode .autobio-wrapper::before { display: none; }
+        body.reading-mode .chapter {
+            background: transparent;
+            border-color: rgba(0, 0, 0, 0.06);
+        }
+        body.reading-mode .chapter p,
+        body.reading-mode .chapter li {
+            color: #2a2a2a;
+        }
+        body.reading-mode .chapter p strong { color: #0a0a0a; }
+        body.reading-mode .stat-card {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.reading-mode .stat-number { color: #b8860b; }
+        body.reading-mode .stat-label { color: rgba(0, 0, 0, 0.5); }
+        body.reading-mode .photo-slot {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+        body.reading-mode .photo-slot:hover {
+            border-color: #b8860b;
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.reading-mode .quote-box {
+            background: rgba(184, 134, 11, 0.06);
+            border-left-color: #b8860b;
+        }
+        body.reading-mode .quote-box .author { color: #b8860b; }
+        body.reading-mode .quote-box.purple {
+            border-left-color: #6c5ce7;
+        }
+        body.reading-mode .friend-memory-pdf {
+            background: rgba(184, 134, 11, 0.04);
+            border-color: rgba(184, 134, 11, 0.2);
+        }
+        body.reading-mode .friend-memory-pdf strong { color: #b8860b; }
+        body.reading-mode .friend-memory-pdf .pdf-label {
+            background: #b8860b;
+            color: #fff;
+        }
+        body.reading-mode .lang-btn {
+            border-color: #b8860b;
+            color: #b8860b;
+        }
+        body.reading-mode .lang-btn:hover {
+            background: #b8860b;
+            color: #fff;
+        }
+        body.reading-mode .lang-btn.active {
+            background: #b8860b;
+            color: #fff;
+        }
+        body.reading-mode .nav-btn {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+            color: #fff;
+        }
+        body.reading-mode .nav-btn.prev-btn {
+            background: rgba(0, 0, 0, 0.06);
+            color: #2a2a2a;
+            border-color: rgba(0, 0, 0, 0.12);
+        }
+        body.reading-mode .nav-btn.prev-btn:hover:not(:disabled) {
+            background: rgba(0, 0, 0, 0.1);
+            color: #0a0a0a;
+        }
+        body.reading-mode .back-link { color: #6c5ce7; }
+        body.reading-mode .back-link:hover { color: #0a0a0a; }
+        body.reading-mode .chapter h3 { color: #6c5ce7; }
+        body.reading-mode .family-item {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.reading-mode .family-item .value { color: #0a0a0a; }
+        body.reading-mode .teacher-tribute {
+            background: rgba(108, 92, 231, 0.06);
+            border-color: rgba(108, 92, 231, 0.15);
+        }
+        body.reading-mode .teacher-tribute h4 { color: #b8860b; }
+        body.reading-mode .sub-line { color: rgba(0, 0, 0, 0.4); }
+        body.reading-mode .bio-line { color: rgba(0, 0, 0, 0.6); }
+        body.reading-mode .intro-line { color: #b8860b; }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+        body.reading-mode ::-webkit-scrollbar-track { background: #f5f0e8; }
+        body.reading-mode ::-webkit-scrollbar-thumb { background: #b8860b; }
 
         .autobio-wrapper {
             max-width: 880px;
@@ -59,6 +162,7 @@
             animation: fadeIn 0.6s ease;
             position: relative;
             overflow: hidden;
+            transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
         }
 
         .autobio-wrapper::before {
@@ -70,11 +174,66 @@
             height: 200%;
             background: radial-gradient(circle at 30% 20%, rgba(108, 92, 231, 0.03) 0%, transparent 60%);
             pointer-events: none;
+            transition: opacity var(--transition);
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- READING PROGRESS BAR ---- */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--grad);
+            z-index: 9999;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        body.reading-mode .progress-bar {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+        }
+
+        /* ---- BACK TO TOP ---- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--grad);
+            color: #0a0a0f;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all var(--transition);
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            font-family: var(--font);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
+        }
+
+        body.reading-mode .back-to-top {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
         }
 
         /* ---- HERO ---- */
@@ -93,7 +252,7 @@
             object-fit: cover;
             margin-bottom: 16px;
             box-shadow: 0 0 40px rgba(218, 165, 32, 0.2);
-            transition: 0.4s;
+            transition: var(--transition);
         }
         .profile-photo:hover {
             transform: scale(1.04);
@@ -108,6 +267,14 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 2px;
+            min-height: 48px;
+        }
+
+        body.reading-mode .autobio-header h1 {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .autobio-header .intro-line {
@@ -146,11 +313,14 @@
             border-radius: var(--radius2);
             padding: 18px 12px;
             text-align: center;
-            transition: 0.3s;
+            transition: all var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .stat-card:hover {
             border-color: var(--gold);
             transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(218, 165, 32, 0.1);
         }
 
         .stat-number {
@@ -186,7 +356,7 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all var(--transition);
             font-family: var(--font);
         }
         .lang-btn:hover {
@@ -209,6 +379,81 @@
             box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
         }
 
+        /* ---- SURPRISE BUTTON ---- */
+        .surprise-btn {
+            padding: 10px 28px;
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+        }
+        .surprise-btn:hover {
+            background: var(--gold);
+            color: #0a0a0f;
+            box-shadow: 0 0 30px rgba(218, 165, 32, 0.3);
+            transform: scale(1.03);
+        }
+
+        /* ---- CHAPTER PROGRESS INFO ---- */
+        .chapter-progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text3);
+            padding: 8px 4px 4px 4px;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .chapter-progress-info .chapter-num {
+            color: var(--accent2);
+        }
+        .chapter-progress-info .chapter-percent {
+            color: var(--gold);
+        }
+
+        body.reading-mode .chapter-progress-info .chapter-num { color: #6c5ce7; }
+        body.reading-mode .chapter-progress-info .chapter-percent { color: #b8860b; }
+
+        /* ---- PROGRESS DOTS ---- */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .dot.active {
+            background: var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+            transform: scale(1.2);
+        }
+        .dot:hover {
+            background: var(--accent2);
+            transform: scale(1.1);
+        }
+        body.reading-mode .dot.active {
+            background: #b8860b;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+        }
+
         /* ---- BOOK CHAPTERS ---- */
         .chapter {
             display: none;
@@ -219,10 +464,16 @@
             margin-top: 10px;
             position: relative;
             z-index: 1;
-            animation: fadeIn 0.5s ease;
+            animation: slideUp 0.5s ease;
+            transition: all var(--transition);
         }
         .chapter.active {
             display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .chapter h3 {
@@ -233,13 +484,23 @@
             align-items: center;
             gap: 10px;
         }
-        .chapter h3 .emoji-big { font-size: 26px; }
+        .chapter h3 .emoji-big {
+            font-size: 26px;
+            display: inline-block;
+            animation: floatEmoji 3s ease-in-out infinite;
+        }
+
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
 
         .chapter p {
             color: var(--text2);
             line-height: 1.9;
             font-size: 16px;
             margin-bottom: 10px;
+            transition: color var(--transition);
         }
         .chapter p strong { color: var(--text); }
 
@@ -256,6 +517,21 @@
             content: "▸ ";
             color: var(--accent2);
         }
+
+        /* ---- READING TIME ---- */
+        .reading-time {
+            font-size: 13px;
+            color: var(--text3);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+        .reading-time span { color: var(--accent2); }
+
+        body.reading-mode .reading-time span { color: #6c5ce7; }
 
         /* ---- PHOTO PLACEHOLDER ---- */
         .chapter-photo-placeholder {
@@ -274,7 +550,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s;
+            transition: all var(--transition);
             position: relative;
             overflow: hidden;
         }
@@ -318,6 +594,7 @@
             color: var(--text2);
             font-size: 17px;
             line-height: 1.7;
+            transition: all var(--transition);
         }
         .quote-box .author {
             display: block;
@@ -338,6 +615,7 @@
             padding: 18px 22px;
             margin: 16px 0;
             border: 1px solid rgba(108, 92, 231, 0.15);
+            transition: all var(--transition);
         }
         .teacher-tribute h4 {
             color: var(--gold);
@@ -361,6 +639,11 @@
             border-radius: var(--radius2);
             padding: 12px 16px;
             border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .family-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
         }
         .family-item .label {
             font-size: 11px;
@@ -385,6 +668,7 @@
             color: var(--text2);
             font-size: 15px;
             line-height: 1.8;
+            transition: all var(--transition);
         }
         .friend-memory-pdf strong {
             color: var(--gold);
@@ -399,6 +683,32 @@
             border-radius: 30px;
             letter-spacing: 0.5px;
             margin-bottom: 12px;
+        }
+
+        /* ---- COPY LINK ---- */
+        .copy-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            margin-top: 10px;
+        }
+        .copy-link-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(218, 165, 32, 0.05);
+        }
+        .copy-link-btn.copied {
+            border-color: #4caf50;
+            color: #4caf50;
         }
 
         /* ---- NAVIGATION BUTTONS ---- */
@@ -419,7 +729,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all var(--transition);
             font-family: var(--font);
             box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
             min-width: 130px;
@@ -458,13 +768,49 @@
             text-decoration: none;
             font-size: 15px;
             font-weight: 500;
-            transition: 0.3s;
+            transition: all var(--transition);
             position: relative;
             z-index: 1;
         }
         .back-link:hover {
             color: var(--text);
             transform: translateX(-4px);
+        }
+
+        /* ---- READING MODE TOGGLE ---- */
+        .reading-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 10px 18px;
+            border-radius: 50px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reading-mode-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 30px rgba(218, 165, 32, 0.1);
+        }
+        body.reading-mode .reading-mode-toggle {
+            background: rgba(255, 252, 245, 0.95);
+            border-color: rgba(0, 0, 0, 0.12);
+            color: #2a2a2a;
+        }
+        body.reading-mode .reading-mode-toggle:hover {
+            border-color: #b8860b;
+            color: #b8860b;
         }
 
         /* ---- RESPONSIVE ---- */
@@ -477,6 +823,19 @@
             .chapter { padding: 20px 16px; }
             .profile-photo { width: 100px; height: 100px; }
             .photo-slot { height: 160px; }
+            .reading-mode-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -485,6 +844,7 @@
             .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .stat-number { font-size: 22px; }
             .lang-btn { padding: 6px 16px; font-size: 12px; }
+            .surprise-btn { padding: 6px 16px; font-size: 12px; }
             .quote-box { font-size: 15px; padding: 14px 16px; }
             .nav-btn { 
                 padding: 10px 20px; 
@@ -499,17 +859,103 @@
                 width: 100%;
                 min-width: unset;
             }
+            .chapter-progress-info {
+                font-size: 11px;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .progress-dots { gap: 6px; }
+            .dot { width: 8px; height: 8px; }
+            .reading-mode-toggle {
+                top: 8px;
+                right: 8px;
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+            .back-to-top {
+                bottom: 16px;
+                right: 16px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+
+        /* ---- PRINT STYLES ---- */
+        @media print {
+            .back-to-top,
+            .reading-mode-toggle,
+            .progress-bar,
+            .lang-controls,
+            .nav-buttons,
+            .copy-link-btn,
+            .surprise-btn,
+            .progress-dots,
+            .chapter-progress-info {
+                display: none !important;
+            }
+            body {
+                background: #fff;
+                color: #000;
+                padding: 20px;
+            }
+            .autobio-wrapper {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                background: #fff;
+                padding: 30px;
+            }
+            .chapter {
+                background: #fff;
+                border: 1px solid #eee;
+                page-break-inside: avoid;
+            }
+            .chapter p { color: #333; }
+            .chapter p strong { color: #000; }
+            .chapter h3 { color: #6c5ce7; }
+            .photo-slot { border: 1px solid #ddd; }
+            .stat-card { background: #f9f9f9; border: 1px solid #eee; }
+            .stat-number { color: #b8860b; }
+            .stat-label { color: #666; }
+            .quote-box { background: #f9f9f9; }
+            .autobio-header h1 {
+                background: none;
+                -webkit-text-fill-color: #000;
+                color: #000;
+            }
+            .autobio-wrapper::before { display: none; }
+            .friend-memory-pdf { border-color: #ddd; }
+            .family-item { background: #f9f9f9; border-color: #eee; }
+            .family-item .value { color: #000; }
+            .teacher-tribute { background: #f9f9f9; border-color: #ddd; }
+            .back-link { color: #6c5ce7; }
+            .intro-line { color: #b8860b; }
+            .sub-line { color: #999; }
+            .bio-line { color: #666; }
+            .reading-time { color: #999; }
+            .reading-time span { color: #6c5ce7; }
         }
     </style>
 </head>
 <body>
+
+    <!-- ===== READING PROGRESS BAR ===== -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- ===== READING MODE TOGGLE ===== -->
+    <button class="reading-mode-toggle" id="readingModeToggle" onclick="toggleReadingMode()">
+        📖 Reading Mode
+    </button>
+
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
     <div class="autobio-wrapper">
 
         <!-- ===== HERO ===== -->
         <div class="autobio-header">
             <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" class="profile-photo" />
-            <h1>📖 My Autobiography</h1>
+            <h1 id="mainTitle">📖 My Autobiography</h1>
             <div class="intro-line">"A Boy Who Never Thought"</div>
             <div class="sub-line">Safar Se Safar Tak</div>
             <div class="bio-line">March 2008 · Patna, India</div>
@@ -528,6 +974,7 @@
             <button class="lang-btn active" id="btnEn" onclick="switchLang('en')">🇬🇧 English</button>
             <button class="lang-btn" id="btnHi" onclick="switchLang('hi')">🗣️ Hinglish</button>
             <button class="lang-btn translate-btn" onclick="openGoogleTranslate()">🌐 Translate</button>
+            <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me!</button>
         </div>
 
         <!-- =============================================================
@@ -551,6 +998,9 @@
                 <p>My childhood memories are as many as any child from a small village could have. Cycling in the courtyard, sitting on the roof in the evening, and eating food cooked by my mother — all of these are still alive in my mind.</p>
                 <p>One day, I stole my sister's cycle and joined a race — and fell straight into a gutter! My father picked me up and said, <em>"Beta, pehle balance seekh, phir speed."</em> Today, I still love cycling — but I avoid gutters.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime1">3</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -572,6 +1022,9 @@
                 <p>My first school was <strong>Gautam Buddha Global School</strong>. But the day I still remember is 2019 — when I took admission in Class 6 at <strong>Mother's Pride International School</strong>. The first day was nerve-wracking. New school, new faces, new class. But slowly, everything became normal.</p>
                 <p><strong>First friend:</strong> Ayush Singh — the one who made me feel like a new person.</p>
                 <p><strong>Unforgettable teacher:</strong> Binod Sir — he taught Hindi and gave me a new way to see life.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime2">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -596,6 +1049,9 @@
                 <p><strong>Achievement:</strong> Passed 12th grade — a result of years of hard work.</p>
                 <p><strong>Failures:</strong> Many — but each one taught me something.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime3">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -618,6 +1074,9 @@
                 <p><strong>First coding experience:</strong> I wrote my first HTML tag — "Hello World" — and felt like I had done magic.</p>
                 <p><strong>New hobby:</strong> Reading novels and literature.</p>
                 <p><strong>Important friends:</strong> Sudhanshu, Rohit, Sitanashu — they never let me feel alone.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime4">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -642,6 +1101,9 @@
                 <p><strong>Struggle:</strong> CSS alignment, responsiveness — but every problem had a solution.</p>
                 <p><strong>First success:</strong> When something I built appeared on the screen — that joy was different.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime5">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -665,6 +1127,9 @@
                 <p><strong>Current feeling:</strong> Confident and curious — I know there's so much more to learn.</p>
                 <p><strong>Future plan:</strong> Master backend & databases, build real-world projects, and one day launch my own startup.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime6">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -686,6 +1151,9 @@
                 <p><strong>Parents' teaching:</strong> Honesty, hard work, and helping others.</p>
                 <p><strong>Siblings:</strong> 2 elder sisters and 2 younger brothers — each one has taught me patience and love.</p>
                 <p><strong>Family memory:</strong> Diwali nights when the whole family is together — that peace is unmatched.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime7">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -709,6 +1177,9 @@
                 <p><strong>Memorable moment:</strong> The first time I showed my project to my friends — their appreciation gave me confidence.</p>
                 <p><strong>What friends changed:</strong> They pulled me out of loneliness and taught me that success feels better when shared.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime8">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -729,6 +1200,9 @@
                 
                 <p>Not knowing what to become, how to become — it was confusing. But I took it step by step, one chapter at a time.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime9">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
@@ -748,6 +1222,9 @@
                 </div>
                 
                 <p>When someone saw my website for the first time and said — <em>"Bhai, yeh tune banaya?"</em> That moment was pure joy.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime10">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -775,6 +1252,9 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
+                
+                <div class="reading-time">⏱️ <span id="readTime11">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -806,6 +1286,9 @@
                 </p>
                 <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
                 
+                <div class="reading-time">⏱️ <span id="readTime12">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
@@ -834,6 +1317,9 @@
                 <p>Mera janam 13 March 2008 ko Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
                 <p>Ek baar maine apni sister ki cycle chura kar race lagayi — aur gutter mein gir gaya! Papa ne mujhe uthaya aur bola, <em>"Beta, pehle balance seekh, phir speed."</em> Aaj bhi main cycle chalata hoon, but gutter avoid karta hoon!</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime1-hi">3</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -855,6 +1341,9 @@
                 <p>Mera pehla school <strong>Gautam Buddha Global School</strong> tha. Par 2019 mein <strong>Mother's Pride International School</strong> mein Class 6 mein admission hua — pehla din bahut nervous tha.</p>
                 <p><strong>Pehle dost:</strong> Ayush Singh.</p>
                 <p><strong>Yaadgar teacher:</strong> Binod Sir — unhone Hindi padhaya aur zindagi dekhne ka nazariya diya.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime2-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -879,6 +1368,9 @@
                 <p><strong>Achievement:</strong> 12th pass — saalon ki mehnat ka result.</p>
                 <p><strong>Failures:</strong> Bahut saare — par har failure ne kuch na kuch sikhaya.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime3-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -901,6 +1393,9 @@
                 <p><strong>Pehli coding:</strong> HTML ka "Hello World" — mujhe laga jaise maine jaadu kar diya!</p>
                 <p><strong>Naya hobby:</strong> Novel aur literature padhna.</p>
                 <p><strong>Important dost:</strong> Sudhanshu, Rohit, Sitanashu — unhone kabhi akela feel nahi hone diya.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime4-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -925,6 +1420,9 @@
                 <p><strong>Struggle:</strong> CSS align, responsive — par har problem ka solution mila.</p>
                 <p><strong>Pehli success:</strong> Jab screen par kuch dikha — woh alag khushi thi.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime5-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -948,6 +1446,9 @@
                 <p><strong>Abhi ka feeling:</strong> Confident aur curious — bahut kuch seekhna baaki hai.</p>
                 <p><strong>Aage ka plan:</strong> Backend aur databases strong karna, real-world projects banana, aur ek din apna startup launch karna.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime6-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -969,6 +1470,9 @@
                 <p><strong>Parents ne sikhaya:</strong> Honesty, mehnat, aur dusron ki help.</p>
                 <p><strong>Siblings:</strong> 2 badi behenein aur 2 chhote bhai — sab ne sabar aur pyaar sikhaya.</p>
                 <p><strong>Family memory:</strong> Diwali ki raat jab poori family saath hoti hai — woh peace alag hai.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime7-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -992,6 +1496,9 @@
                 <p><strong>Yaadgar moment:</strong> Pehla project doston ko dikhaya — unki taarif ne confidence diya.</p>
                 <p><strong>Friends ne kya change kiya:</strong> Tanhaai se nikaala, aur sikhaya ki success share karne par aur achhi lagti hai.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime8-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1012,6 +1519,9 @@
                 
                 <p>Kya banna hai, kaise banna hai — samajh nahi aata tha. Par ek step, ek chapter ke saath aage badhta raha.</p>
                 
+                <div class="reading-time">⏱️ <span id="readTime9-hi">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
@@ -1031,6 +1541,9 @@
                 </div>
                 
                 <p>Jab kisi ne pehli baar mera website dekha aur bola — <em>"Bhai, yeh tune banaya?"</em> Woh moment priceless tha.</p>
+                
+                <div class="reading-time">⏱️ <span id="readTime10-hi">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1058,6 +1571,9 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
+                
+                <div class="reading-time">⏱️ <span id="readTime11-hi">1</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1089,12 +1605,37 @@
                 </p>
                 <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
                 
+                <div class="reading-time">⏱️ <span id="readTime12-hi">2</span> min read</div>
+                <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
+                
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
                 </div>
             </div>
 
+        </div>
+
+        <!-- ===== CHAPTER PROGRESS INFO ===== -->
+        <div class="chapter-progress-info">
+            <span class="chapter-num" id="chapterNumDisplay">Chapter 1 of 12</span>
+            <span class="chapter-percent" id="chapterPercentDisplay">0% complete</span>
+        </div>
+
+        <!-- ===== PROGRESS DOTS ===== -->
+        <div class="progress-dots" id="progressDots">
+            <span class="dot active" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+            <span class="dot" data-dot="4"></span>
+            <span class="dot" data-dot="5"></span>
+            <span class="dot" data-dot="6"></span>
+            <span class="dot" data-dot="7"></span>
+            <span class="dot" data-dot="8"></span>
+            <span class="dot" data-dot="9"></span>
+            <span class="dot" data-dot="10"></span>
+            <span class="dot" data-dot="11"></span>
+            <span class="dot" data-dot="12"></span>
         </div>
 
     </div>
