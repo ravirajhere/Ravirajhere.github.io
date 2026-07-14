@@ -1,11 +1,42 @@
 // ============================================================
 // EBOOK.JS — PROFESSIONAL EBOOK GENERATOR
-// 20+ YEAR PRO TOUCH · EVERY SECTION NEW PAGE
+// 30+ YEAR PRO TOUCH · EVERY SECTION NEW PAGE
 // COVER · TITLE · TOC · ABOUT · OVERVIEW · 12 CHAPTERS · EMOTIONAL MESSAGE
 // ============================================================
 
 // ============================================================
-// 1. LAZY LOAD PDF LIBRARY
+// 1. SHOW TOAST (Global Access)
+// ============================================================
+function showToast(message, type = '') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.className = 'toast';
+    if (type) {
+        toast.classList.add(type);
+    }
+    toast.classList.add('show');
+    
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// ============================================================
+// 2. CLOSE MODAL (Global Access)
+// ============================================================
+function closeModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// ============================================================
+// 3. LAZY LOAD PDF LIBRARY
 // ============================================================
 function loadPDFLibrary() {
     return new Promise((resolve) => {
@@ -21,7 +52,7 @@ function loadPDFLibrary() {
 }
 
 // ============================================================
-// 2. MAKE ALL CHAPTERS VISIBLE
+// 4. MAKE ALL CHAPTERS VISIBLE
 // ============================================================
 function makeAllChaptersVisible(lang) {
     const enContainer = document.getElementById('chaptersEn');
@@ -77,7 +108,7 @@ function restoreChapterVisibility(lang, activeIndex) {
 }
 
 // ============================================================
-// 3. WAIT FOR RENDER
+// 5. WAIT FOR RENDER
 // ============================================================
 function waitForRender() {
     return new Promise((resolve) => {
@@ -86,7 +117,7 @@ function waitForRender() {
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         document.body.offsetHeight;
-                        setTimeout(resolve, 2800);
+                        setTimeout(resolve, 3000);
                     });
                 });
             });
@@ -95,7 +126,7 @@ function waitForRender() {
 }
 
 // ============================================================
-// 4. CREATE PAGE BREAK DIV (PROFESSIONAL FIX)
+// 6. CREATE PAGE BREAK DIV (PROFESSIONAL FIX)
 // ============================================================
 function createPageBreakDiv() {
     const div = document.createElement('div');
@@ -114,10 +145,9 @@ function createPageBreakDiv() {
 }
 
 // ============================================================
-// 5. APPLY PROFESSIONAL BOOK STYLES
+// 7. APPLY PROFESSIONAL BOOK STYLES
 // ============================================================
 function applyProfessionalStyles(clone) {
-    // ---- ALL PARAGRAPHS ----
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#2d2d2d';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -128,7 +158,6 @@ function applyProfessionalStyles(clone) {
         el.style.textIndent = '0px';
     });
     
-    // ---- CHAPTER HEADINGS ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Space Grotesk', 'Arial', sans-serif";
@@ -140,12 +169,10 @@ function applyProfessionalStyles(clone) {
         el.style.letterSpacing = '1.5px';
         el.style.textTransform = 'uppercase';
         
-        // Remove emoji from title text if present
         const text = el.textContent;
         el.textContent = text.replace(/[^\w\s\-\.]/g, '').trim();
     });
     
-    // ---- DECORATIVE LINE AFTER CHAPTER TITLE ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         const line = document.createElement('div');
         line.style.cssText = `
@@ -157,13 +184,11 @@ function applyProfessionalStyles(clone) {
         el.parentNode.insertBefore(line, el.nextSibling);
     });
     
-    // ---- STRONG TEXT ----
     clone.querySelectorAll('.chapter strong').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontWeight = '700';
     });
     
-    // ---- LIST ITEMS ----
     clone.querySelectorAll('.chapter ul li').forEach(el => {
         el.style.color = '#2d2d2d';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -172,7 +197,6 @@ function applyProfessionalStyles(clone) {
         el.style.marginBottom = '6px';
     });
     
-    // ---- QUOTE BOXES ----
     clone.querySelectorAll('.quote-box').forEach(el => {
         el.style.color = '#2d2d2d';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -196,7 +220,6 @@ function applyProfessionalStyles(clone) {
         el.style.fontFamily = "'Space Grotesk', sans-serif";
     });
     
-    // ---- FRIEND MEMORY PDF ----
     clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
         el.style.color = '#2d2d2d';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -211,7 +234,6 @@ function applyProfessionalStyles(clone) {
         el.style.color = '#DAA520';
     });
     
-    // ---- READING TIME ----
     clone.querySelectorAll('.reading-time').forEach(el => {
         el.style.color = '#999999';
         el.style.fontFamily = "'Space Grotesk', sans-serif";
@@ -225,7 +247,6 @@ function applyProfessionalStyles(clone) {
         el.style.color = '#6c5ce7';
     });
     
-    // ---- FAMILY ITEMS ----
     clone.querySelectorAll('.family-item').forEach(el => {
         el.style.background = 'rgba(0,0,0,0.02)';
         el.style.border = '1px solid #e8e8e8';
@@ -249,7 +270,6 @@ function applyProfessionalStyles(clone) {
         el.style.fontFamily = "'Space Grotesk', sans-serif";
     });
     
-    // ---- TEACHER TRIBUTE ----
     clone.querySelectorAll('.teacher-tribute').forEach(el => {
         el.style.background = 'rgba(108,92,231,0.04)';
         el.style.border = '1px solid rgba(108,92,231,0.12)';
@@ -274,21 +294,21 @@ function applyProfessionalStyles(clone) {
 }
 
 // ============================================================
-// 6. DOWNLOAD EBOOK — ENGLISH
+// 8. DOWNLOAD EBOOK — ENGLISH
 // ============================================================
 async function downloadEnglishEbook() {
     await downloadEbook('en', 'English');
 }
 
 // ============================================================
-// 7. DOWNLOAD EBOOK — HINGLISH
+// 9. DOWNLOAD EBOOK — HINGLISH
 // ============================================================
 async function downloadHinglishEbook() {
     await downloadEbook('hi', 'Hinglish');
 }
 
 // ============================================================
-// 8. MAIN EBOOK GENERATOR (20+ YEAR PRO TOUCH)
+// 10. MAIN EBOOK GENERATOR (30+ YEAR PRO TOUCH)
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -356,18 +376,17 @@ async function downloadEbook(lang, langLabel) {
     // ---- APPLY PROFESSIONAL STYLES ----
     applyProfessionalStyles(clone);
     
-    // ---- CREATE A NEW DOCUMENT FOR PDF ----
+    // ---- CREATE PDF DOCUMENT ----
     const pdfDoc = document.createElement('div');
     pdfDoc.style.cssText = `
         max-width: 100%;
         margin: 0 auto;
         background: #ffffff;
         font-family: 'Georgia', 'Times New Roman', serif;
+        padding: 0;
     `;
     
-    // ============================================================
-    // 8a. COVER PAGE (NEW PAGE)
-    // ============================================================
+    // ---- COVER PAGE ----
     const coverSection = document.createElement('div');
     coverSection.style.cssText = `
         page-break-after: always;
@@ -385,12 +404,7 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(coverSection);
     
-    // ---- PAGE BREAK ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8b. TITLE PAGE (NEW PAGE)
-    // ============================================================
+    // ---- TITLE PAGE ----
     const titleSection = document.createElement('div');
     titleSection.style.cssText = `
         page-break-after: always;
@@ -416,12 +430,7 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(titleSection);
     
-    // ---- PAGE BREAK ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8c. TABLE OF CONTENTS (NEW PAGE)
-    // ============================================================
+    // ---- TABLE OF CONTENTS ----
     const tocSection = document.createElement('div');
     tocSection.style.cssText = `
         page-break-after: always;
@@ -454,12 +463,7 @@ async function downloadEbook(lang, langLabel) {
     tocSection.innerHTML = tocHTML;
     pdfDoc.appendChild(tocSection);
     
-    // ---- PAGE BREAK ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8d. ABOUT THE AUTHOR (NEW PAGE)
-    // ============================================================
+    // ---- ABOUT THE AUTHOR ----
     const aboutSection = document.createElement('div');
     aboutSection.style.cssText = `
         page-break-after: always;
@@ -500,12 +504,7 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(aboutSection);
     
-    // ---- PAGE BREAK ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8e. OVERVIEW (NEW PAGE)
-    // ============================================================
+    // ---- OVERVIEW ----
     const overviewSection = document.createElement('div');
     overviewSection.style.cssText = `
         page-break-after: always;
@@ -548,12 +547,7 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(overviewSection);
     
-    // ---- PAGE BREAK ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8f. ALL CHAPTERS (EACH NEW PAGE)
-    // ============================================================
+    // ---- ALL CHAPTERS ----
     const chapterElements = clone.querySelectorAll('.chapter');
     chapterElements.forEach((ch, index) => {
         const chapterSection = document.createElement('div');
@@ -568,14 +562,9 @@ async function downloadEbook(lang, langLabel) {
             justify-content: flex-start;
         `;
         
-        // Clone the chapter content
         const chapterClone = ch.cloneNode(true);
-        
-        // Remove any remaining interactive elements
         chapterClone.querySelectorAll('.copy-link-btn').forEach(el => el.remove());
         chapterClone.querySelectorAll('.nav-buttons').forEach(el => el.remove());
-        
-        // Fix photo placeholders
         chapterClone.querySelectorAll('.upload-hint').forEach(el => {
             el.textContent = '📸 Photo';
         });
@@ -583,18 +572,12 @@ async function downloadEbook(lang, langLabel) {
         chapterSection.appendChild(chapterClone);
         pdfDoc.appendChild(chapterSection);
         
-        // Add page break after each chapter (except last)
         if (index < chapterElements.length - 1) {
             pdfDoc.appendChild(createPageBreakDiv());
         }
     });
     
-    // ---- PAGE BREAK BEFORE LAST PAGE ----
-    pdfDoc.appendChild(createPageBreakDiv());
-    
-    // ============================================================
-    // 8g. EMOTIONAL MESSAGE PAGE (NEW PAGE)
-    // ============================================================
+    // ---- EMOTIONAL MESSAGE PAGE ----
     const emotionalSection = document.createElement('div');
     emotionalSection.style.cssText = `
         page-break-after: always;
@@ -624,6 +607,9 @@ async function downloadEbook(lang, langLabel) {
     `;
     pdfDoc.appendChild(emotionalSection);
     
+    // ---- ATTACH TO DOM (CRITICAL FIX) ----
+    document.body.appendChild(pdfDoc);
+    
     // ---- GENERATE PDF ----
     const opt = {
         margin: [20, 20, 20, 20],
@@ -645,16 +631,19 @@ async function downloadEbook(lang, langLabel) {
     };
     
     html2pdf().set(opt).from(pdfDoc).save().then(() => {
+        document.body.removeChild(pdfDoc);
         showToast(`✅ ${langLabel} ebook downloaded!`, 'success');
     }).catch((err) => {
+        document.body.removeChild(pdfDoc);
         console.error('PDF Error:', err);
         showToast('❌ Download failed. Please try again.', 'error');
     });
 }
 
 // ============================================================
-// 9. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 11. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.downloadEnglishEbook = downloadEnglishEbook;
 window.downloadHinglishEbook = downloadHinglishEbook;
 window.showToast = showToast;
+window.closeModal = closeModal;
