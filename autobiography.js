@@ -1,14 +1,57 @@
 // ============================================================
-// AUTOBIOGRAPHY.JS — COMPLETE WITH DOWNLOAD + QR FEATURES
+// AUTOBIOGRAPHY.JS — MOBILE-OPTIMIZED VERSION
 // ============================================================
 
 // ---- GLOBAL VARIABLES ----
 let currentLang = 'en';
 const totalChapters = 12;
-let qrInstances = {};
+let isMobile = window.innerWidth < 768;
+let qrGenerated = false;
+let pdfLoaded = false;
+let scrollTimeout = null;
 
 // ============================================================
-// 1. LANGUAGE TOGGLE
+// 1. MOBILE DETECTION
+// ============================================================
+function checkMobile() {
+    isMobile = window.innerWidth < 768;
+    return isMobile;
+}
+
+// ============================================================
+// 2. LAZY LOAD QR (Only when needed)
+// ============================================================
+function loadQRCodeLibrary() {
+    return new Promise((resolve) => {
+        if (typeof QRCode !== 'undefined') {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+        script.onload = resolve;
+        document.head.appendChild(script);
+    });
+}
+
+// ============================================================
+// 3. LAZY LOAD PDF LIBRARY (Only on download click)
+// ============================================================
+function loadPDFLibrary() {
+    return new Promise((resolve) => {
+        if (typeof html2pdf !== 'undefined') {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = resolve;
+        document.head.appendChild(script);
+    });
+}
+
+// ============================================================
+// 4. LANGUAGE TOGGLE
 // ============================================================
 function switchLang(lang) {
     currentLang = lang;
@@ -31,12 +74,12 @@ function switchLang(lang) {
         resetChapters('hi');
     }
     
-    // Regenerate QR codes for new language
-    setTimeout(generateAllQRs, 300);
+    // Regenerate QR only if user scrolls to gallery
+    qrGenerated = false;
 }
 
 // ============================================================
-// 2. RESET CHAPTERS
+// 5. RESET CHAPTERS
 // ============================================================
 function resetChapters(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -59,7 +102,7 @@ function resetChapters(lang) {
 }
 
 // ============================================================
-// 3. NEXT CHAPTER
+// 6. NEXT CHAPTER
 // ============================================================
 function nextChapter(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -82,15 +125,18 @@ function nextChapter(lang) {
         updateReadingProgress(lang);
         updateModalChapterName(lang);
         
+        // Mobile: smooth scroll only if needed
         const wrapper = document.querySelector('.autobio-wrapper');
-        if (wrapper) {
+        if (wrapper && !isMobile) {
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (wrapper) {
+            wrapper.scrollIntoView({ block: 'start' });
         }
     }
 }
 
 // ============================================================
-// 4. PREVIOUS CHAPTER
+// 7. PREVIOUS CHAPTER
 // ============================================================
 function prevChapter(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -114,14 +160,16 @@ function prevChapter(lang) {
         updateModalChapterName(lang);
         
         const wrapper = document.querySelector('.autobio-wrapper');
-        if (wrapper) {
+        if (wrapper && !isMobile) {
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (wrapper) {
+            wrapper.scrollIntoView({ block: 'start' });
         }
     }
 }
 
 // ============================================================
-// 5. UPDATE BUTTON STATES
+// 8. UPDATE BUTTON STATES
 // ============================================================
 function updateAllButtons(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -145,7 +193,7 @@ function updateAllButtons(lang) {
 }
 
 // ============================================================
-// 6. UPDATE CHAPTER PROGRESS INFO
+// 9. UPDATE CHAPTER PROGRESS INFO
 // ============================================================
 function updateProgressInfo(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -176,7 +224,7 @@ function updateProgressInfo(lang) {
 }
 
 // ============================================================
-// 7. UPDATE PROGRESS DOTS
+// 10. UPDATE PROGRESS DOTS
 // ============================================================
 function updateDots(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -203,7 +251,7 @@ function updateDots(lang) {
 }
 
 // ============================================================
-// 8. UPDATE READING PROGRESS BAR
+// 11. UPDATE READING PROGRESS BAR (Throttled)
 // ============================================================
 function updateReadingProgress(lang) {
     const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -227,50 +275,29 @@ function updateReadingProgress(lang) {
 }
 
 // ============================================================
-// 9. UPDATE MODAL CHAPTER NAME
-// ============================================================
-function updateModalChapterName(lang) {
-    const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
-    const container = document.getElementById(containerId);
-    const chapters = container.querySelectorAll('.chapter');
-    let currentIndex = -1;
-    let chapterTitle = '';
-    
-    chapters.forEach((ch, index) => {
-        if (ch.classList.contains('active')) {
-            currentIndex = index;
-            const h3 = ch.querySelector('h3');
-            if (h3) {
-                chapterTitle = h3.textContent.trim();
-            }
-        }
-    });
-    
-    const modalName = document.getElementById('modalChapterName');
-    if (modalName && chapterTitle) {
-        modalName.textContent = chapterTitle;
-    }
-}
-
-// ============================================================
-// 10. SCROLL PROGRESS BAR
+// 12. SCROLL PROGRESS BAR (Throttled for mobile)
 // ============================================================
 function updateScrollProgress() {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    if (scrollTimeout) return;
     
-    const progressBar = document.getElementById('progressBar');
-    if (progressBar) {
-        const chapterPercent = parseFloat(progressBar.style.width) || 0;
-        if (scrollPercent > 0) {
-            progressBar.style.width = Math.max(chapterPercent, scrollPercent) + '%';
+    scrollTimeout = setTimeout(() => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) {
+            const chapterPercent = parseFloat(progressBar.style.width) || 0;
+            if (scrollPercent > 0 && scrollPercent > chapterPercent) {
+                progressBar.style.width = Math.min(scrollPercent, 100) + '%';
+            }
         }
-    }
+        scrollTimeout = null;
+    }, isMobile ? 200 : 100);
 }
 
 // ============================================================
-// 11. BACK TO TOP
+// 13. BACK TO TOP
 // ============================================================
 function toggleBackToTop() {
     const btn = document.getElementById('backToTop');
@@ -289,11 +316,15 @@ function scrollToQRGallery() {
     const gallery = document.getElementById('qrGallery');
     if (gallery) {
         gallery.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Generate QR only when user scrolls to gallery
+        if (!qrGenerated) {
+            setTimeout(generateGalleryQRs, 300);
+        }
     }
 }
 
 // ============================================================
-// 12. READING MODE TOGGLE
+// 14. READING MODE TOGGLE
 // ============================================================
 function toggleReadingMode() {
     document.body.classList.toggle('reading-mode');
@@ -319,7 +350,7 @@ function loadReadingMode() {
 }
 
 // ============================================================
-// 13. SURPRISE ME
+// 15. SURPRISE ME
 // ============================================================
 function surpriseMe() {
     const randomChapter = Math.floor(Math.random() * totalChapters) + 1;
@@ -352,7 +383,7 @@ function surpriseMe() {
 }
 
 // ============================================================
-// 14. COPY CHAPTER LINK
+// 16. COPY CHAPTER LINK
 // ============================================================
 function copyChapterLink(chapterNum) {
     const url = window.location.href.split('#')[0] + `#chapter${chapterNum}`;
@@ -401,7 +432,7 @@ function showCopyFeedback(chapterNum) {
 }
 
 // ============================================================
-// 15. GOOGLE TRANSLATE
+// 17. GOOGLE TRANSLATE
 // ============================================================
 function openGoogleTranslate() {
     const url = window.location.href;
@@ -409,9 +440,11 @@ function openGoogleTranslate() {
 }
 
 // ============================================================
-// 16. KEYBOARD SHORTCUTS
+// 18. KEYBOARD SHORTCUTS (Mobile friendly)
 // ============================================================
 function handleKeyboardShortcuts(e) {
+    if (isMobile) return; // Disable keyboard shortcuts on mobile
+    
     if (e.key === 'ArrowLeft') {
         e.preventDefault();
         prevChapter(currentLang);
@@ -459,7 +492,7 @@ function handleKeyboardShortcuts(e) {
 }
 
 // ============================================================
-// 17. DOT CLICK NAVIGATION
+// 19. DOT CLICK NAVIGATION
 // ============================================================
 function setupDotNavigation() {
     const dots = document.querySelectorAll('.dot');
@@ -490,7 +523,7 @@ function setupDotNavigation() {
 }
 
 // ============================================================
-// 18. HANDLE CHAPTER HASH
+// 20. HANDLE CHAPTER HASH
 // ============================================================
 function handleChapterHash() {
     const hash = window.location.hash;
@@ -519,20 +552,32 @@ function handleChapterHash() {
 }
 
 // ============================================================
-// 19. SWIPE SUPPORT
+// 21. SWIPE SUPPORT (Mobile only)
 // ============================================================
 let touchStartX = 0;
 let touchEndX = 0;
+let isSwiping = false;
 
 function setupSwipeSupport() {
+    if (!isMobile) return;
+    
     const wrapper = document.querySelector('.autobio-wrapper');
     if (!wrapper) return;
     
     wrapper.addEventListener('touchstart', function(e) {
         touchStartX = e.changedTouches[0].screenX;
+        isSwiping = false;
+    }, { passive: true });
+    
+    wrapper.addEventListener('touchmove', function(e) {
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 20) {
+            isSwiping = true;
+        }
     }, { passive: true });
     
     wrapper.addEventListener('touchend', function(e) {
+        if (!isSwiping) return;
         touchEndX = e.changedTouches[0].screenX;
         handleSwipe();
     }, { passive: true });
@@ -552,7 +597,7 @@ function handleSwipe() {
 }
 
 // ============================================================
-// 20. TOAST NOTIFICATION
+// 22. TOAST NOTIFICATION
 // ============================================================
 function showToast(message, type = '') {
     const toast = document.getElementById('toast');
@@ -572,7 +617,7 @@ function showToast(message, type = '') {
 }
 
 // ============================================================
-// 21. DOWNLOAD MODAL
+// 23. DOWNLOAD MODAL
 // ============================================================
 function openModal() {
     const modal = document.getElementById('downloadModal');
@@ -588,6 +633,27 @@ function closeModal() {
     if (modal) {
         modal.classList.remove('active');
         document.body.style.overflow = '';
+    }
+}
+
+function updateModalChapterName(lang) {
+    const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
+    const container = document.getElementById(containerId);
+    const chapters = container.querySelectorAll('.chapter');
+    let chapterTitle = '';
+    
+    chapters.forEach((ch) => {
+        if (ch.classList.contains('active')) {
+            const h3 = ch.querySelector('h3');
+            if (h3) {
+                chapterTitle = h3.textContent.trim();
+            }
+        }
+    });
+    
+    const modalName = document.getElementById('modalChapterName');
+    if (modalName && chapterTitle) {
+        modalName.textContent = chapterTitle;
     }
 }
 
@@ -609,17 +675,22 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// 22. DOWNLOAD FULL BOOK PDF
+// 24. DOWNLOAD FULL BOOK PDF (Loads library on demand)
 // ============================================================
-function downloadFullPDF() {
+async function downloadFullPDF() {
     const wrapper = document.querySelector('.autobio-wrapper');
     if (!wrapper) {
         showToast('❌ Error: Content not found', 'error');
         return;
     }
     
-    showToast('📄 Generating PDF...', 'success');
+    showToast('📄 Loading PDF library...', 'success');
     closeModal();
+    
+    // Load PDF library only when needed
+    await loadPDFLibrary();
+    
+    showToast('📄 Generating PDF...', 'success');
     
     // Clone wrapper for PDF generation
     const clone = wrapper.cloneNode(true);
@@ -629,7 +700,7 @@ function downloadFullPDF() {
         '.lang-controls', '.download-actions', '.nav-buttons', 
         '.progress-dots', '.chapter-progress-info', '.copy-link-btn',
         '.chapter-qr', '.qr-gallery', '.back-to-top', '.reading-mode-toggle',
-        '.progress-bar'
+        '.progress-bar', '.toast', '.modal-overlay'
     ];
     removeSelectors.forEach(selector => {
         clone.querySelectorAll(selector).forEach(el => el.remove());
@@ -686,9 +757,9 @@ function downloadFullPDF() {
 }
 
 // ============================================================
-// 23. DOWNLOAD CHAPTER PDF
+// 25. DOWNLOAD CHAPTER PDF (Loads library on demand)
 // ============================================================
-function downloadChapterPDF() {
+async function downloadChapterPDF() {
     const containerId = currentLang === 'en' ? 'chaptersEn' : 'chaptersHi';
     const container = document.getElementById(containerId);
     const chapters = container.querySelectorAll('.chapter');
@@ -707,8 +778,13 @@ function downloadChapterPDF() {
         return;
     }
     
-    showToast('📄 Generating chapter PDF...', 'success');
+    showToast('📄 Loading PDF library...', 'success');
     closeModal();
+    
+    // Load PDF library only when needed
+    await loadPDFLibrary();
+    
+    showToast('📄 Generating chapter PDF...', 'success');
     
     // Clone chapter
     const clone = activeChapter.cloneNode(true);
@@ -762,7 +838,7 @@ function downloadChapterPDF() {
 }
 
 // ============================================================
-// 24. DOWNLOAD TXT
+// 26. DOWNLOAD TXT
 // ============================================================
 function downloadTXT() {
     const containerId = currentLang === 'en' ? 'chaptersEn' : 'chaptersHi';
@@ -784,7 +860,6 @@ function downloadTXT() {
         
         const paragraphs = ch.querySelectorAll('p');
         paragraphs.forEach(p => {
-            // Skip empty or system paragraphs
             if (p.textContent.trim() && !p.textContent.includes('min read')) {
                 text += p.textContent.trim() + '\n\n';
             }
@@ -818,7 +893,7 @@ function downloadTXT() {
 }
 
 // ============================================================
-// 25. PRINT
+// 27. PRINT
 // ============================================================
 function printBook() {
     closeModal();
@@ -828,9 +903,9 @@ function printBook() {
 }
 
 // ============================================================
-// 26. QR CODE GENERATION
+// 28. QR CODE GENERATION (Only when needed)
 // ============================================================
-function generateQR(containerId, chapterNum, lang) {
+async function generateQR(containerId, chapterNum) {
     const container = document.getElementById(containerId);
     if (!container) return;
     
@@ -839,43 +914,39 @@ function generateQR(containerId, chapterNum, lang) {
     
     const url = window.location.href.split('#')[0] + `#chapter${chapterNum}`;
     
+    // Load QR library only when needed
+    await loadQRCodeLibrary();
+    
     try {
-        const qr = new QRCode(container, {
+        new QRCode(container, {
             text: url,
-            width: 80,
-            height: 80,
+            width: isMobile ? 60 : 80,
+            height: isMobile ? 60 : 80,
             colorDark: '#DAA520',
             colorLight: '#0a0a0f',
             correctLevel: QRCode.CorrectLevel.H
         });
-        qrInstances[containerId] = qr;
     } catch (e) {
-        // QRCode library might not be loaded yet
         container.innerHTML = `<span style="font-size:10px;color:var(--text3);">📱 QR</span>`;
     }
 }
 
-function generateAllQRs() {
-    // English QR codes
-    for (let i = 1; i <= totalChapters; i++) {
-        const containerId = `qr-ch${i}-en`;
-        generateQR(containerId, i, 'en');
-    }
-    
-    // Hinglish QR codes
-    for (let i = 1; i <= totalChapters; i++) {
-        const containerId = `qr-ch${i}-hi`;
-        generateQR(containerId, i, 'hi');
-    }
-    
-    // Gallery QR codes
-    generateGalleryQRs();
-}
+// ============================================================
+// 29. GENERATE GALLERY QR (Lazy load on scroll)
+// ============================================================
+let galleryQRGenerated = false;
 
-function generateGalleryQRs() {
+async function generateGalleryQRs() {
+    if (galleryQRGenerated) return;
+    galleryQRGenerated = true;
+    
+    // Load QR library first
+    await loadQRCodeLibrary();
+    
     const grid = document.getElementById('qrGrid');
     if (!grid) return;
     
+    // Clear grid first
     grid.innerHTML = '';
     
     for (let i = 1; i <= totalChapters; i++) {
@@ -904,8 +975,8 @@ function generateGalleryQRs() {
         try {
             new QRCode(qrContainer, {
                 text: url,
-                width: 100,
-                height: 100,
+                width: isMobile ? 80 : 100,
+                height: isMobile ? 80 : 100,
                 colorDark: '#DAA520',
                 colorLight: '#0a0a0f',
                 correctLevel: QRCode.CorrectLevel.H
@@ -917,12 +988,11 @@ function generateGalleryQRs() {
 }
 
 // ============================================================
-// 27. DOWNLOAD ALL QR CODES
+// 30. DOWNLOAD ALL QR CODES
 // ============================================================
 function downloadAllQR() {
     showToast('📱 Generating QR codes...', 'success');
     
-    // Collect all QR canvas elements
     const canvases = [];
     const galleryItems = document.querySelectorAll('.qr-item');
     
@@ -941,8 +1011,6 @@ function downloadAllQR() {
         return;
     }
     
-    // Download first QR as sample (or all in zip if we had JSZip)
-    // For simplicity, download all as individual images
     canvases.forEach((item, idx) => {
         setTimeout(() => {
             const link = document.createElement('a');
@@ -960,9 +1028,35 @@ function downloadAllQR() {
 }
 
 // ============================================================
-// 28. INITIALIZATION
+// 31. INTERSECTION OBSERVER FOR QR (Mobile performance)
+// ============================================================
+function setupQRIntersectionObserver() {
+    if (!isMobile) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const gallery = document.getElementById('qrGallery');
+                if (gallery && !galleryQRGenerated) {
+                    generateGalleryQRs();
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    const gallery = document.getElementById('qrGallery');
+    if (gallery) {
+        observer.observe(gallery);
+    }
+}
+
+// ============================================================
+// 32. INITIALIZATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
+    // Check mobile
+    checkMobile();
+    
     currentLang = 'en';
     
     document.getElementById('chaptersEn').style.display = 'block';
@@ -974,31 +1068,47 @@ document.addEventListener('DOMContentLoaded', function() {
     setupDotNavigation();
     setupSwipeSupport();
     
-    document.addEventListener('keydown', handleKeyboardShortcuts);
+    // Keyboard shortcuts (only desktop)
+    if (!isMobile) {
+        document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
     
+    // Scroll events with throttling
     window.addEventListener('scroll', function() {
         toggleBackToTop();
         updateScrollProgress();
-    });
+    }, { passive: true });
     
-    // Generate QR codes
-    setTimeout(() => {
-        generateAllQRs();
-    }, 500);
+    // Generate chapter QR only when needed (lazy)
+    // Instead of generating all 24 QR, generate on demand
+    
+    // Setup QR gallery observer for mobile
+    setupQRIntersectionObserver();
     
     // Update scroll progress on load
     setTimeout(updateScrollProgress, 600);
+    
+    // Update mobile status on resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const wasMobile = isMobile;
+            checkMobile();
+            if (wasMobile !== isMobile) {
+                // Mobile status changed
+                if (isMobile) {
+                    document.removeEventListener('keydown', handleKeyboardShortcuts);
+                } else {
+                    document.addEventListener('keydown', handleKeyboardShortcuts);
+                }
+            }
+        }, 300);
+    }, { passive: true });
 });
 
 // ============================================================
-// 29. WINDOW RESIZE HANDLER
-// ============================================================
-window.addEventListener('resize', function() {
-    // Regenerate QR codes on resize if needed
-});
-
-// ============================================================
-// 30. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 33. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.switchLang = switchLang;
 window.nextChapter = nextChapter;
@@ -1016,5 +1126,5 @@ window.downloadChapterPDF = downloadChapterPDF;
 window.downloadTXT = downloadTXT;
 window.printBook = printBook;
 window.downloadAllQR = downloadAllQR;
-window.generateAllQRs = generateAllQRs;
+window.generateGalleryQRs = generateGalleryQRs;
 window.showToast = showToast;
