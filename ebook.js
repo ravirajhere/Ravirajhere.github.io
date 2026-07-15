@@ -1,6 +1,8 @@
 // ============================================================
-// EBOOK.JS — PROFESSIONAL BOOK GENERATOR (PREMIUM QUALITY)
-// HEADER + FOOTER · PAGE NUMBERS · CLICKABLE SOCIAL LINKS · QR CODE
+// EBOOK.JS — PROFESSIONAL BOOK GENERATOR (FINAL)
+// FULL BOOK STRUCTURE: COVER · COPYRIGHT · HALF TITLE · TITLE ·
+// DEDICATION · PREFACE · ACKNOWLEDGEMENTS · TOC · OVERVIEW ·
+// 12 CHAPTERS · CONCLUSION · ABOUT AUTHOR · EMOTIONAL MESSAGE
 // ============================================================
 
 // ============================================================
@@ -142,7 +144,7 @@ function waitForRender() {
 // ============================================================
 // 6. GENERATE QR CODE
 // ============================================================
-function generateQRCode(data, size = 100) {
+function generateQRCode(data, size = 120) {
     return new Promise((resolve) => {
         const container = document.createElement('div');
         container.style.width = size + 'px';
@@ -158,7 +160,6 @@ function generateQRCode(data, size = 100) {
                 correctLevel: QRCode.CorrectLevel.H
             });
             
-            // Wait for QR to render
             setTimeout(() => {
                 const canvas = container.querySelector('canvas');
                 if (canvas) {
@@ -332,7 +333,7 @@ async function downloadHinglishEbook() {
 }
 
 // ============================================================
-// 10. MAIN EBOOK GENERATOR (WITH HEADER, FOOTER, QR CODE)
+// 10. MAIN EBOOK GENERATOR
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -408,13 +409,11 @@ async function downloadEbook(lang, langLabel) {
     // ---- CREATE SECTIONS ----
     const sections = [];
     let pageNum = 1;
-    const totalPages = 19; // Approximate, will be updated later
     
     // Helper to add header and footer
-    function addHeaderFooter(element, chapterTitle = '', isCover = false, isTitlePage = false, isTOC = false, isAbout = false, isOverview = false, isEmotional = false) {
-        if (isCover) return;
+    function addHeaderFooter(element, chapterTitle = '', isCover = false, noHeaderFooter = false) {
+        if (isCover || noHeaderFooter) return;
         
-        // ---- HEADER ----
         const header = document.createElement('div');
         header.style.cssText = `
             display: flex;
@@ -433,7 +432,6 @@ async function downloadEbook(lang, langLabel) {
         `;
         element.insertBefore(header, element.firstChild);
         
-        // ---- FOOTER ----
         const footer = document.createElement('div');
         footer.style.cssText = `
             display: flex;
@@ -451,16 +449,66 @@ async function downloadEbook(lang, langLabel) {
             <span>Page ${pageNum}</span>
         `;
         element.appendChild(footer);
+        pageNum++;
     }
     
-    // 1. Cover
+    // ============================================================
+    // PAGE 1: COVER
+    // ============================================================
     const cover = document.createElement('div');
     cover.style.cssText = `padding:0;margin:0;background:#ffffff;`;
     cover.innerHTML = `<img src="bookcover.jpg" alt="Book Cover" style="width:100%;height:auto;display:block;">`;
     sections.push(cover);
     pageNum++;
     
-    // 2. Title Page
+    // ============================================================
+    // PAGE 2: HALF TITLE PAGE
+    // ============================================================
+    const halfTitle = document.createElement('div');
+    halfTitle.style.cssText = `text-align:center;padding:120px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    halfTitle.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <h1 style="font-size:48px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;letter-spacing:3px;">My Autobiography</h1>
+        </div>
+    `;
+    addHeaderFooter(halfTitle, '', false, true);
+    sections.push(halfTitle);
+    
+    // ============================================================
+    // PAGE 3: COPYRIGHT PAGE
+    // ============================================================
+    const copyright = document.createElement('div');
+    copyright.style.cssText = `padding:80px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    copyright.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:450px;margin:0 auto;">
+            <h2 style="font-size:14px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
+            <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">
+                © 2026 Ravi Raj<br>
+                All rights reserved.
+            </p>
+            <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">
+                No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.
+            </p>
+            <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">
+                <strong>Published by</strong><br>
+                RAVI RAJ PUBLICATION<br>
+                Patna, India
+            </p>
+            <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">
+                This book is not for sale.<br>
+                For personal use only.
+            </p>
+            <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;">
+                First Edition: ${new Date().getFullYear()}
+            </p>
+        </div>
+    `;
+    addHeaderFooter(copyright, 'Copyright', false, true);
+    sections.push(copyright);
+    
+    // ============================================================
+    // PAGE 4: TITLE PAGE
+    // ============================================================
     const title = document.createElement('div');
     title.style.cssText = `text-align:center;padding:80px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     title.innerHTML = `
@@ -477,9 +525,83 @@ async function downloadEbook(lang, langLabel) {
     `;
     addHeaderFooter(title, '', false, true);
     sections.push(title);
-    pageNum++;
     
-    // 3. Table of Contents
+    // ============================================================
+    // PAGE 5: DEDICATION
+    // ============================================================
+    const dedication = document.createElement('div');
+    dedication.style.cssText = `text-align:center;padding:100px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    dedication.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto;font-style:italic;">
+                To my parents, who gave me<br>
+                the courage to dream.
+            </p>
+            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:20px auto;font-style:italic;">
+                To my siblings, who taught me<br>
+                patience and love.
+            </p>
+            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto 30px auto;font-style:italic;">
+                To my friends, who never let me feel alone.
+            </p>
+            <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
+            <p style="font-size:18px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
+        </div>
+    `;
+    addHeaderFooter(dedication, 'Dedication', false, true);
+    sections.push(dedication);
+    
+    // ============================================================
+    // PAGE 6: PREFACE
+    // ============================================================
+    const preface = document.createElement('div');
+    preface.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    preface.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
+            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.
+            </p>
+            <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
+            <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
+        </div>
+    `;
+    addHeaderFooter(preface, 'Preface', false, true);
+    sections.push(preface);
+    
+    // ============================================================
+    // PAGE 7: ACKNOWLEDGEMENTS
+    // ============================================================
+    const acknowledgements = document.createElement('div');
+    acknowledgements.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    acknowledgements.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
+            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                First and foremost, I would like to thank my parents for their unwavering support and encouragement.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                I am also grateful to my teachers who guided me and shaped my thinking.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                A special thanks to my friends who stood by me through thick and thin.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;">
+                And to everyone who believed in me when I didn't believe in myself.
+            </p>
+            <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
+            <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
+        </div>
+    `;
+    addHeaderFooter(acknowledgements, 'Acknowledgements', false, true);
+    sections.push(acknowledgements);
+    
+    // ============================================================
+    // PAGE 8: TABLE OF CONTENTS
+    // ============================================================
     const toc = document.createElement('div');
     toc.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     let tocHTML = `
@@ -491,8 +613,7 @@ async function downloadEbook(lang, langLabel) {
         const h3 = ch.querySelector('h3');
         let titleText = h3 ? h3.textContent.trim() : `Chapter ${idx+1}`;
         titleText = titleText.replace(/[^\w\s\-\.]/g, '').trim();
-        const pageNumDisplay = idx + 9;
-        const dots = '.'.repeat(Math.max(40 - titleText.length - pageNumDisplay.toString().length, 10));
+        const pageNumDisplay = idx + 14;
         tocHTML += `
             <li style="border-bottom:1px solid #f0f0f0;padding:4px 0;display:flex;justify-content:space-between;">
                 <span style="color:#1a1a1a;font-family:'Space Grotesk',sans-serif;font-size:15px;">${titleText}</span>
@@ -502,88 +623,24 @@ async function downloadEbook(lang, langLabel) {
     });
     tocHTML += `</ul>`;
     toc.innerHTML = tocHTML;
-    addHeaderFooter(toc, 'Table of Contents', false, false, true);
+    addHeaderFooter(toc, 'Table of Contents', false, true);
     sections.push(toc);
-    pageNum++;
     
-    // 4. About the Author (WITH SOCIAL LINKS + QR CODE)
-    const about = document.createElement('div');
-    about.style.cssText = `text-align:center;padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
-    const qrImg = qrDataUrl ? `<img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">` : '';
-    about.innerHTML = `
-        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
-            <div style="width:120px;height:120px;border-radius:50%;border:3px solid #DAA520;margin:0 auto 16px;overflow:hidden;">
-                <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" style="width:100%;height:100%;object-fit:cover;">
-            </div>
-            <p style="font-size:24px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin:4px 0;">Ravi Raj</p>
-            <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
-            <div style="max-width:550px;margin:0 auto;">
-                <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;">
-                    Ravi Raj was born on 13 March 2008 in Begusarai, Bihar. A self-taught developer, 
-                    he discovered coding in 2020 and has since built over 5 projects. He is currently 
-                    learning JavaScript and dreams of launching his own startup. When not coding, 
-                    he enjoys reading novels and cycling.
-                </p>
-            </div>
-            <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
-            <p style="font-size:18px;font-style:italic;color:#6c5ce7;font-family:'Georgia',serif;">
-                "Somewhere Between I Want It & I Got It"
-            </p>
-            
-            <!-- SOCIAL LINKS -->
-            <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
-            <p style="font-size:16px;font-weight:600;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:12px;letter-spacing:1px;">CONNECT WITH ME</p>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;max-width:350px;margin:0 auto;font-size:14px;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;">
-                <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
-                    <span>📸 Instagram</span>
-                    <a href="https://instagram.com/rravirajhere" style="color:#DAA520;text-decoration:none;">@rravirajhere</a>
-                </div>
-                <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
-                    <span>💼 LinkedIn</span>
-                    <a href="https://linkedin.com/in/ravirajhere" style="color:#DAA520;text-decoration:none;">@ravirajhere</a>
-                </div>
-                <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
-                    <span>🌐 Website</span>
-                    <a href="https://raviraj2k09.github.io" style="color:#DAA520;text-decoration:none;">raviraj2k09.github.io</a>
-                </div>
-                <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;">
-                    <span>💬 WhatsApp</span>
-                    <a href="https://wa.me/91XXXXXXXXXX" style="color:#DAA520;text-decoration:none;">@singh_ravirajhere</a>
-                </div>
-            </div>
-            
-            <!-- QR CODE -->
-            <div style="margin:16px auto 0 auto;">
-                ${qrImg}
-                <p style="font-size:11px;color:#999;font-family:'Space Grotesk',sans-serif;margin-top:4px;">Scan to visit my website</p>
-            </div>
-            
-            <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
-            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:8px;">
-                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">💻 3+ Years Coding</span>
-                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">🚀 5+ Projects</span>
-                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">📚 Loves Novels</span>
-            </div>
-        </div>
-    `;
-    addHeaderFooter(about, 'About the Author', false, false, false, true);
-    sections.push(about);
-    pageNum++;
-    
-    // 5. Overview
+    // ============================================================
+    // PAGE 9: OVERVIEW
+    // ============================================================
     const overview = document.createElement('div');
     overview.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     overview.innerHTML = `
-        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
             <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;text-align:center;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
-            <p style="font-size:17px;line-height:1.9;color:#1a1a1a;text-align:justify;max-width:550px;margin:0 auto;font-family:'Georgia',serif;">
+            <p style="font-size:17px;line-height:1.9;color:#1a1a1a;text-align:justify;font-family:'Georgia',serif;margin-bottom:20px;">
                 This autobiography takes you through the journey of Ravi Raj — from his humble beginnings in Begusarai, 
                 Bihar, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, 
                 friendships, struggles, and the joy of building something from nothing. A story of a boy who never 
                 thought he would, but did.
             </p>
-            <div style="width:60px;height:2px;background:#DAA520;margin:30px auto;"></div>
+            <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:450px;margin:0 auto;width:100%;">
                 <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
                     <span style="font-size:24px;font-weight:700;color:#DAA520;font-family:'Space Grotesk',sans-serif;">12</span>
@@ -604,11 +661,12 @@ async function downloadEbook(lang, langLabel) {
             </div>
         </div>
     `;
-    addHeaderFooter(overview, 'Overview', false, false, false, false, true);
+    addHeaderFooter(overview, 'Overview', false, true);
     sections.push(overview);
-    pageNum++;
     
-    // 6. Chapters
+    // ============================================================
+    // PAGES 10-21: CHAPTERS 1 TO 12
+    // ============================================================
     const chapterElements = clone.querySelectorAll('.chapter');
     chapterElements.forEach((ch, index) => {
         const section = document.createElement('div');
@@ -621,7 +679,6 @@ async function downloadEbook(lang, langLabel) {
             el.textContent = '📸 Photo';
         });
         
-        // Get chapter title for header
         const h3 = chapterClone.querySelector('h3');
         let chapterTitle = h3 ? h3.textContent.trim() : `Chapter ${index+1}`;
         chapterTitle = chapterTitle.replace(/[^\w\s\-\.]/g, '').trim();
@@ -629,10 +686,99 @@ async function downloadEbook(lang, langLabel) {
         section.appendChild(chapterClone);
         addHeaderFooter(section, chapterTitle);
         sections.push(section);
-        pageNum++;
     });
     
-    // 7. Emotional Message
+    // ============================================================
+    // PAGE 22: CONCLUSION
+    // ============================================================
+    const conclusion = document.createElement('div');
+    conclusion.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    conclusion.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
+            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;">
+                This is not the end of my story. It is just the beginning.
+            </p>
+            <p style="font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;">
+                The best is yet to come.
+            </p>
+            <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
+            <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
+        </div>
+    `;
+    addHeaderFooter(conclusion, 'Conclusion', false, true);
+    sections.push(conclusion);
+    
+    // ============================================================
+    // PAGE 23: ABOUT THE AUTHOR
+    // ============================================================
+    const about = document.createElement('div');
+    about.style.cssText = `text-align:center;padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    const qrImg = qrDataUrl ? `<img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">` : '';
+    about.innerHTML = `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
+            <div style="width:120px;height:120px;border-radius:50%;border:3px solid #DAA520;margin:0 auto 16px;overflow:hidden;">
+                <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <p style="font-size:24px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin:4px 0;">Ravi Raj</p>
+            <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
+            <div style="max-width:550px;margin:0 auto;">
+                <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;">
+                    Ravi Raj was born on 13 March 2008 in Begusarai, Bihar. A self-taught developer, 
+                    he discovered coding in 2020 and has since built over 5 projects. He is currently 
+                    learning JavaScript and dreams of launching his own startup. When not coding, 
+                    he enjoys reading novels and cycling.
+                </p>
+            </div>
+            <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
+            <p style="font-size:18px;font-style:italic;color:#6c5ce7;font-family:'Georgia',serif;">
+                "Somewhere Between I Want It & I Got It"
+            </p>
+            
+            <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
+            <p style="font-size:15px;font-weight:600;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:14px;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;">
+                <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
+                    <span>📸 Instagram</span>
+                    <a href="https://instagram.com/rravirajhere" style="color:#DAA520;text-decoration:none;">@rravirajhere</a>
+                </div>
+                <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
+                    <span>💼 LinkedIn</span>
+                    <a href="https://linkedin.com/in/ravirajhere" style="color:#DAA520;text-decoration:none;">@ravirajhere</a>
+                </div>
+                <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
+                    <span>🌐 Website</span>
+                    <a href="https://raviraj2k09.github.io" style="color:#DAA520;text-decoration:none;">raviraj2k09.github.io</a>
+                </div>
+                <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;">
+                    <span>💬 WhatsApp</span>
+                    <a href="https://wa.me/91XXXXXXXXXX" style="color:#DAA520;text-decoration:none;">@singh_ravirajhere</a>
+                </div>
+            </div>
+            
+            ${qrImg ? `<div style="margin:14px auto 0 auto;">${qrImg}<p style="font-size:10px;color:#999;font-family:'Space Grotesk',sans-serif;margin-top:4px;">Scan to visit my website</p></div>` : ''}
+            
+            <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
+            <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px;">
+                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">💻 3+ Years Coding</span>
+                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">🚀 5+ Projects</span>
+                <span style="background:#f5f5f5;padding:4px 16px;border-radius:20px;font-size:13px;color:#333;font-family:'Space Grotesk',sans-serif;">📚 Loves Novels</span>
+            </div>
+        </div>
+    `;
+    addHeaderFooter(about, 'About the Author', false, true);
+    sections.push(about);
+    
+    // ============================================================
+    // PAGE 24: EMOTIONAL MESSAGE
+    // ============================================================
     const emotional = document.createElement('div');
     emotional.style.cssText = `text-align:center;padding:80px 50px;background:#fafafa;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     emotional.innerHTML = `
@@ -651,7 +797,7 @@ async function downloadEbook(lang, langLabel) {
             <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Space Grotesk',sans-serif;">📖 From Begusarai to the World</p>
         </div>
     `;
-    addHeaderFooter(emotional, 'The End', false, false, false, false, false, true);
+    addHeaderFooter(emotional, 'The End', false, true);
     sections.push(emotional);
     
     // ---- GENERATE PDF ----
