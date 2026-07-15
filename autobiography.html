@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         /* ============================================================
-           ROOT VARIABLES — WEBSITE MATCH
+           ROOT VARIABLES
            ============================================================ */
         :root {
             --bg: #0a0a0f;
@@ -32,9 +32,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font);
@@ -52,13 +50,15 @@
 
         /* ---- READING MODE ---- */
         body.reading-mode {
-            background: #f5f0e8;
+            background: #f5efe8;
             color: #1a1a1a;
         }
         body.reading-mode .autobio-wrapper {
-            background: rgba(255, 252, 245, 0.95);
+            background: #fcf8f0;
             border-color: rgba(0, 0, 0, 0.08);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 2px 40px rgba(0, 0, 0, 0.08),
+                inset 0 0 60px rgba(200, 180, 160, 0.05);
         }
         body.reading-mode .autobio-wrapper::before { display: none; }
         body.reading-mode .chapter {
@@ -68,6 +68,9 @@
         body.reading-mode .chapter p,
         body.reading-mode .chapter li {
             color: #2a2a2a;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 18px;
+            line-height: 2;
         }
         body.reading-mode .chapter p strong { color: #0a0a0a; }
         body.reading-mode .stat-card {
@@ -116,11 +119,13 @@
         body.reading-mode .nav-btn {
             background: linear-gradient(135deg, #b8860b, #d4a017);
             color: #fff;
+            box-shadow: 0 4px 20px rgba(184, 134, 11, 0.3);
         }
         body.reading-mode .nav-btn.prev-btn {
             background: rgba(0, 0, 0, 0.06);
             color: #2a2a2a;
             border-color: rgba(0, 0, 0, 0.12);
+            box-shadow: none;
         }
         body.reading-mode .nav-btn.prev-btn:hover:not(:disabled) {
             background: rgba(0, 0, 0, 0.1);
@@ -128,7 +133,10 @@
         }
         body.reading-mode .back-link { color: #6c5ce7; }
         body.reading-mode .back-link:hover { color: #0a0a0a; }
-        body.reading-mode .chapter h3 { color: #6c5ce7; }
+        body.reading-mode .chapter h3 {
+            color: #1a1a1a;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
         body.reading-mode .family-item {
             background: rgba(0, 0, 0, 0.03);
             border-color: rgba(0, 0, 0, 0.08);
@@ -170,13 +178,31 @@
         body.reading-mode .modal-btn:hover {
             background: #d4a017;
         }
+        body.reading-mode .autobio-header h1 {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        body.reading-mode .chapter-progress-info .chapter-num { color: #6c5ce7; }
+        body.reading-mode .chapter-progress-info .chapter-percent { color: #b8860b; }
+        body.reading-mode .dot.active {
+            background: #b8860b;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+        }
+        body.reading-mode .reading-time span { color: #6c5ce7; }
+        body.reading-mode .toast {
+            background: rgba(255, 252, 245, 0.95);
+            border-color: rgba(0, 0, 0, 0.08);
+            color: #2a2a2a;
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-        body.reading-mode ::-webkit-scrollbar-track { background: #f5f0e8; }
+        body.reading-mode ::-webkit-scrollbar-track { background: #f5efe8; }
         body.reading-mode ::-webkit-scrollbar-thumb { background: #b8860b; }
 
         .autobio-wrapper {
@@ -242,13 +268,6 @@
             background-clip: text;
             margin-bottom: 2px;
             min-height: 48px;
-        }
-
-        body.reading-mode .autobio-header h1 {
-            background: linear-gradient(135deg, #b8860b, #d4a017);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .autobio-header .intro-line {
@@ -398,6 +417,41 @@
             transform: translateY(-2px) scale(1.02);
         }
 
+        /* ---- STICKY DOWNLOAD BUTTON ---- */
+        .download-sticky {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9998;
+        }
+
+        .download-sticky-btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(108, 92, 231, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .download-sticky-btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 12px 40px rgba(108, 92, 231, 0.5);
+        }
+
+        body.reading-mode .download-sticky-btn {
+            background: linear-gradient(135deg, #b8860b, #d4a017);
+            box-shadow: 0 8px 30px rgba(184, 134, 11, 0.4);
+        }
+
         /* ---- CHAPTER PROGRESS INFO ---- */
         .chapter-progress-info {
             display: flex;
@@ -418,9 +472,6 @@
         .chapter-progress-info .chapter-percent {
             color: var(--gold);
         }
-
-        body.reading-mode .chapter-progress-info .chapter-num { color: #6c5ce7; }
-        body.reading-mode .chapter-progress-info .chapter-percent { color: #b8860b; }
 
         /* ---- PROGRESS DOTS ---- */
         .progress-dots {
@@ -447,10 +498,6 @@
         .dot:hover {
             background: var(--accent2);
             transform: scale(1.1);
-        }
-        body.reading-mode .dot.active {
-            background: #b8860b;
-            box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
         }
 
         /* ---- BOOK CHAPTERS ---- */
@@ -517,21 +564,6 @@
             color: var(--accent2);
         }
 
-        /* ---- READING TIME ---- */
-        .reading-time {
-            font-size: 13px;
-            color: var(--text3);
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-        .reading-time span { color: var(--accent2); }
-
-        body.reading-mode .reading-time span { color: #6c5ce7; }
-
         /* ---- PHOTO PLACEHOLDER ---- */
         .chapter-photo-placeholder {
             margin: 20px 0 25px 0;
@@ -552,6 +584,8 @@
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .photo-slot:hover {
@@ -559,7 +593,7 @@
             background: rgba(218, 165, 32, 0.05);
         }
 
-        .upload-hint {
+        .photo-slot .upload-hint {
             color: var(--text3);
             font-size: 14px;
             letter-spacing: 1px;
@@ -567,6 +601,13 @@
             padding: 8px 20px;
             border-radius: 30px;
             border: 1px solid var(--border);
+        }
+
+        .photo-slot .fig-caption {
+            color: var(--text3);
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 4px;
         }
 
         .photo-slot.has-image {
@@ -580,6 +621,25 @@
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        .photo-slot.has-image .fig-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-style: italic;
+            text-align: center;
+            margin: 0;
+        }
+
+        body.reading-mode .photo-slot.has-image .fig-caption {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a1a;
         }
 
         /* ---- QUOTE BOXES ---- */
@@ -684,32 +744,6 @@
             margin-bottom: 12px;
         }
 
-        /* ---- COPY LINK ---- */
-        .copy-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            color: var(--text2);
-            font-size: 13px;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: var(--font);
-            margin-top: 10px;
-        }
-        .copy-link-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(218, 165, 32, 0.05);
-        }
-        .copy-link-btn.copied {
-            border-color: #4caf50;
-            color: #4caf50;
-        }
-
         /* ---- NAVIGATION BUTTONS ---- */
         .nav-buttons {
             display: flex;
@@ -812,7 +846,7 @@
             color: #b8860b;
         }
 
-        /* ---- DOWNLOAD MODAL (UPDATED) ---- */
+        /* ---- DOWNLOAD MODAL ---- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -911,21 +945,6 @@
             box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
         }
 
-        body.reading-mode .modal-content {
-            background: #fff;
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-        body.reading-mode .modal-content h2 { color: #1a1a1a; }
-        body.reading-mode .modal-option {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(0, 0, 0, 0.06);
-        }
-        body.reading-mode .modal-option .opt-title { color: #1a1a1a; }
-        body.reading-mode .modal-btn {
-            background: linear-gradient(135deg, #b8860b, #d4a017);
-            color: #fff;
-        }
-
         /* ---- TOAST NOTIFICATION ---- */
         .toast {
             position: fixed;
@@ -961,9 +980,43 @@
             color: #f44336;
         }
 
-        body.reading-mode .toast {
-            background: rgba(255, 252, 245, 0.95);
-            border-color: rgba(0, 0, 0, 0.08);
+        /* ---- THANK YOU NOTE ---- */
+        .thank-you-box {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.08), rgba(108, 92, 231, 0.08));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 30px 35px;
+            margin: 25px 0;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            transition: all var(--transition);
+        }
+
+        .thank-you-box h2 {
+            color: var(--gold);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .thank-you-box p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text2);
+        }
+
+        .thank-you-box .signature {
+            font-style: italic;
+            font-size: 20px;
+            color: var(--gold);
+            margin-top: 15px;
+        }
+
+        body.reading-mode .thank-you-box {
+            background: rgba(184, 134, 11, 0.06);
+            border-color: #b8860b;
+        }
+
+        body.reading-mode .thank-you-box p {
             color: #2a2a2a;
         }
 
@@ -984,6 +1037,22 @@
                 font-size: 12px;
             }
             .modal-content { padding: 30px 20px; }
+            .download-sticky {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+            }
+            .download-sticky-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            body.reading-mode .chapter p {
+                font-size: 16px;
+                line-height: 1.8;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1027,6 +1096,29 @@
             }
             .modal-btn { padding: 4px 14px; font-size: 12px; }
             .download-btn { padding: 6px 14px; font-size: 12px; }
+            .download-sticky {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            .download-sticky-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+                border-radius: 30px;
+            }
+            body.reading-mode .chapter p {
+                font-size: 15px;
+                line-height: 1.7;
+            }
+            .thank-you-box {
+                padding: 20px 16px;
+            }
+            .thank-you-box h2 {
+                font-size: 22px;
+            }
+            .thank-you-box p {
+                font-size: 16px;
+            }
         }
 
         /* ---- PRINT STYLES ---- */
@@ -1034,10 +1126,10 @@
             .reading-mode-toggle,
             .lang-controls,
             .nav-buttons,
-            .copy-link-btn,
             .progress-dots,
             .chapter-progress-info,
             .download-actions,
+            .download-sticky,
             .modal-overlay,
             .toast {
                 display: none !important;
@@ -1080,8 +1172,12 @@
             .intro-line { color: #b8860b; }
             .sub-line { color: #999; }
             .bio-line { color: #666; }
-            .reading-time { color: #999; }
-            .reading-time span { color: #6c5ce7; }
+            .thank-you-box {
+                border-color: #b8860b;
+                background: #f9f9f9;
+            }
+            .thank-you-box p { color: #333; }
+            .thank-you-box .signature { color: #b8860b; }
         }
     </style>
 </head>
@@ -1092,17 +1188,23 @@
         📖 Reading Mode
     </button>
 
+    <!-- ===== STICKY DOWNLOAD BUTTON ===== -->
+    <div class="download-sticky">
+        <button onclick="openModal()" class="download-sticky-btn">
+            📥 Download Ebook
+        </button>
+    </div>
+
     <!-- ===== TOAST NOTIFICATION ===== -->
     <div class="toast" id="toast"></div>
 
-    <!-- ===== DOWNLOAD MODAL (UPDATED — 2 OPTIONS) ===== -->
+    <!-- ===== DOWNLOAD MODAL ===== -->
     <div class="modal-overlay" id="downloadModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
             <h2>📥 Download Ebook</h2>
             <p class="modal-desc">Choose your preferred language</p>
             
-            <!-- Option 1: English -->
             <div class="modal-option">
                 <div class="opt-info">
                     <span class="opt-title">🇬🇧 English Ebook</span>
@@ -1111,7 +1213,6 @@
                 <button class="modal-btn" onclick="downloadEnglishEbook()">Download</button>
             </div>
             
-            <!-- Option 2: Hinglish -->
             <div class="modal-option">
                 <div class="opt-info">
                     <span class="opt-title">🗣️ Hinglish Ebook</span>
@@ -1165,15 +1266,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch1-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 1.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>I was born on 13 March 2008 in Begusarai, Bihar. My father told me that when I was born, my mother said, <em>"Name him Ravi, because he will bring light to this house."</em> Since then, I have been the light of my family.</p>
                 <p>My childhood memories are as many as any child from a small village could have. Cycling in the courtyard, sitting on the roof in the evening, and eating food cooked by my mother — all of these are still alive in my mind.</p>
                 <p>One day, I stole my sister's cycle and joined a race — and fell straight into a gutter! My father picked me up and said, <em>"Beta, pehle balance seekh, phir speed."</em> Today, I still love cycling — but I avoid gutters.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime1">3</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
@@ -1188,15 +1287,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch2-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>My first school was <strong>Gautam Buddha Global School</strong>. But the day I still remember is 2019 — when I took admission in Class 6 at <strong>Mother's Pride International School</strong>. The first day was nerve-wracking. New school, new faces, new class. But slowly, everything became normal.</p>
                 <p><strong>First friend:</strong> Ayush Singh — the one who made me feel like a new person.</p>
                 <p><strong>Unforgettable teacher:</strong> Binod Sir — he taught Hindi and gave me a new way to see life.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime2">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1211,6 +1308,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch3-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1218,9 +1316,6 @@
                 <p><strong>Favorite teacher:</strong> Binod Sir — he taught me that Hindi is not just a language, it's an emotion.</p>
                 <p><strong>Achievement:</strong> Passed 12th grade — a result of years of hard work.</p>
                 <p><strong>Failures:</strong> Many — but each one taught me something.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime3">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1235,6 +1330,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1242,9 +1338,6 @@
                 <p><strong>First coding experience:</strong> I wrote my first HTML tag — "Hello World" — and felt like I had done magic.</p>
                 <p><strong>New hobby:</strong> Reading novels and literature.</p>
                 <p><strong>Important friends:</strong> Sudhanshu, Rohit, Sitanashu — they never let me feel alone.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime4">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1259,6 +1352,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1266,9 +1360,6 @@
                 <p><strong>First project:</strong> My portfolio — simple, but my own.</p>
                 <p><strong>Struggle:</strong> CSS alignment, responsiveness — but every problem had a solution.</p>
                 <p><strong>First success:</strong> When something I built appeared on the screen — that joy was different.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime5">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1283,6 +1374,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1290,9 +1382,6 @@
                 <p><strong>Portfolio launch:</strong> Glitches at first, but now it's my new home on the internet.</p>
                 <p><strong>Current feeling:</strong> Confident and curious — I know there's so much more to learn.</p>
                 <p><strong>Future plan:</strong> Master backend & databases, build real-world projects, and one day launch my own startup.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime6">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1307,15 +1396,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p><strong>Parents' teaching:</strong> Honesty, hard work, and helping others.</p>
                 <p><strong>Siblings:</strong> 2 elder sisters and 2 younger brothers — each one has taught me patience and love.</p>
                 <p><strong>Family memory:</strong> Diwali nights when the whole family is together — that peace is unmatched.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime7">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1330,15 +1417,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p><strong>Closest friends:</strong> Ayush, Sudhanshu, Rohit, Sitanashu.</p>
                 <p><strong>Memorable moment:</strong> The first time I showed my project to my friends — their appreciation gave me confidence.</p>
                 <p><strong>What friends changed:</strong> They pulled me out of loneliness and taught me that success feels better when shared.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime8">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1353,13 +1438,11 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>Not knowing what to become, how to become — it was confusing. But I took it step by step, one chapter at a time.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime9">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1374,13 +1457,11 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>When someone saw my website for the first time and said — <em>"Bhai, yeh tune banaya?"</em> That moment was pure joy.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime10">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1395,6 +1476,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 11.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1406,9 +1488,6 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
-                
-                <div class="reading-time">⏱️ <span id="readTime11">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1423,6 +1502,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch12-en">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 12.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1433,13 +1513,18 @@
                     <p>Woh din, woh yaadein, woh dosti — sab kuch alag tha. Kuch khatam ho raha tha, kuch shuru ho raha tha.</p>
                     <p style="margin-top:10px;"><strong>Yeh sirf memory nahi, ek ehsaas hai.</strong></p>
                 </div>
+                
+                <div class="thank-you-box">
+                    <h2>🙏 Thank You</h2>
+                    <p>Thank you for reading my story. This is my journey, my life, my autobiography.</p>
+                    <p>Every chapter has a memory, every memory has a lesson, and every lesson has made me who I am today.</p>
+                    <p class="signature">— Ravi Raj</p>
+                </div>
+                
                 <p style="margin-top:20px; color:var(--text3); font-size:14px; text-align:center; border-top:1px solid var(--border); padding-top:18px;">
                     No regrets in life — that's my biggest achievement.
                 </p>
-                <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
-                
-                <div class="reading-time">⏱️ <span id="readTime12">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
+                <a href="#" class="back-link">← Back to Top</a>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -1461,14 +1546,12 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch1-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 1.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>Mera janam 13 March 2008 ko Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
                 <p>Ek baar maine apni sister ki cycle chura kar race lagayi — aur gutter mein gir gaya! Papa ne mujhe uthaya aur bola, <em>"Beta, pehle balance seekh, phir speed."</em> Aaj bhi main cycle chalata hoon, but gutter avoid karta hoon!</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime1-hi">3</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(1)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
@@ -1483,15 +1566,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch2-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>Mera pehla school <strong>Gautam Buddha Global School</strong> tha. Par 2019 mein <strong>Mother's Pride International School</strong> mein Class 6 mein admission hua — pehla din bahut nervous tha.</p>
                 <p><strong>Pehle dost:</strong> Ayush Singh.</p>
                 <p><strong>Yaadgar teacher:</strong> Binod Sir — unhone Hindi padhaya aur zindagi dekhne ka nazariya diya.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime2-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(2)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1506,6 +1587,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch3-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1513,9 +1595,6 @@
                 <p><strong>Favorite teacher:</strong> Binod Sir — unhone sikhaya ki Hindi sirf bhasha nahi, bhaavna hai.</p>
                 <p><strong>Achievement:</strong> 12th pass — saalon ki mehnat ka result.</p>
                 <p><strong>Failures:</strong> Bahut saare — par har failure ne kuch na kuch sikhaya.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime3-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(3)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1530,6 +1609,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1537,9 +1617,6 @@
                 <p><strong>Pehli coding:</strong> HTML ka "Hello World" — mujhe laga jaise maine jaadu kar diya!</p>
                 <p><strong>Naya hobby:</strong> Novel aur literature padhna.</p>
                 <p><strong>Important dost:</strong> Sudhanshu, Rohit, Sitanashu — unhone kabhi akela feel nahi hone diya.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime4-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(4)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1554,6 +1631,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1561,9 +1639,6 @@
                 <p><strong>Pehla project:</strong> Portfolio — simple, par apna.</p>
                 <p><strong>Struggle:</strong> CSS align, responsive — par har problem ka solution mila.</p>
                 <p><strong>Pehli success:</strong> Jab screen par kuch dikha — woh alag khushi thi.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime5-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(5)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1578,6 +1653,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1585,9 +1661,6 @@
                 <p><strong>Portfolio launch:</strong> Glitches the, par ab yeh mera naya ghar hai.</p>
                 <p><strong>Abhi ka feeling:</strong> Confident aur curious — bahut kuch seekhna baaki hai.</p>
                 <p><strong>Aage ka plan:</strong> Backend aur databases strong karna, real-world projects banana, aur ek din apna startup launch karna.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime6-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(6)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1602,15 +1675,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p><strong>Parents ne sikhaya:</strong> Honesty, mehnat, aur dusron ki help.</p>
                 <p><strong>Siblings:</strong> 2 badi behenein aur 2 chhote bhai — sab ne sabar aur pyaar sikhaya.</p>
                 <p><strong>Family memory:</strong> Diwali ki raat jab poori family saath hoti hai — woh peace alag hai.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime7-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(7)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1625,15 +1696,13 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p><strong>Sabse close dost:</strong> Ayush, Sudhanshu, Rohit, Sitanashu.</p>
                 <p><strong>Yaadgar moment:</strong> Pehla project doston ko dikhaya — unki taarif ne confidence diya.</p>
                 <p><strong>Friends ne kya change kiya:</strong> Tanhaai se nikaala, aur sikhaya ki success share karne par aur achhi lagti hai.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime8-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(8)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1648,13 +1717,11 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>Kya banna hai, kaise banna hai — samajh nahi aata tha. Par ek step, ek chapter ke saath aage badhta raha.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime9-hi">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(9)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1669,13 +1736,11 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
                     </div>
                 </div>
                 
                 <p>Jab kisi ne pehli baar mera website dekha aur bola — <em>"Bhai, yeh tune banaya?"</em> Woh moment priceless tha.</p>
-                
-                <div class="reading-time">⏱️ <span id="readTime10-hi">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(10)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1690,6 +1755,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 11.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1701,9 +1767,6 @@
                     "Somewhere Between I Want It & I Got It"
                     <span class="author">— Ravi Raj's Motto</span>
                 </div>
-                
-                <div class="reading-time">⏱️ <span id="readTime11-hi">1</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(11)">🔗 Copy Link to Chapter</button>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1718,6 +1781,7 @@
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch12-hi">
                         <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 12.1: Add your photo description here</span>
                     </div>
                 </div>
                 
@@ -1728,13 +1792,18 @@
                     <p>Woh din, woh yaadein, woh dosti — sab kuch alag tha. Kuch khatam ho raha tha, kuch shuru ho raha tha.</p>
                     <p style="margin-top:10px;"><strong>Yeh sirf memory nahi, ek ehsaas hai.</strong></p>
                 </div>
+                
+                <div class="thank-you-box">
+                    <h2>🙏 Thank You</h2>
+                    <p>Thank you for reading my story. This is my journey, my life, my autobiography.</p>
+                    <p>Every chapter has a memory, every memory has a lesson, and every lesson has made me who I am today.</p>
+                    <p class="signature">— Ravi Raj</p>
+                </div>
+                
                 <p style="margin-top:20px; color:var(--text3); font-size:14px; text-align:center; border-top:1px solid var(--border); padding-top:18px;">
                     Life mein koi regret nahi — yeh meri sabse badi achievement hai.
                 </p>
-                <a href="index.html#achieve" class="back-link">← Back to Achieve</a>
-                
-                <div class="reading-time">⏱️ <span id="readTime12-hi">2</span> min read</div>
-                <button class="copy-link-btn" onclick="copyChapterLink(12)">🔗 Copy Link to Chapter</button>
+                <a href="#" class="back-link">← Back to Top</a>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1769,10 +1838,10 @@
     </div>
 
     <!-- =============================================================
-    JAVASCRIPT — External File
+    JAVASCRIPT — External Files
     ============================================================= -->
-<script src="autobiography.js"></script>
-<script src="ebook.js"></script>
+    <script src="autobiography.js"></script>
+    <script src="ebook.js"></script>
 
 </body>
 </html>
