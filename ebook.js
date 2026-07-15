@@ -1,7 +1,7 @@
 ```
 // ============================================================
 // EBOOK.JS — PROFESSIONAL BOOK GENERATOR (FINAL)
-// DARK TEXT · CLEAR PRINTING · PERFECT READABILITY
+// CRISP TEXT · HIGH RESOLUTION · PERFECT PRINTING
 // ============================================================
 
 // ============================================================
@@ -154,7 +154,7 @@ function generateQRCode(data, size = 120) {
                 text: data,
                 width: size,
                 height: size,
-                colorDark: '#1a1a1a',
+                colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
@@ -174,24 +174,25 @@ function generateQRCode(data, size = 120) {
 }
 
 // ============================================================
-// 7. APPLY PROFESSIONAL BOOK STYLES (DARK & CLEAR)
+// 7. APPLY PROFESSIONAL BOOK STYLES (CRISP & DARK)
 // ============================================================
 function applyProfessionalBookStyles(clone) {
-    // ---- ALL PARAGRAPHS - DARK BLACK & BOLD ----
+    // ---- ALL PARAGRAPHS - PURE BLACK & BOLD ----
     clone.querySelectorAll('.chapter p').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '14px';
         el.style.lineHeight = '1.8';
         el.style.textAlign = 'justify';
         el.style.marginBottom = '14px';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
         el.style.background = '#ffffff';
+        el.style.textShadow = '0 0 1px rgba(0,0,0,0.1)';
     });
     
-    // ---- CHAPTER HEADINGS - DARK & BOLD ----
+    // ---- CHAPTER HEADINGS - PURE BLACK & BOLD ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontFamily = "'Space Grotesk', 'Arial', sans-serif";
         el.style.fontSize = '24px';
         el.style.fontWeight = '700';
@@ -214,27 +215,27 @@ function applyProfessionalBookStyles(clone) {
         el.parentNode.insertBefore(line, el.nextSibling);
     });
     
-    // ---- STRONG TEXT - DARK & BOLD ----
+    // ---- STRONG TEXT - PURE BLACK & BOLD ----
     clone.querySelectorAll('.chapter strong').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontWeight = '700';
         el.style.background = '#ffffff';
     });
     
-    // ---- LIST ITEMS - DARK ----
+    // ---- LIST ITEMS - PURE BLACK ----
     clone.querySelectorAll('.chapter ul li').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '14px';
         el.style.lineHeight = '1.8';
         el.style.marginBottom = '6px';
         el.style.background = '#ffffff';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
     });
     
-    // ---- QUOTES - DARK & ITALIC ----
+    // ---- QUOTES - PURE BLACK & ITALIC ----
     clone.querySelectorAll('.quote-box').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '18px';
         el.style.lineHeight = '1.8';
@@ -243,7 +244,7 @@ function applyProfessionalBookStyles(clone) {
         el.style.borderLeft = '4px solid #DAA520';
         el.style.padding = '18px 24px';
         el.style.margin = '20px 0';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
     });
     
     clone.querySelectorAll('.quote-box .author').forEach(el => {
@@ -290,9 +291,9 @@ function applyProfessionalBookStyles(clone) {
     });
     
     clone.querySelectorAll('.family-item .value').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontSize = '15px';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
         el.style.fontFamily = "'Space Grotesk', sans-serif";
     });
     
@@ -313,24 +314,24 @@ function applyProfessionalBookStyles(clone) {
     });
     
     clone.querySelectorAll('.teacher-tribute p').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontSize = '15px';
         el.style.lineHeight = '1.8';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
         el.style.background = '#ffffff';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
     });
     
     // ---- FRIEND MEMORY ----
     clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
-        el.style.color = '#1a1a1a';
+        el.style.color = '#000000';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
         el.style.background = '#ffffff';
         el.style.border = '1px dashed #DAA520';
         el.style.borderRadius = '8px';
         el.style.padding = '24px 28px';
         el.style.margin = '24px 0';
-        el.style.fontWeight = '500';
+        el.style.fontWeight = '600';
     });
     
     clone.querySelectorAll('.friend-memory-pdf strong').forEach(el => {
@@ -422,7 +423,7 @@ async function downloadEbook(lang, langLabel) {
         el.textContent = '📸 Photo';
     });
     
-    // ---- APPLY DARK & CLEAR STYLES ----
+    // ---- APPLY CRISP & DARK STYLES ----
     applyProfessionalBookStyles(clone);
     
     // ---- GENERATE QR CODE ----
@@ -432,7 +433,6 @@ async function downloadEbook(lang, langLabel) {
     const sections = [];
     let pageNum = 1;
     
-    // Helper to add page number
     function addPageNumber(element) {
         const pageNumDiv = document.createElement('div');
         pageNumDiv.style.cssText = `
@@ -450,7 +450,6 @@ async function downloadEbook(lang, langLabel) {
         pageNum++;
     }
     
-    // Helper to add header
     function addHeader(element, chapterTitle = '', isCover = false) {
         if (isCover) return;
         
@@ -486,7 +485,7 @@ async function downloadEbook(lang, langLabel) {
     title.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
             <div style="width:80px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
-            <h1 style="font-size:42px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;letter-spacing:2px;">My Autobiography</h1>
+            <h1 style="font-size:42px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;letter-spacing:2px;">My Autobiography</h1>
             <p style="font-size:18px;color:#999;font-family:'Space Grotesk',sans-serif;margin:15px 0;">—</p>
             <p style="font-size:28px;color:#DAA520;font-family:'Space Grotesk',sans-serif;margin:10px 0;font-weight:500;">Ravi Raj</p>
             <p style="font-size:17px;color:#666;font-style:italic;font-family:'Georgia',serif;margin:10px 0;">"A Boy Who Never Thought"</p>
@@ -504,7 +503,7 @@ async function downloadEbook(lang, langLabel) {
     copyright.style.cssText = `padding:80px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     copyright.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:450px;margin:0 auto;">
-            <h2 style="font-size:14px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
+            <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
             <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">© 2026 Ravi Raj<br>All rights reserved.</p>
             <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
             <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia',serif;margin-bottom:16px;"><strong>Published by</strong><br>RAVI RAJ PUBLICATION<br>Patna, India</p>
@@ -521,9 +520,9 @@ async function downloadEbook(lang, langLabel) {
     dedication.style.cssText = `text-align:center;padding:100px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     dedication.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto;font-style:italic;">To my parents, who gave me the courage to dream.</p>
-            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:20px auto;font-style:italic;">To my siblings, who taught me patience and love.</p>
-            <p style="font-size:22px;font-weight:400;color:#1a1a1a;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto 30px auto;font-style:italic;">To my friends, who never let me feel alone.</p>
+            <p style="font-size:22px;font-weight:500;color:#000000;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto;font-style:italic;">To my parents, who gave me the courage to dream.</p>
+            <p style="font-size:22px;font-weight:500;color:#000000;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:20px auto;font-style:italic;">To my siblings, who taught me patience and love.</p>
+            <p style="font-size:22px;font-weight:500;color:#000000;font-family:'Georgia',serif;line-height:2;max-width:500px;margin:0 auto 30px auto;font-style:italic;">To my friends, who never let me feel alone.</p>
             <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
             <p style="font-size:18px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
         </div>
@@ -537,9 +536,9 @@ async function downloadEbook(lang, langLabel) {
     preface.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     preface.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
-            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
+            <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
             <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
             <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
         </div>
@@ -553,11 +552,11 @@ async function downloadEbook(lang, langLabel) {
     acknowledgements.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     acknowledgements.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
-            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">First and foremost, I would like to thank my parents for their unwavering support and encouragement.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">I am also grateful to my teachers who guided me and shaped my thinking.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">A special thanks to my friends who stood by me through thick and thin.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;font-weight:500;">And to everyone who believed in me when I didn't believe in myself.</p>
+            <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">First and foremost, I would like to thank my parents for their unwavering support and encouragement.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">I am also grateful to my teachers who guided me and shaped my thinking.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">A special thanks to my friends who stood by me through thick and thin.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;font-weight:600;">And to everyone who believed in me when I didn't believe in myself.</p>
             <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
             <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
         </div>
@@ -570,7 +569,7 @@ async function downloadEbook(lang, langLabel) {
     const toc = document.createElement('div');
     toc.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     let tocHTML = `
-        <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;text-align:center;font-family:'Space Grotesk',sans-serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
+        <h2 style="font-size:32px;font-weight:700;color:#000000;text-align:center;font-family:'Space Grotesk',sans-serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
         <ul style="list-style:none;padding:0;font-family:'Georgia',serif;font-size:16px;line-height:2.8;max-width:550px;margin:0 auto;width:100%;">
     `;
     const tocChapters = clone.querySelectorAll('.chapter');
@@ -581,7 +580,7 @@ async function downloadEbook(lang, langLabel) {
         const pageNumDisplay = idx + 14;
         tocHTML += `
             <li style="border-bottom:1px solid #f0f0f0;padding:4px 0;display:flex;justify-content:space-between;">
-                <span style="color:#1a1a1a;font-family:'Space Grotesk',sans-serif;font-size:15px;">${titleText}</span>
+                <span style="color:#000000;font-family:'Space Grotesk',sans-serif;font-size:15px;">${titleText}</span>
                 <span style="color:#999;font-family:'Space Grotesk',sans-serif;font-size:14px;">${pageNumDisplay}</span>
             </li>
         `;
@@ -597,8 +596,8 @@ async function downloadEbook(lang, langLabel) {
     overview.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     overview.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
-            <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;text-align:center;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
-            <p style="font-size:17px;line-height:1.8;color:#1a1a1a;text-align:justify;font-family:'Georgia',serif;margin-bottom:20px;font-weight:500;">This autobiography takes you through the journey of Ravi Raj — from his humble beginnings in Begusarai, Bihar, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, friendships, struggles, and the joy of building something from nothing. A story of a boy who never thought he would, but did.</p>
+            <h2 style="font-size:32px;font-weight:700;color:#000000;text-align:center;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
+            <p style="font-size:17px;line-height:1.8;color:#000000;text-align:justify;font-family:'Georgia',serif;margin-bottom:20px;font-weight:600;">This autobiography takes you through the journey of Ravi Raj — from his humble beginnings in Begusarai, Bihar, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, friendships, struggles, and the joy of building something from nothing. A story of a boy who never thought he would, but did.</p>
             <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:450px;margin:0 auto;width:100%;">
                 <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;"><span style="font-size:24px;font-weight:700;color:#DAA520;font-family:'Space Grotesk',sans-serif;">12</span><p style="font-size:13px;color:#666;margin:2px 0;font-family:'Space Grotesk',sans-serif;">Chapters</p></div>
@@ -640,11 +639,11 @@ async function downloadEbook(lang, langLabel) {
     conclusion.style.cssText = `padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     conclusion.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:550px;margin:0 auto;">
-            <h2 style="font-size:28px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:500;">This is not the end of my story. It is just the beginning.</p>
-            <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;font-weight:500;">The best is yet to come.</p>
+            <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;margin-bottom:16px;font-weight:600;">This is not the end of my story. It is just the beginning.</p>
+            <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;font-weight:600;">The best is yet to come.</p>
             <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
             <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;">— Ravi Raj</p>
         </div>
@@ -659,21 +658,21 @@ async function downloadEbook(lang, langLabel) {
     about.style.cssText = `text-align:center;padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
     about.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-            <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
+            <h2 style="font-size:32px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
             <div style="width:120px;height:120px;border-radius:50%;border:3px solid #DAA520;margin:0 auto 16px;overflow:hidden;">
                 <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" style="width:100%;height:100%;object-fit:cover;">
             </div>
-            <p style="font-size:24px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin:4px 0;">Ravi Raj</p>
+            <p style="font-size:24px;font-weight:700;color:#000000;font-family:'Space Grotesk',sans-serif;margin:4px 0;">Ravi Raj</p>
             <p style="font-size:16px;color:#DAA520;font-family:'Space Grotesk',sans-serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
             <div style="max-width:550px;margin:0 auto;">
-                <p style="font-size:16px;line-height:1.8;color:#1a1a1a;font-family:'Georgia',serif;text-align:justify;font-weight:500;">Ravi Raj was born on 13 March 2008 in Begusarai, Bihar. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
+                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia',serif;text-align:justify;font-weight:600;">Ravi Raj was born on 13 March 2008 in Begusarai, Bihar. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
             </div>
             <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
             <p style="font-size:18px;font-style:italic;color:#6c5ce7;font-family:'Georgia',serif;">"Somewhere Between I Want It & I Got It"</p>
             
             <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-            <p style="font-size:15px;font-weight:600;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:14px;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;">
+            <p style="font-size:15px;font-weight:600;color:#000000;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:14px;color:#000000;font-family:'Space Grotesk',sans-serif;">
                 <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
                     <span>📸 Instagram</span>
                     <span style="color:#DAA520;">@rravirajhere</span>
@@ -712,7 +711,7 @@ async function downloadEbook(lang, langLabel) {
     emotional.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
             <div style="font-size:48px;margin-bottom:20px;">❤️</div>
-            <p style="font-size:22px;font-weight:500;color:#1a1a1a;font-family:'Georgia',serif;max-width:500px;margin:0 auto;line-height:1.8;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams."</p>
+            <p style="font-size:22px;font-weight:600;color:#000000;font-family:'Georgia',serif;max-width:500px;margin:0 auto;line-height:1.8;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams.</p>
             <div style="margin:24px auto 10px auto;max-width:200px;">
                 <img src="signature.jpg" alt="Ravi Raj Signature" style="width:100%;height:auto;display:block;">
             </div>
@@ -756,7 +755,7 @@ async function downloadEbook(lang, langLabel) {
         await new Promise(resolve => setTimeout(resolve, 150));
         
         const canvas = await html2canvas(section, {
-            scale: 2,
+            scale: 3,
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false,
