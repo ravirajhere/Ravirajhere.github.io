@@ -1,4 +1,3 @@
-```
 // ============================================================
 // EBOOK.JS — PROFESSIONAL BOOK GENERATOR (FINAL)
 // CRISP TEXT · HIGH RESOLUTION · PERFECT PRINTING
