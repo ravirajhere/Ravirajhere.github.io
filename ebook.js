@@ -1,6 +1,7 @@
 // ============================================================
 // EBOOK.JS — IMPROVED PROFESSIONAL EBOOK GENERATOR
 // MEMORY OPTIMIZED · ERROR HANDLED · PROGRESSIVE RENDERING
+// NO FADE · INSTANT CHAPTERS · BETTER FONTS
 // ============================================================
 
 // ============================================================
@@ -121,7 +122,6 @@ class ResourceValidator {
             const img = new Image();
             img.onload = () => resolve(src);
             img.onerror = () => {
-                // Generate placeholder
                 const canvas = document.createElement('canvas');
                 canvas.width = 400;
                 canvas.height = 400;
@@ -163,7 +163,6 @@ class ResourceValidator {
 // ============================================================
 class LibraryLoader {
     static async loadScript(src, retries = 3) {
-        // Check if already loaded
         if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
         if (src.includes('jspdf') && typeof jspdf !== 'undefined') return true;
         if (src.includes('qrcode') && typeof QRCode !== 'undefined') return true;
@@ -195,7 +194,6 @@ class LibraryLoader {
             'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
         ];
 
-        // Check which ones are already loaded
         const loaded = libraries.map(src => {
             if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
             if (src.includes('jspdf') && typeof jspdf !== 'undefined') return true;
@@ -268,33 +266,35 @@ class QRGenerator {
 }
 
 // ============================================================
-// 6. APPLY PROFESSIONAL BOOK STYLES (CRISP & DARK)
+// 6. APPLY PROFESSIONAL BOOK STYLES (CRISP & IMPROVED FONTS)
 // ============================================================
 function applyProfessionalBookStyles(clone) {
-    // ---- ALL PARAGRAPHS - PURE BLACK & BOLD ----
+    // ---- ALL PARAGRAPHS - IMPROVED FONT: Lora ----
     clone.querySelectorAll('.chapter p').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '14px';
-        el.style.lineHeight = '1.8';
+        el.style.color = '#1a1a1a';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        el.style.fontSize = '15px';
+        el.style.lineHeight = '1.7';
         el.style.textAlign = 'justify';
         el.style.marginBottom = '14px';
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '450';
         el.style.background = '#ffffff';
-        el.style.textShadow = '0 0 1px rgba(0,0,0,0.1)';
+        el.style.letterSpacing = '0.3px';
+        el.style.textShadow = '0 0 1px rgba(0,0,0,0.05)';
     });
     
-    // ---- CHAPTER HEADINGS - PURE BLACK & BOLD ----
+    // ---- CHAPTER HEADINGS - IMPROVED FONT: Playfair Display ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         el.style.color = '#000000';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '24px';
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+        el.style.fontSize = '26px';
         el.style.fontWeight = '700';
         el.style.textAlign = 'center';
         el.style.marginTop = '0';
         el.style.marginBottom = '10px';
-        el.style.letterSpacing = '1.5px';
+        el.style.letterSpacing = '2px';
         el.style.background = '#ffffff';
+        el.style.lineHeight = '1.3';
     });
     
     // ---- GOLD LINE UNDER HEADING ----
@@ -309,36 +309,39 @@ function applyProfessionalBookStyles(clone) {
         el.parentNode.insertBefore(line, el.nextSibling);
     });
     
-    // ---- STRONG TEXT - PURE BLACK & BOLD ----
+    // ---- STRONG TEXT ----
     clone.querySelectorAll('.chapter strong').forEach(el => {
         el.style.color = '#000000';
         el.style.fontWeight = '700';
         el.style.background = '#ffffff';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
     });
     
-    // ---- LIST ITEMS - PURE BLACK ----
+    // ---- LIST ITEMS - IMPROVED FONT: Lora ----
     clone.querySelectorAll('.chapter ul li').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '14px';
-        el.style.lineHeight = '1.8';
+        el.style.color = '#1a1a1a';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        el.style.fontSize = '15px';
+        el.style.lineHeight = '1.7';
         el.style.marginBottom = '6px';
         el.style.background = '#ffffff';
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '450';
+        el.style.letterSpacing = '0.3px';
     });
     
-    // ---- QUOTES - PURE BLACK & ITALIC ----
+    // ---- QUOTES - IMPROVED FONT: Lora Italic ----
     clone.querySelectorAll('.quote-box').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '18px';
-        el.style.lineHeight = '1.8';
+        el.style.color = '#1a1a1a';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        el.style.fontSize = '19px';
+        el.style.lineHeight = '1.6';
         el.style.fontStyle = 'italic';
         el.style.background = '#ffffff';
         el.style.borderLeft = '4px solid #DAA520';
         el.style.padding = '18px 24px';
         el.style.margin = '20px 0';
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '400';
+        el.style.letterSpacing = '0.3px';
     });
     
     clone.querySelectorAll('.quote-box .author').forEach(el => {
@@ -347,24 +350,27 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontStyle = 'normal';
         el.style.textAlign = 'right';
         el.style.marginTop = '8px';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.background = '#ffffff';
+        el.style.letterSpacing = '0.5px';
     });
     
     // ---- READING TIME ----
     clone.querySelectorAll('.reading-time').forEach(el => {
         el.style.color = '#999999';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '13px';
         el.style.textAlign = 'right';
         el.style.marginTop = '12px';
         el.style.fontStyle = 'italic';
         el.style.background = '#ffffff';
+        el.style.letterSpacing = '0.5px';
     });
     
     clone.querySelectorAll('.reading-time span').forEach(el => {
         el.style.color = '#6c5ce7';
         el.style.background = '#ffffff';
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
     });
     
     // ---- FAMILY ITEMS ----
@@ -378,17 +384,19 @@ function applyProfessionalBookStyles(clone) {
     
     clone.querySelectorAll('.family-item .label').forEach(el => {
         el.style.color = '#999999';
-        el.style.fontSize = '11px';
+        el.style.fontSize = '12px';
         el.style.textTransform = 'uppercase';
         el.style.letterSpacing = '0.8px';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+        el.style.fontWeight = '400';
     });
     
     clone.querySelectorAll('.family-item .value').forEach(el => {
         el.style.color = '#000000';
         el.style.fontSize = '15px';
         el.style.fontWeight = '600';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        el.style.letterSpacing = '0.3px';
     });
     
     // ---- TEACHER TRIBUTE ----
@@ -404,34 +412,39 @@ function applyProfessionalBookStyles(clone) {
         el.style.color = '#DAA520';
         el.style.fontSize = '17px';
         el.style.fontWeight = '600';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+        el.style.letterSpacing = '0.5px';
     });
     
     clone.querySelectorAll('.teacher-tribute p').forEach(el => {
-        el.style.color = '#000000';
+        el.style.color = '#1a1a1a';
         el.style.fontSize = '15px';
-        el.style.lineHeight = '1.8';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.lineHeight = '1.7';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.background = '#ffffff';
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '450';
+        el.style.letterSpacing = '0.3px';
     });
     
     // ---- FRIEND MEMORY ----
     clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
+        el.style.color = '#1a1a1a';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.background = '#ffffff';
         el.style.border = '1px dashed #DAA520';
         el.style.borderRadius = '8px';
         el.style.padding = '24px 28px';
         el.style.margin = '24px 0';
-        el.style.fontWeight = '600';
+        el.style.fontWeight = '450';
+        el.style.letterSpacing = '0.3px';
+        el.style.lineHeight = '1.7';
     });
     
     clone.querySelectorAll('.friend-memory-pdf strong').forEach(el => {
         el.style.color = '#DAA520';
         el.style.background = '#ffffff';
         el.style.fontWeight = '700';
+        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
     });
 }
 
@@ -460,29 +473,23 @@ class EbookGenerator {
         this.currentPage = 0;
 
         try {
-            // Step 1: Validate resources
             toast.info(`Preparing resources for ${langLabel}...`);
             this.resources = await ResourceValidator.validateAllImages();
             
-            // Step 2: Load libraries
             await LibraryLoader.loadAll();
 
-            // Step 3: Get content
             const content = this.getContent(lang);
             if (!content) {
                 throw new Error('Content not found');
             }
 
-            // Step 4: Build pages
             toast.info(`Building ${langLabel} ebook...`);
             this.pages = await this.buildPages(content, lang);
             this.totalPages = this.pages.length;
 
-            // Step 5: Generate PDF
             toast.info(`Generating PDF (${this.totalPages} pages)...`);
             await this.generatePDF(langLabel);
 
-            // Step 6: Download
             const filename = `My_Autobiography_${EBOOK_CONFIG.author.replace(/\s/g, '_')}_${langLabel}.pdf`;
             this.pdf.save(filename);
             
@@ -500,7 +507,6 @@ class EbookGenerator {
         const wrapper = document.querySelector('.autobio-wrapper');
         if (!wrapper) return null;
 
-        // Show all chapters
         const enContainer = document.getElementById('chaptersEn');
         const hiContainer = document.getElementById('chaptersHi');
         
@@ -512,12 +518,11 @@ class EbookGenerator {
             hiContainer.style.display = 'block';
         }
 
-        // Get active chapters
         const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
         const container = document.getElementById(containerId);
         const chapters = container.querySelectorAll('.chapter');
         
-        // Make all visible for rendering
+        // NO FADE — Instant show
         chapters.forEach(ch => {
             ch.style.display = 'block';
             ch.classList.add('active');
@@ -535,10 +540,8 @@ class EbookGenerator {
         const clone = content.wrapper;
         const containerId = content.containerId;
 
-        // Clean clone
         this.cleanClone(clone);
 
-        // Isolate language
         const cloneEn = clone.querySelector('#chaptersEn');
         const cloneHi = clone.querySelector('#chaptersHi');
         
@@ -550,17 +553,13 @@ class EbookGenerator {
             if (cloneHi) cloneHi.style.display = 'block';
         }
 
-        // Get chapters from clone
         const cloneContainer = clone.querySelector('#' + containerId);
         const cloneChapters = cloneContainer ? cloneContainer.querySelectorAll('.chapter') : [];
 
-        // Apply styles
         applyProfessionalBookStyles(clone);
 
-        // Generate QR
         const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
 
-        // Build pages
         const pageBuilders = this.getPageBuilders(cloneChapters, qrDataUrl);
         
         for (const builder of pageBuilders) {
@@ -581,42 +580,21 @@ class EbookGenerator {
         const builders = [];
         const images = this.resources;
 
-        // 1. Cover
         builders.push(async () => this.createCoverPage(images.cover));
-
-        // 2. Title page
         builders.push(async () => this.createTitlePage());
-
-        // 3. Copyright
         builders.push(async () => this.createCopyrightPage());
-
-        // 4. Dedication
         builders.push(async () => this.createDedicationPage());
-
-        // 5. Preface
         builders.push(async () => this.createPrefacePage());
-
-        // 6. Acknowledgements
         builders.push(async () => this.createAcknowledgementsPage());
-
-        // 7. Table of Contents
         builders.push(async () => this.createTOCPage(chapters));
-
-        // 8. Overview
         builders.push(async () => this.createOverviewPage());
 
-        // 9. Chapters
         chapters.forEach((ch, index) => {
             builders.push(async () => this.createChapterPage(ch, index));
         });
 
-        // 10. Conclusion
         builders.push(async () => this.createConclusionPage());
-
-        // 11. About Author
         builders.push(async () => this.createAboutPage(images.author, qrDataUrl));
-
-        // 12. Emotional Message
         builders.push(async () => this.createEmotionalPage(images.signature));
 
         return builders;
@@ -652,13 +630,13 @@ class EbookGenerator {
         div.innerHTML = `
             <div style="max-width:500px;margin:0 auto;width:100%;">
                 <div style="width:80px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
-                <h1 style="font-size:36px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:2px;">${EBOOK_CONFIG.title}</h1>
-                <p style="font-size:18px;color:#999;font-family:'Georgia','Times New Roman',serif;margin:15px 0;">—</p>
-                <p style="font-size:24px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;margin:10px 0;font-weight:500;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:16px;color:#666;font-style:italic;font-family:'Georgia','Times New Roman',serif;margin:10px 0;">"${EBOOK_CONFIG.subtitle}"</p>
-                <p style="font-size:15px;color:#999;font-family:'Georgia','Times New Roman',serif;margin:6px 0;">From ${EBOOK_CONFIG.birthplace} to the World</p>
+                <h1 style="font-size:36px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:2px;">${EBOOK_CONFIG.title}</h1>
+                <p style="font-size:18px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin:15px 0;">—</p>
+                <p style="font-size:24px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:10px 0;font-weight:500;">${EBOOK_CONFIG.author}</p>
+                <p style="font-size:16px;color:#666;font-style:italic;font-family:'Lora','Georgia','Times New Roman',serif;margin:10px 0;">"${EBOOK_CONFIG.subtitle}"</p>
+                <p style="font-size:15px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin:6px 0;">From ${EBOOK_CONFIG.birthplace} to the World</p>
                 <div style="width:80px;height:2px;background:#DAA520;margin:30px auto;"></div>
-                <p style="font-size:14px;color:#aaa;font-family:'Georgia','Times New Roman',serif;">${EBOOK_CONFIG.currentYear}</p>
+                <p style="font-size:14px;color:#aaa;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.currentYear}</p>
             </div>
         `;
         return div;
@@ -676,12 +654,12 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:450px;margin:0 auto;width:100%;">
-                <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia','Times New Roman',serif;margin-bottom:16px;">© ${EBOOK_CONFIG.currentYear} ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia','Times New Roman',serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia','Times New Roman',serif;margin-bottom:16px;"><strong>Published by</strong><br>${EBOOK_CONFIG.author.toUpperCase()} PUBLICATION<br>Patna, India</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia','Times New Roman',serif;margin-bottom:16px;">This book is not for sale.<br>For personal use only.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Georgia','Times New Roman',serif;">First Edition: ${EBOOK_CONFIG.currentYear}</p>
+                <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">© ${EBOOK_CONFIG.currentYear} ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;"><strong>Published by</strong><br>${EBOOK_CONFIG.author.toUpperCase()} PUBLICATION<br>Patna, India</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">This book is not for sale.<br>For personal use only.</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">First Edition: ${EBOOK_CONFIG.currentYear}</p>
             </div>
         `;
         return div;
@@ -700,11 +678,11 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:500px;margin:0 auto;width:100%;">
-                <p style="font-size:20px;font-weight:500;color:#000000;font-family:'Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my parents, who gave me the courage to dream.</p>
-                <p style="font-size:20px;font-weight:500;color:#000000;font-family:'Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my siblings, who taught me patience and love.</p>
-                <p style="font-size:20px;font-weight:500;color:#000000;font-family:'Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my friends, who never let me feel alone.</p>
+                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my parents, who gave me the courage to dream.</p>
+                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my siblings, who taught me patience and love.</p>
+                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my friends, who never let me feel alone.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:30px auto;"></div>
-                <p style="font-size:18px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+                <p style="font-size:18px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
             </div>
         `;
         return div;
@@ -722,11 +700,11 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
+                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
             </div>
         `;
         return div;
@@ -744,13 +722,13 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">First and foremost, I would like to thank my parents for their unwavering support and encouragement.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">I am also grateful to my teachers who guided me and shaped my thinking.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">A special thanks to my friends who stood by me through thick and thin.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;">And to everyone who believed in me when I didn't believe in myself.</p>
+                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">First and foremost, I would like to thank my parents for their unwavering support and encouragement.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">I am also grateful to my teachers who guided me and shaped my thinking.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">A special thanks to my friends who stood by me through thick and thin.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">And to everyone who believed in me when I didn't believe in myself.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
             </div>
         `;
         return div;
@@ -768,8 +746,8 @@ class EbookGenerator {
         `;
         
         let tocHTML = `
-            <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Georgia','Times New Roman',serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
-            <ul style="list-style:none;padding:0;font-family:'Georgia','Times New Roman',serif;font-size:15px;line-height:2.8;max-width:550px;margin:0 auto;width:100%;">
+            <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
+            <ul style="list-style:none;padding:0;font-family:'Lora','Georgia','Times New Roman',serif;font-size:15px;line-height:2.8;max-width:550px;margin:0 auto;width:100%;">
         `;
         
         let pageNum = 14;
@@ -779,8 +757,8 @@ class EbookGenerator {
             title = title.replace(/[^\w\s\-\.]/g, '').trim();
             tocHTML += `
                 <li style="border-bottom:1px solid #f0f0f0;padding:4px 0;display:flex;justify-content:space-between;">
-                    <span style="color:#000000;font-family:'Georgia','Times New Roman',serif;font-size:14px;">${title}</span>
-                    <span style="color:#999;font-family:'Georgia','Times New Roman',serif;font-size:13px;">${pageNum + idx}</span>
+                    <span style="color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;font-size:14px;font-weight:450;letter-spacing:0.3px;">${title}</span>
+                    <span style="color:#999;font-family:'Playfair Display','Georgia','Times New Roman',serif;font-size:13px;">${pageNum + idx}</span>
                 </li>
             `;
         });
@@ -801,25 +779,25 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
-                <p style="font-size:16px;line-height:1.8;color:#000000;text-align:justify;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;">This autobiography takes you through the journey of ${EBOOK_CONFIG.author} — from his humble beginnings in ${EBOOK_CONFIG.birthplace}, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, friendships, struggles, and the joy of building something from nothing. A story of a boy who never thought he would, but did.</p>
+                <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;text-align:justify;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">This autobiography takes you through the journey of ${EBOOK_CONFIG.author} — from his humble beginnings in ${EBOOK_CONFIG.birthplace}, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, friendships, struggles, and the joy of building something from nothing. A story of a boy who never thought he would, but did.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:450px;margin:0 auto;width:100%;">
                     <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">12</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Georgia','Times New Roman',serif;">Chapters</p>
+                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">12</span>
+                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Chapters</p>
                     </div>
                     <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">${EBOOK_CONFIG.birthYear}</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Georgia','Times New Roman',serif;">Year of Birth</p>
+                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.birthYear}</span>
+                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Year of Birth</p>
                     </div>
                     <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">3+</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Georgia','Times New Roman',serif;">Years Coding</p>
+                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">3+</span>
+                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Years Coding</p>
                     </div>
                     <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">14</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Georgia','Times New Roman',serif;">Friends</p>
+                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">14</span>
+                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Friends</p>
                     </div>
                 </div>
             </div>
@@ -862,13 +840,13 @@ class EbookGenerator {
         `;
         div.innerHTML = `
             <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;">This is not the end of my story. It is just the beginning.</p>
-                <p style="font-size:16px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;">The best is yet to come.</p>
+                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">This is not the end of my story. It is just the beginning.</p>
+                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">The best is yet to come.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
             </div>
         `;
         return div;
@@ -889,42 +867,42 @@ class EbookGenerator {
         const qrHTML = qrDataUrl ? `
             <div style="margin:14px auto 0 auto;">
                 <img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">
-                <p style="font-size:10px;color:#999;font-family:'Georgia','Times New Roman',serif;margin-top:4px;">Scan to visit my website</p>
+                <p style="font-size:10px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin-top:4px;">Scan to visit my website</p>
             </div>
         ` : '';
         
         div.innerHTML = `
             <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
+                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
                 <div style="width:120px;height:120px;border-radius:50%;border:3px solid #DAA520;margin:0 auto 16px;overflow:hidden;">
                     <img src="${authorImage}" alt="${EBOOK_CONFIG.author}" style="width:100%;height:100%;object-fit:cover;">
                 </div>
-                <p style="font-size:22px;font-weight:700;color:#000000;font-family:'Georgia','Times New Roman',serif;margin:4px 0;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:15px;color:#DAA520;font-family:'Georgia','Times New Roman',serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
+                <p style="font-size:22px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:4px 0;">${EBOOK_CONFIG.author}</p>
+                <p style="font-size:15px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
                 <div style="max-width:500px;margin:0 auto;">
-                    <p style="font-size:15px;line-height:1.8;color:#000000;font-family:'Georgia','Times New Roman',serif;text-align:justify;">${EBOOK_CONFIG.author} was born on 13 March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
+                    <p style="font-size:15px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">${EBOOK_CONFIG.author} was born on 13 March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
                 </div>
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:16px;font-style:italic;color:#6c5ce7;font-family:'Georgia','Times New Roman',serif;">"Somewhere Between I Want It & I Got It"</p>
+                <p style="font-size:16px;font-style:italic;color:#6c5ce7;font-family:'Lora','Georgia','Times New Roman',serif;">"Somewhere Between I Want It & I Got It"</p>
                 
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:14px;font-weight:600;color:#000000;font-family:'Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
-                <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:13px;color:#000000;font-family:'Georgia','Times New Roman',serif;">
+                <p style="font-size:14px;font-weight:600;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:13px;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;">
                     <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
                         <span>📸 Instagram</span>
-                        <span style="color:#DAA520;">${EBOOK_CONFIG.social.instagram}</span>
+                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.instagram}</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
                         <span>💼 LinkedIn</span>
-                        <span style="color:#DAA520;">${EBOOK_CONFIG.social.linkedin}</span>
+                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.linkedin}</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
                         <span>🌐 Website</span>
-                        <span style="color:#DAA520;">${EBOOK_CONFIG.social.website}</span>
+                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.website}</span>
                     </div>
                     <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;">
                         <span>💬 WhatsApp</span>
-                        <span style="color:#DAA520;">${EBOOK_CONFIG.social.whatsapp}</span>
+                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.whatsapp}</span>
                     </div>
                 </div>
                 
@@ -932,9 +910,9 @@ class EbookGenerator {
                 
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
                 <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Georgia','Times New Roman',serif;">💻 3+ Years Coding</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Georgia','Times New Roman',serif;">🚀 5+ Projects</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Georgia','Times New Roman',serif;">📚 Loves Novels</span>
+                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">💻 3+ Years Coding</span>
+                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">🚀 5+ Projects</span>
+                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">📚 Loves Novels</span>
                 </div>
             </div>
         `;
@@ -955,15 +933,15 @@ class EbookGenerator {
         div.innerHTML = `
             <div style="max-width:500px;margin:0 auto;width:100%;">
                 <div style="font-size:48px;margin-bottom:20px;">❤️</div>
-                <p style="font-size:20px;font-weight:500;color:#000000;font-family:'Georgia','Times New Roman',serif;line-height:1.8;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams."</p>
+                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.7;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams."</p>
                 <div style="margin:24px auto 10px auto;max-width:200px;">
                     <img src="${signatureImage}" alt="${EBOOK_CONFIG.author} Signature" style="width:100%;height:auto;display:block;">
                 </div>
-                <p style="font-size:18px;color:#DAA520;margin:6px 0 12px 0;font-family:'Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+                <p style="font-size:18px;color:#DAA520;margin:6px 0 12px 0;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:14px;color:#666;font-family:'Georgia','Times New Roman',serif;">With love & gratitude ❤️</p>
-                <p style="font-size:13px;color:#999;margin-top:6px;font-family:'Georgia','Times New Roman',serif;">${EBOOK_CONFIG.author} · ${EBOOK_CONFIG.currentYear}</p>
-                <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Georgia','Times New Roman',serif;">📖 From ${EBOOK_CONFIG.birthplace} to the World</p>
+                <p style="font-size:14px;color:#666;font-family:'Lora','Georgia','Times New Roman',serif;">With love & gratitude ❤️</p>
+                <p style="font-size:13px;color:#999;margin-top:6px;font-family:'Lora','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.author} · ${EBOOK_CONFIG.currentYear}</p>
+                <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Lora','Georgia','Times New Roman',serif;">📖 From ${EBOOK_CONFIG.birthplace} to the World</p>
             </div>
         `;
         return div;
