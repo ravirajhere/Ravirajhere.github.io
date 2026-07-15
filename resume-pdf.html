@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ravi Raj — Resume</title>
 
-    <!-- Google Fonts (Only Georgia for clean professional look) -->
+    <!-- Google Fonts: Professional & Premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
 
     <style>
         /* ===== RESET & BASE ===== */
@@ -19,13 +19,46 @@
         }
 
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
+            font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
             background: #f5f5f5;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             padding: 30px 20px;
+        }
+
+        /* ===== DOWNLOAD BUTTON ===== */
+        .download-btn-wrapper {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .download-btn {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 2px solid #1a1a1a;
+            padding: 14px 44px;
+            font-size: 17px;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #DAA520;
+            border-color: #DAA520;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(218, 165, 32, 0.35);
+        }
+
+        .download-btn:active {
+            transform: scale(0.97);
         }
 
         /* ===== RESUME CONTAINER ===== */
@@ -34,38 +67,58 @@
             width: 100%;
             background: #ffffff;
             padding: 50px 55px;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
         }
 
         /* ===== HEADER ===== */
         .header {
             text-align: center;
-            padding-bottom: 20px;
+            padding-bottom: 22px;
             border-bottom: 2px solid #e8e8e8;
-            margin-bottom: 24px;
+            margin-bottom: 26px;
+        }
+
+        /* ===== PROFILE PHOTO ===== */
+        .profile-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid #DAA520;
+            object-fit: cover;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-photo:hover {
+            transform: scale(1.03);
         }
 
         .header h1 {
-            font-size: 34px;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 38px;
             font-weight: 700;
             color: #000000;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 4px;
         }
 
         .header .title {
-            font-size: 18px;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 19px;
             color: #DAA520;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 2px;
         }
 
         .header .location {
             font-size: 15px;
-            color: #666;
-            margin-bottom: 8px;
+            color: #888;
+            margin-bottom: 10px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
         }
 
         .header .contact-links {
@@ -74,40 +127,51 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 6px 18px;
+            gap: 8px 22px;
+            font-family: 'Lora', serif;
         }
 
         .header .contact-links a {
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1px dotted #ccc;
+            border-bottom: 1.5px dotted #d4d4d4;
+            transition: border-color 0.3s ease;
+            font-weight: 500;
         }
 
         .header .contact-links a:hover {
             border-bottom-color: #DAA520;
         }
 
+        .header .contact-links span {
+            font-weight: 400;
+        }
+
         /* ===== SECTIONS ===== */
         .section {
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
         .section-title {
-            font-size: 17px;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 18px;
             font-weight: 700;
             color: #000000;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            border-bottom: 1px solid #e8e8e8;
-            padding-bottom: 4px;
-            margin-bottom: 10px;
+            border-bottom: 2px solid #e8e8e8;
+            padding-bottom: 5px;
+            margin-bottom: 12px;
         }
 
         .section p,
         .section li {
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 15px;
-            line-height: 1.6;
+            line-height: 1.7;
             color: #1a1a1a;
+            font-weight: 400;
+            letter-spacing: 0.2px;
         }
 
         .section ul {
@@ -116,63 +180,76 @@
         }
 
         .section ul li {
-            padding: 2px 0;
+            padding: 3px 0;
         }
 
         .section ul li::before {
             content: "▸ ";
             color: #DAA520;
+            font-weight: 700;
         }
 
         /* ===== EDUCATION ===== */
         .edu-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .edu-item .school {
+            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             font-size: 16px;
             color: #000;
+            letter-spacing: 0.3px;
         }
 
         .edu-item .year {
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 14px;
-            color: #888;
+            color: #999;
             font-style: italic;
         }
 
         .edu-item .detail {
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 14px;
-            color: #444;
+            color: #555;
             margin-top: 1px;
+            font-weight: 400;
         }
 
         /* ===== PROJECTS ===== */
         .project-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .project-item .name {
+            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 16px;
             color: #000;
+            letter-spacing: 0.3px;
         }
 
         .project-item .desc {
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 14px;
-            color: #444;
+            color: #555;
+            font-weight: 400;
         }
 
         .project-item .links {
             font-size: 13px;
-            margin-top: 1px;
+            margin-top: 2px;
         }
 
         .project-item .links a {
+            font-family: 'Lora', 'Georgia', serif;
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1px dotted #ccc;
-            margin-right: 14px;
+            border-bottom: 1.5px dotted #d4d4d4;
+            margin-right: 16px;
+            font-weight: 500;
+            transition: border-color 0.3s ease;
         }
 
         .project-item .links a:hover {
@@ -183,65 +260,92 @@
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 30px;
+            gap: 6px 36px;
         }
 
         .skills-grid .skill-cat {
+            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: #000;
-            min-width: 100px;
+            min-width: 110px;
+            font-size: 15px;
+            letter-spacing: 0.3px;
         }
 
         .skills-grid .skill-list {
+            font-family: 'Lora', 'Georgia', serif;
             color: #1a1a1a;
+            font-weight: 400;
+            font-size: 15px;
         }
 
         /* ===== ACHIEVEMENTS ===== */
         .achievement-list li::before {
             content: "✦ ";
             color: #DAA520;
+            font-weight: 700;
         }
 
         /* ===== LANGUAGES & INTERESTS ===== */
         .inline-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 24px;
+            gap: 6px 28px;
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 15px;
             color: #1a1a1a;
         }
 
         .inline-list .label {
+            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: #000;
+            letter-spacing: 0.3px;
         }
 
         /* ===== CONNECT ===== */
         .connect-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 28px;
+            gap: 6px 30px;
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 14px;
         }
 
         .connect-grid a {
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1px dotted #ccc;
+            border-bottom: 1.5px dotted #d4d4d4;
+            font-weight: 500;
+            transition: border-color 0.3s ease;
         }
 
         .connect-grid a:hover {
             border-bottom-color: #DAA520;
         }
 
+        .connect-grid span {
+            font-weight: 400;
+        }
+
+        /* ===== REFERENCES ===== */
+        .ref-text {
+            font-family: 'Lora', 'Georgia', serif;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
+            font-family: 'Lora', 'Georgia', serif;
             font-size: 12px;
-            color: #aaa;
+            color: #bbb;
             border-top: 1px solid #e8e8e8;
             padding-top: 16px;
-            margin-top: 10px;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -256,22 +360,32 @@
 
             .header .contact-links {
                 flex-direction: column;
-                gap: 2px;
+                gap: 4px;
             }
 
             .skills-grid {
                 flex-direction: column;
-                gap: 2px;
+                gap: 4px;
             }
 
             .connect-grid {
                 flex-direction: column;
-                gap: 2px;
+                gap: 4px;
             }
 
             .inline-list {
                 flex-direction: column;
-                gap: 2px;
+                gap: 4px;
+            }
+
+            .profile-photo {
+                width: 110px;
+                height: 110px;
+            }
+
+            .download-btn {
+                padding: 12px 28px;
+                font-size: 15px;
             }
         }
 
@@ -305,24 +419,45 @@
             .section {
                 page-break-inside: avoid;
             }
+
+            .download-btn-wrapper {
+                display: none !important;
+            }
+
+            .profile-photo:hover {
+                transform: none;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="resume">
+    <!-- ================================ -->
+    <!-- DOWNLOAD CV BUTTON               -->
+    <!-- ================================ -->
+    <div class="download-btn-wrapper">
+        <button class="download-btn" onclick="window.print()">
+            📄 Download CV (PDF)
+        </button>
+    </div>
+
+    <!-- ================================ -->
+    <!-- RESUME                           -->
+    <!-- ================================ -->
+    <div class="resume" id="resume-content">
 
         <!-- ================================ -->
         <!-- HEADER                           -->
         <!-- ================================ -->
         <div class="header">
+            <img src="formal.jpg" alt="Ravi Raj" class="profile-photo" />
             <h1>RAVI RAJ</h1>
             <div class="title">Web Developer | Student</div>
             <div class="location">Patna, India</div>
             <div class="contact-links">
-                <a href="mailto:raviraj2k09@example.com">✉️ Email</a>
-                <span>📱 +91 XXXXX XXXXX</span>
+                <a href="mailto:raviraj2k09@gmail.com">✉️ raviraj2k09@gmail.com</a>
+                <span>📱 +91 91022 24971</span>
                 <a href="https://raviraj2k09.github.io" target="_blank">🌐 raviraj2k09.github.io</a>
             </div>
         </div>
@@ -467,7 +602,7 @@
                 <a href="https://youtube.com/@Ravirajhere" target="_blank">📺 YouTube</a>
                 <a href="https://github.com/raviraj2k09" target="_blank">💻 GitHub</a>
                 <a href="https://raviraj2k09.github.io" target="_blank">🌐 Website</a>
-                <span>💬 WhatsApp: @singh_ravirajhere</span>
+                <span>💬 WhatsApp: +91 91022 24971</span>
             </div>
         </div>
 
@@ -476,7 +611,7 @@
         <!-- ================================ -->
         <div class="section">
             <div class="section-title">References</div>
-            <p style="font-size:14px; color:#666;">Available upon request</p>
+            <p class="ref-text">Available upon request</p>
         </div>
 
         <!-- ================================ -->
