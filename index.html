@@ -30,9 +30,9 @@
 <body>
 
     <!-- ============================================================
-    PREMIUM THEME TOGGLE — 3D + GLOW + GLASS
+    PREMIUM THEME TOGGLE
     ============================================================ -->
-    <button id="theme-toggle" class="theme-btn premium-toggle" aria-label="Toggle theme">
+    <button id="theme-toggle" class="premium-toggle" aria-label="Toggle theme">
         <span class="toggle-icon">🌙</span>
         <span class="toggle-tooltip">Switch to Light Mode</span>
     </button>
@@ -43,7 +43,7 @@
     <canvas id="matrix-bg" aria-hidden="true"></canvas>
 
     <!-- ============================================================
-    NAVIGATION — Active Highlight + Hover Effect
+    NAVIGATION
     ============================================================ -->
     <nav role="navigation" aria-label="Main navigation">
         <div class="nav-container">
@@ -53,9 +53,9 @@
             <ul class="nav-links">
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
                 <li><a href="#blog">Blog</a></li>
+                <li><a href="#myworld">My World</a></li>
+                <li><a href="#projects">Portfolio</a></li>
                 <li><a href="#education">Education</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -68,11 +68,11 @@
     <main class="container">
 
         <!-- ============================================================
-        HERO SECTION — Clean + Mission Line + Typing Effect
+        HOME SECTION
         ============================================================ -->
         <section id="home" class="hero" aria-labelledby="hero-title">
 
-            <!-- Social Trigger — Smooth Animation -->
+            <!-- Social Trigger -->
             <div class="social-wrapper">
                 <div class="social-trigger" id="triggerBtn">
                     <span>@rravirajhere</span>
@@ -117,22 +117,22 @@
             <!-- Subtitle with Typing Effect -->
             <h2 class="hero-subtitle">
                 <span>Student</span> — Web Developer
-                <span class="typing-text">| Building the web, one line at a time</span>
+                <span class="typing-text">| Building things that actually work</span>
             </h2>
 
-            <!-- Description -->
+            <!-- Description (Personal) -->
             <p class="hero-desc">
-                Passionate 12th-grade student building modern web experiences with HTML, CSS, and Python.
-                I turn ideas into code and love learning new technologies every day.
+                Hey! I'm Ravi — a 12th grader who fell in love with code when I realized I could build things that actually work. 
+                I'm not perfect, but I'm learning every single day. And I'm damn proud of that.
             </p>
 
-            <!-- Hero Actions — Only 2 CTAs -->
+            <!-- Hero Actions -->
             <div class="hero-actions">
                 <a href="resume-pdf.html" target="_blank" class="btn btn-primary">📄 Resume PDF</a>
-                <a href="#contactBtn" class="btn btn-secondary">Get In Touch</a>
+                <a href="#about" class="btn btn-secondary">Know Me</a>
             </div>
 
-            <!-- Stats with Icons -->
+            <!-- Stats -->
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-icon">📚</span>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="stat-item">
                     <span class="stat-icon">🚀</span>
-                    <span class="stat-number">2+</span>
+                    <span class="stat-number">4</span>
                     <span class="stat-label">Projects Built</span>
                 </div>
                 <div class="stat-item">
@@ -156,7 +156,7 @@
                 </div>
             </div>
 
-            <!-- Tags with Hover Effect + Learning Badge -->
+            <!-- Tags -->
             <div class="hero-tags">
                 <span class="tag">HTML5</span>
                 <span class="tag">CSS3</span>
@@ -165,16 +165,10 @@
                 <span class="tag">Responsive Design</span>
                 <span class="tag learning-badge">📚 Learning React</span>
             </div>
-
-            <!-- CTA Buttons -->
-            <div class="cta-buttons">
-                <a href="#projects" class="btn btn-primary">View My Work</a>
-                <a href="#contactBtn" class="btn btn-secondary">Get In Touch</a>
-            </div>
         </section>
 
         <!-- ============================================================
-        ABOUT SECTION — Personal Story + Journey
+        ABOUT SECTION
         ============================================================ -->
         <section id="about" aria-labelledby="about-title">
             <div class="section-header">
@@ -209,6 +203,8 @@
                         To become a <strong>Full-Stack Developer</strong> and work on projects that make a real impact.
                         Currently mastering frontend technologies while exploring backend with Python.
                     </p>
+
+                    <button class="btn btn-outline" onclick="openStoryModal()">📖 Read My Story</button>
                 </div>
 
                 <div class="about-card">
@@ -242,204 +238,13 @@
         </section>
 
         <!-- ============================================================
-        SKILLS SECTION — Animated Bars on Scroll + Gradient
-        ============================================================ -->
-        <section id="skills" aria-labelledby="skills-title">
-            <div class="section-header">
-                <div class="section-label">MY SKILLS</div>
-                <h2 id="skills-title" class="section-title">Technologies I Work With</h2>
-                <p class="section-desc">Tools and technologies I'm proficient in and currently learning</p>
-            </div>
-
-            <div class="skills-container">
-                <!-- Frontend -->
-                <div class="skill-box">
-                    <h3><span class="skill-icon">🎨</span> Frontend</h3>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>HTML5</span><span>75%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>CSS3</span><span>80%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>JavaScript</span><span>50%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="50%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>Responsive Design</span><span>70%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70%"></div></div>
-                    </div>
-                </div>
-
-                <!-- Backend -->
-                <div class="skill-box">
-                    <h3><span class="skill-icon">⚙️</span> Backend</h3>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>Python</span><span>50%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="50%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>Node.js</span><span style="color:var(--accent);">Learning</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill learning-fill" data-width="20%"></div></div>
-                    </div>
-                </div>
-
-                <!-- Tools -->
-                <div class="skill-box">
-                    <h3><span class="skill-icon">🛠️</span> Tools & Others</h3>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>VS Code</span><span>85%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>Git & GitHub</span><span>60%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="60%"></div></div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-name"><span>Chrome DevTools</span><span>70%</span></div>
-                        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70%"></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================
-        PROJECTS SECTION — Glassmorphism Cards + Hover 3D
-        ============================================================ -->
-        <section id="projects" aria-labelledby="projects-title">
-            <div class="section-header">
-                <div class="section-label">MY WORK</div>
-                <h2 id="projects-title" class="section-title">Featured Projects</h2>
-                <p class="section-desc">Some of my recent work and projects I'm proud of</p>
-            </div>
-
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <article class="project-card">
-                    <div class="project-card-header">
-                        <span class="project-title">Autobiography</span>
-                        <span class="project-version">v1.0</span>
-                    </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">📖 My Autobiography</h2>
-                        <p class="project-desc">
-                            Personal life story, childhood memories, education journey,
-                            and future aspirations — a complete timeline of my life so far.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <nav class="project-links">
-                            <a href="autobiography.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
-                    </div>
-                </article>
-
-                <!-- Project 2 -->
-                <article class="project-card featured">
-                    <div class="project-card-header project-card-featured">
-                        <span class="project-title">Chatbox</span>
-                        <span class="project-version">v1.0</span>
-                    </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">💬 Chatbox Application</h2>
-                        <p class="project-desc">
-                            Interactive chat interface with real-time messaging, emoji support,
-                            and local storage for saving conversations.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                            <span class="tech-badge">LocalStorage</span>
-                        </div>
-                        <nav class="project-links">
-                            <a href="chatbox.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
-                    </div>
-                </article>
-
-                <!-- Project 3 -->
-                <article class="project-card">
-                    <div class="project-card-header">
-                        <span class="project-title">Friends Gallery</span>
-                        <span class="project-version">v1.0</span>
-                    </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">👥 Friends Gallery</h2>
-                        <p class="project-desc">
-                            Beautiful photo gallery showcasing memories with friends. Features lightbox view,
-                            category filters, and smooth animations.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <nav class="project-links">
-                            <a href="friends.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
-                    </div>
-                </article>
-
-                <!-- Project 4 -->
-                <article class="project-card">
-                    <div class="project-card-header project-card-featured">
-                        <span class="project-title">Resume</span>
-                        <span class="project-version">v1.0</span>
-                    </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">📄 My Resume</h2>
-                        <p class="project-desc">
-                            Professional resume with education details, skills, projects,
-                            and work experience. Clean, modern, and printable design.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <nav class="project-links">
-                            <a href="resume-pdf.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
-                    </div>
-                </article>
-            </div>
-
-            <!-- Upcoming Projects -->
-            <div class="upcoming-projects">
-                <h3>🔜 Upcoming Projects</h3>
-                <div class="upcoming-grid">
-                    <div class="upcoming-card">
-                        <span class="upcoming-badge">Planning</span>
-                        <h4>E-Commerce Website</h4>
-                        <p>Full-featured online store with cart and payment integration.</p>
-                    </div>
-                    <div class="upcoming-card">
-                        <span class="upcoming-badge">Idea</span>
-                        <h4>Blog Platform</h4>
-                        <p>Personal blogging engine where I'll share my coding journey.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================
-        BLOG SECTION — Cards with Date + Category + Hover
+        BLOG SECTION
         ============================================================ -->
         <section id="blog" aria-labelledby="blog-title">
             <div class="section-header">
                 <div class="section-label">MY BLOG</div>
-                <h2 id="blog-title" class="section-title">Writings & Thoughts</h2>
-                <p class="section-desc">My experiences, learnings, and stories from my coding journey</p>
+                <h2 id="blog-title" class="section-title">My Thoughts & Stories</h2>
+                <p class="section-desc">Experiences, learnings, and stories from my journey</p>
             </div>
 
             <div class="blog-grid">
@@ -482,16 +287,193 @@
                     <a href="#" class="blog-readmore">Read More →</a>
                 </article>
             </div>
+
+            <div style="text-align:center; margin-top: 40px;">
+                <button class="btn btn-ghost" onclick="openBlogModal()">✍️ Read All Posts</button>
+            </div>
         </section>
 
         <!-- ============================================================
-        EDUCATION SECTION — Upgraded (Planning instead of To be updated)
+        MY WORLD SECTION
+        ============================================================ -->
+        <section id="myworld" aria-labelledby="myworld-title">
+            <div class="section-header">
+                <div class="section-label">MY WORLD</div>
+                <h2 id="myworld-title" class="section-title">What Makes Me, Me</h2>
+                <p class="section-desc">Things I love, believe in, and live by</p>
+            </div>
+
+            <div class="myworld-grid">
+                <div class="myworld-card">
+                    <span class="myworld-icon">📚</span>
+                    <h4>My Favorites</h4>
+                    <p>Books, music, food, and movies that shaped my vibe.</p>
+                </div>
+                <div class="myworld-card">
+                    <span class="myworld-icon">🎧</span>
+                    <h4>My Vibe</h4>
+                    <p>Lo-fi beats, late nights, and code that just works.</p>
+                </div>
+                <div class="myworld-card">
+                    <span class="myworld-icon">💭</span>
+                    <h4>My Mantra</h4>
+                    <p>"Consistency over perfection — every single day."</p>
+                </div>
+                <div class="myworld-card">
+                    <span class="myworld-icon">🌱</span>
+                    <h4>My Growth</h4>
+                    <p>Learning something new every day, no matter how small.</p>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top: 40px;">
+                <button class="btn btn-pill" onclick="openWorldModal()">✨ Explore</button>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        PORTFOLIO SECTION (Sirf 1 Section)
+        ============================================================ -->
+        <section id="projects" aria-labelledby="projects-title">
+            <div class="section-header">
+                <div class="section-label">MY WORK</div>
+                <h2 id="projects-title" class="section-title">Projects I've Built</h2>
+                <p class="section-desc">Each project has a story — here's mine</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Project 1: Autobiography -->
+                <article class="project-card">
+                    <div class="project-card-header">
+                        <span class="project-title">📖 Autobiography</span>
+                        <span class="project-version">v1.0</span>
+                    </div>
+                    <div class="project-card-body">
+                        <h2 class="project-title">My Autobiography — My story, my words</h2>
+                        <p class="project-desc">
+                            I wrote this because I wanted to capture my journey — from a small-town boy 
+                            to someone who builds things with code. This project is close to my heart.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                        <div class="project-divider">✦</div>
+                        <nav class="project-links">
+                            <a href="autobiography.html" class="project-link">→ Live Demo</a>
+                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" class="project-link" target="_blank">→ Source Code</a>
+                        </nav>
+                    </div>
+                </article>
+
+                <!-- Project 2: Chatbox -->
+                <article class="project-card featured">
+                    <div class="project-card-header project-card-featured">
+                        <span class="project-title">💬 Chatbox</span>
+                        <span class="project-version">v1.0</span>
+                    </div>
+                    <div class="project-card-body">
+                        <h2 class="project-title">Chatbox — My AI version</h2>
+                        <p class="project-desc">
+                            I built this because I love talking to people. Even if it's my AI version. 
+                            It's like having a piece of me available 24/7.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                            <span class="tech-badge">LocalStorage</span>
+                        </div>
+                        <div class="project-divider">✦</div>
+                        <nav class="project-links">
+                            <a href="chatbox.html" class="project-link">→ Live Demo</a>
+                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" class="project-link" target="_blank">→ Source Code</a>
+                        </nav>
+                    </div>
+                </article>
+
+                <!-- Project 3: Friends Gallery -->
+                <article class="project-card">
+                    <div class="project-card-header">
+                        <span class="project-title">👥 Friends Gallery</span>
+                        <span class="project-version">v1.0</span>
+                    </div>
+                    <div class="project-card-body">
+                        <h2 class="project-title">Friends Gallery — My beloved circle</h2>
+                        <p class="project-desc">
+                            These are the people who make my life better. I wanted to show them off 
+                            because they deserve to be seen.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                        <div class="project-divider">✦</div>
+                        <nav class="project-links">
+                            <a href="friends.html" class="project-link">→ Live Demo</a>
+                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" class="project-link" target="_blank">→ Source Code</a>
+                        </nav>
+                    </div>
+                </article>
+
+                <!-- Project 4: Resume -->
+                <article class="project-card">
+                    <div class="project-card-header project-card-featured">
+                        <span class="project-title">📄 Resume</span>
+                        <span class="project-version">v1.0</span>
+                    </div>
+                    <div class="project-card-body">
+                        <h2 class="project-title">My Resume — My journey on paper</h2>
+                        <p class="project-desc">
+                            Not just a CV. It's everything I've learned, built, and achieved — 
+                            all in one place. Proud of how far I've come.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">JavaScript</span>
+                        </div>
+                        <div class="project-divider">✦</div>
+                        <nav class="project-links">
+                            <a href="resume-pdf.html" class="project-link">→ Live Demo</a>
+                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" class="project-link" target="_blank">→ Source Code</a>
+                        </nav>
+                    </div>
+                </article>
+            </div>
+
+            <div style="text-align:center; margin-top: 40px;">
+                <button class="btn btn-outline" onclick="openPortfolioModal()">🔍 View All Projects</button>
+            </div>
+
+            <!-- Upcoming Projects -->
+            <div class="upcoming-projects">
+                <h3>🔜 Upcoming Projects</h3>
+                <div class="upcoming-grid">
+                    <div class="upcoming-card">
+                        <span class="upcoming-badge">Planning</span>
+                        <h4>E-Commerce Website</h4>
+                        <p>Full-featured online store with cart and payment integration.</p>
+                    </div>
+                    <div class="upcoming-card">
+                        <span class="upcoming-badge">Idea</span>
+                        <h4>Blog Platform</h4>
+                        <p>Personal blogging engine where I'll share my coding journey.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        EDUCATION SECTION
         ============================================================ -->
         <section id="education" aria-labelledby="education-title">
             <div class="section-header">
                 <div class="section-label">EDUCATION</div>
-                <h2 id="education-title" class="section-title">Academic Journey</h2>
-                <p class="section-desc">My educational background and learning path</p>
+                <h2 id="education-title" class="section-title">My Academic Journey</h2>
+                <p class="section-desc">Where I've been and where I'm heading</p>
             </div>
 
             <div class="education-grid">
@@ -522,15 +504,19 @@
                     <p>Completed Primary Education to 5th Standard.</p>
                 </div>
             </div>
+
+            <div style="text-align:center; margin-top: 40px;">
+                <button class="btn btn-border" onclick="openEducationModal()">📜 See My Journey</button>
+            </div>
         </section>
 
         <!-- ============================================================
-        CONTACT SECTION — + Online Status (Real)
+        CONTACT SECTION
         ============================================================ -->
         <section id="contact" aria-labelledby="contact-title">
             <div class="section-header">
                 <div class="section-label">GET IN TOUCH</div>
-                <h2 id="contact-title" class="section-title">Let's Work Together</h2>
+                <h2 id="contact-title" class="section-title">Let's Connect</h2>
                 <p class="section-desc">Have a project in mind? Let's talk</p>
             </div>
 
@@ -541,22 +527,13 @@
                     <p class="online-status">
                         <span class="green-dot">🟢</span> Online — Usually replies within 24 hours
                     </p>
+                    <button class="btn btn-primary btn-large" onclick="showContactOptions()">💬 Let's Talk</button>
                 </div>
             </div>
         </section>
 
         <!-- ============================================================
-        CONTACT BUTTON — SAME
-        ============================================================ -->
-        <div class="contact-btn-wrapper">
-            <button onclick="showContactOptions()" class="contact-btn" id="contactBtn">
-                <span class="contact-btn-icon">💬</span>
-                <span class="contact-btn-label">Contact Me</span>
-            </button>
-        </div>
-
-        <!-- ============================================================
-        CONTACT MODAL — Glassmorphism + Animation
+        CONTACT MODAL
         ============================================================ -->
         <div class="rj-modal" id="contactModal">
             <div class="rj-modal-content">
@@ -579,7 +556,7 @@
         </div>
 
         <!-- ============================================================
-        ACHIEVE BUTTON — SAME
+        ACHIEVE BUTTON + MODAL
         ============================================================ -->
         <div class="achieve-footer-btn">
             <button onclick="openRJModal()" class="btn-achieve">
@@ -587,9 +564,6 @@
             </button>
         </div>
 
-        <!-- ============================================================
-        ACHIEVE MODAL — Glassmorphism + Animation
-        ============================================================ -->
         <div class="rj-modal" id="rjModal">
             <div class="rj-modal-content">
                 <span class="rj-modal-close" onclick="closeRJModal()">✕</span>
@@ -621,20 +595,19 @@
         </div>
 
         <!-- ============================================================
-        SCROLL TO TOP BUTTON — Smooth Scroll
+        SCROLL TO TOP
         ============================================================ -->
         <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
             <span>↑</span>
         </button>
 
         <!-- ============================================================
-        FOOTER — Social Links Added
+        FOOTER
         ============================================================ -->
         <footer role="contentinfo">
             <p>© 2026 Ravi Raj</p>
             <p>Patna, India</p>
 
-            <!-- Social Links in Footer -->
             <div class="footer-socials">
                 <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter">
                     <i class="fab fa-x-twitter"></i>
@@ -651,10 +624,11 @@
             </div>
 
             <p>Last Updated: <span id="lastUpdated"></span></p>
+            <p style="font-size:14px; color:var(--gray); margin-top:8px;">Made with ☕, curiosity, and a lot of late nights.</p>
         </footer>
 
         <!-- ============================================================
-        LIVE DATE TIME BAR — Upgraded
+        LIVE TIME BAR
         ============================================================ -->
         <div id="live-time-bar" role="status" aria-live="polite">
             <span id="current-date-time">Loading...</span>
@@ -663,7 +637,7 @@
     </main>
 
     <!-- ============================================================
-    SCRIPTS — Sab Linked (Kuch Nahi Badla)
+    SCRIPTS
     ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
     </script>
