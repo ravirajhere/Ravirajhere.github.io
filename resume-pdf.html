@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ravi Raj — Resume</title>
+    <title>Ravi Raj — Professional CV</title>
 
-    <!-- Google Fonts: Professional & Premium -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <!-- Google Font: Georgia (Recruiter Favorite) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome for 3D Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
-        /* ===== RESET & BASE ===== */
+        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -19,8 +25,8 @@
         }
 
         body {
-            font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
-            background: #f5f5f5;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #f0f0f0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -38,27 +44,18 @@
         .download-btn {
             background: #1a1a1a;
             color: #ffffff;
-            border: 2px solid #1a1a1a;
-            padding: 14px 44px;
-            font-size: 17px;
-            font-weight: 600;
-            font-family: 'Playfair Display', serif;
-            border-radius: 50px;
+            border: none;
+            padding: 12px 36px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            border-radius: 4px;
             cursor: pointer;
-            letter-spacing: 1.5px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            transition: background 0.3s ease;
         }
 
         .download-btn:hover {
             background: #DAA520;
-            border-color: #DAA520;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(218, 165, 32, 0.35);
-        }
-
-        .download-btn:active {
-            transform: scale(0.97);
         }
 
         /* ===== RESUME CONTAINER ===== */
@@ -66,112 +63,95 @@
             max-width: 900px;
             width: 100%;
             background: #ffffff;
-            padding: 50px 55px;
-            border-radius: 8px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            padding: 45px 50px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
         /* ===== HEADER ===== */
         .header {
-            text-align: center;
-            padding-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            padding-bottom: 18px;
             border-bottom: 2px solid #e8e8e8;
-            margin-bottom: 26px;
+            margin-bottom: 22px;
         }
 
-        /* ===== PROFILE PHOTO ===== */
         .profile-photo {
-            width: 140px;
-            height: 140px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
-            border: 4px solid #DAA520;
+            border: 3px solid #DAA520;
             object-fit: cover;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
-        .profile-photo:hover {
-            transform: scale(1.03);
+        .header-right {
+            flex: 1;
         }
 
-        .header h1 {
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 38px;
+        .header-right h1 {
+            font-size: 32px;
             font-weight: 700;
             color: #000000;
-            letter-spacing: 3px;
-            margin-bottom: 4px;
-        }
-
-        .header .title {
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 19px;
-            color: #DAA520;
-            font-weight: 600;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin-bottom: 2px;
         }
 
-        .header .location {
-            font-size: 15px;
-            color: #888;
-            margin-bottom: 10px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
+        .header-right .title {
+            font-size: 17px;
+            color: #DAA520;
+            font-weight: 600;
+            margin-bottom: 2px;
         }
 
-        .header .contact-links {
+        .header-right .location {
             font-size: 14px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .header-right .contact-links {
+            font-size: 13px;
             color: #333;
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 8px 22px;
-            font-family: 'Lora', serif;
+            gap: 4px 16px;
         }
 
-        .header .contact-links a {
+        .header-right .contact-links a {
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1.5px dotted #d4d4d4;
-            transition: border-color 0.3s ease;
-            font-weight: 500;
+            border-bottom: 1px dotted #ccc;
         }
 
-        .header .contact-links a:hover {
+        .header-right .contact-links a:hover {
             border-bottom-color: #DAA520;
-        }
-
-        .header .contact-links span {
-            font-weight: 400;
         }
 
         /* ===== SECTIONS ===== */
         .section {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .section-title {
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #000000;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            border-bottom: 2px solid #e8e8e8;
-            padding-bottom: 5px;
-            margin-bottom: 12px;
+            border-bottom: 2px solid #DAA520;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
         }
 
         .section p,
         .section li {
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 15px;
-            line-height: 1.7;
+            font-size: 14px;
+            line-height: 1.6;
             color: #1a1a1a;
             font-weight: 400;
-            letter-spacing: 0.2px;
         }
 
         .section ul {
@@ -180,7 +160,7 @@
         }
 
         .section ul li {
-            padding: 3px 0;
+            padding: 2px 0;
         }
 
         .section ul li::before {
@@ -189,70 +169,89 @@
             font-weight: 700;
         }
 
-        /* ===== EDUCATION ===== */
-        .edu-item {
+        /* ===== SUMMARY HIGHLIGHTS ===== */
+        .summary-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+            margin-top: 6px;
+        }
+
+        .summary-grid .highlight-item {
+            font-size: 13px;
+            color: #1a1a1a;
+            background: #f8f8f8;
+            padding: 2px 14px;
+            border-radius: 12px;
+            border-left: 3px solid #DAA520;
+        }
+
+        /* ===== EXPERIENCE / PROJECTS ===== */
+        .exp-item {
             margin-bottom: 12px;
         }
 
-        .edu-item .school {
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-weight: 700;
-            font-size: 16px;
-            color: #000;
-            letter-spacing: 0.3px;
+        .exp-item .exp-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: baseline;
         }
 
-        .edu-item .year {
-            font-family: 'Lora', 'Georgia', serif;
+        .exp-item .exp-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #000;
+        }
+
+        .exp-item .exp-org {
+            font-weight: 600;
+            color: #DAA520;
             font-size: 14px;
+        }
+
+        .exp-item .exp-date {
+            font-size: 13px;
             color: #999;
             font-style: italic;
         }
 
-        .edu-item .detail {
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 14px;
-            color: #555;
-            margin-top: 1px;
-            font-weight: 400;
-        }
-
-        /* ===== PROJECTS ===== */
-        .project-item {
-            margin-bottom: 12px;
-        }
-
-        .project-item .name {
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-weight: 700;
-            font-size: 16px;
-            color: #000;
-            letter-spacing: 0.3px;
-        }
-
-        .project-item .desc {
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 14px;
-            color: #555;
-            font-weight: 400;
-        }
-
-        .project-item .links {
+        .exp-item .exp-desc {
             font-size: 13px;
+            color: #555;
             margin-top: 2px;
+            padding-left: 4px;
         }
 
-        .project-item .links a {
-            font-family: 'Lora', 'Georgia', serif;
+        .exp-item .exp-desc ul {
+            padding-left: 16px;
+        }
+
+        .exp-item .exp-desc ul li {
+            font-size: 13px;
+            color: #555;
+            padding: 1px 0;
+            font-weight: 400;
+        }
+
+        .exp-item .exp-desc ul li::before {
+            content: "• ";
+            color: #DAA520;
+        }
+
+        .exp-item .exp-links {
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .exp-item .exp-links a {
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1.5px dotted #d4d4d4;
-            margin-right: 16px;
-            font-weight: 500;
-            transition: border-color 0.3s ease;
+            border-bottom: 1px dotted #ccc;
+            margin-right: 14px;
         }
 
-        .project-item .links a:hover {
+        .exp-item .exp-links a:hover {
             border-bottom-color: #DAA520;
         }
 
@@ -260,23 +259,20 @@
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px 36px;
+            gap: 4px 28px;
         }
 
         .skills-grid .skill-cat {
-            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: #000;
-            min-width: 110px;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            min-width: 90px;
+            font-size: 14px;
         }
 
         .skills-grid .skill-list {
-            font-family: 'Lora', 'Georgia', serif;
             color: #1a1a1a;
+            font-size: 14px;
             font-weight: 400;
-            font-size: 15px;
         }
 
         /* ===== ACHIEVEMENTS ===== */
@@ -286,51 +282,82 @@
             font-weight: 700;
         }
 
-        /* ===== LANGUAGES & INTERESTS ===== */
+        /* ===== LANGUAGES ===== */
         .inline-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px 28px;
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 15px;
+            gap: 4px 28px;
+            font-size: 14px;
             color: #1a1a1a;
         }
 
         .inline-list .label {
-            font-family: 'Playfair Display', 'Georgia', serif;
             font-weight: 700;
             color: #000;
-            letter-spacing: 0.3px;
         }
 
-        /* ===== CONNECT ===== */
+        /* ===== CONNECT — 3D ICON LINKS ===== */
         .connect-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px 30px;
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 14px;
+            gap: 12px 28px;
         }
 
-        .connect-grid a {
+        .connect-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: #1a1a1a;
             text-decoration: none;
-            border-bottom: 1.5px dotted #d4d4d4;
             font-weight: 500;
-            transition: border-color 0.3s ease;
+            padding: 6px 14px 6px 10px;
+            border-radius: 6px;
+            background: #fafafa;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
         }
 
-        .connect-grid a:hover {
-            border-bottom-color: #DAA520;
+        .connect-link i {
+            font-size: 18px;
+            width: 26px;
+            text-align: center;
+            transition: transform 0.3s ease;
         }
 
-        .connect-grid span {
-            font-weight: 400;
+        .connect-link:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border-color: #DAA520;
+            background: #ffffff;
+        }
+
+        .connect-link:hover i {
+            transform: scale(1.15) rotate(-3deg);
+        }
+
+        .connect-link .icon-bg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .connect-link:hover .icon-bg {
+            background: #DAA520;
+            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.35);
+        }
+
+        .connect-link:hover .icon-bg i {
+            color: #ffffff !important;
         }
 
         /* ===== REFERENCES ===== */
         .ref-text {
-            font-family: 'Lora', 'Georgia', serif;
             font-size: 14px;
             color: #888;
             font-style: italic;
@@ -339,53 +366,75 @@
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
-            font-family: 'Lora', 'Georgia', serif;
-            font-size: 12px;
+            font-size: 11px;
             color: #bbb;
             border-top: 1px solid #e8e8e8;
-            padding-top: 16px;
-            margin-top: 12px;
-            letter-spacing: 0.5px;
+            padding-top: 14px;
+            margin-top: 8px;
+        }
+
+        /* ===== PHONE NUMBER — HIDDEN ON WEBSITE ===== */
+        .phone-number {
+            display: none;
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             .resume {
-                padding: 28px 20px;
+                padding: 24px 18px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 14px;
             }
 
             .header h1 {
-                font-size: 28px;
+                font-size: 26px;
             }
 
             .header .contact-links {
                 flex-direction: column;
-                gap: 4px;
+                gap: 3px;
+                align-items: center;
             }
 
             .skills-grid {
                 flex-direction: column;
-                gap: 4px;
+                gap: 3px;
             }
 
             .connect-grid {
                 flex-direction: column;
-                gap: 4px;
+                gap: 8px;
+                align-items: center;
             }
 
             .inline-list {
                 flex-direction: column;
-                gap: 4px;
+                gap: 3px;
+                align-items: center;
+            }
+
+            .summary-grid {
+                justify-content: center;
             }
 
             .profile-photo {
-                width: 110px;
-                height: 110px;
+                width: 100px;
+                height: 100px;
             }
 
             .download-btn {
-                padding: 12px 28px;
-                font-size: 15px;
+                padding: 10px 28px;
+                font-size: 14px;
+            }
+
+            .exp-item .exp-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
             }
         }
 
@@ -399,29 +448,41 @@
 
             .resume {
                 box-shadow: none;
-                border-radius: 0;
-                padding: 40px 45px;
+                border: none;
+                padding: 35px 40px;
                 max-width: 100%;
-            }
-
-            .project-item .links a {
-                border-bottom: none;
-            }
-
-            .header .contact-links a {
-                border-bottom: none;
-            }
-
-            .connect-grid a {
-                border-bottom: none;
-            }
-
-            .section {
-                page-break-inside: avoid;
             }
 
             .download-btn-wrapper {
                 display: none !important;
+            }
+
+            .phone-number {
+                display: inline !important;
+            }
+
+            .connect-link {
+                background: #fff;
+                border: 1px solid #ddd;
+                box-shadow: none !important;
+                padding: 4px 10px;
+            }
+
+            .connect-link:hover {
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            .connect-link .icon-bg {
+                background: #f5f5f5;
+            }
+
+            .connect-link .icon-bg i {
+                color: #1a1a1a !important;
+            }
+
+            .section {
+                page-break-inside: avoid;
             }
 
             .profile-photo:hover {
@@ -433,32 +494,30 @@
 
 <body>
 
-    <!-- ================================ -->
-    <!-- DOWNLOAD CV BUTTON               -->
-    <!-- ================================ -->
+    <!-- ===== DOWNLOAD BUTTON ===== -->
     <div class="download-btn-wrapper">
         <button class="download-btn" onclick="window.print()">
             📄 Download CV (PDF)
         </button>
     </div>
 
-    <!-- ================================ -->
-    <!-- RESUME                           -->
-    <!-- ================================ -->
-    <div class="resume" id="resume-content">
+    <!-- ===== RESUME ===== -->
+    <div class="resume">
 
         <!-- ================================ -->
         <!-- HEADER                           -->
         <!-- ================================ -->
         <div class="header">
             <img src="formal.jpg" alt="Ravi Raj" class="profile-photo" />
-            <h1>RAVI RAJ</h1>
-            <div class="title">Web Developer | Student</div>
-            <div class="location">Patna, India</div>
-            <div class="contact-links">
-                <a href="mailto:raviraj2k09@gmail.com">✉️ raviraj2k09@gmail.com</a>
-                <span>📱 +91 91022 24971</span>
-                <a href="https://raviraj2k09.github.io" target="_blank">🌐 raviraj2k09.github.io</a>
+            <div class="header-right">
+                <h1>RAVI RAJ</h1>
+                <div class="title">Web Developer | Student</div>
+                <div class="location">Patna, India</div>
+                <div class="contact-links">
+                    <a href="mailto:raviraj2k09@gmail.com">✉️ raviraj2k09@gmail.com</a>
+                    <span class="phone-number">📱 +91 91022 24971</span>
+                    <a href="https://ravirajhere.github.io">🌐 ravirajhere.github.io</a>
+                </div>
             </div>
         </div>
 
@@ -468,35 +527,115 @@
         <div class="section">
             <div class="section-title">Summary</div>
             <p>
-                Passionate web developer with 2+ years of self-learning. 
-                Building responsive, modern websites with clean, maintainable code. 
-                Currently exploring full-stack development. Open to freelance 
+                Passionate web developer with 2+ years of self-learning journey.
+                Building responsive, modern websites with clean, maintainable code.
+                Currently exploring full-stack development. Open to freelance
                 opportunities and collaborations.
             </p>
+            <div class="summary-grid">
+                <span class="highlight-item"><strong>2+</strong> Years Experience</span>
+                <span class="highlight-item"><strong>4+</strong> Projects Delivered</span>
+                <span class="highlight-item">Self-Taught &amp; Learning</span>
+                <span class="highlight-item">Open for Freelance</span>
+            </div>
         </div>
 
         <!-- ================================ -->
-        <!-- EDUCATION                        -->
+        <!-- EXPERIENCE                       -->
         <!-- ================================ -->
         <div class="section">
-            <div class="section-title">Education</div>
+            <div class="section-title">Experience</div>
 
-            <div class="edu-item">
-                <div class="school">Udaan International School, Begusarai</div>
-                <div class="year">2024 – 2026</div>
-                <div class="detail">Senior Secondary — Physics, Chemistry, Mathematics</div>
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">Freelance Web Developer</span>
+                    <span class="exp-date">2024 – Present</span>
+                </div>
+                <div class="exp-desc">
+                    <ul>
+                        <li>Built 4+ complete websites from scratch</li>
+                        <li>Created responsive, mobile-first designs</li>
+                        <li>Delivered projects with clean, maintainable code</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="edu-item">
-                <div class="school">Mother's Pride International School, Begusarai</div>
-                <div class="year">2019 – 2024</div>
-                <div class="detail">Secondary — 10th Standard</div>
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">Personal Projects</span>
+                    <span class="exp-date">2023 – Present</span>
+                </div>
+                <div class="exp-desc">
+                    <ul>
+                        <li>Developed Autobiography website (4 chapters, 2 languages)</li>
+                        <li>Built Chatbox app with real-time messaging &amp; LocalStorage</li>
+                        <li>Created Friends Gallery with lightbox &amp; category filters</li>
+                        <li>Designed Portfolio website with modern UI</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================ -->
+        <!-- PROJECTS                         -->
+        <!-- ================================ -->
+        <div class="section">
+            <div class="section-title">Projects</div>
+
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">📖 My Autobiography</span>
+                </div>
+                <div class="exp-desc">
+                    4 Chapters | 2 Languages (English/Hinglish)
+                    <br />Personal life story with childhood memories
+                    <div class="exp-links">
+                        <a href="https://ravirajhere.github.io/autobiography.html" target="_blank">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank">Source</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="edu-item">
-                <div class="school">Gautam Buddha Global School, Begusarai</div>
-                <div class="year">2014 – 2019</div>
-                <div class="detail">Primary — 5th Standard</div>
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">💬 Chatbox Application</span>
+                </div>
+                <div class="exp-desc">
+                    Real-time messaging | Emoji support | LocalStorage
+                    <br />Built with vanilla JavaScript
+                    <div class="exp-links">
+                        <a href="https://ravirajhere.github.io/chatbox.html" target="_blank">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank">Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">👥 Friends Gallery</span>
+                </div>
+                <div class="exp-desc">
+                    Lightbox view | Category filters | Smooth animations
+                    <br />Photo gallery with memory showcase
+                    <div class="exp-links">
+                        <a href="https://ravirajhere.github.io/friends.html" target="_blank">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank">Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-title">📄 Portfolio Website</span>
+                </div>
+                <div class="exp-desc">
+                    Responsive design | Project showcase | Contact form
+                    <br />Live on GitHub Pages
+                    <div class="exp-links">
+                        <a href="https://ravirajhere.github.io" target="_blank">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io" target="_blank">Source</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -526,50 +665,39 @@
         </div>
 
         <!-- ================================ -->
-        <!-- PROJECTS                         -->
+        <!-- EDUCATION                        -->
         <!-- ================================ -->
         <div class="section">
-            <div class="section-title">Projects</div>
+            <div class="section-title">Education</div>
 
-            <div class="project-item">
-                <div class="name">📖 My Autobiography</div>
-                <div class="desc">Personal life story with childhood memories and education journey.</div>
-                <div class="links">
-                    <a href="https://raviraj2k09.github.io/autobiography.html" target="_blank">🔗 Live Demo</a>
-                    <a href="https://github.com/raviraj2k09/raviraj2k09.github.io/blob/main/autobiography.html" target="_blank">📂 Source</a>
-                </div>
+            <div class="edu-item">
+                <div class="school">Senior Secondary (Class 12) | 2026</div>
+                <div class="board">CBSE Board</div>
+                <div class="detail">Udaan International School, Begusarai</div>
+                <div class="detail">Physics, Chemistry, Mathematics</div>
             </div>
 
-            <div class="project-item">
-                <div class="name">💬 Chatbox Application</div>
-                <div class="desc">Interactive chat with real-time messaging, emoji support, and LocalStorage.</div>
-                <div class="links">
-                    <a href="https://raviraj2k09.github.io/chatbox.html" target="_blank">🔗 Live Demo</a>
-                    <a href="https://github.com/raviraj2k09/raviraj2k09.github.io/blob/main/chatbox.html" target="_blank">📂 Source</a>
-                </div>
-            </div>
-
-            <div class="project-item">
-                <div class="name">👥 Friends Gallery</div>
-                <div class="desc">Photo gallery with lightbox view, category filters, and smooth animations.</div>
-                <div class="links">
-                    <a href="https://raviraj2k09.github.io/friends.html" target="_blank">🔗 Live Demo</a>
-                    <a href="https://github.com/raviraj2k09/raviraj2k09.github.io/blob/main/friends.html" target="_blank">📂 Source</a>
-                </div>
-            </div>
-
-            <div class="project-item">
-                <div class="name">📄 Portfolio Website</div>
-                <div class="desc">Professional portfolio with responsive design and project showcase.</div>
-                <div class="links">
-                    <a href="https://raviraj2k09.github.io" target="_blank">🔗 Live Demo</a>
-                    <a href="https://github.com/raviraj2k09/raviraj2k09.github.io" target="_blank">📂 Source</a>
-                </div>
+            <div class="edu-item" style="margin-top: 8px;">
+                <div class="school">Secondary (Class 10) | 2024</div>
+                <div class="board">CBSE Board</div>
+                <div class="detail">Mother's Pride International Sr. Sec. Anglo Public School, Begusarai</div>
             </div>
         </div>
 
         <!-- ================================ -->
-        <!-- ACHIEVEMENTS                      -->
+        <!-- CERTIFICATIONS                   -->
+        <!-- ================================ -->
+        <div class="section">
+            <div class="section-title">Certifications</div>
+            <ul class="achievement-list">
+                <li>Self-Learning Web Development (2023-2026)</li>
+                <li>JavaScript Fundamentals (In Progress)</li>
+                <li>Python Basics (Completed)</li>
+            </ul>
+        </div>
+
+        <!-- ================================ -->
+        <!-- ACHIEVEMENTS                     -->
         <!-- ================================ -->
         <div class="section">
             <div class="section-title">Achievements</div>
@@ -577,32 +705,48 @@
                 <li>2+ Years of Self-Learning in Web Development</li>
                 <li>Built 4+ Complete Projects from Scratch</li>
                 <li>Portfolio Live on GitHub Pages</li>
+                <li>Self-Taught 5+ Technologies</li>
             </ul>
         </div>
 
         <!-- ================================ -->
-        <!-- LANGUAGES & INTERESTS            -->
+        <!-- LANGUAGES                        -->
         <!-- ================================ -->
         <div class="section">
-            <div class="section-title">Languages &amp; Interests</div>
+            <div class="section-title">Languages</div>
             <div class="inline-list">
-                <span><span class="label">Languages:</span> Hindi (Native), English (Professional)</span>
-                <span><span class="label">Interests:</span> Web Development, Reading Novels, Cycling, Learning New Tech</span>
+                <span><span class="label">Hindi</span> (Native)</span>
+                <span><span class="label">English</span> (Professional)</span>
             </div>
         </div>
 
         <!-- ================================ -->
-        <!-- CONNECT                          -->
+        <!-- CONNECT — 3D ICONS              -->
         <!-- ================================ -->
         <div class="section">
             <div class="section-title">Connect</div>
             <div class="connect-grid">
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank">💼 LinkedIn</a>
-                <a href="https://twitter.com/Raviraj2k09" target="_blank">🐦 Twitter/X</a>
-                <a href="https://youtube.com/@Ravirajhere" target="_blank">📺 YouTube</a>
-                <a href="https://github.com/raviraj2k09" target="_blank">💻 GitHub</a>
-                <a href="https://raviraj2k09.github.io" target="_blank">🌐 Website</a>
-                <span>💬 WhatsApp: +91 91022 24971</span>
+
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" class="connect-link">
+                    <span class="icon-bg"><i class="fab fa-linkedin-in"></i></span>
+                    LinkedIn
+                </a>
+
+                <a href="https://twitter.com/Raviraj2k09" target="_blank" class="connect-link">
+                    <span class="icon-bg"><i class="fab fa-x-twitter"></i></span>
+                    Twitter/X
+                </a>
+
+                <a href="https://github.com/ravirajhere" target="_blank" class="connect-link">
+                    <span class="icon-bg"><i class="fab fa-github"></i></span>
+                    GitHub
+                </a>
+
+                <a href="https://ravirajhere.github.io" target="_blank" class="connect-link">
+                    <span class="icon-bg"><i class="fas fa-globe"></i></span>
+                    Website
+                </a>
+
             </div>
         </div>
 
