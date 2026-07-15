@@ -30,7 +30,7 @@
 <body>
 
     <!-- ============================================================
-    PREMIUM THEME TOGGLE
+    THEME TOGGLE
     ============================================================ -->
     <button id="theme-toggle" class="premium-toggle" aria-label="Toggle theme">
         <span class="toggle-icon">🌙</span>
@@ -52,12 +52,12 @@
             </div>
             <ul class="nav-links">
                 <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#myworld">My World</a></li>
-                <li><a href="#projects">Portfolio</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#story">My Story</a></li>
+                <li><a href="#blog">Writings</a></li>
+                <li><a href="#world">My World</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#journey">Journey</a></li>
+                <li><a href="#connect">Connect</a></li>
             </ul>
         </div>
     </nav>
@@ -68,7 +68,7 @@
     <main class="container">
 
         <!-- ============================================================
-        HOME SECTION
+        HOME — PERSONAL, WELCOMING
         ============================================================ -->
         <section id="home" class="hero" aria-labelledby="hero-title">
 
@@ -114,22 +114,23 @@
             <!-- Title -->
             <h1 id="hero-title" class="hero-title">RaviRaj</h1>
 
-            <!-- Subtitle with Typing Effect -->
+            <!-- Subtitle -->
             <h2 class="hero-subtitle">
                 <span>Student</span> — Web Developer
                 <span class="typing-text">| Building things that actually work</span>
             </h2>
 
-            <!-- Description (Personal) -->
+            <!-- Personal Description -->
             <p class="hero-desc">
-                Hey! I'm Ravi — a 12th grader who fell in love with code when I realized I could build things that actually work. 
-                I'm not perfect, but I'm learning every single day. And I'm damn proud of that.
+                Hey! I'm Ravi — a 12th grader who fell in love with code when I realized 
+                I could build things that actually work. I'm not perfect, but I'm learning 
+                every single day. And I'm damn proud of that.
             </p>
 
-            <!-- Hero Actions -->
+            <!-- Actions -->
             <div class="hero-actions">
                 <a href="resume-pdf.html" target="_blank" class="btn btn-primary">📄 Resume PDF</a>
-                <a href="#about" class="btn btn-secondary">Know Me</a>
+                <a href="#story" class="btn btn-secondary">Know My Story</a>
             </div>
 
             <!-- Stats -->
@@ -168,46 +169,49 @@
         </section>
 
         <!-- ============================================================
-        ABOUT SECTION
+        MY STORY — PERSONAL, EMOTIONAL
         ============================================================ -->
-        <section id="about" aria-labelledby="about-title">
+        <section id="story" aria-labelledby="story-title">
             <div class="section-header">
-                <div class="section-label">ABOUT ME</div>
-                <h2 id="about-title" class="section-title">Know Who I Am</h2>
-                <p class="section-desc">My introduction, journey, and what drives me to code</p>
+                <div class="section-label">MY STORY</div>
+                <h2 id="story-title" class="section-title">Who I Am, Where I Come From</h2>
+                <p class="section-desc">This is not just a bio. This is my journey.</p>
             </div>
 
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>Hello! I'm Ravi Raj</h3>
+            <div class="story-content">
+                <div class="story-text">
                     <p>
-                        A passionate <strong>Student</strong> and <strong>12th-grade student</strong> from Bandwar, Begusarai, Bihar.
-                        My coding journey started in 2023, and since then, I've been obsessed with creating beautiful, functional websites.
+                        I was born and raised in <strong>Bandwar, Begusarai, Bihar</strong> — a small town 
+                        where people don't usually think about coding. But I was always curious about 
+                        how things work. The first time I opened a computer, I was fascinated. 
+                        That curiosity turned into passion.
+                    </p>
+                    <p>
+                        In 2023, I wrote my first line of HTML — `<h1>Hello World</h1>`. 
+                        It wasn't much, but it opened a door. Since then, I've been obsessed with 
+                        learning everything I can about web development. I've built projects, 
+                        made mistakes, stayed up late, and loved every moment of it.
+                    </p>
+                    <p>
+                        I'm still a student. I'm still learning. But I know one thing for sure — 
+                        I want to build things that matter. I want to create websites that 
+                        solve problems and make people's lives better. And I'm not stopping until I get there.
+                    </p>
+                    <p>
+                        This website is a reflection of who I am — my work, my thoughts, my world. 
+                        Thanks for stopping by. I hope you find something that inspires you.
                     </p>
 
-                    <h3>My Journey</h3>
-                    <p>
-                        I started with basic HTML and CSS, and now I'm diving deep into JavaScript and Python.
-                        Every day I challenge myself to learn something new. I believe in <strong>learning by building</strong> —
-                        that's why I create projects constantly to improve my skills.
-                    </p>
+                    <div class="story-quote">
+                        <span>“</span>
+                        <p>Every great developer you know got there by solving problems they didn't know how to solve.</p>
+                        <span>”</span>
+                    </div>
 
-                    <h3>What I Do</h3>
-                    <p>
-                        I specialize in building <strong>responsive, modern websites</strong> that work perfectly on all devices.
-                        From landing pages to portfolio sites, I focus on clean code, great design, and smooth user experience.
-                    </p>
-
-                    <h3>My Goal</h3>
-                    <p>
-                        To become a <strong>Full-Stack Developer</strong> and work on projects that make a real impact.
-                        Currently mastering frontend technologies while exploring backend with Python.
-                    </p>
-
-                    <button class="btn btn-outline" onclick="openStoryModal()">📖 Read My Story</button>
+                    <button class="btn btn-outline" onclick="openStoryModal()">📖 Read My Full Story</button>
                 </div>
 
-                <div class="about-card">
+                <div class="story-card">
                     <h4>Quick Info</h4>
                     <div class="info-item">
                         <span class="info-label">Name</span>
@@ -238,13 +242,13 @@
         </section>
 
         <!-- ============================================================
-        BLOG SECTION
+        WRITINGS — PERSONAL BLOG
         ============================================================ -->
         <section id="blog" aria-labelledby="blog-title">
             <div class="section-header">
-                <div class="section-label">MY BLOG</div>
+                <div class="section-label">WRITINGS</div>
                 <h2 id="blog-title" class="section-title">My Thoughts & Stories</h2>
-                <p class="section-desc">Experiences, learnings, and stories from my journey</p>
+                <p class="section-desc">Words I've written, ideas I'm exploring</p>
             </div>
 
             <div class="blog-grid">
@@ -279,7 +283,7 @@
                         <span class="blog-date">July 2026</span>
                         <span class="blog-category">Tech</span>
                     </div>
-                    <h3 class="blog-title">Why I Love JavaScript (And You Should Too)</h3>
+                    <h3 class="blog-title">Why I Love JavaScript</h3>
                     <p class="blog-excerpt">
                         JavaScript changed everything for me. From static pages to interactive
                         experiences — here's why it's my favorite language...
@@ -294,62 +298,66 @@
         </section>
 
         <!-- ============================================================
-        MY WORLD SECTION
+        MY WORLD — HOBBIES, FAVORITES, QUIRKS
         ============================================================ -->
-        <section id="myworld" aria-labelledby="myworld-title">
+        <section id="world" aria-labelledby="world-title">
             <div class="section-header">
                 <div class="section-label">MY WORLD</div>
-                <h2 id="myworld-title" class="section-title">What Makes Me, Me</h2>
+                <h2 id="world-title" class="section-title">What Makes Me, Me</h2>
                 <p class="section-desc">Things I love, believe in, and live by</p>
             </div>
 
-            <div class="myworld-grid">
-                <div class="myworld-card">
-                    <span class="myworld-icon">📚</span>
+            <div class="world-grid">
+                <div class="world-card">
+                    <span class="world-icon">📚</span>
                     <h4>My Favorites</h4>
                     <p>Books, music, food, and movies that shaped my vibe.</p>
+                    <button class="btn btn-small" onclick="openWorldModal('favorites')">Explore →</button>
                 </div>
-                <div class="myworld-card">
-                    <span class="myworld-icon">🎧</span>
+                <div class="world-card">
+                    <span class="world-icon">🎧</span>
                     <h4>My Vibe</h4>
                     <p>Lo-fi beats, late nights, and code that just works.</p>
+                    <button class="btn btn-small" onclick="openWorldModal('vibe')">Explore →</button>
                 </div>
-                <div class="myworld-card">
-                    <span class="myworld-icon">💭</span>
+                <div class="world-card">
+                    <span class="world-icon">💭</span>
                     <h4>My Mantra</h4>
                     <p>"Consistency over perfection — every single day."</p>
+                    <button class="btn btn-small" onclick="openWorldModal('mantra')">Explore →</button>
                 </div>
-                <div class="myworld-card">
-                    <span class="myworld-icon">🌱</span>
+                <div class="world-card">
+                    <span class="world-icon">🌱</span>
                     <h4>My Growth</h4>
                     <p>Learning something new every day, no matter how small.</p>
+                    <button class="btn btn-small" onclick="openWorldModal('growth')">Explore →</button>
                 </div>
             </div>
 
             <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-pill" onclick="openWorldModal()">✨ Explore</button>
+                <button class="btn btn-pill" onclick="openWorldModal('all')">✨ Explore My World</button>
             </div>
         </section>
 
         <!-- ============================================================
-        PORTFOLIO SECTION (Sirf 1 Section)
+        WORK — PORTFOLIO (SIRF 1 SECTION)
         ============================================================ -->
-        <section id="projects" aria-labelledby="projects-title">
+        <section id="work" aria-labelledby="work-title">
             <div class="section-header">
                 <div class="section-label">MY WORK</div>
-                <h2 id="projects-title" class="section-title">Projects I've Built</h2>
-                <p class="section-desc">Each project has a story — here's mine</p>
+                <h2 id="work-title" class="section-title">Things I've Built</h2>
+                <p class="section-desc">Each project has a story — here are a few of mine</p>
             </div>
 
             <div class="projects-grid">
-                <!-- Project 1: Autobiography -->
+                <!-- Project 1 -->
                 <article class="project-card">
                     <div class="project-card-header">
                         <span class="project-title">📖 Autobiography</span>
                         <span class="project-version">v1.0</span>
                     </div>
                     <div class="project-card-body">
-                        <h2 class="project-title">My Autobiography — My story, my words</h2>
+                        <h2 class="project-title">My Autobiography</h2>
                         <p class="project-desc">
                             I wrote this because I wanted to capture my journey — from a small-town boy 
                             to someone who builds things with code. This project is close to my heart.
@@ -367,14 +375,14 @@
                     </div>
                 </article>
 
-                <!-- Project 2: Chatbox -->
+                <!-- Project 2 -->
                 <article class="project-card featured">
                     <div class="project-card-header project-card-featured">
                         <span class="project-title">💬 Chatbox</span>
                         <span class="project-version">v1.0</span>
                     </div>
                     <div class="project-card-body">
-                        <h2 class="project-title">Chatbox — My AI version</h2>
+                        <h2 class="project-title">Chatbox</h2>
                         <p class="project-desc">
                             I built this because I love talking to people. Even if it's my AI version. 
                             It's like having a piece of me available 24/7.
@@ -393,14 +401,14 @@
                     </div>
                 </article>
 
-                <!-- Project 3: Friends Gallery -->
+                <!-- Project 3 -->
                 <article class="project-card">
                     <div class="project-card-header">
                         <span class="project-title">👥 Friends Gallery</span>
                         <span class="project-version">v1.0</span>
                     </div>
                     <div class="project-card-body">
-                        <h2 class="project-title">Friends Gallery — My beloved circle</h2>
+                        <h2 class="project-title">Friends Gallery</h2>
                         <p class="project-desc">
                             These are the people who make my life better. I wanted to show them off 
                             because they deserve to be seen.
@@ -418,14 +426,14 @@
                     </div>
                 </article>
 
-                <!-- Project 4: Resume -->
+                <!-- Project 4 -->
                 <article class="project-card">
                     <div class="project-card-header project-card-featured">
                         <span class="project-title">📄 Resume</span>
                         <span class="project-version">v1.0</span>
                     </div>
                     <div class="project-card-body">
-                        <h2 class="project-title">My Resume — My journey on paper</h2>
+                        <h2 class="project-title">My Resume</h2>
                         <p class="project-desc">
                             Not just a CV. It's everything I've learned, built, and achieved — 
                             all in one place. Proud of how far I've come.
@@ -450,7 +458,7 @@
 
             <!-- Upcoming Projects -->
             <div class="upcoming-projects">
-                <h3>🔜 Upcoming Projects</h3>
+                <h3>🔜 What's Next?</h3>
                 <div class="upcoming-grid">
                     <div class="upcoming-card">
                         <span class="upcoming-badge">Planning</span>
@@ -467,63 +475,66 @@
         </section>
 
         <!-- ============================================================
-        EDUCATION SECTION
+        JOURNEY — EDUCATION
         ============================================================ -->
-        <section id="education" aria-labelledby="education-title">
+        <section id="journey" aria-labelledby="journey-title">
             <div class="section-header">
-                <div class="section-label">EDUCATION</div>
-                <h2 id="education-title" class="section-title">My Academic Journey</h2>
-                <p class="section-desc">Where I've been and where I'm heading</p>
+                <div class="section-label">MY JOURNEY</div>
+                <h2 id="journey-title" class="section-title">Where I've Been</h2>
+                <p class="section-desc">My academic path and how it shaped me</p>
             </div>
 
             <div class="education-grid">
                 <div class="education-card">
                     <div class="education-badge">Planning</div>
-                    <h3>GRADUATION</h3>
-                    <p>Planning for college admission in 2026.</p>
+                    <h3>Graduation</h3>
+                    <p>Planning for college admission in 2026. Excited for what's next.</p>
                 </div>
 
                 <div class="education-card">
                     <div class="education-badge">2024 – 2026</div>
-                    <h3>SENIOR SECONDARY</h3>
+                    <h3>Senior Secondary</h3>
                     <h4>Udaan International School, Begusarai</h4>
                     <p>Completed 12th standard with Physics, Chemistry, Maths.</p>
                 </div>
 
                 <div class="education-card">
                     <div class="education-badge">2019 – 2024</div>
-                    <h3>SECONDARY</h3>
-                    <h4>Mother's Pride International Sr. Sec. Anglo Public School, Begusarai</h4>
+                    <h3>Secondary</h3>
+                    <h4>Mother's Pride International School, Begusarai</h4>
                     <p>Completed 10th standard. Discovered passion for coding.</p>
                 </div>
 
                 <div class="education-card">
                     <div class="education-badge">2014 – 2019</div>
-                    <h3>PRIMARY</h3>
+                    <h3>Primary</h3>
                     <h4>Gautam Buddha Global School, Begusarai</h4>
                     <p>Completed Primary Education to 5th Standard.</p>
                 </div>
             </div>
 
             <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-border" onclick="openEducationModal()">📜 See My Journey</button>
+                <button class="btn btn-border" onclick="openEducationModal()">📜 See My Full Journey</button>
             </div>
         </section>
 
         <!-- ============================================================
-        CONTACT SECTION
+        CONNECT — CONTACT
         ============================================================ -->
-        <section id="contact" aria-labelledby="contact-title">
+        <section id="connect" aria-labelledby="connect-title">
             <div class="section-header">
-                <div class="section-label">GET IN TOUCH</div>
-                <h2 id="contact-title" class="section-title">Let's Connect</h2>
-                <p class="section-desc">Have a project in mind? Let's talk</p>
+                <div class="section-label">CONNECT</div>
+                <h2 id="connect-title" class="section-title">Let's Talk</h2>
+                <p class="section-desc">I'd love to hear from you — whether it's a project, an idea, or just a hello</p>
             </div>
 
             <div class="contact-wrapper">
                 <div class="contact-cta">
-                    <h3>Ready to start your project?</h3>
-                    <p>I'm currently available for freelance work and open to new opportunities. Feel free to reach out if you want to collaborate!</p>
+                    <h3>Got something in mind?</h3>
+                    <p>
+                        I'm currently available for freelance work, collaborations, and 
+                        interesting conversations. Feel free to reach out — I usually reply within 24 hours.
+                    </p>
                     <p class="online-status">
                         <span class="green-dot">🟢</span> Online — Usually replies within 24 hours
                     </p>
@@ -556,7 +567,7 @@
         </div>
 
         <!-- ============================================================
-        ACHIEVE BUTTON + MODAL
+        ACHIEVE MODAL
         ============================================================ -->
         <div class="achieve-footer-btn">
             <button onclick="openRJModal()" class="btn-achieve">
