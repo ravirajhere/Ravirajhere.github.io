@@ -1,7 +1,6 @@
 // ============================================================
 // EBOOK.JS — PROFESSIONAL BOOK GENERATOR (PREMIUM QUALITY)
-// UNIFORM DARK TEXT · PAGE NUMBERS · 100% JPEG QUALITY
-// SOCIAL LINKS IN ABOUT THE AUTHOR
+// HEADER + FOOTER · PAGE NUMBERS · CLICKABLE SOCIAL LINKS · QR CODE
 // ============================================================
 
 // ============================================================
@@ -37,7 +36,7 @@ function closeModal() {
 function loadLibraries() {
     return new Promise((resolve) => {
         let loaded = 0;
-        const total = 2;
+        const total = 3;
         
         function checkDone() {
             loaded++;
@@ -60,6 +59,15 @@ function loadLibraries() {
             script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
             script2.onload = checkDone;
             document.head.appendChild(script2);
+        }
+        
+        if (typeof QRCode !== 'undefined') {
+            loaded++;
+        } else {
+            const script3 = document.createElement('script');
+            script3.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+            script3.onload = checkDone;
+            document.head.appendChild(script3);
         }
         
         if (loaded === total) resolve();
@@ -132,10 +140,43 @@ function waitForRender() {
 }
 
 // ============================================================
-// 6. APPLY PROFESSIONAL BOOK STYLES (UNIFORM DARK TEXT)
+// 6. GENERATE QR CODE
+// ============================================================
+function generateQRCode(data, size = 100) {
+    return new Promise((resolve) => {
+        const container = document.createElement('div');
+        container.style.width = size + 'px';
+        container.style.height = size + 'px';
+        
+        try {
+            new QRCode(container, {
+                text: data,
+                width: size,
+                height: size,
+                colorDark: '#1a1a1a',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            // Wait for QR to render
+            setTimeout(() => {
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    resolve(canvas.toDataURL('image/png'));
+                } else {
+                    resolve(null);
+                }
+            }, 200);
+        } catch (e) {
+            resolve(null);
+        }
+    });
+}
+
+// ============================================================
+// 7. APPLY PROFESSIONAL BOOK STYLES
 // ============================================================
 function applyProfessionalBookStyles(clone) {
-    // ---- ALL PARAGRAPHS - DARK BLACK ----
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -146,7 +187,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontWeight = '400';
     });
     
-    // ---- CHAPTER HEADINGS - DARK & BOLD ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Space Grotesk', 'Arial', sans-serif";
@@ -158,7 +198,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.letterSpacing = '1.5px';
     });
     
-    // ---- GOLD LINE UNDER HEADING ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         const line = document.createElement('div');
         line.style.cssText = `
@@ -170,13 +209,11 @@ function applyProfessionalBookStyles(clone) {
         el.parentNode.insertBefore(line, el.nextSibling);
     });
     
-    // ---- STRONG TEXT - DARK & BOLD ----
     clone.querySelectorAll('.chapter strong').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontWeight = '700';
     });
     
-    // ---- LIST ITEMS - DARK ----
     clone.querySelectorAll('.chapter ul li').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -185,7 +222,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.marginBottom = '6px';
     });
     
-    // ---- QUOTES - DARK & ITALIC ----
     clone.querySelectorAll('.quote-box').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -208,7 +244,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontFamily = "'Space Grotesk', sans-serif";
     });
     
-    // ---- READING TIME ----
     clone.querySelectorAll('.reading-time').forEach(el => {
         el.style.color = '#999999';
         el.style.fontFamily = "'Space Grotesk', sans-serif";
@@ -222,7 +257,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.color = '#6c5ce7';
     });
     
-    // ---- FAMILY ITEMS ----
     clone.querySelectorAll('.family-item').forEach(el => {
         el.style.background = 'rgba(0,0,0,0.02)';
         el.style.border = '1px solid #e8e8e8';
@@ -246,7 +280,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontFamily = "'Space Grotesk', sans-serif";
     });
     
-    // ---- TEACHER TRIBUTE ----
     clone.querySelectorAll('.teacher-tribute').forEach(el => {
         el.style.background = 'rgba(108,92,231,0.04)';
         el.style.border = '1px solid rgba(108,92,231,0.12)';
@@ -269,7 +302,6 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
     });
     
-    // ---- FRIEND MEMORY ----
     clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Georgia', 'Times New Roman', serif";
@@ -286,21 +318,21 @@ function applyProfessionalBookStyles(clone) {
 }
 
 // ============================================================
-// 7. DOWNLOAD EBOOK — ENGLISH
+// 8. DOWNLOAD EBOOK — ENGLISH
 // ============================================================
 async function downloadEnglishEbook() {
     await downloadEbook('en', 'English');
 }
 
 // ============================================================
-// 8. DOWNLOAD EBOOK — HINGLISH
+// 9. DOWNLOAD EBOOK — HINGLISH
 // ============================================================
 async function downloadHinglishEbook() {
     await downloadEbook('hi', 'Hinglish');
 }
 
 // ============================================================
-// 9. MAIN EBOOK GENERATOR (PREMIUM QUALITY)
+// 10. MAIN EBOOK GENERATOR (WITH HEADER, FOOTER, QR CODE)
 // ============================================================
 async function downloadEbook(lang, langLabel) {
     const wrapper = document.querySelector('.autobio-wrapper');
@@ -358,6 +390,7 @@ async function downloadEbook(lang, langLabel) {
             ch.style.padding = '40px 50px';
             ch.style.marginTop = '0';
             ch.style.boxShadow = 'none';
+            ch.style.position = 'relative';
         });
     }
     
@@ -369,26 +402,55 @@ async function downloadEbook(lang, langLabel) {
     // ---- APPLY UNIFORM DARK STYLES ----
     applyProfessionalBookStyles(clone);
     
+    // ---- GENERATE QR CODE ----
+    const qrDataUrl = await generateQRCode('https://raviraj2k09.github.io', 120);
+    
     // ---- CREATE SECTIONS ----
     const sections = [];
     let pageNum = 1;
+    const totalPages = 19; // Approximate, will be updated later
     
-    // Helper to add page number
-    function addPageNumber(element) {
-        const pageNumDiv = document.createElement('div');
-        pageNumDiv.style.cssText = `
-            text-align: center;
-            font-size: 11px;
-            color: #666666;
+    // Helper to add header and footer
+    function addHeaderFooter(element, chapterTitle = '', isCover = false, isTitlePage = false, isTOC = false, isAbout = false, isOverview = false, isEmotional = false) {
+        if (isCover) return;
+        
+        // ---- HEADER ----
+        const header = document.createElement('div');
+        header.style.cssText = `
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #999999;
             font-family: 'Space Grotesk', sans-serif;
-            margin-top: 30px;
-            padding-top: 10px;
-            border-top: 1px solid #e8e8e8;
-            letter-spacing: 1px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e8e8e8;
+            letter-spacing: 0.5px;
         `;
-        pageNumDiv.textContent = `Page ${pageNum}`;
-        element.appendChild(pageNumDiv);
-        pageNum++;
+        header.innerHTML = `
+            <span>My Autobiography — Ravi Raj</span>
+            <span>${chapterTitle || ' '}</span>
+        `;
+        element.insertBefore(header, element.firstChild);
+        
+        // ---- FOOTER ----
+        const footer = document.createElement('div');
+        footer.style.cssText = `
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #999999;
+            font-family: 'Space Grotesk', sans-serif;
+            padding-top: 8px;
+            margin-top: 12px;
+            border-top: 1px solid #e8e8e8;
+            letter-spacing: 0.5px;
+        `;
+        footer.innerHTML = `
+            <span>Ravi Raj</span>
+            <span>Page ${pageNum}</span>
+        `;
+        element.appendChild(footer);
     }
     
     // 1. Cover
@@ -413,8 +475,9 @@ async function downloadEbook(lang, langLabel) {
             <p style="font-size:15px;color:#aaa;font-family:'Space Grotesk',sans-serif;">${new Date().getFullYear()}</p>
         </div>
     `;
-    addPageNumber(title);
+    addHeaderFooter(title, '', false, true);
     sections.push(title);
+    pageNum++;
     
     // 3. Table of Contents
     const toc = document.createElement('div');
@@ -429,6 +492,7 @@ async function downloadEbook(lang, langLabel) {
         let titleText = h3 ? h3.textContent.trim() : `Chapter ${idx+1}`;
         titleText = titleText.replace(/[^\w\s\-\.]/g, '').trim();
         const pageNumDisplay = idx + 9;
+        const dots = '.'.repeat(Math.max(40 - titleText.length - pageNumDisplay.toString().length, 10));
         tocHTML += `
             <li style="border-bottom:1px solid #f0f0f0;padding:4px 0;display:flex;justify-content:space-between;">
                 <span style="color:#1a1a1a;font-family:'Space Grotesk',sans-serif;font-size:15px;">${titleText}</span>
@@ -438,12 +502,14 @@ async function downloadEbook(lang, langLabel) {
     });
     tocHTML += `</ul>`;
     toc.innerHTML = tocHTML;
-    addPageNumber(toc);
+    addHeaderFooter(toc, 'Table of Contents', false, false, true);
     sections.push(toc);
+    pageNum++;
     
-    // 4. About the Author (WITH SOCIAL LINKS)
+    // 4. About the Author (WITH SOCIAL LINKS + QR CODE)
     const about = document.createElement('div');
     about.style.cssText = `text-align:center;padding:60px 50px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:842px;`;
+    const qrImg = qrDataUrl ? `<img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">` : '';
     about.innerHTML = `
         <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
             <h2 style="font-size:32px;font-weight:700;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
@@ -465,26 +531,32 @@ async function downloadEbook(lang, langLabel) {
                 "Somewhere Between I Want It & I Got It"
             </p>
             
-            <!-- SOCIAL LINKS (NEW) -->
+            <!-- SOCIAL LINKS -->
             <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
             <p style="font-size:16px;font-weight:600;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;margin-bottom:12px;letter-spacing:1px;">CONNECT WITH ME</p>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;max-width:300px;margin:0 auto;font-size:14px;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;max-width:350px;margin:0 auto;font-size:14px;color:#1a1a1a;font-family:'Space Grotesk',sans-serif;">
                 <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
                     <span>📸 Instagram</span>
-                    <span style="color:#DAA520;">@rravirajhere</span>
+                    <a href="https://instagram.com/rravirajhere" style="color:#DAA520;text-decoration:none;">@rravirajhere</a>
                 </div>
                 <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
                     <span>💼 LinkedIn</span>
-                    <span style="color:#DAA520;">@ravirajhere</span>
+                    <a href="https://linkedin.com/in/ravirajhere" style="color:#DAA520;text-decoration:none;">@ravirajhere</a>
                 </div>
                 <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;border-bottom:1px solid #f0f0f0;">
                     <span>🌐 Website</span>
-                    <span style="color:#DAA520;">raviraj2k09.github.io</span>
+                    <a href="https://raviraj2k09.github.io" style="color:#DAA520;text-decoration:none;">raviraj2k09.github.io</a>
                 </div>
                 <div style="display:flex;justify-content:space-between;width:100%;padding:4px 0;">
                     <span>💬 WhatsApp</span>
-                    <span style="color:#DAA520;">@singh_ravirajhere</span>
+                    <a href="https://wa.me/91XXXXXXXXXX" style="color:#DAA520;text-decoration:none;">@singh_ravirajhere</a>
                 </div>
+            </div>
+            
+            <!-- QR CODE -->
+            <div style="margin:16px auto 0 auto;">
+                ${qrImg}
+                <p style="font-size:11px;color:#999;font-family:'Space Grotesk',sans-serif;margin-top:4px;">Scan to visit my website</p>
             </div>
             
             <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
@@ -495,8 +567,9 @@ async function downloadEbook(lang, langLabel) {
             </div>
         </div>
     `;
-    addPageNumber(about);
+    addHeaderFooter(about, 'About the Author', false, false, false, true);
     sections.push(about);
+    pageNum++;
     
     // 5. Overview
     const overview = document.createElement('div');
@@ -531,12 +604,13 @@ async function downloadEbook(lang, langLabel) {
             </div>
         </div>
     `;
-    addPageNumber(overview);
+    addHeaderFooter(overview, 'Overview', false, false, false, false, true);
     sections.push(overview);
+    pageNum++;
     
-    // 6. Chapters (UNIFORM DARK TEXT)
+    // 6. Chapters
     const chapterElements = clone.querySelectorAll('.chapter');
-    chapterElements.forEach((ch) => {
+    chapterElements.forEach((ch, index) => {
         const section = document.createElement('div');
         section.style.cssText = `padding:40px 50px;background:#ffffff;display:flex;flex-direction:column;min-height:842px;`;
         
@@ -547,9 +621,15 @@ async function downloadEbook(lang, langLabel) {
             el.textContent = '📸 Photo';
         });
         
+        // Get chapter title for header
+        const h3 = chapterClone.querySelector('h3');
+        let chapterTitle = h3 ? h3.textContent.trim() : `Chapter ${index+1}`;
+        chapterTitle = chapterTitle.replace(/[^\w\s\-\.]/g, '').trim();
+        
         section.appendChild(chapterClone);
-        addPageNumber(section);
+        addHeaderFooter(section, chapterTitle);
         sections.push(section);
+        pageNum++;
     });
     
     // 7. Emotional Message
@@ -571,7 +651,7 @@ async function downloadEbook(lang, langLabel) {
             <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Space Grotesk',sans-serif;">📖 From Begusarai to the World</p>
         </div>
     `;
-    addPageNumber(emotional);
+    addHeaderFooter(emotional, 'The End', false, false, false, false, false, true);
     sections.push(emotional);
     
     // ---- GENERATE PDF ----
@@ -600,7 +680,7 @@ async function downloadEbook(lang, langLabel) {
         section.style.background = '#ffffff';
         document.body.appendChild(section);
         
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 150));
         
         const canvas = await html2canvas(section, {
             scale: 2,
@@ -629,7 +709,7 @@ async function downloadEbook(lang, langLabel) {
 }
 
 // ============================================================
-// 10. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 11. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.downloadEnglishEbook = downloadEnglishEbook;
 window.downloadHinglishEbook = downloadHinglishEbook;
