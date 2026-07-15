@@ -786,4 +786,3 @@ window.downloadEnglishEbook = downloadEnglishEbook;
 window.downloadHinglishEbook = downloadHinglishEbook;
 window.showToast = showToast;
 window.closeModal = closeModal;
-```
