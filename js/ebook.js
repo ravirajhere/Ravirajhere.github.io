@@ -1,7 +1,6 @@
 // ============================================================
-// EBOOK.JS — IMPROVED PROFESSIONAL EBOOK GENERATOR
-// MEMORY OPTIMIZED · ERROR HANDLED · PROGRESSIVE RENDERING
-// NO FADE · INSTANT CHAPTERS · BETTER FONTS
+// EBOOK.JS — PAGE-SPECIFIC LOGIC FOR AUTOBIOGRAPHY.HTML
+// (Ebook Generator, PDF Creation, QR Code, Resource Validator)
 // ============================================================
 
 // ============================================================
@@ -15,9 +14,9 @@ const EBOOK_CONFIG = {
     birthplace: 'Begusarai, Bihar',
     currentYear: new Date().getFullYear(),
     images: {
-        cover: 'bookcover.jpg',
-        author: 'Singh_ravirajhere.jpeg',
-        signature: 'signature.jpg'
+        cover: 'assets/images/bookcover.jpg',
+        author: 'assets/images/Singh_ravirajhere.jpeg',
+        signature: 'assets/images/signature.jpg'
     },
     social: {},
     qr: {
@@ -34,7 +33,7 @@ const EBOOK_CONFIG = {
 };
 
 // ============================================================
-// 1. IMPROVED TOAST SYSTEM
+// 1. TOAST MANAGER
 // ============================================================
 class ToastManager {
     constructor() {
@@ -83,7 +82,7 @@ class ToastManager {
 const toast = new ToastManager();
 
 // ============================================================
-// 2. IMPROVED MODAL MANAGER
+// 2. MODAL MANAGER
 // ============================================================
 class ModalManager {
     constructor() {
@@ -275,13 +274,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
         el.style.textShadow = '0 0 1px rgba(0,0,0,0.05)';
-        
-        // FIX: PDF mode mein background transparent
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- CHAPTER HEADINGS ----
@@ -295,12 +288,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.marginBottom = '10px';
         el.style.letterSpacing = '2px';
         el.style.lineHeight = '1.3';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- GOLD LINE UNDER HEADING ----
@@ -320,12 +308,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.color = '#000000';
         el.style.fontWeight = '700';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- LIST ITEMS ----
@@ -337,12 +320,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.marginBottom = '6px';
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- QUOTES ----
@@ -357,12 +335,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.margin = '20px 0';
         el.style.fontWeight = '400';
         el.style.letterSpacing = '0.3px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     clone.querySelectorAll('.quote-box .author').forEach(el => {
@@ -373,40 +346,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.marginTop = '8px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.5px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
-    });
-    
-    // ---- READING TIME ----
-    clone.querySelectorAll('.reading-time').forEach(el => {
-        el.style.color = '#999999';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '13px';
-        el.style.textAlign = 'right';
-        el.style.marginTop = '12px';
-        el.style.fontStyle = 'italic';
-        el.style.letterSpacing = '0.5px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
-    });
-    
-    clone.querySelectorAll('.reading-time span').forEach(el => {
-        el.style.color = '#6c5ce7';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- FAMILY ITEMS ----
@@ -425,12 +365,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.letterSpacing = '0.8px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.fontWeight = '400';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     clone.querySelectorAll('.family-item .value').forEach(el => {
@@ -439,12 +374,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.3px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- TEACHER TRIBUTE ----
@@ -469,12 +399,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.5px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     clone.querySelectorAll('.teacher-tribute p').forEach(el => {
@@ -484,12 +409,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
     
     // ---- FRIEND MEMORY ----
@@ -499,7 +419,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
         el.style.lineHeight = '1.7';
-        
         if (isPdfMode) {
             el.style.background = 'transparent';
             el.style.border = 'none';
@@ -518,17 +437,12 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.color = '#DAA520';
         el.style.fontWeight = '700';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-        } else {
-            el.style.background = '#ffffff';
-        }
+        if (isPdfMode) el.style.background = 'transparent';
     });
 }
 
 // ============================================================
-// 7. MAIN EBOOK GENERATOR (IMPROVED)
+// 7. MAIN EBOOK GENERATOR
 // ============================================================
 class EbookGenerator {
     constructor() {
@@ -924,7 +838,6 @@ class EbookGenerator {
         
         const clone = chapter.cloneNode(true);
         
-        // Remove unwanted elements
         clone.querySelectorAll('.copy-link-btn, .nav-buttons, .upload-hint').forEach(el => {
             if (el.classList.contains('upload-hint')) {
                 el.textContent = '📸 Photo';
@@ -933,7 +846,7 @@ class EbookGenerator {
             }
         });
         
-        // ---- DROP CAP ----
+        // Drop Cap
         const firstP = clone.querySelector('p:first-of-type');
         if (firstP && firstP.textContent.trim().length > 0) {
             const text = firstP.textContent;
@@ -946,7 +859,7 @@ class EbookGenerator {
             `;
         }
         
-        // ---- CHAPTER OPENING QUOTE ----
+        // Chapter Opening Quote
         const heading = clone.querySelector('h3');
         if (heading) {
             const quotes = [
@@ -980,7 +893,7 @@ class EbookGenerator {
             heading.parentNode.insertBefore(quoteDiv, heading.nextSibling);
         }
         
-        // ---- SECTION BREAKS (***) ----
+        // Section Breaks
         const paragraphs = clone.querySelectorAll('p');
         if (paragraphs.length > 3) {
             const midPoint = Math.floor(paragraphs.length / 2);
@@ -1001,7 +914,7 @@ class EbookGenerator {
             }
         }
         
-        // ---- FOOTNOTES ----
+        // Footnotes
         const footnotes = [
             '¹ Begusarai is a city in Bihar, India.',
             '² This was my first coding project in 2020.',
@@ -1178,7 +1091,6 @@ class EbookGenerator {
             compress: true
         });
 
-        // ---- PDF METADATA ----
         this.pdf.setProperties({
             title: EBOOK_CONFIG.title,
             author: EBOOK_CONFIG.author,
@@ -1362,5 +1274,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-console.log('✅ Ebook Generator (Improved) loaded successfully!');
+console.log('✅ Ebook Generator loaded successfully!');
 console.log('📖 Use downloadEnglishEbook() or downloadHinglishEbook()');
