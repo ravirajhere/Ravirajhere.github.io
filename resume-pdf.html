@@ -14,19 +14,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet" />
 
     <!-- Font Awesome for 3D Icons -->
-    <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-    <style>
-        /* ===== RESET ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css" />
 
+    <style>
         /* ============================================================
-           ROOT VARIABLES (Dark/Light Mode)
+           RESUME-SPECIFIC STYLES (Only for this page)
            ============================================================ */
         :root {
             --bg-body: #f0f0f0;
@@ -78,121 +73,26 @@
             transition: background var(--transition), color var(--transition);
         }
 
-        /* ============================================================
-           THEME TOGGLE (Fixed Position)
-           ============================================================ */
+        /* ---- Theme toggle position override for this page ---- */
         .theme-toggle-wrapper {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 9999;
-            background: var(--bg-card);
-            padding: 8px 16px 8px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            transition: all var(--transition);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--bg-card) !important;
+            border-color: var(--border) !important;
         }
 
         #themeLabel {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text2);
-            transition: color var(--transition);
-            min-width: 42px;
+            color: var(--text2) !important;
         }
 
         .switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 4px;
-            background: var(--highlight);
-            border-radius: 30px;
-            border: 2px solid var(--border);
-            transition: all var(--transition);
-            flex-shrink: 0;
+            background: var(--highlight) !important;
+            border-color: var(--border) !important;
         }
 
         .switch .slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            background: var(--gold);
-            border-radius: 50%;
-            transition: all var(--transition);
-            box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
+            background: var(--gold) !important;
         }
 
-        .switch .switch-icon {
-            font-size: 13px;
-            line-height: 1;
-            z-index: 1;
-            transition: opacity var(--transition);
-        }
-
-        .switch .sun { opacity: 1; }
-        .switch .moon { opacity: 0.3; }
-
-        [data-theme="dark"] .switch .sun { opacity: 0.3; }
-        [data-theme="dark"] .switch .moon { opacity: 1; }
-
-        [data-theme="dark"] .switch .slider {
-            left: 26px;
-            background: var(--gold);
-        }
-
-        [data-theme="dark"] .switch {
-            border-color: var(--gold);
-        }
-
-        .switch:hover {
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(218, 165, 32, 0.15);
-        }
-
-        /* ============================================================
-           TOAST
-           ============================================================ */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 24px;
-            color: var(--text2);
-            font-size: 14px;
-            z-index: 10001;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            box-shadow: var(--shadow);
-            font-family: 'Georgia', serif;
-        }
-
-        .toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ============================================================
-           DOWNLOAD BUTTON
-           ============================================================ */
+        /* ---- Download Button ---- */
         .download-btn-wrapper {
             text-align: center;
             margin-bottom: 24px;
@@ -216,7 +116,7 @@
             color: var(--text);
         }
 
-        /* ===== RESUME CONTAINER ===== */
+        /* ---- Resume Container ---- */
         .resume {
             max-width: 900px;
             width: 100%;
@@ -227,7 +127,7 @@
             transition: background var(--transition), border var(--transition), box-shadow var(--transition);
         }
 
-        /* ===== HEADER ===== */
+        /* ---- Header ---- */
         .header {
             display: flex;
             align-items: center;
@@ -295,7 +195,7 @@
             color: var(--gold);
         }
 
-        /* ===== SECTIONS ===== */
+        /* ---- Sections ---- */
         .section {
             margin-bottom: 20px;
         }
@@ -336,7 +236,7 @@
             font-weight: 700;
         }
 
-        /* ===== SUMMARY HIGHLIGHTS ===== */
+        /* ---- Summary Highlights ---- */
         .summary-grid {
             display: flex;
             flex-wrap: wrap;
@@ -354,7 +254,7 @@
             transition: all var(--transition);
         }
 
-        /* ===== EXPERIENCE / PROJECTS ===== */
+        /* ---- Experience / Projects ---- */
         .exp-item {
             margin-bottom: 12px;
         }
@@ -429,7 +329,7 @@
             color: var(--gold);
         }
 
-        /* ===== SKILLS ===== */
+        /* ---- Skills ---- */
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
@@ -451,14 +351,14 @@
             transition: color var(--transition);
         }
 
-        /* ===== ACHIEVEMENTS ===== */
+        /* ---- Achievements ---- */
         .achievement-list li::before {
             content: "✦ ";
             color: var(--gold);
             font-weight: 700;
         }
 
-        /* ===== LANGUAGES ===== */
+        /* ---- Languages ---- */
         .inline-list {
             display: flex;
             flex-wrap: wrap;
@@ -474,7 +374,7 @@
             transition: color var(--transition);
         }
 
-        /* ===== EDUCATION ===== */
+        /* ---- Education ---- */
         .edu-item .school {
             font-weight: 700;
             color: var(--text);
@@ -494,7 +394,7 @@
             transition: color var(--transition);
         }
 
-        /* ===== CONNECT — 3D ICON LINKS ===== */
+        /* ---- Connect — 3D Icon Links ---- */
         .connect-grid {
             display: flex;
             flex-wrap: wrap;
@@ -554,7 +454,7 @@
             color: #ffffff !important;
         }
 
-        /* ===== REFERENCES ===== */
+        /* ---- References ---- */
         .ref-text {
             font-size: 14px;
             color: var(--text3);
@@ -562,7 +462,7 @@
             transition: color var(--transition);
         }
 
-        /* ===== FOOTER ===== */
+        /* ---- Footer ---- */
         .footer {
             text-align: center;
             font-size: 11px;
@@ -573,12 +473,12 @@
             transition: all var(--transition);
         }
 
-        /* ===== PHONE NUMBER — HIDDEN ON WEBSITE ===== */
+        /* ---- Phone Number — Hidden on Website ---- */
         .phone-number {
             display: none;
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* ---- Responsive ---- */
         @media (max-width: 600px) {
             .resume {
                 padding: 24px 18px;
@@ -636,41 +536,9 @@
                 align-items: flex-start;
                 gap: 2px;
             }
-
-            .theme-toggle-wrapper {
-                top: 10px;
-                right: 10px;
-                padding: 4px 10px 4px 14px;
-                gap: 6px;
-            }
-
-            #themeLabel {
-                font-size: 10px;
-                min-width: 28px;
-            }
-
-            .switch {
-                width: 36px;
-                height: 20px;
-            }
-
-            .switch .slider {
-                width: 12px;
-                height: 12px;
-                top: 2px;
-                left: 2px;
-            }
-
-            [data-theme="dark"] .switch .slider {
-                left: 18px;
-            }
-
-            .switch .switch-icon {
-                font-size: 9px;
-            }
         }
 
-        /* ===== PRINT STYLES ===== */
+        /* ---- Print Styles ---- */
         @media print {
             body {
                 background: #fff;
@@ -732,7 +600,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <!-- ===== THEME TOGGLE ===== -->
@@ -1022,77 +889,9 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT — THEME TOGGLE
+    JAVASCRIPT
     ============================================================ -->
-    <script>
-        (function() {
-            'use strict';
-
-            const themeSwitch = document.getElementById('themeSwitch');
-            const themeLabel = document.getElementById('themeLabel');
-            const toast = document.getElementById('toast');
-            const html = document.documentElement;
-
-            // Load saved theme
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            html.setAttribute('data-theme', currentTheme);
-            themeLabel.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
-
-            // Toggle click
-            themeSwitch.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const current = html.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-                themeLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
-                showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
-            });
-
-            // Keyboard support
-            themeSwitch.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
-
-            // Toast function
-            let toastTimer;
-
-            function showToast(message) {
-                if (!toast) return;
-                clearTimeout(toastTimer);
-                toast.textContent = message;
-                toast.className = 'toast show';
-                toastTimer = setTimeout(function() {
-                    toast.classList.remove('show');
-                }, 2000);
-            }
-
-            // Responsive toggle position
-            function adjustTogglePosition() {
-                const wrapper = document.querySelector('.theme-toggle-wrapper');
-                if (!wrapper) return;
-                if (window.innerWidth <= 480) {
-                    wrapper.style.top = '10px';
-                    wrapper.style.right = '10px';
-                } else if (window.innerWidth <= 768) {
-                    wrapper.style.top = '15px';
-                    wrapper.style.right = '15px';
-                } else {
-                    wrapper.style.top = '20px';
-                    wrapper.style.right = '20px';
-                }
-            }
-
-            adjustTogglePosition();
-            window.addEventListener('resize', adjustTogglePosition);
-
-            console.log('✅ CV Page with Dark/Light Toggle Loaded!');
-        })();
-        <script src="js/global.js"></script>
-    </script>
+    <script src="js/global.js"></script>
 
 </body>
 </html>
