@@ -1,6 +1,6 @@
 // ============================================================
-// AUTOBOIOGRAPHY.JS — COMPLETE FUNCTIONALITY
-// (Language Toggle · Navigation · Reading Mode · Modal)
+// AUTOBIOGRAPHY.JS — PAGE-SPECIFIC LOGIC
+// (Language Toggle · Chapter Navigation · Progress Dots · Reading Mode · Modal)
 // ============================================================
 
 // ---- GLOBAL VARIABLES ----
@@ -54,7 +54,6 @@ function resetChapters(lang) {
     updateProgressInfo(lang);
     updateDots(lang);
     
-    // Scroll to top of chapter smoothly
     setTimeout(function() {
         scrollToChapterHeading(lang);
     }, 100);
@@ -74,7 +73,6 @@ function scrollToChapterHeading(lang) {
         if (ch.classList.contains('active')) {
             const heading = ch.querySelector('h3');
             if (heading) {
-                // Smooth scroll to heading with offset
                 const yOffset = -80;
                 const y = heading.getBoundingClientRect().top + window.pageYOffset + yOffset;
                 window.scrollTo({ top: y, behavior: 'smooth' });
@@ -108,7 +106,6 @@ function nextChapter(lang) {
         updateProgressInfo(lang);
         updateDots(lang);
         
-        // Scroll to top of new chapter
         setTimeout(function() {
             scrollToChapterHeading(lang);
         }, 150);
@@ -139,7 +136,6 @@ function prevChapter(lang) {
         updateProgressInfo(lang);
         updateDots(lang);
         
-        // Scroll to top of new chapter
         setTimeout(function() {
             scrollToChapterHeading(lang);
         }, 150);
@@ -299,27 +295,7 @@ function openGoogleTranslate() {
 }
 
 // ============================================================
-// 12. TOAST NOTIFICATION
-// ============================================================
-function showToast(message, type = '') {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    
-    toast.textContent = message;
-    toast.className = 'toast';
-    if (type) {
-        toast.classList.add(type);
-    }
-    toast.classList.add('show');
-    
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-// ============================================================
-// 13. DOWNLOAD MODAL
+// 12. DOWNLOAD MODAL
 // ============================================================
 function openModal() {
     const modal = document.getElementById('downloadModal');
@@ -356,7 +332,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// 14. HANDLE CHAPTER HASH IN URL
+// 13. HANDLE CHAPTER HASH IN URL
 // ============================================================
 function handleChapterHash() {
     const hash = window.location.hash;
@@ -371,7 +347,7 @@ function handleChapterHash() {
 }
 
 // ============================================================
-// 15. DOT CLICK NAVIGATION
+// 14. DOT CLICK NAVIGATION
 // ============================================================
 function setupDotNavigation() {
     const dots = document.querySelectorAll('.dot');
@@ -387,7 +363,7 @@ function setupDotNavigation() {
 }
 
 // ============================================================
-// 16. KEYBOARD SHORTCUTS (Arrow Keys)
+// 15. KEYBOARD SHORTCUTS (Arrow Keys)
 // ============================================================
 document.addEventListener('keydown', function(e) {
     // Arrow Right - Next Chapter
@@ -434,7 +410,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// 17. SAVE LAST READ CHAPTER
+// 16. SAVE LAST READ CHAPTER
 // ============================================================
 function saveLastReadChapter(lang, chapterNum) {
     try {
@@ -453,11 +429,9 @@ function loadLastReadChapter() {
         if (savedChapter && savedLang) {
             const chapterNum = parseInt(savedChapter);
             if (!isNaN(chapterNum) && chapterNum >= 1 && chapterNum <= totalChapters) {
-                // Switch to saved language
                 if (savedLang !== currentLang) {
                     switchLang(savedLang);
                 }
-                // Go to saved chapter
                 setTimeout(function() {
                     goToChapter(savedLang, chapterNum);
                 }, 400);
@@ -517,7 +491,7 @@ resetChapters = function(lang) {
 };
 
 // ============================================================
-// 18. SWIPE GESTURES FOR MOBILE
+// 17. SWIPE GESTURES FOR MOBILE
 // ============================================================
 let touchStartX = 0;
 let touchEndX = 0;
@@ -540,55 +514,44 @@ function handleSwipe() {
     const diffX = touchStartX - touchEndX;
     const diffY = touchStartY - touchEndY;
     
-    // Only handle horizontal swipes (ignore vertical)
     if (Math.abs(diffX) < Math.abs(diffY)) return;
     
     if (Math.abs(diffX) > swipeThreshold) {
         if (diffX > 0) {
-            // Swipe Left → Next Chapter
             nextChapter(currentLang);
         } else {
-            // Swipe Right → Previous Chapter
             prevChapter(currentLang);
         }
     }
 }
 
 // ============================================================
-// 19. INITIALIZATION
+// 18. INITIALIZATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     currentLang = 'en';
     
-    // Show English chapters by default
     document.getElementById('chaptersEn').style.display = 'block';
     document.getElementById('chaptersHi').style.display = 'none';
     
-    // Load reading mode preference
     loadReadingMode();
     
-    // Try to load last read chapter
     const hasLastRead = loadLastReadChapter();
     
-    // If no last read, reset to chapter 1
     if (!hasLastRead) {
         resetChapters('en');
     }
     
-    // Handle URL hash
     handleChapterHash();
-    
-    // Setup dot navigation
     setupDotNavigation();
     
-    // Show welcome toast
     setTimeout(function() {
         showToast('📖 Welcome to My Autobiography!', 'success');
     }, 500);
 });
 
 // ============================================================
-// 20. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// 19. EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================================
 window.switchLang = switchLang;
 window.nextChapter = nextChapter;
