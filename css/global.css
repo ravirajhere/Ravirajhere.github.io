@@ -276,3 +276,44 @@ img {
         font-size: 10px;
     }
 }
+/* ============================================================
+   SCROLL TO TOP BUTTON
+   ============================================================ */
+#scrollTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    z-index: 999;
+}
+
+#scrollTopBtn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#scrollTopBtn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] #scrollTopBtn {
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] #scrollTopBtn:hover {
+    box-shadow: 0 6px 24px rgba(255, 255, 255, 0.2);
+}
