@@ -12,10 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-<link rel="stylesheet" href="css/global.css" />
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css" />
+
     <style>
         /* ============================================================
-           ROOT VARIABLES (Light / Dark)
+           CHATBOX PAGE SPECIFIC STYLES
            ============================================================ */
         :root {
             --bg-primary: #0a0a0f;
@@ -35,9 +38,6 @@
             --radius: 16px;
             --radius-sm: 10px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --toggle-bg: rgba(255, 255, 255, 0.05);
-            --toggle-border: rgba(255, 255, 255, 0.15);
-            --toggle-text: #a0a0b0;
             --quick-btn-bg: rgba(255, 255, 255, 0.06);
             --quick-btn-hover: rgba(0, 217, 255, 0.15);
         }
@@ -55,20 +55,8 @@
             --secondary: #00b894;
             --accent: #6c5ce7;
             --shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-            --toggle-bg: rgba(0, 0, 0, 0.05);
-            --toggle-border: rgba(0, 0, 0, 0.15);
-            --toggle-text: #555;
             --quick-btn-bg: rgba(0, 0, 0, 0.05);
             --quick-btn-hover: rgba(9, 132, 227, 0.1);
-        }
-
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
 
         body {
@@ -88,129 +76,7 @@
             background-image: radial-gradient(ellipse at 50% 0%, rgba(9, 132, 227, 0.05) 0%, transparent 70%);
         }
 
-        /* ============================================================
-           THEME TOGGLE (Fixed)
-           ============================================================ */
-        .theme-toggle-wrapper {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 9999;
-            background: var(--bg-secondary);
-            padding: 8px 16px 8px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--toggle-border);
-            box-shadow: var(--shadow);
-            transition: all var(--transition);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        #themeLabel {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--toggle-text);
-            transition: color var(--transition);
-            min-width: 42px;
-        }
-
-        .switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 4px;
-            background: var(--toggle-bg);
-            border-radius: 30px;
-            border: 2px solid var(--toggle-border);
-            transition: all var(--transition);
-            flex-shrink: 0;
-        }
-
-        .switch .slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            background: var(--primary);
-            border-radius: 50%;
-            transition: all var(--transition);
-            box-shadow: 0 2px 8px rgba(0, 217, 255, 0.3);
-        }
-
-        .switch .switch-icon {
-            font-size: 13px;
-            line-height: 1;
-            z-index: 1;
-            transition: opacity var(--transition);
-        }
-
-        .switch .sun {
-            opacity: 1;
-        }
-        .switch .moon {
-            opacity: 0.3;
-        }
-
-        [data-theme="dark"] .switch .sun {
-            opacity: 0.3;
-        }
-        [data-theme="dark"] .switch .moon {
-            opacity: 1;
-        }
-
-        [data-theme="dark"] .switch .slider {
-            left: 26px;
-            background: var(--primary);
-        }
-
-        [data-theme="dark"] .switch {
-            border-color: var(--primary);
-        }
-
-        .switch:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
-        }
-
-        /* ============================================================
-           TOAST NOTIFICATION
-           ============================================================ */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 24px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            z-index: 10001;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            box-shadow: var(--shadow);
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ============================================================
-           CHATBOX CONTAINER
-           ============================================================ */
+        /* ---- Chatbox Container ---- */
         .chatbox-container {
             width: 100%;
             max-width: 480px;
@@ -227,9 +93,7 @@
             transition: all var(--transition);
         }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
+        /* ---- Header ---- */
         .chat-header {
             padding: 20px 24px;
             background: var(--bg-tertiary);
@@ -291,15 +155,8 @@
         }
 
         @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.8);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
         }
 
         .chat-header-close {
@@ -318,9 +175,7 @@
             transform: rotate(90deg);
         }
 
-        /* ============================================================
-           MESSAGES AREA
-           ============================================================ */
+        /* ---- Messages Area ---- */
         .chat-messages {
             flex: 1;
             padding: 20px 18px;
@@ -342,9 +197,7 @@
             border-radius: 10px;
         }
 
-        /* ============================================================
-           QUICK REPLY BUTTONS
-           ============================================================ */
+        /* ---- Quick Reply Buttons ---- */
         .quick-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -374,9 +227,7 @@
             transform: translateY(-2px);
         }
 
-        /* ============================================================
-           MESSAGE BUBBLES
-           ============================================================ */
+        /* ---- Message Bubbles ---- */
         .message {
             max-width: 85%;
             padding: 12px 18px;
@@ -389,14 +240,8 @@
         }
 
         @keyframes msgIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .message.bot {
@@ -431,9 +276,7 @@
             text-align: right;
         }
 
-        /* ============================================================
-           TYPING INDICATOR
-           ============================================================ */
+        /* ---- Typing Indicator ---- */
         .typing-indicator {
             align-self: flex-start;
             background: var(--bg-tertiary);
@@ -455,27 +298,15 @@
             animation: typingBounce 1.4s infinite;
         }
 
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes typingBounce {
-            0%,
-            60%,
-            100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-8px);
-            }
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
         }
 
-        /* ============================================================
-           INPUT AREA
-           ============================================================ */
+        /* ---- Input Area ---- */
         .chat-input-area {
             padding: 12px 20px 16px 20px;
             background: var(--bg-tertiary);
@@ -546,9 +377,7 @@
             transform: none;
         }
 
-        /* ============================================================
-           FOOTER
-           ============================================================ */
+        /* ---- Footer ---- */
         .chat-footer {
             text-align: center;
             padding: 10px 20px;
@@ -570,9 +399,7 @@
             text-decoration: underline;
         }
 
-        /* ============================================================
-           EMPTY STATE
-           ============================================================ */
+        /* ---- Empty State ---- */
         .empty-state {
             flex: 1;
             display: flex;
@@ -604,9 +431,7 @@
             line-height: 1.6;
         }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
+        /* ---- Responsive ---- */
         @media (max-width: 500px) {
             .chatbox-container {
                 height: 100vh;
@@ -615,91 +440,16 @@
                 border: none;
                 max-width: 100%;
             }
-            body {
-                padding: 0;
-            }
-            .chat-header {
-                padding: 16px 18px;
-            }
-            .chat-messages {
-                padding: 16px 14px;
-            }
-            .chat-input-area {
-                padding: 10px 14px 14px 14px;
-            }
-            .message {
-                max-width: 92%;
-                font-size: 14px;
-            }
-
-            .theme-toggle-wrapper {
-                top: 10px;
-                right: 10px;
-                padding: 4px 10px 4px 14px;
-                gap: 6px;
-            }
-
-            #themeLabel {
-                font-size: 10px;
-                min-width: 28px;
-            }
-
-            .switch {
-                width: 36px;
-                height: 20px;
-            }
-
-            .switch .slider {
-                width: 12px;
-                height: 12px;
-                top: 2px;
-                left: 2px;
-            }
-
-            [data-theme="dark"] .switch .slider {
-                left: 18px;
-            }
-
-            .switch .switch-icon {
-                font-size: 9px;
-            }
-
-            .quick-btn {
-                font-size: 10px;
-                padding: 4px 10px;
-            }
+            body { padding: 0; }
+            .chat-header { padding: 16px 18px; }
+            .chat-messages { padding: 16px 14px; }
+            .chat-input-area { padding: 10px 14px 14px 14px; }
+            .message { max-width: 92%; font-size: 14px; }
+            .quick-btn { font-size: 10px; padding: 4px 10px; }
         }
 
         @media (max-width: 768px) {
-            .theme-toggle-wrapper {
-                top: 15px;
-                right: 15px;
-                padding: 6px 12px 6px 16px;
-                gap: 8px;
-            }
-
-            #themeLabel {
-                font-size: 11px;
-                min-width: 34px;
-            }
-
-            .switch {
-                width: 42px;
-                height: 22px;
-            }
-
-            .switch .slider {
-                width: 14px;
-                height: 14px;
-            }
-
-            [data-theme="dark"] .switch .slider {
-                left: 22px;
-            }
-
-            .switch .switch-icon {
-                font-size: 10px;
-            }
+            .chatbox-container { max-height: 90vh; }
         }
     </style>
 </head>
@@ -770,7 +520,7 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT — CHAT ENGINE + THEME TOGGLE
+    JAVASCRIPT — CHAT ENGINE
     ============================================================ -->
     <script>
         // ============================================================
@@ -1195,63 +945,11 @@
             console.log('💡 Tip: Press Ctrl+/ to focus input, Escape to close.');
         })();
 
-
         // ============================================================
-        // THEME TOGGLE
+        // GLOBAL JS
         // ============================================================
-        (function() {
-            'use strict';
-
-            const themeSwitch = document.getElementById('themeSwitch');
-            const themeLabel = document.getElementById('themeLabel');
-            const toast = document.getElementById('toast');
-            const html = document.documentElement;
-
-            const currentTheme = localStorage.getItem('theme') || 'light';
-            html.setAttribute('data-theme', currentTheme);
-            themeLabel.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
-
-            themeSwitch.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const current = html.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-                themeLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
-                showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
-            });
-
-            themeSwitch.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
-                    this.click(); }
-            });
-
-            let toastTimer;
-
-            function showToast(message) {
-                if (!toast) return;
-                clearTimeout(toastTimer);
-                toast.textContent = message;
-                toast.className = 'toast show';
-                toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2000);
-            }
-
-            function adjustTogglePosition() {
-                const wrapper = document.querySelector('.theme-toggle-wrapper');
-                if (!wrapper) return;
-                if (window.innerWidth <= 480) { wrapper.style.top = '10px';
-                    wrapper.style.right = '10px'; } else if (window.innerWidth <= 768) { wrapper.style.top = '15px';
-                    wrapper.style.right = '15px'; } else { wrapper.style.top = '20px';
-                    wrapper.style.right = '20px'; }
-            }
-
-            adjustTogglePosition();
-            window.addEventListener('resize', adjustTogglePosition);
-
-            console.log('✅ Theme Toggle Loaded!');
-        })();
-        <script src="js/global.js"></script>
     </script>
+    <script src="js/global.js"></script>
 
 </body>
 </html>
