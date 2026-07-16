@@ -564,7 +564,7 @@
             color: var(--accent2);
         }
 
-        /* ---- PHOTO PLACEHOLDER ---- */
+        /* ---- PHOTO PLACEHOLDER - SQUARE FIX ---- */
         .chapter-photo-placeholder {
             margin: 20px 0 25px 0;
             text-align: center;
@@ -573,7 +573,7 @@
         .photo-slot {
             width: 100%;
             max-width: 500px;
-            height: 220px;
+            aspect-ratio: 1/1;  /* 🔥 EXACT SQUARE — yahi main change hai */
             margin: 0 auto;
             background: var(--bg3);
             border: 2px dashed var(--border);
@@ -619,7 +619,7 @@
         .photo-slot.has-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover;  /* 🔥 image square mein perfectly fit ho jaayegi */
             display: block;
         }
 
@@ -1029,7 +1029,6 @@
             .family-grid { grid-template-columns: 1fr; }
             .chapter { padding: 20px 16px; }
             .profile-photo { width: 100px; height: 100px; }
-            .photo-slot { height: 160px; }
             .reading-mode-toggle {
                 top: 10px;
                 right: 10px;
@@ -1257,10 +1256,10 @@
                 <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008–2012)</h3>
                 
                 <div class="chapter-photo-placeholder">
-                    <div class="photo-slot" id="photo-ch1-en">
-    <img src="child.jpg" alt="Childhood Photo" style="width:100%; height:100%; object-fit:cover;" />
-    <span class="fig-caption">Fig. 1.1: My childhood photo</span>
-</div>
+                    <div class="photo-slot has-image" id="photo-ch1-en">
+                        <img src="child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: My childhood photo</span>
+                    </div>
                 </div>
                 
                 <p>I was born in March 2008 in Begusarai, Bihar. My father told me that when I was born, my mother said, <em>"Name him Ravi, because he will bring light to this house."</em> Since then, I have been the light of my family.</p>
@@ -1530,10 +1529,10 @@
                 <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008–2012)</h3>
                 
                 <div class="chapter-photo-placeholder">
-                    <div class="photo-slot" id="photo-ch1-hi">
-    <img src="child.jpg" alt="Childhood Photo" style="width:100%; height:100%; object-fit:cover;" />
-    <span class="fig-caption">Fig. 1.1: Bachpan ki tasveer</span>
-</div>
+                    <div class="photo-slot has-image" id="photo-ch1-hi">
+                        <img src="child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: Bachpan ki tasveer</span>
+                    </div>
                 </div>
                 
                 <p>Mera janam March 2008 mein Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
@@ -1778,13 +1777,7 @@
                     <p>Woh din, woh yaadein, woh dosti — sab kuch alag tha. Kuch khatam ho raha tha, kuch shuru ho raha tha.</p>
                     <p style="margin-top:10px;"><strong>Yeh sirf memory nahi, ek ehsaas hai.</strong></p>
                 </div>
-                
-                <div class="thank-you-box">
-                    <h2>🙏 Thank You</h2>
-                    <p>Thank you for reading my story. This is my journey, my life, my autobiography.</p>
-                    <p>Every chapter has a memory, every memory has a lesson, and every lesson has made me who I am today.</p>
-                    <p class="signature">— Ravi Raj</p>
-                </div>
+            
                 
                 <p style="margin-top:20px; color:var(--text3); font-size:14px; text-align:center; border-top:1px solid var(--border); padding-top:18px;">
                     Life mein koi regret nahi — yeh meri sabse badi achievement hai.
