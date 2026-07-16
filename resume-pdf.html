@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,26 +24,182 @@
             box-sizing: border-box;
         }
 
+        /* ============================================================
+           ROOT VARIABLES (Dark/Light Mode)
+           ============================================================ */
+        :root {
+            --bg-body: #f0f0f0;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text2: #333;
+            --text3: #888;
+            --border: #e0e0e0;
+            --border2: #e8e8e8;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --gold: #DAA520;
+            --gold-dark: #b8960f;
+            --btn-bg: #1a1a1a;
+            --btn-text: #ffffff;
+            --icon-bg: #f0f0f0;
+            --highlight: #f8f8f8;
+            --connect-bg: #fafafa;
+            --footer: #bbb;
+            --transition: 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --text: #f0f0f0;
+            --text2: #d0d0d0;
+            --text3: #999;
+            --border: #333;
+            --border2: #444;
+            --shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+            --btn-bg: #DAA520;
+            --btn-text: #1a1a1a;
+            --icon-bg: #2a2a2a;
+            --highlight: #2a2a2a;
+            --connect-bg: #2a2a2a;
+            --footer: #666;
+        }
+
         body {
             font-family: 'Georgia', 'Times New Roman', serif;
-            background: #f0f0f0;
+            background: var(--bg-body);
+            color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 30px 20px;
+            transition: background var(--transition), color var(--transition);
         }
 
-        /* ===== DOWNLOAD BUTTON ===== */
+        /* ============================================================
+           THEME TOGGLE (Fixed Position)
+           ============================================================ */
+        .theme-toggle-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            background: var(--bg-card);
+            padding: 8px 16px 8px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #themeLabel {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text2);
+            transition: color var(--transition);
+            min-width: 42px;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4px;
+            background: var(--highlight);
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .switch .slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: var(--gold);
+            border-radius: 50%;
+            transition: all var(--transition);
+            box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
+        }
+
+        .switch .switch-icon {
+            font-size: 13px;
+            line-height: 1;
+            z-index: 1;
+            transition: opacity var(--transition);
+        }
+
+        .switch .sun { opacity: 1; }
+        .switch .moon { opacity: 0.3; }
+
+        [data-theme="dark"] .switch .sun { opacity: 0.3; }
+        [data-theme="dark"] .switch .moon { opacity: 1; }
+
+        [data-theme="dark"] .switch .slider {
+            left: 26px;
+            background: var(--gold);
+        }
+
+        [data-theme="dark"] .switch {
+            border-color: var(--gold);
+        }
+
+        .switch:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.15);
+        }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: var(--text2);
+            font-size: 14px;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            box-shadow: var(--shadow);
+            font-family: 'Georgia', serif;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================================
+           DOWNLOAD BUTTON
+           ============================================================ */
         .download-btn-wrapper {
             text-align: center;
             margin-bottom: 24px;
         }
 
         .download-btn {
-            background: #1a1a1a;
-            color: #ffffff;
+            background: var(--btn-bg);
+            color: var(--btn-text);
             border: none;
             padding: 12px 36px;
             font-size: 16px;
@@ -51,21 +207,23 @@
             border-radius: 4px;
             cursor: pointer;
             letter-spacing: 0.5px;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .download-btn:hover {
-            background: #DAA520;
+            background: var(--gold);
+            color: var(--text);
         }
 
         /* ===== RESUME CONTAINER ===== */
         .resume {
             max-width: 900px;
             width: 100%;
-            background: #ffffff;
+            background: var(--bg-card);
             padding: 45px 50px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: background var(--transition), border var(--transition), box-shadow var(--transition);
         }
 
         /* ===== HEADER ===== */
@@ -74,15 +232,16 @@
             align-items: center;
             gap: 28px;
             padding-bottom: 18px;
-            border-bottom: 2px solid #e8e8e8;
+            border-bottom: 2px solid var(--border2);
             margin-bottom: 22px;
+            transition: border-color var(--transition);
         }
 
         .profile-photo {
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 3px solid #DAA520;
+            border: 3px solid var(--gold);
             object-fit: cover;
             flex-shrink: 0;
         }
@@ -94,40 +253,45 @@
         .header-right h1 {
             font-size: 32px;
             font-weight: 700;
-            color: #000000;
+            color: var(--text);
             letter-spacing: 1px;
             margin-bottom: 2px;
+            transition: color var(--transition);
         }
 
         .header-right .title {
             font-size: 17px;
-            color: #DAA520;
+            color: var(--gold);
             font-weight: 600;
             margin-bottom: 2px;
         }
 
         .header-right .location {
             font-size: 14px;
-            color: #888;
+            color: var(--text3);
             margin-bottom: 6px;
+            transition: color var(--transition);
         }
 
         .header-right .contact-links {
             font-size: 13px;
-            color: #333;
+            color: var(--text2);
             display: flex;
             flex-wrap: wrap;
             gap: 4px 16px;
+            transition: color var(--transition);
         }
 
         .header-right .contact-links a {
-            color: #1a1a1a;
+            color: var(--text);
             text-decoration: none;
-            border-bottom: 1px dotted #ccc;
+            border-bottom: 1px dotted var(--border2);
+            transition: all var(--transition);
         }
 
         .header-right .contact-links a:hover {
-            border-bottom-color: #DAA520;
+            border-bottom-color: var(--gold);
+            color: var(--gold);
         }
 
         /* ===== SECTIONS ===== */
@@ -138,20 +302,22 @@
         .section-title {
             font-size: 16px;
             font-weight: 700;
-            color: #000000;
+            color: var(--text);
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            border-bottom: 2px solid #DAA520;
+            border-bottom: 2px solid var(--gold);
             padding-bottom: 4px;
             margin-bottom: 10px;
+            transition: color var(--transition);
         }
 
         .section p,
         .section li {
             font-size: 14px;
             line-height: 1.6;
-            color: #1a1a1a;
+            color: var(--text2);
             font-weight: 400;
+            transition: color var(--transition);
         }
 
         .section ul {
@@ -165,7 +331,7 @@
 
         .section ul li::before {
             content: "▸ ";
-            color: #DAA520;
+            color: var(--gold);
             font-weight: 700;
         }
 
@@ -179,11 +345,12 @@
 
         .summary-grid .highlight-item {
             font-size: 13px;
-            color: #1a1a1a;
-            background: #f8f8f8;
+            color: var(--text2);
+            background: var(--highlight);
             padding: 2px 14px;
             border-radius: 12px;
-            border-left: 3px solid #DAA520;
+            border-left: 3px solid var(--gold);
+            transition: all var(--transition);
         }
 
         /* ===== EXPERIENCE / PROJECTS ===== */
@@ -201,26 +368,29 @@
         .exp-item .exp-title {
             font-weight: 700;
             font-size: 15px;
-            color: #000;
+            color: var(--text);
+            transition: color var(--transition);
         }
 
         .exp-item .exp-org {
             font-weight: 600;
-            color: #DAA520;
+            color: var(--gold);
             font-size: 14px;
         }
 
         .exp-item .exp-date {
             font-size: 13px;
-            color: #999;
+            color: var(--text3);
             font-style: italic;
+            transition: color var(--transition);
         }
 
         .exp-item .exp-desc {
             font-size: 13px;
-            color: #555;
+            color: var(--text2);
             margin-top: 2px;
             padding-left: 4px;
+            transition: color var(--transition);
         }
 
         .exp-item .exp-desc ul {
@@ -229,14 +399,15 @@
 
         .exp-item .exp-desc ul li {
             font-size: 13px;
-            color: #555;
+            color: var(--text2);
             padding: 1px 0;
             font-weight: 400;
+            transition: color var(--transition);
         }
 
         .exp-item .exp-desc ul li::before {
             content: "• ";
-            color: #DAA520;
+            color: var(--gold);
         }
 
         .exp-item .exp-links {
@@ -245,14 +416,16 @@
         }
 
         .exp-item .exp-links a {
-            color: #1a1a1a;
+            color: var(--text);
             text-decoration: none;
-            border-bottom: 1px dotted #ccc;
+            border-bottom: 1px dotted var(--border2);
             margin-right: 14px;
+            transition: all var(--transition);
         }
 
         .exp-item .exp-links a:hover {
-            border-bottom-color: #DAA520;
+            border-bottom-color: var(--gold);
+            color: var(--gold);
         }
 
         /* ===== SKILLS ===== */
@@ -264,21 +437,23 @@
 
         .skills-grid .skill-cat {
             font-weight: 700;
-            color: #000;
+            color: var(--text);
             min-width: 90px;
             font-size: 14px;
+            transition: color var(--transition);
         }
 
         .skills-grid .skill-list {
-            color: #1a1a1a;
+            color: var(--text2);
             font-size: 14px;
             font-weight: 400;
+            transition: color var(--transition);
         }
 
         /* ===== ACHIEVEMENTS ===== */
         .achievement-list li::before {
             content: "✦ ";
-            color: #DAA520;
+            color: var(--gold);
             font-weight: 700;
         }
 
@@ -288,12 +463,34 @@
             flex-wrap: wrap;
             gap: 4px 28px;
             font-size: 14px;
-            color: #1a1a1a;
+            color: var(--text2);
+            transition: color var(--transition);
         }
 
         .inline-list .label {
             font-weight: 700;
-            color: #000;
+            color: var(--text);
+            transition: color var(--transition);
+        }
+
+        /* ===== EDUCATION ===== */
+        .edu-item .school {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 15px;
+            transition: color var(--transition);
+        }
+
+        .edu-item .board {
+            font-size: 13px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .edu-item .detail {
+            font-size: 13px;
+            color: var(--text2);
+            transition: color var(--transition);
         }
 
         /* ===== CONNECT — 3D ICON LINKS ===== */
@@ -307,13 +504,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #1a1a1a;
+            color: var(--text);
             text-decoration: none;
             font-weight: 500;
             padding: 6px 14px 6px 10px;
             border-radius: 6px;
-            background: #fafafa;
-            border: 1px solid #e8e8e8;
+            background: var(--connect-bg);
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
         }
@@ -328,8 +525,8 @@
         .connect-link:hover {
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            border-color: #DAA520;
-            background: #ffffff;
+            border-color: var(--gold);
+            background: var(--bg-card);
         }
 
         .connect-link:hover i {
@@ -343,12 +540,12 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: #f0f0f0;
+            background: var(--icon-bg);
             transition: all 0.3s ease;
         }
 
         .connect-link:hover .icon-bg {
-            background: #DAA520;
+            background: var(--gold);
             box-shadow: 0 4px 12px rgba(218, 165, 32, 0.35);
         }
 
@@ -359,18 +556,20 @@
         /* ===== REFERENCES ===== */
         .ref-text {
             font-size: 14px;
-            color: #888;
+            color: var(--text3);
             font-style: italic;
+            transition: color var(--transition);
         }
 
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
             font-size: 11px;
-            color: #bbb;
-            border-top: 1px solid #e8e8e8;
+            color: var(--footer);
+            border-top: 1px solid var(--border2);
             padding-top: 14px;
             margin-top: 8px;
+            transition: all var(--transition);
         }
 
         /* ===== PHONE NUMBER — HIDDEN ON WEBSITE ===== */
@@ -436,6 +635,38 @@
                 align-items: flex-start;
                 gap: 2px;
             }
+
+            .theme-toggle-wrapper {
+                top: 10px;
+                right: 10px;
+                padding: 4px 10px 4px 14px;
+                gap: 6px;
+            }
+
+            #themeLabel {
+                font-size: 10px;
+                min-width: 28px;
+            }
+
+            .switch {
+                width: 36px;
+                height: 20px;
+            }
+
+            .switch .slider {
+                width: 12px;
+                height: 12px;
+                top: 2px;
+                left: 2px;
+            }
+
+            [data-theme="dark"] .switch .slider {
+                left: 18px;
+            }
+
+            .switch .switch-icon {
+                font-size: 9px;
+            }
         }
 
         /* ===== PRINT STYLES ===== */
@@ -451,9 +682,18 @@
                 border: none;
                 padding: 35px 40px;
                 max-width: 100%;
+                background: #fff;
             }
 
             .download-btn-wrapper {
+                display: none !important;
+            }
+
+            .theme-toggle-wrapper {
+                display: none !important;
+            }
+
+            .toast {
                 display: none !important;
             }
 
@@ -493,6 +733,19 @@
 </head>
 
 <body>
+
+    <!-- ===== THEME TOGGLE ===== -->
+    <div class="theme-toggle-wrapper">
+        <span id="themeLabel">Light</span>
+        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+            <span class="switch-icon sun">☀️</span>
+            <span class="switch-icon moon">🌙</span>
+            <div class="slider"></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
 
     <!-- ===== DOWNLOAD BUTTON ===== -->
     <div class="download-btn-wrapper">
@@ -766,6 +1019,78 @@
         </div>
 
     </div>
+
+    <!-- ============================================================
+    JAVASCRIPT — THEME TOGGLE
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            const themeSwitch = document.getElementById('themeSwitch');
+            const themeLabel = document.getElementById('themeLabel');
+            const toast = document.getElementById('toast');
+            const html = document.documentElement;
+
+            // Load saved theme
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', currentTheme);
+            themeLabel.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
+
+            // Toggle click
+            themeSwitch.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const current = html.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                themeLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
+                showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+            });
+
+            // Keyboard support
+            themeSwitch.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+
+            // Toast function
+            let toastTimer;
+
+            function showToast(message) {
+                if (!toast) return;
+                clearTimeout(toastTimer);
+                toast.textContent = message;
+                toast.className = 'toast show';
+                toastTimer = setTimeout(function() {
+                    toast.classList.remove('show');
+                }, 2000);
+            }
+
+            // Responsive toggle position
+            function adjustTogglePosition() {
+                const wrapper = document.querySelector('.theme-toggle-wrapper');
+                if (!wrapper) return;
+                if (window.innerWidth <= 480) {
+                    wrapper.style.top = '10px';
+                    wrapper.style.right = '10px';
+                } else if (window.innerWidth <= 768) {
+                    wrapper.style.top = '15px';
+                    wrapper.style.right = '15px';
+                } else {
+                    wrapper.style.top = '20px';
+                    wrapper.style.right = '20px';
+                }
+            }
+
+            adjustTogglePosition();
+            window.addEventListener('resize', adjustTogglePosition);
+
+            console.log('✅ CV Page with Dark/Light Toggle Loaded!');
+        })();
+    </script>
 
 </body>
 </html>
