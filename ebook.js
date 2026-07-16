@@ -261,10 +261,10 @@ class QRGenerator {
 }
 
 // ============================================================
-// 6. APPLY PROFESSIONAL BOOK STYLES (CRISP & IMPROVED FONTS)
+// 6. APPLY PROFESSIONAL BOOK STYLES (PDF CLEAN VERSION)
 // ============================================================
-function applyProfessionalBookStyles(clone) {
-    // ---- ALL PARAGRAPHS - IMPROVED FONT: Lora ----
+function applyProfessionalBookStyles(clone, isPdfMode = true) {
+    // ---- ALL PARAGRAPHS ----
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
@@ -273,12 +273,18 @@ function applyProfessionalBookStyles(clone) {
         el.style.textAlign = 'justify';
         el.style.marginBottom = '14px';
         el.style.fontWeight = '450';
-        el.style.background = '#ffffff';
         el.style.letterSpacing = '0.3px';
         el.style.textShadow = '0 0 1px rgba(0,0,0,0.05)';
+        
+        // FIX: PDF mode mein background transparent
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
-    // ---- CHAPTER HEADINGS - IMPROVED FONT: Playfair Display ----
+    // ---- CHAPTER HEADINGS ----
     clone.querySelectorAll('.chapter h3').forEach(el => {
         el.style.color = '#000000';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
@@ -288,8 +294,13 @@ function applyProfessionalBookStyles(clone) {
         el.style.marginTop = '0';
         el.style.marginBottom = '10px';
         el.style.letterSpacing = '2px';
-        el.style.background = '#ffffff';
         el.style.lineHeight = '1.3';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     // ---- GOLD LINE UNDER HEADING ----
@@ -308,35 +319,50 @@ function applyProfessionalBookStyles(clone) {
     clone.querySelectorAll('.chapter strong').forEach(el => {
         el.style.color = '#000000';
         el.style.fontWeight = '700';
-        el.style.background = '#ffffff';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
-    // ---- LIST ITEMS - IMPROVED FONT: Lora ----
+    // ---- LIST ITEMS ----
     clone.querySelectorAll('.chapter ul li').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '15px';
         el.style.lineHeight = '1.7';
         el.style.marginBottom = '6px';
-        el.style.background = '#ffffff';
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
-    // ---- QUOTES - IMPROVED FONT: Lora Italic ----
+    // ---- QUOTES ----
     clone.querySelectorAll('.quote-box').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.fontSize = '19px';
         el.style.lineHeight = '1.6';
         el.style.fontStyle = 'italic';
-        el.style.background = '#ffffff';
         el.style.borderLeft = '4px solid #DAA520';
         el.style.padding = '18px 24px';
         el.style.margin = '20px 0';
         el.style.fontWeight = '400';
         el.style.letterSpacing = '0.3px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     clone.querySelectorAll('.quote-box .author').forEach(el => {
@@ -346,8 +372,13 @@ function applyProfessionalBookStyles(clone) {
         el.style.textAlign = 'right';
         el.style.marginTop = '8px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.background = '#ffffff';
         el.style.letterSpacing = '0.5px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     // ---- READING TIME ----
@@ -358,22 +389,32 @@ function applyProfessionalBookStyles(clone) {
         el.style.textAlign = 'right';
         el.style.marginTop = '12px';
         el.style.fontStyle = 'italic';
-        el.style.background = '#ffffff';
         el.style.letterSpacing = '0.5px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     clone.querySelectorAll('.reading-time span').forEach(el => {
         el.style.color = '#6c5ce7';
-        el.style.background = '#ffffff';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     // ---- FAMILY ITEMS ----
     clone.querySelectorAll('.family-item').forEach(el => {
-        el.style.background = '#fafafa';
-        el.style.border = '1px solid #e8e8e8';
-        el.style.borderRadius = '8px';
-        el.style.padding = '14px 18px';
+        el.style.background = isPdfMode ? 'transparent' : '#fafafa';
+        el.style.border = isPdfMode ? 'none' : '1px solid #e8e8e8';
+        el.style.borderRadius = isPdfMode ? '0' : '8px';
+        el.style.padding = isPdfMode ? '4px 0' : '14px 18px';
         el.style.marginBottom = '6px';
     });
     
@@ -384,6 +425,12 @@ function applyProfessionalBookStyles(clone) {
         el.style.letterSpacing = '0.8px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.fontWeight = '400';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     clone.querySelectorAll('.family-item .value').forEach(el => {
@@ -392,14 +439,27 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.3px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     // ---- TEACHER TRIBUTE ----
     clone.querySelectorAll('.teacher-tribute').forEach(el => {
-        el.style.background = 'rgba(108,92,231,0.04)';
-        el.style.border = '1px solid rgba(108,92,231,0.12)';
-        el.style.borderRadius = '8px';
-        el.style.padding = '20px 24px';
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+            el.style.border = 'none';
+            el.style.borderRadius = '0';
+            el.style.padding = '8px 0';
+        } else {
+            el.style.background = 'rgba(108,92,231,0.04)';
+            el.style.border = '1px solid rgba(108,92,231,0.12)';
+            el.style.borderRadius = '8px';
+            el.style.padding = '20px 24px';
+        }
         el.style.margin = '18px 0';
     });
     
@@ -409,6 +469,12 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.5px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     clone.querySelectorAll('.teacher-tribute p').forEach(el => {
@@ -416,30 +482,48 @@ function applyProfessionalBookStyles(clone) {
         el.style.fontSize = '15px';
         el.style.lineHeight = '1.7';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.background = '#ffffff';
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
     
     // ---- FRIEND MEMORY ----
     clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.background = '#ffffff';
-        el.style.border = '1px dashed #DAA520';
-        el.style.borderRadius = '8px';
-        el.style.padding = '24px 28px';
-        el.style.margin = '24px 0';
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
         el.style.lineHeight = '1.7';
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+            el.style.border = 'none';
+            el.style.borderRadius = '0';
+            el.style.padding = '8px 0';
+        } else {
+            el.style.background = '#ffffff';
+            el.style.border = '1px dashed #DAA520';
+            el.style.borderRadius = '8px';
+            el.style.padding = '24px 28px';
+        }
+        el.style.margin = '24px 0';
     });
     
     clone.querySelectorAll('.friend-memory-pdf strong').forEach(el => {
         el.style.color = '#DAA520';
-        el.style.background = '#ffffff';
         el.style.fontWeight = '700';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        
+        if (isPdfMode) {
+            el.style.background = 'transparent';
+        } else {
+            el.style.background = '#ffffff';
+        }
     });
 }
 
@@ -550,7 +634,8 @@ class EbookGenerator {
         const cloneContainer = clone.querySelector('#' + containerId);
         const cloneChapters = cloneContainer ? cloneContainer.querySelectorAll('.chapter') : [];
 
-        applyProfessionalBookStyles(clone);
+        // PDF Mode = true (background transparent)
+        applyProfessionalBookStyles(clone, true);
 
         const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
 
@@ -856,7 +941,7 @@ class EbookGenerator {
             const restText = text.slice(1);
             
             firstP.innerHTML = `
-                <span style="font-family:'Playfair Display','Georgia',serif;font-size:48px;font-weight:700;color:#DAA520;float:left;line-height:1;margin-right:6px;margin-top:2px;">${firstChar}</span>
+                <span style="font-family:'Playfair Display','Georgia',serif;font-size:48px;font-weight:700;color:#DAA520;float:left;line-height:1;margin-right:6px;margin-top:2px;background:transparent;">${firstChar}</span>
                 ${restText}
             `;
         }
@@ -889,6 +974,7 @@ class EbookGenerator {
                 text-align: center;
                 margin: 6px 0 18px 0;
                 letter-spacing: 0.3px;
+                background: transparent;
             `;
             quoteDiv.textContent = quote;
             heading.parentNode.insertBefore(quoteDiv, heading.nextSibling);
@@ -897,7 +983,6 @@ class EbookGenerator {
         // ---- SECTION BREAKS (***) ----
         const paragraphs = clone.querySelectorAll('p');
         if (paragraphs.length > 3) {
-            // Insert section break after 3rd paragraph
             const midPoint = Math.floor(paragraphs.length / 2);
             const targetP = paragraphs[midPoint];
             if (targetP) {
@@ -909,6 +994,7 @@ class EbookGenerator {
                     text-align: center;
                     letter-spacing: 4px;
                     margin: 16px 0;
+                    background: transparent;
                 `;
                 breakDiv.textContent = '✦ ✦ ✦';
                 targetP.parentNode.insertBefore(breakDiv, targetP);
@@ -935,6 +1021,7 @@ class EbookGenerator {
             margin-top: 12px;
             padding-top: 8px;
             letter-spacing: 0.3px;
+            background: transparent;
         `;
         footnoteDiv.textContent = footnoteText;
         clone.appendChild(footnoteDiv);
