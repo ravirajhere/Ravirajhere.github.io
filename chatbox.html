@@ -1,12 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>🤖 AI Chatbox — Ravi Raj</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,15 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
-        /* ==============================
-           ROOT VARIABLES (Dark/Light Mode)
-        ============================== */
+        /* ============================================================
+           ROOT VARIABLES (Light / Dark)
+           ============================================================ */
         :root {
             --bg-primary: #0a0a0f;
             --bg-secondary: #13131a;
             --bg-tertiary: #1a1a2e;
-            --bg-input: rgba(255,255,255,0.04);
-            --border-color: rgba(255,255,255,0.08);
+            --bg-input: rgba(255, 255, 255, 0.04);
+            --border-color: rgba(255, 255, 255, 0.08);
             --text-primary: #f0f0f5;
             --text-secondary: #a0a0b0;
             --text-muted: #6a6a7a;
@@ -35,20 +33,19 @@
             --radius: 16px;
             --radius-sm: 10px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --toggle-bg: rgba(255,255,255,0.05);
-            --toggle-border: rgba(255,255,255,0.15);
+            --toggle-bg: rgba(255, 255, 255, 0.05);
+            --toggle-border: rgba(255, 255, 255, 0.15);
             --toggle-text: #a0a0b0;
-            --quick-btn-bg: rgba(255,255,255,0.06);
+            --quick-btn-bg: rgba(255, 255, 255, 0.06);
             --quick-btn-hover: rgba(0, 217, 255, 0.15);
         }
 
-        /* Light Mode Overrides */
         [data-theme="light"] {
             --bg-primary: #f5f0eb;
             --bg-secondary: #ffffff;
             --bg-tertiary: #f0ece6;
-            --bg-input: rgba(0,0,0,0.04);
-            --border-color: rgba(0,0,0,0.1);
+            --bg-input: rgba(0, 0, 0, 0.04);
+            --border-color: rgba(0, 0, 0, 0.1);
             --text-primary: #1a1a1a;
             --text-secondary: #555;
             --text-muted: #999;
@@ -56,16 +53,16 @@
             --secondary: #00b894;
             --accent: #6c5ce7;
             --shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-            --toggle-bg: rgba(0,0,0,0.05);
-            --toggle-border: rgba(0,0,0,0.15);
+            --toggle-bg: rgba(0, 0, 0, 0.05);
+            --toggle-border: rgba(0, 0, 0, 0.15);
             --toggle-text: #555;
-            --quick-btn-bg: rgba(0,0,0,0.05);
+            --quick-btn-bg: rgba(0, 0, 0, 0.05);
             --quick-btn-hover: rgba(9, 132, 227, 0.1);
         }
 
-        /* ==============================
-           RESET
-        ============================== */
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -89,9 +86,9 @@
             background-image: radial-gradient(ellipse at 50% 0%, rgba(9, 132, 227, 0.05) 0%, transparent 70%);
         }
 
-        /* ==============================
-           THEME TOGGLE (Fixed Position)
-        ============================== */
+        /* ============================================================
+           THEME TOGGLE (Fixed)
+           ============================================================ */
         .theme-toggle-wrapper {
             position: fixed;
             top: 20px;
@@ -153,11 +150,19 @@
             transition: opacity var(--transition);
         }
 
-        .switch .sun { opacity: 1; }
-        .switch .moon { opacity: 0.3; }
+        .switch .sun {
+            opacity: 1;
+        }
+        .switch .moon {
+            opacity: 0.3;
+        }
 
-        [data-theme="dark"] .switch .sun { opacity: 0.3; }
-        [data-theme="dark"] .switch .moon { opacity: 1; }
+        [data-theme="dark"] .switch .sun {
+            opacity: 0.3;
+        }
+        [data-theme="dark"] .switch .moon {
+            opacity: 1;
+        }
 
         [data-theme="dark"] .switch .slider {
             left: 26px;
@@ -173,9 +178,9 @@
             box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
         }
 
-        /* ==============================
-           TOAST
-        ============================== */
+        /* ============================================================
+           TOAST NOTIFICATION
+           ============================================================ */
         .toast {
             position: fixed;
             bottom: 100px;
@@ -201,9 +206,9 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ==============================
+        /* ============================================================
            CHATBOX CONTAINER
-        ============================== */
+           ============================================================ */
         .chatbox-container {
             width: 100%;
             max-width: 480px;
@@ -220,9 +225,9 @@
             transition: all var(--transition);
         }
 
-        /* ==============================
+        /* ============================================================
            HEADER
-        ============================== */
+           ============================================================ */
         .chat-header {
             padding: 20px 24px;
             background: var(--bg-tertiary);
@@ -284,8 +289,15 @@
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
         }
 
         .chat-header-close {
@@ -304,9 +316,9 @@
             transform: rotate(90deg);
         }
 
-        /* ==============================
+        /* ============================================================
            MESSAGES AREA
-        ============================== */
+           ============================================================ */
         .chat-messages {
             flex: 1;
             padding: 20px 18px;
@@ -328,9 +340,9 @@
             border-radius: 10px;
         }
 
-        /* ==============================
+        /* ============================================================
            QUICK REPLY BUTTONS
-        ============================== */
+           ============================================================ */
         .quick-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -360,9 +372,9 @@
             transform: translateY(-2px);
         }
 
-        /* ==============================
+        /* ============================================================
            MESSAGE BUBBLES
-        ============================== */
+           ============================================================ */
         .message {
             max-width: 85%;
             padding: 12px 18px;
@@ -375,8 +387,14 @@
         }
 
         @keyframes msgIn {
-            from { opacity: 0; transform: translateY(12px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .message.bot {
@@ -400,7 +418,7 @@
         }
 
         .message.user .msg-time {
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .msg-time {
@@ -411,7 +429,9 @@
             text-align: right;
         }
 
-        /* Typing Indicator */
+        /* ============================================================
+           TYPING INDICATOR
+           ============================================================ */
         .typing-indicator {
             align-self: flex-start;
             background: var(--bg-tertiary);
@@ -433,17 +453,27 @@
             animation: typingBounce 1.4s infinite;
         }
 
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-8px); }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
         }
 
-        /* ==============================
+        @keyframes typingBounce {
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* ============================================================
            INPUT AREA
-        ============================== */
+           ============================================================ */
         .chat-input-area {
             padding: 12px 20px 16px 20px;
             background: var(--bg-tertiary);
@@ -514,9 +544,9 @@
             transform: none;
         }
 
-        /* ==============================
+        /* ============================================================
            FOOTER
-        ============================== */
+           ============================================================ */
         .chat-footer {
             text-align: center;
             padding: 10px 20px;
@@ -538,9 +568,9 @@
             text-decoration: underline;
         }
 
-        /* ==============================
+        /* ============================================================
            EMPTY STATE
-        ============================== */
+           ============================================================ */
         .empty-state {
             flex: 1;
             display: flex;
@@ -572,9 +602,9 @@
             line-height: 1.6;
         }
 
-        /* ==============================
+        /* ============================================================
            RESPONSIVE
-        ============================== */
+           ============================================================ */
         @media (max-width: 500px) {
             .chatbox-container {
                 height: 100vh;
@@ -583,11 +613,22 @@
                 border: none;
                 max-width: 100%;
             }
-            body { padding: 0; }
-            .chat-header { padding: 16px 18px; }
-            .chat-messages { padding: 16px 14px; }
-            .chat-input-area { padding: 10px 14px 14px 14px; }
-            .message { max-width: 92%; font-size: 14px; }
+            body {
+                padding: 0;
+            }
+            .chat-header {
+                padding: 16px 18px;
+            }
+            .chat-messages {
+                padding: 16px 14px;
+            }
+            .chat-input-area {
+                padding: 10px 14px 14px 14px;
+            }
+            .message {
+                max-width: 92%;
+                font-size: 14px;
+            }
 
             .theme-toggle-wrapper {
                 top: 10px;
@@ -721,25 +762,22 @@
 
         <!-- ===== FOOTER ===== -->
         <div class="chat-footer">
-            Powered by <a href="index.html">Ravi Raj</a> &bull; Made with ❤️ 
+            Powered by <a href="index.html">Ravi Raj</a> &bull; Made with ❤️
         </div>
 
     </div>
 
     <!-- ============================================================
-    CHATBOX.JS — ULTRA ADVANCED AI ENGINE v5.0
+    JAVASCRIPT — CHAT ENGINE + THEME TOGGLE
     ============================================================ -->
     <script>
         // ============================================================
-        // CHATBOX.JS v5.0 — NEXT GEN AI ENGINE
+        // CHAT ENGINE — ULTRA ADVANCED v5.0
         // ============================================================
-
         (function() {
             'use strict';
 
-            // ============================================================
-            // DOM REFS (SAFE MODE)
-            // ============================================================
+            // ---------- DOM REFS ----------
             const DOM = {
                 messages: document.getElementById('chatMessages'),
                 empty: document.getElementById('emptyState'),
@@ -749,21 +787,11 @@
                 quickBtns: document.getElementById('quickButtons')
             };
 
-            // Safety check
-            if (!DOM.send) {
-                console.error('❌ Send button not found!');
-            }
-
-            // ============================================================
-            // ULTRA ADVANCED ENGINE
-            // ============================================================
+            // ---------- AI ENGINE ----------
             const Engine = {
                 history: [],
                 context: [],
-                userInterests: [],
-                sessionStart: Date.now(),
                 lastActive: Date.now(),
-                userName: null,
 
                 knowledgeBase: {
                     student: {
@@ -920,18 +948,15 @@
 
                 detectPersona(text) {
                     const t = text.toLowerCase();
-                    let maxScore = 0;
-                    let detected = 'general';
-
+                    let max = 0,
+                        detected = 'general';
                     for (const [persona, data] of Object.entries(this.knowledgeBase)) {
                         let score = 0;
-                        for (const keyword of data.keywords) {
-                            if (t.includes(keyword)) score++;
+                        for (const kw of data.keywords) {
+                            if (t.includes(kw)) score++;
                         }
-                        if (score > maxScore) {
-                            maxScore = score;
-                            detected = persona;
-                        }
+                        if (score > max) { max = score;
+                            detected = persona; }
                     }
                     return detected;
                 },
@@ -976,15 +1001,11 @@
                         const kb = this.knowledgeBase[persona];
                         let matchedKey = null;
                         for (const key in kb.replies) {
-                            if (t.includes(key)) {
-                                matchedKey = key;
-                                break;
-                            }
+                            if (t.includes(key)) { matchedKey = key; break; }
                         }
                         if (matchedKey) {
                             const replies = kb.replies[matchedKey];
                             let reply = replies[Math.floor(Math.random() * replies.length)];
-                            // Mood adjustment
                             if (mood === 'sad') reply += " ❤️ Main hoon na!";
                             else if (mood === 'happy') reply += " 😄 Tumhara excitement contagious hai!";
                             else if (mood === 'angry') reply += " 🤝 Let's solve this together!";
@@ -1004,69 +1025,34 @@
 
                     // Greeting
                     if (intent === 'greeting') {
-                        const greetings = [
-                            "Hello! 👋 Kaise ho? Kya help chahiye?",
-                            "Namaste! 🙏 Welcome! How can I assist you today?",
-                            "Hey there! 😊 What brings you here?",
-                            "Hi! 💫 I'm Ravi's AI assistant. What's on your mind?"
-                        ];
-                        return greetings[Math.floor(Math.random() * greetings.length)];
+                        const g = ["Hello! 👋 Kaise ho? Kya help chahiye?", "Namaste! 🙏 Welcome! How can I assist you today?", "Hey there! 😊 What brings you here?", "Hi! 💫 I'm Ravi's AI assistant. What's on your mind?"];
+                        return g[Math.floor(Math.random() * g.length)];
                     }
-
-                    // Farewell
                     if (intent === 'farewell') {
-                        const farewells = [
-                            "Bye bye! 👋 Take care! Phir milte hain!",
-                            "Goodbye! 😊 It was nice chatting with you!",
-                            "Tata! 🎉 Come back anytime!",
-                            "See you soon! 🌟 Have a great day!"
-                        ];
-                        return farewells[Math.floor(Math.random() * farewells.length)];
+                        const f = ["Bye bye! 👋 Take care! Phir milte hain!", "Goodbye! 😊 It was nice chatting with you!", "Tata! 🎉 Come back anytime!", "See you soon! 🌟 Have a great day!"];
+                        return f[Math.floor(Math.random() * f.length)];
                     }
-
-                    // Gratitude
                     if (intent === 'gratitude') {
-                        const thanks = [
-                            "Welcome! 😊 Happy to help!",
-                            "My pleasure! ❤️ Keep shining!",
-                            "Anytime! 💫 You're awesome!"
-                        ];
-                        return thanks[Math.floor(Math.random() * thanks.length)];
+                        const th = ["Welcome! 😊 Happy to help!", "My pleasure! ❤️ Keep shining!", "Anytime! 💫 You're awesome!"];
+                        return th[Math.floor(Math.random() * th.length)];
                     }
-
-                    // Name
-                    if (t.includes('name')) {
-                        return "I'm RJ AI — Ravi Raj's virtual assistant! 🤖";
-                    }
-
-                    // Time
+                    if (t.includes('name')) return "I'm RJ AI — Ravi Raj's virtual assistant! 🤖";
                     if (t.includes('time')) {
                         const now = new Date();
                         return `Time is ${now.toLocaleTimeString()} ⏰ Let's make the most of it!`;
                     }
-
-                    // Joke
                     if (intent === 'fun' || t.includes('joke')) {
-                        const jokes = [
+                        const j = [
                             "Why do programmers prefer dark mode? Because light attracts bugs! 😄",
                             "What do you call a programmer from Finland? Nerdic! 😂",
                             "Why did the developer go broke? Because he used up all his cache! 💰",
                             "A SQL query walks into a bar, sees two tables and asks... 'Can I join you?' 😆"
                         ];
-                        return jokes[Math.floor(Math.random() * jokes.length)];
+                        return j[Math.floor(Math.random() * j.length)];
                     }
+                    if (intent === 'help') return "Main yahan help karne ke liye hoon! 💪 Kya problem hai? Batao! 😊";
+                    if (intent === 'complaint') return "Arre! 😮 Kya problem hai? Main sun raha hoon. Saath mein solve karenge! 🤝";
 
-                    // Help
-                    if (intent === 'help') {
-                        return "Main yahan help karne ke liye hoon! 💪 Kya problem hai? Batao! 😊";
-                    }
-
-                    // Complaint
-                    if (intent === 'complaint') {
-                        return "Arre! 😮 Kya problem hai? Main sun raha hoon. Saath mein solve karenge! 🤝";
-                    }
-
-                    // Fallback
                     const fallbacks = [
                         "Accha sawaal hai! 🤔 Thoda aur detail mein batao?",
                         "Main samajh gaya... ❓ Kya aap iske baare mein poochh rahe ho?",
@@ -1085,50 +1071,37 @@
                 }
             };
 
-            // ============================================================
-            // UI FUNCTIONS
-            // ============================================================
+            // ---------- UI FUNCTIONS ----------
             function getTime() {
                 const now = new Date();
                 return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
             }
 
             function scrollToBottom() {
-                if (DOM.messages) {
-                    DOM.messages.scrollTop = DOM.messages.scrollHeight;
-                }
+                if (DOM.messages) DOM.messages.scrollTop = DOM.messages.scrollHeight;
             }
 
             function addMessage(text, sender) {
                 if (!DOM.messages) return;
                 if (DOM.empty) DOM.empty.style.display = 'none';
                 const div = document.createElement('div');
-                div.className = `message ${sender}`;
-                div.innerHTML = `${text}<span class="msg-time">${getTime()}</span>`;
+                div.className = 'message ' + sender;
+                div.innerHTML = text + '<span class="msg-time">' + getTime() + '</span>';
                 DOM.messages.appendChild(div);
-                // Insert quick buttons before input area
-                if (DOM.quickBtns) {
-                    DOM.messages.appendChild(DOM.quickBtns);
-                }
+                if (DOM.quickBtns) DOM.messages.appendChild(DOM.quickBtns);
                 scrollToBottom();
             }
 
             function showTyping() {
-                if (DOM.typing) {
-                    DOM.typing.style.display = 'flex';
-                    scrollToBottom();
-                }
+                if (DOM.typing) { DOM.typing.style.display = 'flex';
+                    scrollToBottom(); }
             }
 
             function hideTyping() {
-                if (DOM.typing) {
-                    DOM.typing.style.display = 'none';
-                }
+                if (DOM.typing) DOM.typing.style.display = 'none';
             }
 
-            // ============================================================
-            // QUICK REPLY BUTTONS
-            // ============================================================
+            // ---------- QUICK REPLY BUTTONS ----------
             function generateQuickReplies() {
                 if (!DOM.quickBtns) return;
                 const buttons = [
@@ -1141,26 +1114,21 @@
                     { text: '🚀 Future', value: 'Future plans kya hain?' },
                     { text: '🏠 Ghar', value: 'Ghar ki yaad aa rahi hai' }
                 ];
-
                 DOM.quickBtns.innerHTML = '';
-                buttons.forEach(btn => {
+                buttons.forEach(function(btn) {
                     const el = document.createElement('button');
                     el.className = 'quick-btn';
                     el.textContent = btn.text;
                     el.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        if (DOM.input) {
-                            DOM.input.value = btn.value;
-                            sendMessage();
-                        }
+                        if (DOM.input) { DOM.input.value = btn.value;
+                            sendMessage(); }
                     });
                     DOM.quickBtns.appendChild(el);
                 });
             }
 
-            // ============================================================
-            // SEND MESSAGE
-            // ============================================================
+            // ---------- SEND MESSAGE ----------
             let isProcessing = false;
 
             function sendMessage() {
@@ -1186,86 +1154,49 @@
                 }, delay);
             }
 
-            // ============================================================
-            // INACTIVITY DETECTION
-            // ============================================================
+            // ---------- INACTIVITY DETECTION ----------
             setInterval(function() {
-                const inactiveTime = Date.now() - Engine.lastActive;
-                if (inactiveTime > 120000 && !isProcessing) {
-                    const messages = [
-                        "Kya hua? 🤔 Kuch soch rahe ho?",
-                        "Main yahan hoon! 😊 Koi baat karo?",
-                        "Zinda ho? 😄 Batao kya help chahiye?"
-                    ];
-                    addMessage(messages[Math.floor(Math.random() * messages.length)], 'bot');
+                if (Date.now() - Engine.lastActive > 120000 && !isProcessing) {
+                    const msgs = ["Kya hua? 🤔 Kuch soch rahe ho?", "Main yahan hoon! 😊 Koi baat karo?", "Zinda ho? 😄 Batao kya help chahiye?"];
+                    addMessage(msgs[Math.floor(Math.random() * msgs.length)], 'bot');
                     Engine.lastActive = Date.now();
                 }
             }, 60000);
 
-            // ============================================================
-            // EVENT LISTENERS
-            // ============================================================
-            if (DOM.send) {
-                DOM.send.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    sendMessage();
-                });
-            }
-
-            if (DOM.input) {
-                DOM.input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        sendMessage();
-                    }
-                });
-            }
-
-            // ============================================================
-            // CLOSE CHATBOX
-            // ============================================================
-            window.closeChatbox = function() {
-                if (document.referrer) {
-                    window.location.href = document.referrer;
-                } else {
-                    window.history.back();
-                }
-            };
-
-            // ============================================================
-            // KEYBOARD SHORTCUTS
-            // ============================================================
-            document.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-                    e.preventDefault();
-                    if (DOM.input) DOM.input.focus();
-                }
-                if (e.key === 'Escape') {
-                    window.closeChatbox();
-                }
+            // ---------- EVENT LISTENERS ----------
+            if (DOM.send) DOM.send.addEventListener('click', function(e) { e.preventDefault();
+                sendMessage(); });
+            if (DOM.input) DOM.input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault();
+                    sendMessage(); }
             });
 
-            // ============================================================
-            // INIT
-            // ============================================================
+            // ---------- CLOSE CHATBOX ----------
+            window.closeChatbox = function() {
+                document.referrer ? window.location.href = document.referrer : window.history.back();
+            };
+
+            // ---------- KEYBOARD SHORTCUTS ----------
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); if (DOM.input) DOM.input.focus(); }
+                if (e.key === 'Escape') window.closeChatbox();
+            });
+
+            // ---------- INIT ----------
             generateQuickReplies();
-            setTimeout(function() {
-                if (DOM.input) DOM.input.focus();
-            }, 300);
+            setTimeout(function() { if (DOM.input) DOM.input.focus(); }, 300);
 
             console.log('🤖 RJ AI Chatbox — Ultra Advanced v5.0');
             console.log('🧠 7 Personas | 6 Moods | Multiple Intents');
             console.log('⚡ Dynamic Quick Replies | Inactivity Detection');
             console.log('🔥 Built by Ravi Raj');
             console.log('💡 Tip: Press Ctrl+/ to focus input, Escape to close.');
-
         })();
-    </script>
 
-    <!-- ============================================================
-    JAVASCRIPT — THEME TOGGLE
-    ============================================================ -->
-    <script>
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
         (function() {
             'use strict';
 
@@ -1274,12 +1205,10 @@
             const toast = document.getElementById('toast');
             const html = document.documentElement;
 
-            // Load saved theme
             const currentTheme = localStorage.getItem('theme') || 'light';
             html.setAttribute('data-theme', currentTheme);
             themeLabel.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
 
-            // Toggle click
             themeSwitch.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const current = html.getAttribute('data-theme');
@@ -1290,15 +1219,11 @@
                 showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
             });
 
-            // Keyboard support
             themeSwitch.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+                    this.click(); }
             });
 
-            // Toast function
             let toastTimer;
 
             function showToast(message) {
@@ -1306,31 +1231,22 @@
                 clearTimeout(toastTimer);
                 toast.textContent = message;
                 toast.className = 'toast show';
-                toastTimer = setTimeout(function() {
-                    toast.classList.remove('show');
-                }, 2000);
+                toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2000);
             }
 
-            // Responsive toggle position
             function adjustTogglePosition() {
                 const wrapper = document.querySelector('.theme-toggle-wrapper');
                 if (!wrapper) return;
-                if (window.innerWidth <= 480) {
-                    wrapper.style.top = '10px';
-                    wrapper.style.right = '10px';
-                } else if (window.innerWidth <= 768) {
-                    wrapper.style.top = '15px';
-                    wrapper.style.right = '15px';
-                } else {
-                    wrapper.style.top = '20px';
-                    wrapper.style.right = '20px';
-                }
+                if (window.innerWidth <= 480) { wrapper.style.top = '10px';
+                    wrapper.style.right = '10px'; } else if (window.innerWidth <= 768) { wrapper.style.top = '15px';
+                    wrapper.style.right = '15px'; } else { wrapper.style.top = '20px';
+                    wrapper.style.right = '20px'; }
             }
 
             adjustTogglePosition();
             window.addEventListener('resize', adjustTogglePosition);
 
-            console.log('✅ Chatbox with Dark/Light Toggle Loaded!');
+            console.log('✅ Theme Toggle Loaded!');
         })();
     </script>
 
