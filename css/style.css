@@ -1,60 +1,7 @@
 /* ============================================================
-   CSS VARIABLES
+   STYLE.CSS — PAGE-SPECIFIC STYLES FOR INDEX.HTML
+   (Navbar, Hero, Projects, Interests, Education, etc.)
    ============================================================ */
-:root {
-    --bg: #f5f0eb;
-    --bg-card: #ffffff;
-    --text: #1a1a1a;
-    --text-muted: #555;
-    --primary: #2d3436;
-    --secondary: #0984e3;
-    --border: #ddd;
-    --shadow: 0 4px 20px rgba(0,0,0,0.08);
-    --radius: 16px;
-    --transition: 0.3s ease;
-}
-
-[data-theme="dark"] {
-    --bg: #0a0a0a;
-    --bg-card: #1a1a1a;
-    --text: #f0f0f0;
-    --text-muted: #aaa;
-    --border: #333;
-    --shadow: 0 4px 20px rgba(255,255,255,0.05);
-}
-
-/* ============================================================
-   RESET & BASE
-   ============================================================ */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    transition: background var(--transition), color var(--transition);
-    line-height: 1.6;
-    padding: 20px;
-}
-
-a {
-    color: var(--secondary);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-a:hover {
-    color: var(--secondary);
-}
-
-img {
-    max-width: 100%;
-    display: block;
-}
 
 /* ============================================================
    CONTAINER
@@ -73,7 +20,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 40px;
     flex-wrap: wrap;
     gap: 12px;
@@ -83,10 +30,11 @@ nav {
     font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.5px;
+    color: var(--text-primary);
 }
 
 .logo span {
-    color: var(--secondary);
+    color: var(--primary);
 }
 
 .nav-links {
@@ -97,7 +45,7 @@ nav {
 }
 
 .nav-links a {
-    color: var(--text);
+    color: var(--text-primary);
     font-size: 15px;
     font-weight: 500;
     padding: 6px 0;
@@ -106,70 +54,7 @@ nav {
 }
 
 .nav-links a:hover {
-    border-bottom-color: var(--secondary);
-}
-
-/* ============================================================
-   THEME TOGGLE - ON/OFF SWITCH
-   ============================================================ */
-.theme-toggle-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-}
-
-.theme-toggle-wrapper span {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.switch {
-    position: relative;
-    width: 50px;
-    height: 28px;
-    background: var(--border);
-    border-radius: 50px;
-    cursor: pointer;
-    transition: var(--transition);
-    flex-shrink: 0;
-}
-
-.switch.active {
-    background: var(--secondary);
-}
-
-.switch .slider {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 22px;
-    height: 22px;
-    background: white;
-    border-radius: 50%;
-    transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.switch.active .slider {
-    transform: translateX(22px);
-}
-
-.switch-icon {
-    font-size: 14px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
-.switch-icon.sun {
-    left: 6px;
-}
-
-.switch-icon.moon {
-    right: 6px;
+    border-bottom-color: var(--primary);
 }
 
 /* ============================================================
@@ -195,6 +80,7 @@ section {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 4px;
+    color: var(--text-primary);
 }
 
 .section-header .sub {
@@ -215,7 +101,7 @@ section {
     height: 140px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--secondary);
+    border: 4px solid var(--primary);
     margin: 0 auto 16px;
 }
 
@@ -223,11 +109,12 @@ section {
     font-size: 36px;
     font-weight: 700;
     margin-bottom: 4px;
+    color: var(--text-primary);
 }
 
 .hero .subtitle {
     font-size: 18px;
-    color: var(--secondary);
+    color: var(--primary);
     font-weight: 500;
     margin-bottom: 8px;
 }
@@ -253,9 +140,9 @@ section {
 .social-links a {
     padding: 8px 16px;
     border-radius: 50px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
     font-size: 14px;
     font-weight: 500;
     transition: var(--transition);
@@ -265,60 +152,10 @@ section {
 }
 
 .social-links a:hover {
-    background: var(--secondary);
-    color: white;
-    border-color: var(--secondary);
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
     transform: translateY(-2px);
-}
-
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-.btn {
-    display: inline-block;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 15px;
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    text-align: center;
-    background: transparent;
-}
-
-.btn-primary {
-    background: var(--secondary);
-    color: white;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(8, 132, 227, 0.3);
-}
-
-.btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 2px solid var(--border);
-}
-
-.btn-outline:hover {
-    border-color: var(--secondary);
-    color: var(--secondary);
-}
-
-.btn-sm {
-    padding: 8px 16px;
-    font-size: 13px;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 10px 0 20px;
 }
 
 /* ============================================================
@@ -327,7 +164,7 @@ section {
 .story-content {
     max-width: 650px;
     margin: 0 auto;
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 30px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
@@ -335,22 +172,23 @@ section {
 
 .story-content p {
     margin-bottom: 16px;
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .story-content code {
-    background: var(--bg);
+    background: var(--bg-primary);
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 14px;
+    color: var(--text-primary);
 }
 
 .fun-fact {
-    background: var(--bg);
+    background: var(--bg-primary);
     padding: 14px 20px;
     border-radius: 10px;
     margin: 16px 0;
-    border-left: 4px solid var(--secondary);
+    border-left: 4px solid var(--primary);
 }
 
 .fun-fact span {
@@ -371,18 +209,22 @@ section {
 }
 
 .interest-card {
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 24px 20px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     cursor: pointer;
     transition: var(--transition);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
 }
 
 .interest-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .interest-card:hover {
+    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.05);
 }
 
 .interest-card .icon {
@@ -394,6 +236,7 @@ section {
 .interest-card h3 {
     font-size: 17px;
     margin-bottom: 4px;
+    color: var(--text-primary);
 }
 
 .interest-card .preview {
@@ -405,10 +248,11 @@ section {
     display: none;
     margin-top: 14px;
     padding: 14px;
-    background: var(--bg);
+    background: var(--bg-primary);
     border-radius: 8px;
     font-size: 14px;
     animation: fadeIn 0.3s ease;
+    color: var(--text-primary);
 }
 
 @keyframes fadeIn {
@@ -432,11 +276,11 @@ section {
 }
 
 .project-card {
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 24px 20px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     transition: var(--transition);
     display: flex;
     flex-direction: column;
@@ -455,6 +299,7 @@ section {
 .project-card h3 {
     font-size: 18px;
     margin-bottom: 6px;
+    color: var(--text-primary);
 }
 
 .project-card p {
@@ -472,7 +317,7 @@ section {
 }
 
 .tech-tags span {
-    background: var(--bg);
+    background: var(--bg-primary);
     padding: 2px 12px;
     border-radius: 50px;
     font-size: 12px;
@@ -507,11 +352,11 @@ section {
 }
 
 .article-card {
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 22px 20px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
 }
 
 .article-card .date {
@@ -523,6 +368,7 @@ section {
 .article-card h3 {
     font-size: 17px;
     margin: 6px 0 8px;
+    color: var(--text-primary);
 }
 
 .article-card p {
@@ -532,10 +378,11 @@ section {
 }
 
 .article-card code {
-    background: var(--bg);
+    background: var(--bg-primary);
     padding: 1px 6px;
     border-radius: 3px;
     font-size: 13px;
+    color: var(--text-primary);
 }
 
 .read-more {
@@ -553,11 +400,11 @@ section {
 }
 
 .milestone-card {
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 20px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
     cursor: pointer;
     transition: var(--transition);
     text-align: center;
@@ -565,7 +412,7 @@ section {
 
 .milestone-card:hover {
     transform: translateY(-3px);
-    border-color: var(--secondary);
+    border-color: var(--primary);
 }
 
 .milestone-card .milestone-icon {
@@ -577,6 +424,7 @@ section {
 .milestone-card h3 {
     font-size: 16px;
     margin-bottom: 4px;
+    color: var(--text-primary);
 }
 
 .milestone-card p {
@@ -596,7 +444,7 @@ section {
     display: flex;
     gap: 20px;
     padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .edu-item:last-child {
@@ -606,11 +454,12 @@ section {
 .edu-item .year {
     font-weight: 700;
     min-width: 80px;
-    color: var(--secondary);
+    color: var(--primary);
 }
 
 .edu-item h3 {
     font-size: 16px;
+    color: var(--text-primary);
 }
 
 .edu-item p {
@@ -623,16 +472,16 @@ section {
    ============================================================ */
 .contact-wrapper {
     text-align: center;
-    background: var(--bg-card);
+    background: var(--bg-secondary);
     padding: 40px 30px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-color);
 }
 
 .contact-wrapper p {
     margin-bottom: 8px;
-    color: var(--text);
+    color: var(--text-primary);
 }
 
 .contact-buttons {
@@ -644,45 +493,12 @@ section {
 }
 
 /* ============================================================
-   SCROLL TO TOP
-   ============================================================ */
-#scrollTopBtn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background: var(--secondary);
-    color: white;
-    font-size: 22px;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(8, 132, 227, 0.3);
-    transition: var(--transition);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    z-index: 999;
-}
-
-#scrollTopBtn.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-#scrollTopBtn:hover {
-    transform: scale(1.08);
-}
-
-/* ============================================================
    FOOTER
    ============================================================ */
 footer {
     text-align: center;
     padding: 30px 0 10px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border-color);
     color: var(--text-muted);
     font-size: 14px;
 }
@@ -701,7 +517,7 @@ footer .footer-socials a {
 }
 
 footer .footer-socials a:hover {
-    color: var(--secondary);
+    color: var(--primary);
     transform: translateY(-2px);
 }
 
@@ -716,7 +532,7 @@ footer .footer-socials a:hover {
 }
 
 .footer-time .divider {
-    color: var(--border);
+    color: var(--border-color);
 }
 
 .footer-motto {
@@ -738,11 +554,6 @@ footer .footer-socials a:hover {
     .nav-links {
         justify-content: center;
         gap: 14px;
-    }
-
-    .theme-toggle-wrapper {
-        justify-content: center;
-        margin-left: 0;
     }
 
     .hero h1 {
