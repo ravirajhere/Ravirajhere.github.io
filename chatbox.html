@@ -38,6 +38,8 @@
             --toggle-bg: rgba(255,255,255,0.05);
             --toggle-border: rgba(255,255,255,0.15);
             --toggle-text: #a0a0b0;
+            --quick-btn-bg: rgba(255,255,255,0.06);
+            --quick-btn-hover: rgba(0, 217, 255, 0.15);
         }
 
         /* Light Mode Overrides */
@@ -57,6 +59,8 @@
             --toggle-bg: rgba(0,0,0,0.05);
             --toggle-border: rgba(0,0,0,0.15);
             --toggle-text: #555;
+            --quick-btn-bg: rgba(0,0,0,0.05);
+            --quick-btn-hover: rgba(9, 132, 227, 0.1);
         }
 
         /* ==============================
@@ -325,6 +329,38 @@
         }
 
         /* ==============================
+           QUICK REPLY BUTTONS
+        ============================== */
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 8px 0 4px 0;
+            flex-shrink: 0;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            background: var(--quick-btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .quick-btn:hover {
+            background: var(--quick-btn-hover);
+            border-color: var(--primary);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        /* ==============================
            MESSAGE BUBBLES
         ============================== */
         .message {
@@ -409,14 +445,20 @@
            INPUT AREA
         ============================== */
         .chat-input-area {
-            padding: 16px 20px;
+            padding: 12px 20px 16px 20px;
             background: var(--bg-tertiary);
             border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 12px;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
             flex-shrink: 0;
             transition: all var(--transition);
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
         .chat-input-area input {
@@ -544,7 +586,7 @@
             body { padding: 0; }
             .chat-header { padding: 16px 18px; }
             .chat-messages { padding: 16px 14px; }
-            .chat-input-area { padding: 12px 14px; }
+            .chat-input-area { padding: 10px 14px 14px 14px; }
             .message { max-width: 92%; font-size: 14px; }
 
             .theme-toggle-wrapper {
@@ -577,6 +619,11 @@
 
             .switch .switch-icon {
                 font-size: 9px;
+            }
+
+            .quick-btn {
+                font-size: 10px;
+                padding: 4px 10px;
             }
         }
 
@@ -657,14 +704,19 @@
             <div class="typing-indicator" id="typingIndicator">
                 <span></span><span></span><span></span>
             </div>
+
+            <!-- Quick Reply Buttons -->
+            <div class="quick-buttons" id="quickButtons"></div>
         </div>
 
         <!-- ===== INPUT ===== -->
         <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Type a message..." autofocus />
-            <button id="sendBtn" title="Send">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" placeholder="Type a message..." autofocus />
+                <button id="sendBtn" title="Send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
 
         <!-- ===== FOOTER ===== -->
@@ -674,8 +726,541 @@
 
     </div>
 
-    <!-- ===== CHATBOX.JS ===== -->
-    <script src="chatbox.js"></script>
+    <!-- ============================================================
+    CHATBOX.JS — ULTRA ADVANCED AI ENGINE v5.0
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // CHATBOX.JS v5.0 — NEXT GEN AI ENGINE
+        // ============================================================
+
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // DOM REFS (SAFE MODE)
+            // ============================================================
+            const DOM = {
+                messages: document.getElementById('chatMessages'),
+                empty: document.getElementById('emptyState'),
+                typing: document.getElementById('typingIndicator'),
+                input: document.getElementById('chatInput'),
+                send: document.getElementById('sendBtn'),
+                quickBtns: document.getElementById('quickButtons')
+            };
+
+            // Safety check
+            if (!DOM.send) {
+                console.error('❌ Send button not found!');
+            }
+
+            // ============================================================
+            // ULTRA ADVANCED ENGINE
+            // ============================================================
+            const Engine = {
+                history: [],
+                context: [],
+                userInterests: [],
+                sessionStart: Date.now(),
+                lastActive: Date.now(),
+                userName: null,
+
+                knowledgeBase: {
+                    student: {
+                        keywords: ['padhai', 'coding', 'project', 'exam', 'class', 'teacher', 'syllabus', 'study', 'school', 'learn', 'seekh', 'student', 'college', 'subject', 'homework', 'assignment', 'test', 'coaching', 'course', 'degree', 'diploma', 'knowledge', 'book', 'library', 'lecture', 'professor', 'university', 'scholar'],
+                        replies: {
+                            'coding': [
+                                "Coding ek art hai! 🎨 Main HTML, CSS, JS, Python sab seekh raha hoon. Tum kaunsi language seekh rahe ho?",
+                                "Coding mein maza aata hai! 💻 Koi specific project hai?",
+                                "I love coding! 🚀 Currently exploring Node.js. Tumhara favorite language kya hai?"
+                            ],
+                            'project': [
+                                "Projects are my strength! 🏗️ Portfolio, Landing Page, Friends Corner — sab live hain!",
+                                "Projects se hi practical knowledge aati hai! 🔥 Kya bana rahe ho?",
+                                "Main 5+ projects kar chuka hoon! 💪 Tum bhi banao, maza aayega!"
+                            ],
+                            'exam': [
+                                "Exam ka tension mat lo! 📚 Main bhi 12th pass hoon. Padhai aur coding saath mein karo!",
+                                "All the best for exams! 💪 Just stay consistent!",
+                                "Exams are temporary, knowledge is permanent! 🧠 Chill karo!"
+                            ],
+                            'future': [
+                                "Full-Stack Developer + Entrepreneur! 🚀 Kya tumhara bhi koi dream hai?",
+                                "Future is bright! ✨ AI and Web Dev ka zamana hai!",
+                                "Main toh apna startup launch karunga! 💼 Tum kya karna chahte ho?"
+                            ]
+                        }
+                    },
+                    parent: {
+                        keywords: ['beta', 'baba', 'mummy', 'papa', 'ghar', 'khana', 'naukri', 'beti', 'bahu', 'parivaar', 'family', 'maa', 'pitaji', 'chacha', 'tau', 'tai', 'mausi', 'mama', 'bua', 'sasural', 'rishtedaar'],
+                        replies: {
+                            'beta': [
+                                "Babu ji, main apna best de raha hoon! ❤️ Aap ka ashirwad ho toh sab accha hai!",
+                                "Beta hoon aap ka! 🙏 Aap ki dua se sab accha chal raha hai!",
+                                "Babu ji, aap ka pyar aur dua chahiye bas! 🌹"
+                            ],
+                            'padhai': [
+                                "Babu ji, padhai aur coding dono saath mein! 📚 Aap ki dua hai toh sab ho jayega!",
+                                "Padhai mein focus hai! 💪 Aap ka ashirwad chahiye!",
+                                "Main mehnat kar raha hoon babu ji! 🎯 Aap tension mat lo!"
+                            ],
+                            'ghar': [
+                                "Ghar ki yaad aa rahi hai, babu ji! 🏠 Jaldi aaunga!",
+                                "Ghar sabse accha lagta hai! ❤️ Mummy ka khana miss kar raha hoon!",
+                                "Babu ji, ghar aana hai! 😊 Jald hi aaunga!"
+                            ],
+                            'naukri': [
+                                "Babu ji, mehnat kar raha hoon! 💼 Jald hi acchi job milegi!",
+                                "Naukri ka tension mat lo babu ji! 🎯 Main consistent hoon!",
+                                "Aap ka ashirwad ho toh sab milega! 🙏"
+                            ]
+                        }
+                    },
+                    recruiter: {
+                        keywords: ['skills', 'experience', 'projects', 'hire', 'job', 'team', 'portfolio', 'resume', 'interview', 'candidate', 'position', 'salary', 'work', 'professional', 'career', 'growth', 'opportunity', 'internship', 'freelance', 'client'],
+                        replies: {
+                            'skills': [
+                                "🎯 Core Skills: HTML5 (75%), CSS3 (80%), JavaScript (50%), Python (50%), Node.js (learning).",
+                                "🔧 I specialize in frontend development but I'm expanding into backend.",
+                                "💪 My strength is consistency and problem-solving."
+                            ],
+                            'experience': [
+                                "🏗️ 5+ projects built — each one taught me something new.",
+                                "💼 From portfolio to Friends Corner — I've covered diverse projects.",
+                                "📈 Every project has improved my skills."
+                            ],
+                            'hire': [
+                                "🤝 I'm open to freelance and internship opportunities!",
+                                "🚀 I'm looking for challenging roles where I can grow.",
+                                "💡 I'm consistent, motivated, and love solving problems."
+                            ]
+                        }
+                    },
+                    romantic: {
+                        keywords: ['love', 'girlfriend', 'boyfriend', 'crush', 'relationship', 'breakup', 'heart', 'pyaar', 'ishq', 'romance', 'date', 'propose', 'single', 'commitment', 'trust', 'jealousy', 'marriage', 'dosti', 'friend', 'soulmate'],
+                        replies: {
+                            'girlfriend': [
+                                "Abhi nahi hai, but I believe in 'right time, right person'! 😊 Career pe focus hai abhi!",
+                                "Single hoon but happy! 💪 Pehle khud ko improve karo!",
+                                "Love happens when you least expect it! 💕 Trust the process!"
+                            ],
+                            'love': [
+                                "Love is beautiful ❤️ But so is coding! Balance is key!",
+                                "Love is a beautiful journey 🌹 Kya poochhna chahte ho?",
+                                "Love happens when you least expect it! 💕 Trust the process!"
+                            ],
+                            'breakup': [
+                                "Breakup is tough, but life goes on! 💪 Focus on growth!",
+                                "Heartbreak makes you stronger! ❤️ Keep moving forward!",
+                                "Main hoon na! ❤️ Kuch bhi ho, you're not alone!"
+                            ]
+                        }
+                    },
+                    casual: {
+                        keywords: ['game', 'play', 'fun', 'party', 'masti', 'hangout', 'chill', 'movie', 'music', 'song', 'dance', 'travel', 'adventure', 'road trip', 'vacation', 'hobby', 'cycle', 'swim', 'gym', 'workout', 'fitness', 'sport', 'cricket', 'football'],
+                        replies: {
+                            'game': [
+                                "Games are fun! 🎮 But abhi coding ka time hai! Koi aur din?",
+                                "Gaming is a great stress buster! 🎯 Kaunsa game khelte ho?",
+                                "Main bhi PUBG khelta tha! 😄 But abhi coding hai priority!"
+                            ],
+                            'fun': [
+                                "Fun is essential! 😄 Consistency matters but masti bhi zaroori hai!",
+                                "Life is about balance — work hard, play harder! 🎉",
+                                "Masti toh hoti hai bhai! 🔥 Kya plan hai aaj?"
+                            ],
+                            'travel': [
+                                "Travel is life! 🗺️ Patna se Begusarai tak ka safar kaafi hai!",
+                                "Travel experiences shape us! ✈️ Kahan jaana hai next?",
+                                "Road trips are amazing! 🚗 Let's plan one someday!"
+                            ]
+                        }
+                    },
+                    tech: {
+                        keywords: ['tech', 'technology', 'ai', 'machine learning', 'data science', 'cloud', 'devops', 'blockchain', 'web3', 'metaverse', 'vr', 'ar', 'iot', 'cybersecurity', 'hacking', 'ethical hacking', 'bug bounty', 'security'],
+                        replies: {
+                            'ai': [
+                                "AI is the future! 🤖 I've used Gemini API and I'm fascinated!",
+                                "Artificial Intelligence is revolutionizing everything! 🧠",
+                                "AI + Web Dev = Killer combination! 🚀"
+                            ],
+                            'blockchain': [
+                                "Blockchain is revolutionary! 🔗 But I'm more into web development!",
+                                "Decentralization is the future! 💎 Let's discuss more!",
+                                "Smart contracts are amazing! 💻 I'm learning about Web3!"
+                            ],
+                            'security': [
+                                "Security is paramount! 🔐 I always use HTTPS and secure APIs!",
+                                "Ethical hacking is fascinating! 🛡️",
+                                "Cyber threats are real! 💪 Stay safe, stay secure!"
+                            ]
+                        }
+                    },
+                    business: {
+                        keywords: ['business', 'startup', 'entrepreneur', 'founder', 'ceo', 'cto', 'product', 'market', 'customer', 'sales', 'marketing', 'advertising', 'brand', 'strategy', 'growth hacking', 'scale', 'investment', 'funding', 'pitch'],
+                        replies: {
+                            'startup': [
+                                "Startup launch karna hai ek din! 🚀 Pehle skills strong karo!",
+                                "Great startups solve real problems! 💡 What problem are you solving?",
+                                "Main bhi entrepreneur banna chahta hoon! 💼 Let's discuss ideas!"
+                            ],
+                            'market': [
+                                "Market understanding is key! 📊 Know your customer!",
+                                "Product-market fit is everything! 🎯",
+                                "Market research is crucial! 📈 Let's analyze together!"
+                            ],
+                            'customer': [
+                                "Customer is king! 👑 I always focus on user experience!",
+                                "Happy customers = Successful business! 😊",
+                                "Customer feedback is gold! 💛 Always listen to them!"
+                            ]
+                        }
+                    }
+                },
+
+                detectPersona(text) {
+                    const t = text.toLowerCase();
+                    let maxScore = 0;
+                    let detected = 'general';
+
+                    for (const [persona, data] of Object.entries(this.knowledgeBase)) {
+                        let score = 0;
+                        for (const keyword of data.keywords) {
+                            if (t.includes(keyword)) score++;
+                        }
+                        if (score > maxScore) {
+                            maxScore = score;
+                            detected = persona;
+                        }
+                    }
+                    return detected;
+                },
+
+                detectMood(text) {
+                    const t = text.toLowerCase();
+                    if (t.match(/sad|depressed|lonely|bura|pareshan|tension|worried|stress|panic|anxiety|grief|heartbroken|alone|hopeless|failure|cry|upset|hurt|pain|suffer|struggle|worry|fear/)) return 'sad';
+                    if (t.match(/happy|excited|awesome|great|wow|maza|accha|badhiya|wonderful|amazing|fantastic|brilliant|love it|enjoy|fun|celebrate|cheerful|joy|grateful|proud|blessed|elated|thrilled/)) return 'happy';
+                    if (t.match(/angry|frustrated|gussa|nahi chal raha|error|bug|annoyed|irritated|rage|furious|upset|disappointed|betrayed|jealous|impatient|hate|useless|worst|terrible|fed up|sick of|tired of|done with/)) return 'angry';
+                    if (t.match(/curious|interesting|tell more|explain|how|why|what|when|where|who|want to know|understand|clarify|elaborate|details|specify|define|describe|uncover|discover|learn|knowledge|insight/)) return 'curious';
+                    if (t.match(/funny|haha|lol|rofl|lmfao|hilarious|comedy|joke|meme|fun|entertaining|amusing|humorous|witty|clever|smart|sarcastic/)) return 'humorous';
+                    if (t.match(/scared|fear|terrified|horror|nightmare|spooky|creepy|weird|strange|unusual|odd|bizarre/)) return 'scared';
+                    return 'neutral';
+                },
+
+                detectIntent(text) {
+                    const t = text.toLowerCase();
+                    if (t.match(/^(hello|hi|hey|namaste|hola)/)) return 'greeting';
+                    if (t.match(/\?$/)) return 'question';
+                    if (t.match(/help|support|assist|guide|explain/i)) return 'help';
+                    if (t.match(/complaint|problem|issue|error|bug|not working/i)) return 'complaint';
+                    if (t.match(/thank|thanks|thank you|shukriya|dhanyavaad/i)) return 'gratitude';
+                    if (t.match(/bye|goodbye|tata|see you|phir milte|godbye/i)) return 'farewell';
+                    if (t.match(/joke|funny|haha|lol|rofl|meme/i)) return 'fun';
+                    return 'general';
+                },
+
+                getSmartReply(msg) {
+                    const t = msg.toLowerCase().trim();
+
+                    // Adult content filter
+                    if (t.match(/x-rated|adult|porn|sex|nangi|hot video|xxx|18\+|nsfw|explicit|mature content|erotic|vulgar|obscene|lewd|indecent|profanity|swear|cuss|fuck|shit|bitch|asshole|bastard|dick|pussy|cunt|tits|boobs|breasts|ass|butt|penis|vagina/)) {
+                        return "Sorry, main professional assistant hoon! 😊 Kuch aur pucho jo main help kar sakta hoon.";
+                    }
+
+                    const persona = this.detectPersona(t);
+                    const mood = this.detectMood(t);
+                    const intent = this.detectIntent(t);
+
+                    // Persona-based reply
+                    if (persona !== 'general' && this.knowledgeBase[persona]) {
+                        const kb = this.knowledgeBase[persona];
+                        let matchedKey = null;
+                        for (const key in kb.replies) {
+                            if (t.includes(key)) {
+                                matchedKey = key;
+                                break;
+                            }
+                        }
+                        if (matchedKey) {
+                            const replies = kb.replies[matchedKey];
+                            let reply = replies[Math.floor(Math.random() * replies.length)];
+                            // Mood adjustment
+                            if (mood === 'sad') reply += " ❤️ Main hoon na!";
+                            else if (mood === 'happy') reply += " 😄 Tumhara excitement contagious hai!";
+                            else if (mood === 'angry') reply += " 🤝 Let's solve this together!";
+                            return reply;
+                        }
+                        const fallbacks = {
+                            student: "Student life mein maza aata hai! 📚 Kya seekh rahe ho?",
+                            parent: "Babu ji, main apna best de raha hoon! 🙏",
+                            recruiter: "I'd love to discuss my skills! 💼",
+                            romantic: "Love is beautiful! ❤️",
+                            casual: "Life is fun! 😄 Kya chal raha hai?",
+                            tech: "Technology is amazing! 🔥",
+                            business: "Business is about solving problems! 💡"
+                        };
+                        return fallbacks[persona] || "That's interesting! Tell me more! 🤔";
+                    }
+
+                    // Greeting
+                    if (intent === 'greeting') {
+                        const greetings = [
+                            "Hello! 👋 Kaise ho? Kya help chahiye?",
+                            "Namaste! 🙏 Welcome! How can I assist you today?",
+                            "Hey there! 😊 What brings you here?",
+                            "Hi! 💫 I'm Ravi's AI assistant. What's on your mind?"
+                        ];
+                        return greetings[Math.floor(Math.random() * greetings.length)];
+                    }
+
+                    // Farewell
+                    if (intent === 'farewell') {
+                        const farewells = [
+                            "Bye bye! 👋 Take care! Phir milte hain!",
+                            "Goodbye! 😊 It was nice chatting with you!",
+                            "Tata! 🎉 Come back anytime!",
+                            "See you soon! 🌟 Have a great day!"
+                        ];
+                        return farewells[Math.floor(Math.random() * farewells.length)];
+                    }
+
+                    // Gratitude
+                    if (intent === 'gratitude') {
+                        const thanks = [
+                            "Welcome! 😊 Happy to help!",
+                            "My pleasure! ❤️ Keep shining!",
+                            "Anytime! 💫 You're awesome!"
+                        ];
+                        return thanks[Math.floor(Math.random() * thanks.length)];
+                    }
+
+                    // Name
+                    if (t.includes('name')) {
+                        return "I'm RJ AI — Ravi Raj's virtual assistant! 🤖";
+                    }
+
+                    // Time
+                    if (t.includes('time')) {
+                        const now = new Date();
+                        return `Time is ${now.toLocaleTimeString()} ⏰ Let's make the most of it!`;
+                    }
+
+                    // Joke
+                    if (intent === 'fun' || t.includes('joke')) {
+                        const jokes = [
+                            "Why do programmers prefer dark mode? Because light attracts bugs! 😄",
+                            "What do you call a programmer from Finland? Nerdic! 😂",
+                            "Why did the developer go broke? Because he used up all his cache! 💰",
+                            "A SQL query walks into a bar, sees two tables and asks... 'Can I join you?' 😆"
+                        ];
+                        return jokes[Math.floor(Math.random() * jokes.length)];
+                    }
+
+                    // Help
+                    if (intent === 'help') {
+                        return "Main yahan help karne ke liye hoon! 💪 Kya problem hai? Batao! 😊";
+                    }
+
+                    // Complaint
+                    if (intent === 'complaint') {
+                        return "Arre! 😮 Kya problem hai? Main sun raha hoon. Saath mein solve karenge! 🤝";
+                    }
+
+                    // Fallback
+                    const fallbacks = [
+                        "Accha sawaal hai! 🤔 Thoda aur detail mein batao?",
+                        "Main samajh gaya... ❓ Kya aap iske baare mein poochh rahe ho?",
+                        "Interesting! 📚 Kya aap specific kuch poochhna chahte ho?",
+                        "Hmm... 🤔 Let me think. Thoda aur context do?"
+                    ];
+                    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                },
+
+                getContextualReply(userMessage) {
+                    this.lastActive = Date.now();
+                    const reply = this.getSmartReply(userMessage);
+                    this.history.push({ message: userMessage, reply, timestamp: Date.now() });
+                    if (this.history.length > 200) this.history.shift();
+                    return reply;
+                }
+            };
+
+            // ============================================================
+            // UI FUNCTIONS
+            // ============================================================
+            function getTime() {
+                const now = new Date();
+                return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            }
+
+            function scrollToBottom() {
+                if (DOM.messages) {
+                    DOM.messages.scrollTop = DOM.messages.scrollHeight;
+                }
+            }
+
+            function addMessage(text, sender) {
+                if (!DOM.messages) return;
+                if (DOM.empty) DOM.empty.style.display = 'none';
+                const div = document.createElement('div');
+                div.className = `message ${sender}`;
+                div.innerHTML = `${text}<span class="msg-time">${getTime()}</span>`;
+                DOM.messages.appendChild(div);
+                // Insert quick buttons before input area
+                if (DOM.quickBtns) {
+                    DOM.messages.appendChild(DOM.quickBtns);
+                }
+                scrollToBottom();
+            }
+
+            function showTyping() {
+                if (DOM.typing) {
+                    DOM.typing.style.display = 'flex';
+                    scrollToBottom();
+                }
+            }
+
+            function hideTyping() {
+                if (DOM.typing) {
+                    DOM.typing.style.display = 'none';
+                }
+            }
+
+            // ============================================================
+            // QUICK REPLY BUTTONS
+            // ============================================================
+            function generateQuickReplies() {
+                if (!DOM.quickBtns) return;
+                const buttons = [
+                    { text: '👋 Hello', value: 'Hello' },
+                    { text: '📚 Coding', value: 'Coding kaise seekhni hai?' },
+                    { text: '💼 Skills', value: 'What skills do you have?' },
+                    { text: '❤️ Love', value: 'Pyaar ke baare mein batao' },
+                    { text: '😂 Joke', value: 'Tell me a joke' },
+                    { text: '💡 Help', value: 'Help' },
+                    { text: '🚀 Future', value: 'Future plans kya hain?' },
+                    { text: '🏠 Ghar', value: 'Ghar ki yaad aa rahi hai' }
+                ];
+
+                DOM.quickBtns.innerHTML = '';
+                buttons.forEach(btn => {
+                    const el = document.createElement('button');
+                    el.className = 'quick-btn';
+                    el.textContent = btn.text;
+                    el.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (DOM.input) {
+                            DOM.input.value = btn.value;
+                            sendMessage();
+                        }
+                    });
+                    DOM.quickBtns.appendChild(el);
+                });
+            }
+
+            // ============================================================
+            // SEND MESSAGE
+            // ============================================================
+            let isProcessing = false;
+
+            function sendMessage() {
+                if (!DOM.input || !DOM.send) return;
+                const text = DOM.input.value.trim();
+                if (!text || isProcessing) return;
+
+                addMessage(text, 'user');
+                DOM.input.value = '';
+                DOM.input.focus();
+
+                isProcessing = true;
+                DOM.send.disabled = true;
+                showTyping();
+
+                const delay = 600 + Math.random() * 1200 + (text.length / 10) * 50;
+                setTimeout(function() {
+                    hideTyping();
+                    const reply = Engine.getContextualReply(text);
+                    addMessage(reply, 'bot');
+                    isProcessing = false;
+                    DOM.send.disabled = false;
+                }, delay);
+            }
+
+            // ============================================================
+            // INACTIVITY DETECTION
+            // ============================================================
+            setInterval(function() {
+                const inactiveTime = Date.now() - Engine.lastActive;
+                if (inactiveTime > 120000 && !isProcessing) {
+                    const messages = [
+                        "Kya hua? 🤔 Kuch soch rahe ho?",
+                        "Main yahan hoon! 😊 Koi baat karo?",
+                        "Zinda ho? 😄 Batao kya help chahiye?"
+                    ];
+                    addMessage(messages[Math.floor(Math.random() * messages.length)], 'bot');
+                    Engine.lastActive = Date.now();
+                }
+            }, 60000);
+
+            // ============================================================
+            // EVENT LISTENERS
+            // ============================================================
+            if (DOM.send) {
+                DOM.send.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sendMessage();
+                });
+            }
+
+            if (DOM.input) {
+                DOM.input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+
+            // ============================================================
+            // CLOSE CHATBOX
+            // ============================================================
+            window.closeChatbox = function() {
+                if (document.referrer) {
+                    window.location.href = document.referrer;
+                } else {
+                    window.history.back();
+                }
+            };
+
+            // ============================================================
+            // KEYBOARD SHORTCUTS
+            // ============================================================
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                    e.preventDefault();
+                    if (DOM.input) DOM.input.focus();
+                }
+                if (e.key === 'Escape') {
+                    window.closeChatbox();
+                }
+            });
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            generateQuickReplies();
+            setTimeout(function() {
+                if (DOM.input) DOM.input.focus();
+            }, 300);
+
+            console.log('🤖 RJ AI Chatbox — Ultra Advanced v5.0');
+            console.log('🧠 7 Personas | 6 Moods | Multiple Intents');
+            console.log('⚡ Dynamic Quick Replies | Inactivity Detection');
+            console.log('🔥 Built by Ravi Raj');
+            console.log('💡 Tip: Press Ctrl+/ to focus input, Escape to close.');
+
+        })();
+    </script>
 
     <!-- ============================================================
     JAVASCRIPT — THEME TOGGLE
