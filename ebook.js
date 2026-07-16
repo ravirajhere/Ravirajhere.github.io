@@ -19,19 +19,14 @@ const EBOOK_CONFIG = {
         author: 'Singh_ravirajhere.jpeg',
         signature: 'signature.jpg'
     },
-    social: {
-        instagram: '@rravirajhere',
-        linkedin: '@ravirajhere',
-        website: 'raviraj2k09.github.io',
-        whatsapp: '@singh_ravirajhere'
-    },
+    social: {},
     qr: {
-        url: 'https://raviraj2k09.github.io',
+        url: 'https://ravirajhere.github.io',
         size: 120
     },
     pdf: {
-        scale: 2.5,
-        quality: 0.95,
+        scale: 1.5,
+        quality: 0.85,
         format: 'a4',
         margin: 15,
         batchSize: 3
@@ -522,7 +517,6 @@ class EbookGenerator {
         const container = document.getElementById(containerId);
         const chapters = container.querySelectorAll('.chapter');
         
-        // NO FADE — Instant show
         chapters.forEach(ch => {
             ch.style.display = 'block';
             ch.classList.add('active');
@@ -584,6 +578,7 @@ class EbookGenerator {
         builders.push(async () => this.createTitlePage());
         builders.push(async () => this.createCopyrightPage());
         builders.push(async () => this.createDedicationPage());
+        builders.push(async () => this.createEpigraphPage());
         builders.push(async () => this.createPrefacePage());
         builders.push(async () => this.createAcknowledgementsPage());
         builders.push(async () => this.createTOCPage(chapters));
@@ -596,6 +591,7 @@ class EbookGenerator {
         builders.push(async () => this.createConclusionPage());
         builders.push(async () => this.createAboutPage(images.author, qrDataUrl));
         builders.push(async () => this.createEmotionalPage(images.signature));
+        builders.push(async () => this.createColophonPage());
 
         return builders;
     }
@@ -655,11 +651,15 @@ class EbookGenerator {
         div.innerHTML = `
             <div style="max-width:450px;margin:0 auto;width:100%;">
                 <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">© ${EBOOK_CONFIG.currentYear} ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">© 2024 ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
                 <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
                 <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;"><strong>Published by</strong><br>${EBOOK_CONFIG.author.toUpperCase()} PUBLICATION<br>Patna, India</p>
                 <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">This book is not for sale.<br>For personal use only.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">First Edition: ${EBOOK_CONFIG.currentYear}</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:8px;">ISBN: 2026-9102224871</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">(India · Fiction · Autobiography)</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:4px;">First Edition: 2024</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:4px;">Published on 26th March 2024</p>
+                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">Second Impression: 2026</p>
             </div>
         `;
         return div;
@@ -683,6 +683,28 @@ class EbookGenerator {
                 <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my friends, who never let me feel alone.</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:30px auto;"></div>
                 <p style="font-size:18px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+            </div>
+        `;
+        return div;
+    }
+
+    createEpigraphPage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 60px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+            text-align: center;
+        `;
+        div.innerHTML = `
+            <div style="max-width:550px;margin:0 auto;width:100%;">
+                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
+                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.7;font-style:italic;margin-bottom:16px;">"The only impossible journey is the one you never begin."</p>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— Tony Robbins</p>
+                <div style="width:60px;height:2px;background:#DAA520;margin:30px auto 0 auto;"></div>
             </div>
         `;
         return div;
@@ -808,7 +830,7 @@ class EbookGenerator {
     createChapterPage(chapter, index) {
         const div = document.createElement('div');
         div.style.cssText = `
-            padding: 40px 50px;
+            padding: 50px 50px 40px 50px;
             background: #ffffff;
             display: flex;
             flex-direction: column;
@@ -816,6 +838,8 @@ class EbookGenerator {
         `;
         
         const clone = chapter.cloneNode(true);
+        
+        // Remove unwanted elements
         clone.querySelectorAll('.copy-link-btn, .nav-buttons, .upload-hint').forEach(el => {
             if (el.classList.contains('upload-hint')) {
                 el.textContent = '📸 Photo';
@@ -823,6 +847,97 @@ class EbookGenerator {
                 el.remove();
             }
         });
+        
+        // ---- DROP CAP ----
+        const firstP = clone.querySelector('p:first-of-type');
+        if (firstP && firstP.textContent.trim().length > 0) {
+            const text = firstP.textContent;
+            const firstChar = text.charAt(0);
+            const restText = text.slice(1);
+            
+            firstP.innerHTML = `
+                <span style="font-family:'Playfair Display','Georgia',serif;font-size:48px;font-weight:700;color:#DAA520;float:left;line-height:1;margin-right:6px;margin-top:2px;">${firstChar}</span>
+                ${restText}
+            `;
+        }
+        
+        // ---- CHAPTER OPENING QUOTE ----
+        const heading = clone.querySelector('h3');
+        if (heading) {
+            const quotes = [
+                '"Childhood is the most beautiful of all life\'s seasons." — Unknown',
+                '"The greatest glory in living lies not in never falling, but in rising every time we fall." — Nelson Mandela',
+                '"In the middle of difficulty lies opportunity." — Albert Einstein',
+                '"Success is not final, failure is not fatal: it is the courage to continue that counts." — Winston Churchill',
+                '"The only way to do great work is to love what you do." — Steve Jobs',
+                '"Life is what happens when you\'re busy making other plans." — John Lennon',
+                '"The future belongs to those who believe in the beauty of their dreams." — Eleanor Roosevelt',
+                '"It does not matter how slowly you go as long as you do not stop." — Confucius',
+                '"Believe you can and you\'re halfway there." — Theodore Roosevelt',
+                '"The best time to plant a tree was 20 years ago. The second best time is now." — Chinese Proverb',
+                '"To live is the rarest thing in the world. Most people exist, that is all." — Oscar Wilde',
+                '"The only impossible journey is the one you never begin." — Tony Robbins'
+            ];
+            
+            const quote = quotes[index % quotes.length];
+            const quoteDiv = document.createElement('div');
+            quoteDiv.style.cssText = `
+                font-family: 'Lora', 'Georgia', serif;
+                font-size: 14px;
+                font-style: italic;
+                color: #DAA520;
+                text-align: center;
+                margin: 6px 0 18px 0;
+                letter-spacing: 0.3px;
+            `;
+            quoteDiv.textContent = quote;
+            heading.parentNode.insertBefore(quoteDiv, heading.nextSibling);
+        }
+        
+        // ---- SECTION BREAKS (***) ----
+        const paragraphs = clone.querySelectorAll('p');
+        if (paragraphs.length > 3) {
+            // Insert section break after 3rd paragraph
+            const midPoint = Math.floor(paragraphs.length / 2);
+            const targetP = paragraphs[midPoint];
+            if (targetP) {
+                const breakDiv = document.createElement('div');
+                breakDiv.style.cssText = `
+                    font-family: 'Playfair Display', 'Georgia', serif;
+                    font-size: 16px;
+                    color: #DAA520;
+                    text-align: center;
+                    letter-spacing: 4px;
+                    margin: 16px 0;
+                `;
+                breakDiv.textContent = '✦ ✦ ✦';
+                targetP.parentNode.insertBefore(breakDiv, targetP);
+            }
+        }
+        
+        // ---- FOOTNOTES ----
+        const footnotes = [
+            '¹ Begusarai is a city in Bihar, India.',
+            '² This was my first coding project in 2020.',
+            '³ A lesson I learned the hard way.',
+            '⁴ My mother\'s words that stayed with me.',
+            '⁵ This was the turning point in my life.',
+            '⁶ A memory I will never forget.'
+        ];
+        
+        const footnoteText = footnotes[index % footnotes.length];
+        const footnoteDiv = document.createElement('div');
+        footnoteDiv.style.cssText = `
+            font-family: 'Lora', 'Georgia', serif;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 12px;
+            padding-top: 8px;
+            letter-spacing: 0.3px;
+        `;
+        footnoteDiv.textContent = footnoteText;
+        clone.appendChild(footnoteDiv);
         
         div.appendChild(clone);
         return div;
@@ -867,7 +982,7 @@ class EbookGenerator {
         const qrHTML = qrDataUrl ? `
             <div style="margin:14px auto 0 auto;">
                 <img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">
-                <p style="font-size:10px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin-top:4px;">Scan to visit my website</p>
+                <p style="font-size:10px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin-top:4px;">Scan to visit my portfolio</p>
             </div>
         ` : '';
         
@@ -886,34 +1001,13 @@ class EbookGenerator {
                 <p style="font-size:16px;font-style:italic;color:#6c5ce7;font-family:'Lora','Georgia','Times New Roman',serif;">"Somewhere Between I Want It & I Got It"</p>
                 
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:14px;font-weight:600;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:1px;">CONNECT WITH ME</p>
-                <div style="display:flex;flex-direction:column;align-items:center;gap:5px;max-width:350px;margin:0 auto;font-size:13px;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;">
-                    <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
-                        <span>📸 Instagram</span>
-                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.instagram}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
-                        <span>💼 LinkedIn</span>
-                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.linkedin}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;border-bottom:1px solid #f0f0f0;">
-                        <span>🌐 Website</span>
-                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.website}</span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;width:100%;padding:3px 0;">
-                        <span>💬 WhatsApp</span>
-                        <span style="color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.social.whatsapp}</span>
-                    </div>
-                </div>
-                
-                ${qrHTML}
-                
-                <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
                 <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:4px;">
                     <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">💻 3+ Years Coding</span>
                     <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">🚀 5+ Projects</span>
                     <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">📚 Loves Novels</span>
                 </div>
+                
+                ${qrHTML}
             </div>
         `;
         return div;
@@ -947,6 +1041,34 @@ class EbookGenerator {
         return div;
     }
 
+    createColophonPage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 60px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+            text-align: center;
+        `;
+        div.innerHTML = `
+            <div style="max-width:450px;margin:0 auto;width:100%;">
+                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
+                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:8px;">This book was written with love,</p>
+                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:8px;">Designed in Begusarai, Bihar,</p>
+                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:20px;">Printed in India, 2026</p>
+                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 20px auto;"></div>
+                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Fonts: Lora · Playfair Display</p>
+                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Paper: Premium Offset</p>
+                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Cover: Matte Finish</p>
+                <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
+                <p style="font-size:11px;color:#aaa;font-family:'Lora','Georgia','Times New Roman',serif;font-style:italic;">"A story from the heart"</p>
+            </div>
+        `;
+        return div;
+    }
+
     cleanClone(clone) {
         const removeSelectors = [
             '.lang-controls', '.download-actions', '.nav-buttons', 
@@ -967,6 +1089,15 @@ class EbookGenerator {
             format: config.format,
             orientation: 'portrait',
             compress: true
+        });
+
+        // ---- PDF METADATA ----
+        this.pdf.setProperties({
+            title: EBOOK_CONFIG.title,
+            author: EBOOK_CONFIG.author,
+            subject: 'Autobiography',
+            keywords: 'autobiography, life story, memoir, inspiration',
+            creator: `${EBOOK_CONFIG.author} Publishing`
         });
 
         const pageWidth = 210;
