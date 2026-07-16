@@ -1,7 +1,6 @@
 // ============================================================
-// CHATBOX.JS — ULTIMATE AI ASSISTANT v6.0
-// "Enterprise-Grade Virtual Assistant for Ravi Raj's Website"
-// Author: Ravi Raj | Built: July 2026
+// CHATBOX.JS — PAGE-SPECIFIC LOGIC FOR CHATBOX.HTML
+// (Website Data, Intent Detection, Smart Reply Engine)
 // ============================================================
 
 (function() {
@@ -19,7 +18,7 @@
         quickBtns: document.getElementById('quickButtons')
     };
 
-    // Safety check — fallback if elements missing
+    // Safety check
     if (!DOM.send) {
         console.warn('⚠️ Send button not found — using fallback');
     }
@@ -28,7 +27,6 @@
     // 2. COMPLETE WEBSITE DATA (Extracted from all files)
     // ============================================================
     const WEBSITE_DATA = {
-        // ---- PERSONAL INFO ----
         name: 'Ravi Raj Singh',
         displayName: 'Ravi Raj',
         born: 'March 2008',
@@ -40,14 +38,12 @@
         motto: '"Somewhere Between I Want It & I Got It"',
         quote: '"Humi hum hain to kya hum hain! Tumhi tum ho to kya tum ho!!"',
 
-        // ---- EDUCATION ----
         education: [
             { year: '2024-26', school: 'Udaan International School, Begusarai', class: 'Senior Secondary (PCM)' },
             { year: '2019-24', school: "Mother's Pride International School, Begusarai", class: 'Secondary School' },
             { year: '2014-19', school: 'Gautam Buddha Global School, Begusarai', class: 'Primary Education' }
         ],
 
-        // ---- SKILLS ----
         skills: {
             frontend: ['HTML5 (75%)', 'CSS3 (80%)', 'JavaScript (50%)', 'Responsive Design'],
             backend: ['Python (50%)', 'Node.js (Learning)'],
@@ -55,7 +51,6 @@
             soft: ['Problem Solving', 'Quick Learner', 'Adaptable', 'Consistent']
         },
 
-        // ---- PROJECTS ----
         projects: [
             {
                 name: 'Autobiography',
@@ -83,7 +78,6 @@
             }
         ],
 
-        // ---- FRIENDS (14) ----
         friends: [
             { name: 'Sitanashu', connection: 'Best Friend', since: 'Class 1', school: 'GBGS', tag: 'Oldest Friend' },
             { name: 'Rohit', connection: 'Best Friend', since: 'Class 1', school: 'GBGS', tag: 'Day One Friend' },
@@ -101,7 +95,6 @@
             { name: 'Rohini', connection: 'Art Partner', since: 'Class 12', school: 'PW Iskon Vidypeeth', tag: 'Creative Friend' }
         ],
 
-        // ---- FAMILY ----
         family: {
             parents: 'Father & Mother',
             sisters: 2,
@@ -109,14 +102,12 @@
             totalMembers: 7
         },
 
-        // ---- KEY PEOPLE ----
         keyPeople: {
             favoriteTeacher: 'Binod Sir (Hindi Teacher)',
             firstFriend: 'Ayush Singh',
             closeFriends: ['Sudhanshu', 'Rohit', 'Sitanashu']
         },
 
-        // ---- SOCIAL ----
         social: {
             github: 'https://github.com/ravirajhere',
             linkedin: 'https://linkedin.com/in/Ravirajhere',
@@ -125,14 +116,12 @@
             website: 'https://ravirajhere.github.io'
         },
 
-        // ---- CONTACT ----
         contact: {
             email: 'raviraj2k09@gmail.com',
             phone: '+91 91022 24971',
             location: 'Begusarai, Bihar, India'
         },
 
-        // ---- CAREER ----
         career: {
             experience: '2+ years',
             projects: 4,
@@ -140,7 +129,6 @@
             status: 'Open for Freelance & Internship'
         },
 
-        // ---- AUTOBIOGRAPHY CHAPTERS ----
         chapters: [
             { number: 1, title: 'The Beginning (2008–2012)', summary: 'Birth in Begusarai, childhood memories, cycle incident with father.' },
             { number: 2, title: 'School Days Begin (2013–2019)', summary: 'GBGS to Mother\'s Pride, first friend Ayush, favorite teacher Binod Sir.' },
@@ -156,7 +144,6 @@
             { number: 12, title: 'The Friend Memory', summary: '12th last days, friendship memories, no regrets.' }
         ],
 
-        // ---- EBOOK ----
         ebook: {
             title: 'My Autobiography',
             subtitle: 'A Boy Who Never Thought',
@@ -203,7 +190,6 @@
         userInterests: [],
         userName: null,
 
-        // ---- DETECT INTENT ----
         detectIntent(text) {
             const t = text.toLowerCase();
             for (const [intent, pattern] of Object.entries(INTENTS)) {
@@ -214,17 +200,16 @@
             return 'GENERAL';
         },
 
-        // ---- GET SMART REPLY ----
         getSmartReply(msg) {
             const t = msg.toLowerCase().trim();
             const intent = this.detectIntent(t);
 
-            // ---- Adult content filter ----
+            // Adult content filter
             if (t.match(/x-rated|adult|porn|sex|nangi|xxx|18\+|nsfw|explicit|fuck|shit|bitch|asshole|bastard|dick|pussy|cunt|tits|boobs|penis|vagina/)) {
                 return "I'm a professional assistant! 😊 Please ask something appropriate.";
             }
 
-            // ---- Store user interests ----
+            // Store user interests
             const words = t.split(' ');
             const commonWords = ['the', 'a', 'an', 'is', 'am', 'are', 'was', 'were', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'her', 'our', 'their', 'me', 'him', 'her', 'us', 'them', 'to', 'for', 'of', 'on', 'at', 'by', 'in', 'with', 'without', 'and', 'or', 'but'];
             words.forEach(word => {
@@ -234,80 +219,33 @@
                 }
             });
 
-            // ---- Intent-based replies ----
             switch (intent) {
-                case 'GREETING':
-                    return this.getGreeting();
-
-                case 'FAREWELL':
-                    return this.getFarewell();
-
-                case 'GRATITUDE':
-                    return this.getGratitude();
-
-                case 'NAME':
-                    return `I'm RJ AI — ${WEBSITE_DATA.displayName}'s virtual assistant! 🤖 ${WEBSITE_DATA.displayName} is a ${WEBSITE_DATA.title} from ${WEBSITE_DATA.location}.`;
-
-                case 'AGE':
-                    return `${WEBSITE_DATA.displayName} was born in ${WEBSITE_DATA.born} in ${WEBSITE_DATA.birthplace}. Currently ${new Date().getFullYear() - 2008} years old! 🎂`;
-
-                case 'LOCATION':
-                    return `${WEBSITE_DATA.displayName} is from ${WEBSITE_DATA.location}. Born in ${WEBSITE_DATA.birthplace}. 🌏`;
-
-                case 'SKILLS':
-                    return this.getSkillsReply();
-
-                case 'PROJECTS':
-                    return this.getProjectsReply();
-
-                case 'FRIENDS':
-                    return this.getFriendsReply();
-
-                case 'FAMILY':
-                    return this.getFamilyReply();
-
-                case 'EDUCATION':
-                    return this.getEducationReply();
-
-                case 'CONTACT':
-                    return this.getContactReply();
-
-                case 'SOCIAL':
-                    return this.getSocialReply();
-
-                case 'BIOGRAPHY':
-                    return this.getBiographyReply();
-
-                case 'CAREER':
-                    return this.getCareerReply();
-
-                case 'MOTTO':
-                    return this.getMottoReply();
-
-                case 'TEACHER':
-                    return this.getTeacherReply();
-
-                case 'MILESTONE':
-                    return this.getMilestoneReply();
-
-                case 'EBOOK':
-                    return this.getEbookReply();
-
-                case 'HELP':
-                    return this.getHelpReply();
-
-                case 'TIME':
-                    return this.getTimeReply();
-
-                case 'WEATHER':
-                    return "I don't have weather data, but I can tell you about ${WEBSITE_DATA.displayName}'s website! ☀️";
-
-                default:
-                    return this.getFallbackReply(t);
+                case 'GREETING': return this.getGreeting();
+                case 'FAREWELL': return this.getFarewell();
+                case 'GRATITUDE': return this.getGratitude();
+                case 'NAME': return `I'm RJ AI — ${WEBSITE_DATA.displayName}'s virtual assistant! 🤖 ${WEBSITE_DATA.displayName} is a ${WEBSITE_DATA.title} from ${WEBSITE_DATA.location}.`;
+                case 'AGE': return `${WEBSITE_DATA.displayName} was born in ${WEBSITE_DATA.born} in ${WEBSITE_DATA.birthplace}. Currently ${new Date().getFullYear() - 2008} years old! 🎂`;
+                case 'LOCATION': return `${WEBSITE_DATA.displayName} is from ${WEBSITE_DATA.location}. Born in ${WEBSITE_DATA.birthplace}. 🌏`;
+                case 'SKILLS': return this.getSkillsReply();
+                case 'PROJECTS': return this.getProjectsReply();
+                case 'FRIENDS': return this.getFriendsReply();
+                case 'FAMILY': return this.getFamilyReply();
+                case 'EDUCATION': return this.getEducationReply();
+                case 'CONTACT': return this.getContactReply();
+                case 'SOCIAL': return this.getSocialReply();
+                case 'BIOGRAPHY': return this.getBiographyReply();
+                case 'CAREER': return this.getCareerReply();
+                case 'MOTTO': return this.getMottoReply();
+                case 'TEACHER': return this.getTeacherReply();
+                case 'MILESTONE': return this.getMilestoneReply();
+                case 'EBOOK': return this.getEbookReply();
+                case 'HELP': return this.getHelpReply();
+                case 'TIME': return this.getTimeReply();
+                case 'WEATHER': return "I don't have weather data, but I can tell you about ${WEBSITE_DATA.displayName}'s website! ☀️";
+                default: return this.getFallbackReply(t);
             }
         },
 
-        // ---- GREETING ----
         getGreeting() {
             const greetings = [
                 `Hello! 👋 Welcome to ${WEBSITE_DATA.displayName}'s website! How can I help you today?`,
@@ -318,7 +256,6 @@
             return greetings[Math.floor(Math.random() * greetings.length)];
         },
 
-        // ---- FAREWELL ----
         getFarewell() {
             const farewells = [
                 `Bye! 👋 Thanks for visiting ${WEBSITE_DATA.displayName}'s website. Come back anytime!`,
@@ -329,7 +266,6 @@
             return farewells[Math.floor(Math.random() * farewells.length)];
         },
 
-        // ---- GRATITUDE ----
         getGratitude() {
             const thanks = [
                 `You're welcome! 😊 Happy to help!`,
@@ -339,7 +275,6 @@
             return thanks[Math.floor(Math.random() * thanks.length)];
         },
 
-        // ---- SKILLS ----
         getSkillsReply() {
             const skills = WEBSITE_DATA.skills;
             return `🎯 ${WEBSITE_DATA.displayName}'s Skills:\n\n` +
@@ -349,7 +284,6 @@
                    `🧠 Soft Skills: ${skills.soft.join(', ')}`;
         },
 
-        // ---- PROJECTS ----
         getProjectsReply() {
             const projects = WEBSITE_DATA.projects;
             let reply = `🚀 ${WEBSITE_DATA.displayName} has built ${projects.length} projects:\n\n`;
@@ -362,13 +296,10 @@
             return reply;
         },
 
-        // ---- FRIENDS ----
         getFriendsReply() {
             const friends = WEBSITE_DATA.friends;
             const total = friends.length;
             let reply = `👥 ${WEBSITE_DATA.displayName} has ${total} amazing friends! Here are some:\n\n`;
-            
-            // Show first 5 friends
             friends.slice(0, 5).forEach(f => {
                 reply += `• **${f.name}** — ${f.connection} (${f.tag}) from ${f.school}\n`;
             });
@@ -376,7 +307,6 @@
             return reply;
         },
 
-        // ---- FAMILY ----
         getFamilyReply() {
             const family = WEBSITE_DATA.family;
             return `👨‍👩‍👧‍👦 ${WEBSITE_DATA.displayName}'s Family:\n\n` +
@@ -387,7 +317,6 @@
                    `💡 Fun Fact: Diwali nights with family are his favorite memories!`;
         },
 
-        // ---- EDUCATION ----
         getEducationReply() {
             const edu = WEBSITE_DATA.education;
             let reply = `🎓 ${WEBSITE_DATA.displayName}'s Education:\n\n`;
@@ -399,7 +328,6 @@
             return reply;
         },
 
-        // ---- CONTACT ----
         getContactReply() {
             const contact = WEBSITE_DATA.contact;
             return `📬 Contact ${WEBSITE_DATA.displayName}:\n\n` +
@@ -409,7 +337,6 @@
                    `💬 You can also use the contact form: emailjs.html`;
         },
 
-        // ---- SOCIAL ----
         getSocialReply() {
             const social = WEBSITE_DATA.social;
             return `🌐 Connect with ${WEBSITE_DATA.displayName}:\n\n` +
@@ -420,7 +347,6 @@
                    `🌍 Website: ${social.website}`;
         },
 
-        // ---- BIOGRAPHY ----
         getBiographyReply() {
             const chapters = WEBSITE_DATA.chapters;
             let reply = `📖 ${WEBSITE_DATA.displayName}'s Autobiography:\n\n` +
@@ -435,7 +361,6 @@
             return reply;
         },
 
-        // ---- CAREER ----
         getCareerReply() {
             const career = WEBSITE_DATA.career;
             return `💼 ${WEBSITE_DATA.displayName}'s Career:\n\n` +
@@ -447,7 +372,6 @@
                    `🚀 Dream: Launch his own startup!`;
         },
 
-        // ---- MOTTO ----
         getMottoReply() {
             return `💡 ${WEBSITE_DATA.displayName}'s Motto:\n\n` +
                    `"${WEBSITE_DATA.motto}"\n\n` +
@@ -456,7 +380,6 @@
                    `✨ His life philosophy: No regrets in life — that's his biggest achievement.`;
         },
 
-        // ---- TEACHER ----
         getTeacherReply() {
             const teacher = WEBSITE_DATA.keyPeople.favoriteTeacher;
             return `👨‍🏫 ${WEBSITE_DATA.displayName}'s Favorite Teacher:\n\n` +
@@ -466,7 +389,6 @@
                    `💬 "Binod Sir ne meri soch badli! Unhone sikhaya ki zindagi ka nazariya alag hona chahiye."`;
         },
 
-        // ---- MILESTONE ----
         getMilestoneReply() {
             return `🏆 ${WEBSITE_DATA.displayName}'s Milestones:\n\n` +
                    `• 2023: First Line of Code (HTML "Hello World")\n` +
@@ -477,7 +399,6 @@
                    `🚀 Next Goal: Full-Stack Developer → Startup!`;
         },
 
-        // ---- EBOOK ----
         getEbookReply() {
             return `📥 ${WEBSITE_DATA.ebook.title}\n\n` +
                    `📖 "${WEBSITE_DATA.ebook.subtitle}"\n` +
@@ -488,7 +409,6 @@
                    `🔗 Read online: autobiography.html`;
         },
 
-        // ---- HELP ----
         getHelpReply() {
             return `💡 I can help you with:\n\n` +
                    `• About ${WEBSITE_DATA.displayName}\n` +
@@ -500,7 +420,6 @@
                    `Just ask me anything! 😊`;
         },
 
-        // ---- TIME ----
         getTimeReply() {
             const now = new Date();
             return `⏰ Current time: ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}\n` +
@@ -508,7 +427,6 @@
                    `📍 Timezone: IST (UTC+5:30)`;
         },
 
-        // ---- FALLBACK ----
         getFallbackReply(text) {
             const fallbacks = [
                 `That's a great question! 🤔 Let me think... Based on what I know about ${WEBSITE_DATA.displayName}:\n\n` +
@@ -534,7 +452,6 @@
             return fallbacks[Math.floor(Math.random() * fallbacks.length)];
         },
 
-        // ---- CONTEXTUAL REPLY ----
         getContextualReply(userMessage) {
             this.lastActive = Date.now();
             const reply = this.getSmartReply(userMessage);
@@ -563,13 +480,9 @@
         if (DOM.empty) DOM.empty.style.display = 'none';
         const div = document.createElement('div');
         div.className = `message ${sender}`;
-        
-        // Format: Replace newlines with <br>
         const formattedText = text.replace(/\n/g, '<br>');
         div.innerHTML = `${formattedText}<span class="msg-time">${getTime()}</span>`;
         DOM.messages.appendChild(div);
-        
-        // Re-attach quick buttons if they exist
         if (DOM.quickBtns) {
             DOM.messages.appendChild(DOM.quickBtns);
         }
@@ -639,7 +552,6 @@
         DOM.send.disabled = true;
         showTyping();
 
-        // Dynamic delay based on message length
         const delay = 600 + Math.random() * 1200 + (text.length / 10) * 50;
         setTimeout(function() {
             hideTyping();
@@ -717,9 +629,6 @@
         if (DOM.input) DOM.input.focus();
     }, 300);
 
-    // ============================================================
-    // 13. CONSOLE LOG — PRO LEVEL
-    // ============================================================
     console.log('🤖 RJ AI Chatbox — Enterprise Edition v6.0');
     console.log('📊 Data Loaded:');
     console.log(`   • ${WEBSITE_DATA.projects.length} Projects`);
