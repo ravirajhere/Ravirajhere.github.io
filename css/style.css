@@ -1,1 +1,821 @@
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+    --bg: #f5f0eb;
+    --bg-card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --primary: #2d3436;
+    --secondary: #0984e3;
+    --border: #ddd;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --radius: 16px;
+    --transition: 0.3s ease;
+}
 
+[data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg-card: #1a1a1a;
+    --text: #f0f0f0;
+    --text-muted: #aaa;
+    --border: #333;
+    --shadow: 0 4px 20px rgba(255,255,255,0.05);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background var(--transition), color var(--transition);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+a {
+    color: var(--secondary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: var(--secondary);
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    border-bottom-color: var(--secondary);
+}
+
+/* ============================================================
+   THEME TOGGLE - ON/OFF SWITCH
+   ============================================================ */
+.theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.theme-toggle-wrapper span {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 28px;
+    background: var(--border);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.switch.active {
+    background: var(--secondary);
+}
+
+.switch .slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: white;
+    border-radius: 50%;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.switch.active .slider {
+    transform: translateX(22px);
+}
+
+.switch-icon {
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.switch-icon.sun {
+    left: 6px;
+}
+
+.switch-icon.moon {
+    right: 6px;
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section {
+    margin-bottom: 70px;
+    scroll-margin-top: 30px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.section-header .emoji {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.section-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.section-header .sub {
+    color: var(--text-muted);
+    font-size: 16px;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+    text-align: center;
+    padding: 20px 0 10px;
+}
+
+.hero-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--secondary);
+    margin: 0 auto 16px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.hero .subtitle {
+    font-size: 18px;
+    color: var(--secondary);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.hero .bio {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto 20px;
+}
+
+/* ============================================================
+   SOCIAL LINKS
+   ============================================================ */
+.social-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.social-links a {
+    padding: 8px 16px;
+    border-radius: 50px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.social-links a:hover {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    background: transparent;
+}
+
+.btn-primary {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(8, 132, 227, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--border);
+}
+
+.btn-outline:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 10px 0 20px;
+}
+
+/* ============================================================
+   STORY
+   ============================================================ */
+.story-content {
+    max-width: 650px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.story-content p {
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.story-content code {
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.fun-fact {
+    background: var(--bg);
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin: 16px 0;
+    border-left: 4px solid var(--secondary);
+}
+
+.fun-fact span {
+    font-weight: 700;
+}
+
+.story-content .btn {
+    margin-top: 8px;
+}
+
+/* ============================================================
+   INTERESTS
+   ============================================================ */
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.interest-card {
+    background: var(--bg-card);
+    padding: 24px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid var(--border);
+}
+
+.interest-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.interest-card .icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.interest-card h3 {
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.interest-card .preview {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.hidden-content {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   PROJECTS
+   ============================================================ */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.project-card {
+    background: var(--bg-card);
+    padding: 24px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-3px);
+}
+
+.project-card .project-icon {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.project-card h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.project-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+    flex: 1;
+}
+
+.tech-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.tech-tags span {
+    background: var(--bg);
+    padding: 2px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.project-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+
+.project-buttons .btn {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+}
+
+.view-all {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* ============================================================
+   ARTICLES
+   ============================================================ */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.article-card {
+    background: var(--bg-card);
+    padding: 22px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.article-card .date {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.article-card h3 {
+    font-size: 17px;
+    margin: 6px 0 8px;
+}
+
+.article-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.article-card code {
+    background: var(--bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.read-more {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ============================================================
+   MILESTONES
+   ============================================================ */
+.milestones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.milestone-card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.milestone-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--secondary);
+}
+
+.milestone-card .milestone-icon {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.milestone-card h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.milestone-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   EDUCATION
+   ============================================================ */
+.education-timeline {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.edu-item {
+    display: flex;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.edu-item:last-child {
+    border-bottom: none;
+}
+
+.edu-item .year {
+    font-weight: 700;
+    min-width: 80px;
+    color: var(--secondary);
+}
+
+.edu-item h3 {
+    font-size: 16px;
+}
+
+.edu-item p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-wrapper {
+    text-align: center;
+    background: var(--bg-card);
+    padding: 40px 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.contact-wrapper p {
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.contact-buttons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+/* ============================================================
+   SCROLL TO TOP
+   ============================================================ */
+#scrollTopBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: var(--secondary);
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(8, 132, 227, 0.3);
+    transition: var(--transition);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    z-index: 999;
+}
+
+#scrollTopBtn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#scrollTopBtn:hover {
+    transform: scale(1.08);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+    text-align: center;
+    padding: 30px 0 10px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+footer .footer-socials {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+footer .footer-socials a {
+    color: var(--text-muted);
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+footer .footer-socials a:hover {
+    color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.footer-time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0 8px;
+    font-size: 14px;
+}
+
+.footer-time .divider {
+    color: var(--border);
+}
+
+.footer-motto {
+    font-size: 13px;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .nav-links {
+        justify-content: center;
+        gap: 14px;
+    }
+
+    .theme-toggle-wrapper {
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .section-header h2 {
+        font-size: 24px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .articles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .interests-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .milestones-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .story-content {
+        padding: 20px;
+    }
+
+    .contact-wrapper {
+        padding: 28px 16px;
+    }
+
+    .project-buttons .btn {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
+    .container {
+        padding: 0 12px 60px;
+    }
+
+    .milestones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .social-links a {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .hero .subtitle {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .btn-sm {
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+
+    .footer-time {
+        font-size: 12px;
+        gap: 6px;
+    }
+}
