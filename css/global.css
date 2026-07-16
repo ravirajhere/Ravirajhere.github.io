@@ -1,0 +1,278 @@
+/* ============================================================
+   GLOBAL.CSS — COMMON STYLES FOR ALL PAGES
+   (Dark/Light Mode, Navbar, Footer, Buttons, Typography)
+   ============================================================ */
+
+/* ============================================================
+   ROOT VARIABLES (Light / Dark)
+   ============================================================ */
+:root {
+    /* Light Mode (Default) */
+    --bg-primary: #f5f0eb;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f0ece6;
+    --bg-input: rgba(0, 0, 0, 0.04);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --text-primary: #1a1a1a;
+    --text-secondary: #555;
+    --text-muted: #999;
+    --primary: #0984e3;
+    --secondary: #00b894;
+    --accent: #6c5ce7;
+    --gradient-bot: linear-gradient(135deg, var(--primary), var(--secondary));
+    --gradient-user: linear-gradient(135deg, var(--accent), var(--primary));
+    --shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --toggle-bg: rgba(0, 0, 0, 0.05);
+    --toggle-border: rgba(0, 0, 0, 0.15);
+    --toggle-text: #555;
+    --quick-btn-bg: rgba(0, 0, 0, 0.05);
+    --quick-btn-hover: rgba(9, 132, 227, 0.1);
+    --font: 'Space Grotesk', sans-serif;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #13131a;
+    --bg-tertiary: #1a1a2e;
+    --bg-input: rgba(255, 255, 255, 0.04);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f0f0f5;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6a6a7a;
+    --primary: #00d9ff;
+    --secondary: #00ff88;
+    --accent: #7c3aed;
+    --shadow: 0 8px 40px rgba(0, 217, 255, 0.15);
+    --toggle-bg: rgba(255, 255, 255, 0.05);
+    --toggle-border: rgba(255, 255, 255, 0.15);
+    --toggle-text: #a0a0b0;
+    --quick-btn-bg: rgba(255, 255, 255, 0.06);
+    --quick-btn-hover: rgba(0, 217, 255, 0.15);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background var(--transition), color var(--transition);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ============================================================
+   THEME TOGGLE (Fixed Position)
+   ============================================================ */
+.theme-toggle-wrapper {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    background: var(--bg-secondary);
+    padding: 8px 16px 8px 20px;
+    border-radius: 50px;
+    border: 1px solid var(--toggle-border);
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#themeLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--toggle-text);
+    transition: color var(--transition);
+    min-width: 42px;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    background: var(--toggle-bg);
+    border-radius: 30px;
+    border: 2px solid var(--toggle-border);
+    transition: all var(--transition);
+    flex-shrink: 0;
+}
+
+.switch .slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 50%;
+    transition: all var(--transition);
+    box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
+}
+
+[data-theme="dark"] .switch .slider {
+    left: 26px;
+    background: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 217, 255, 0.3);
+}
+
+[data-theme="dark"] .switch {
+    border-color: var(--primary);
+}
+
+.switch .switch-icon {
+    font-size: 13px;
+    line-height: 1;
+    z-index: 1;
+    transition: opacity var(--transition);
+}
+
+.switch .sun { opacity: 1; }
+.switch .moon { opacity: 0.3; }
+
+[data-theme="dark"] .switch .sun { opacity: 0.3; }
+[data-theme="dark"] .switch .moon { opacity: 1; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    background: transparent;
+    font-family: var(--font);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(9, 132, 227, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* ============================================================
+   RESPONSIVE - THEME TOGGLE
+   ============================================================ */
+@media (max-width: 500px) {
+    .theme-toggle-wrapper {
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px 4px 14px;
+        gap: 6px;
+    }
+
+    #themeLabel {
+        font-size: 10px;
+        min-width: 28px;
+    }
+
+    .switch {
+        width: 36px;
+        height: 20px;
+    }
+
+    .switch .slider {
+        width: 12px;
+        height: 12px;
+        top: 2px;
+        left: 2px;
+    }
+
+    [data-theme="dark"] .switch .slider {
+        left: 18px;
+    }
+
+    .switch .switch-icon {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-wrapper {
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px 6px 16px;
+        gap: 8px;
+    }
+
+    #themeLabel {
+        font-size: 11px;
+        min-width: 34px;
+    }
+
+    .switch {
+        width: 42px;
+        height: 22px;
+    }
+
+    .switch .slider {
+        width: 14px;
+        height: 14px;
+    }
+
+    [data-theme="dark"] .switch .slider {
+        left: 22px;
+    }
+
+    .switch .switch-icon {
+        font-size: 10px;
+    }
+}
