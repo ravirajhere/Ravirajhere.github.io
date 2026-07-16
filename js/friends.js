@@ -1,7 +1,6 @@
 // ============================================
-// FRIENDS CORNER — PROFESSIONAL JS (FINAL)
-// Version: 14.0 | Simple Certificate | Mobile Friendly
-// Author: Ravi Raj
+// FRIENDS.JS — PAGE-SPECIFIC LOGIC FOR FRIENDS.HTML
+// (Friends Database, Voice Search, Webcam, PDF Generation, Live Stats)
 // ============================================
 
 'use strict';
@@ -584,45 +583,23 @@ function generateFriendCardPDF(isDBFriend) {
         const pw = 297;
         const ph = 210;
         
-      // ---- BACKGROUND: Dark Navy ----
         pdf.setFillColor('#ffffff');
         pdf.rect(0, 0, pw, ph, 'F');
         
-// ---- BORDER: Top ----
-pdf.setDrawColor('#00d9ff');
-pdf.setLineWidth(2);
-pdf.line(5, 5, pw - 5, 5);
-
-pdf.setDrawColor('#7c3aed');
-pdf.setLineWidth(1);
-pdf.line(10, 10, pw - 10, 10);
-
-// ---- BORDER: Bottom ----
-pdf.setDrawColor('#00d9ff');
-pdf.setLineWidth(2);
-pdf.line(5, ph - 5, pw - 5, ph - 5);
-
-pdf.setDrawColor('#7c3aed');
-pdf.setLineWidth(1);
-pdf.line(10, ph - 10, pw - 10, ph - 10);
-
-// ---- BORDER: Left ----
-pdf.setDrawColor('#00d9ff');
-pdf.setLineWidth(2);
-pdf.line(5, 5, 5, ph - 5);
-
-pdf.setDrawColor('#7c3aed');
-pdf.setLineWidth(1);
-pdf.line(10, 10, 10, ph - 10);
-
-// ---- BORDER: Right ----
-pdf.setDrawColor('#00d9ff');
-pdf.setLineWidth(2);
-pdf.line(pw - 5, 5, pw - 5, ph - 5);
-
-pdf.setDrawColor('#7c3aed');
-pdf.setLineWidth(1);
-pdf.line(pw - 10, 10, pw - 10, ph - 10);
+        // ---- BORDERS ----
+        pdf.setDrawColor('#00d9ff');
+        pdf.setLineWidth(2);
+        pdf.line(5, 5, pw - 5, 5);
+        pdf.line(5, ph - 5, pw - 5, ph - 5);
+        pdf.line(5, 5, 5, ph - 5);
+        pdf.line(pw - 5, 5, pw - 5, ph - 5);
+        
+        pdf.setDrawColor('#7c3aed');
+        pdf.setLineWidth(1);
+        pdf.line(10, 10, pw - 10, 10);
+        pdf.line(10, ph - 10, pw - 10, ph - 10);
+        pdf.line(10, 10, 10, ph - 10);
+        pdf.line(pw - 10, 10, pw - 10, ph - 10);
         
         // ---- HEADER ----
         pdf.setTextColor('#DAA520');
@@ -643,7 +620,7 @@ pdf.line(pw - 10, 10, pw - 10, ph - 10);
         pdf.setLineWidth(0.5);
         pdf.line(15, 42, pw - 15, 42);
         
-        // ---- PHOTO (Left Side) ----
+        // ---- PHOTO ----
         const cx = 55;
         const cy = 100;
         const size = 44;
@@ -662,7 +639,7 @@ pdf.line(pw - 10, 10, pw - 10, ph - 10);
         pdf.setFontSize(8);
         pdf.text('LIVE PHOTO', cx, cy + size/2 + 6, { align: 'center' });
         
-        // ---- FRIEND INFO (Right Side) ----
+        // ---- FRIEND INFO ----
         let xPos = 110;
         let yPos = 72;
         
@@ -748,12 +725,11 @@ pdf.line(pw - 10, 10, pw - 10, ph - 10);
         pdf.setFontSize(7);
         pdf.text('© 2026 Ravi Raj · All Rights Reserved', 15, ph - 15);
         
-        // ---- SAVE ----
         pdf.save('FriendCard-' + (currentFriend.firstName || 'Friend') + '.pdf');
     }
     
     img.src = capturedPhotoData;
-    signImg.src = 'signature.jpg';
+    signImg.src = 'assets/images/signature.jpg';
 }
 
 // ============================================
