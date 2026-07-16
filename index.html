@@ -2,449 +2,298 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-    <meta name="description" content="Ravi Raj — Student, Web Developer, and lifelong learner from Begusarai, Bihar. Building modern web experiences." />
-    <meta name="keywords" content="Ravi Raj, Portfolio, Student, Web Developer, Begusarai, Bihar, Personal Website" />
-    <meta name="author" content="Ravi Raj" />
-    <meta property="og:title" content="Ravi Raj | Personal Website" />
-    <meta property="og:description" content="Passionate 12th-grade student building modern web experiences." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ravirajhere.github.io" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ravi Raj | Personal Website</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png?v=1" />
-    
-    <!-- Google Fonts -->
+    <!-- ====== FONTS & ICONS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
-    <!-- Main Stylesheet -->
+    <!-- ====== CSS (EXTERNAL) ====== -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
     <!-- ============================================================
-    THEME TOGGLE
+    NAVIGATION
     ============================================================ -->
-    <button id="theme-toggle" class="premium-toggle" aria-label="Toggle theme">
-        <span class="toggle-icon">🌙</span>
-        <span class="toggle-tooltip">Switch to Light Mode</span>
-    </button>
+    <nav>
+        <div class="logo">Ravi<span>Raj</span></div>
+        
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#story">Story</a></li>
+            <li><a href="#interests">Interests</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#articles">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
 
-    <!-- ============================================================
-    MATRIX BACKGROUND
-    ============================================================ -->
-    <canvas id="matrix-bg" aria-hidden="true"></canvas>
-
-    <!-- ============================================================
-    NAVIGATION — PROFESSIONAL
-    ============================================================ -->
-    <nav role="navigation" aria-label="Main navigation">
-        <div class="nav-container">
-            <div class="logo">
-                Singh<span>_Ravirajhere</span>
+        <!-- ====== THEME TOGGLE (ON/OFF SWITCH) ====== -->
+        <div class="theme-toggle-wrapper">
+            <span id="themeLabel">Light</span>
+            <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+                <span class="switch-icon sun">☀️</span>
+                <span class="switch-icon moon">🌙</span>
+                <div class="slider"></div>
             </div>
-            <ul class="nav-links">
-                <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#articles">Articles</a></li>
-                <li><a href="#interests">Interests</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="#milestones">Milestones</a></li>
-            </ul>
         </div>
     </nav>
 
     <!-- ============================================================
-    MAIN CONTAINER
+    MAIN
     ============================================================ -->
     <main class="container">
 
         <!-- ============================================================
-        HOME
+        HERO
         ============================================================ -->
-        <section id="home" class="hero" aria-labelledby="hero-title">
-
-            <!-- Social Trigger -->
-            <div class="social-wrapper">
-                <div class="social-trigger" id="triggerBtn">
-                    <span>@rravirajhere</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="social-icons-grid" id="socialGrid">
-                    <a href="https://twitter.com/Raviraj2k09" target="_blank" class="social-icon-item" title="Twitter">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-                    <a href="#" onclick="alert('Instagram Coming Soon!'); return false;" class="social-icon-item" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/Ravirajhere" target="_blank" class="social-icon-item" title="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="https://youtube.com/@Ravirajhere" target="_blank" class="social-icon-item" title="YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="https://github.com/ravirajhere" target="_blank" class="social-icon-item" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" onclick="alert('Facebook Coming Soon!'); return false;" class="social-icon-item" title="Facebook">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                </div>
+        <section id="home" class="hero">
+            <img src="Singh_ravirajhere.jpeg" alt="Ravi Raj" class="hero-image" />
+            <h1>Hey, I'm Ravi Raj 👋</h1>
+            <p class="subtitle">12th grader · Web Developer · From Begusarai</p>
+            <p class="bio">Building stuff on the internet since 2023. Currently learning React and Python.</p>
+            
+            <!-- SOCIAL LINKS -->
+            <div class="social-links">
+                <a href="https://github.com/ravirajhere" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                <a href="https://twitter.com/Raviraj2k09" target="_blank"><i class="fab fa-x-twitter"></i> Twitter</a>
+                <a href="https://youtube.com/@Ravirajhere" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
 
-            <!-- Hero Image -->
-            <img 
-                src="Singh_ravirajhere.jpeg" 
-                alt="Ravi Raj — Student and Web Developer" 
-                id="hero-photo" 
-                class="hero-image fly-in-photo" 
-                loading="eager"
-                width="160" 
-                height="160"
-            />
-
-            <h1 id="hero-title" class="hero-title">RaviRaj</h1>
-
-            <h2 class="hero-subtitle">
-                <span>Student</span> — Web Developer
-                <span class="typing-text">| Building digital experiences that work</span>
-            </h2>
-
-            <p class="hero-desc">
-                I'm Ravi Raj, a student and web developer from Begusarai, Bihar. 
-                I specialize in building responsive, user-friendly websites with clean code. 
-                Currently exploring full-stack development while pursuing my 12th grade.
-            </p>
-
+            <!-- HERO ACTIONS -->
             <div class="hero-actions">
-                <a href="resume-pdf.html" target="_blank" class="btn btn-primary">📄 Download Resume</a>
-                <a href="#about" class="btn btn-secondary">View Profile</a>
-            </div>
-
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-icon">📚</span>
-                    <span class="stat-number">2+</span>
-                    <span class="stat-label">Years Learning</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">🚀</span>
-                    <span class="stat-number">4</span>
-                    <span class="stat-label">Projects Built</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">🛠️</span>
-                    <span class="stat-number">3</span>
-                    <span class="stat-label">Tech Stack</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">💯</span>
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Dedication</span>
-                </div>
-            </div>
-
-            <div class="hero-tags">
-                <span class="tag">HTML5</span>
-                <span class="tag">CSS3</span>
-                <span class="tag">Python</span>
-                <span class="tag">JavaScript</span>
-                <span class="tag">Responsive Design</span>
-                <span class="tag learning-badge">📚 Learning React</span>
+                <a href="#story" class="btn btn-primary">👇 Know My Story</a>
+                <a href="#projects" class="btn btn-outline">💻 See My Work</a>
             </div>
         </section>
 
         <!-- ============================================================
-        ABOUT
+        STORY
         ============================================================ -->
-        <section id="about" aria-labelledby="about-title">
+        <section id="story">
             <div class="section-header">
-                <div class="section-label">ABOUT ME</div>
-                <h2 id="about-title" class="section-title">About Me — My Journey So Far</h2>
-                <p class="section-desc">Student, developer, and lifelong learner</p>
+                <span class="emoji">📖</span>
+                <h2>My Story</h2>
+                <p class="sub">From Begusarai to building for the web</p>
             </div>
-
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I'm Ravi Raj, from Begusarai, Bihar. I started coding in 2023 with a simple 
-                        HTML tag, and that curiosity turned into a passion. Since then, I've been 
-                        exploring frontend development, building projects, and learning every day.
-                    </p>
-                    <p>
-                        I specialize in responsive web design, clean code, and user-first experiences. 
-                        Currently, I'm diving deeper into JavaScript and Python while preparing for 
-                        college in 2026. I believe in learning by building — and I'm not stopping anytime soon.
-                    </p>
-                    <p>
-                        This website is my digital space — where I share my work, my thoughts, and my journey.
-                    </p>
-
-                    <div class="about-quote">
-                        <span>“</span>
-                        <p>Every great developer you know got there by solving problems they didn't know how to solve.</p>
-                        <span>”</span>
-                    </div>
-
-                    <a href="autobiography.html" class="btn btn-outline">📖 Read Full Story</a>
+            
+            <div class="story-content">
+                <p>I'm Ravi Raj, born and raised in Begusarai, Bihar. I started coding in 2023 with a single HTML tag. That simple <code>&lt;h1&gt;</code> changed everything.</p>
+                
+                <p>Today, I build websites that work for real people. I believe in clean code, responsive design, and continuous learning.</p>
+                
+                <p>I'm currently in 12th grade, balancing studies with my passion for web development. This website is my digital diary — where I share my journey, my projects, and my thoughts.</p>
+                
+                <div class="fun-fact">
+                    <span>💡 Fun Fact:</span> I still get nervous before hitting "deploy". Every. Single. Time.
                 </div>
-
-                <div class="about-card">
-                    <h4>Quick Info</h4>
-                    <div class="info-item">
-                        <span class="info-label">Name</span>
-                        <span class="info-value">Ravi Raj</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Location</span>
-                        <span class="info-value">Patna, India</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Education</span>
-                        <span class="info-value">12th Passed</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Experience</span>
-                        <span class="info-value">2+ Years</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Availability</span>
-                        <span class="info-value" style="color:var(--secondary)">Open to Work</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Languages</span>
-                        <span class="info-value">Hindi, English</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================
-        ARTICLES
-        ============================================================ -->
-        <section id="articles" aria-labelledby="articles-title">
-            <div class="section-header">
-                <div class="section-label">ARTICLES</div>
-                <h2 id="articles-title" class="section-title">Articles & Insights</h2>
-                <p class="section-desc">Thoughts on coding, learning, and life</p>
-            </div>
-
-            <div class="articles-grid">
-                <article class="article-card featured-article">
-                    <div class="article-meta">
-                        <span class="article-date">June 2026</span>
-                        <span class="article-category">Journey</span>
-                    </div>
-                    <h3 class="article-title">When I Wrote My First Line of Code</h3>
-                    <p class="article-excerpt">
-                        It was 2023. I didn't know what HTML was. I typed < h1 > and something magical happened...
-                    </p>
-                    <a href="#" class="article-readmore">Read More →</a>
-                </article>
-
-                <article class="article-card">
-                    <div class="article-meta">
-                        <span class="article-date">July 2026</span>
-                        <span class="article-category">Learning</span>
-                    </div>
-                    <h3 class="article-title">My Biggest Mistake as a Beginner</h3>
-                    <p class="article-excerpt">
-                        I thought I knew everything. I didn't. Here's what I learned from failing...
-                    </p>
-                    <a href="#" class="article-readmore">Read More →</a>
-                </article>
-
-                <article class="article-card">
-                    <div class="article-meta">
-                        <span class="article-date">July 2026</span>
-                        <span class="article-category">Tech</span>
-                    </div>
-                    <h3 class="article-title">Why I Almost Quit Coding</h3>
-                    <p class="article-excerpt">
-                        There was a time I wanted to give up. This is why I didn't...
-                    </p>
-                    <a href="#" class="article-readmore">Read More →</a>
-                </article>
-            </div>
-
-            <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-ghost" onclick="openArticlesModal()">📄 View All Articles →</button>
+                
+                <a href="autobiography.html" class="btn btn-outline">📖 Read Full Story →</a>
             </div>
         </section>
 
         <!-- ============================================================
         INTERESTS
         ============================================================ -->
-        <section id="interests" aria-labelledby="interests-title">
+        <section id="interests">
             <div class="section-header">
-                <div class="section-label">INTERESTS</div>
-                <h2 id="interests-title" class="section-title">Beyond the Code</h2>
-                <p class="section-desc">What drives me outside of work and study</p>
+                <span class="emoji">🎯</span>
+                <h2>What Makes Me Tick</h2>
+                <p class="sub">Click on any card to reveal more</p>
             </div>
 
             <div class="interests-grid">
-                <div class="interest-card">
-                    <span class="interest-icon">📺</span>
-                    <h4>Old is Gold</h4>
-                    <p>Old songs, old movies, old memories — they still hit different.</p>
-                    <button class="btn btn-small" onclick="openInterestModal('oldisgold')">Explore →</button>
+                <div class="interest-card" onclick="revealInterest('oldisgold')">
+                    <span class="icon">📺</span>
+                    <h3>Old is Gold</h3>
+                    <p class="preview">Old songs, old movies, old memories...</p>
+                    <div class="hidden-content" id="oldisgold">
+                        🎵 I can listen to Kishore Kumar all day. Old Hindi songs hit different. And don't get me started on 90s Bollywood — pure gold!
+                    </div>
                 </div>
-                <div class="interest-card">
-                    <span class="interest-icon">💻</span>
-                    <h4>Now & Here</h4>
-                    <p>Code, study, sleep. Repeat. That's my rhythm.</p>
-                    <button class="btn btn-small" onclick="openInterestModal('nowandhere')">Explore →</button>
-                </div>
-                <div class="interest-card">
-                    <span class="interest-icon">🤫</span>
-                    <h4>What Nobody Knows</h4>
-                    <p>I still get nervous before hitting deploy. Every single time.</p>
-                    <button class="btn btn-small" onclick="openInterestModal('whatnobodyknows')">Explore →</button>
-                </div>
-                <div class="interest-card">
-                    <span class="interest-icon">🧠</span>
-                    <h4>What I've Learned</h4>
-                    <p>Failure is not the end. It's just a part of the process.</p>
-                    <button class="btn btn-small" onclick="openInterestModal('whativelearned')">Explore →</button>
-                </div>
-            </div>
 
-            <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-pill" onclick="openInterestsModal()">✨ Explore Interests</button>
+                <div class="interest-card" onclick="revealInterest('nowandhere')">
+                    <span class="icon">💻</span>
+                    <h3>Now & Here</h3>
+                    <p class="preview">Code, study, sleep, repeat...</p>
+                    <div class="hidden-content" id="nowandhere">
+                        ⚡ My daily rhythm: Wake up → Code → Study → Sleep. Simple, focused, effective. Currently obsessed with JavaScript and React.
+                    </div>
+                </div>
+
+                <div class="interest-card" onclick="revealInterest('whatnobodyknows')">
+                    <span class="icon">🤫</span>
+                    <h3>What Nobody Knows</h3>
+                    <p class="preview">The secret side of me...</p>
+                    <div class="hidden-content" id="whatnobodyknows">
+                        😅 I'm actually an introvert who pretends to be extroverted online. And yes, I still Google basic CSS properties. Every. Day.
+                    </div>
+                </div>
+
+                <div class="interest-card" onclick="revealInterest('whativelearned')">
+                    <span class="icon">🧠</span>
+                    <h3>What I've Learned</h3>
+                    <p class="preview">Lessons from the journey...</p>
+                    <div class="hidden-content" id="whativelearned">
+                        💡 Failure is not the opposite of success — it's part of it. I've broken more websites than I've built. But each break taught me something new.
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- ============================================================
         PROJECTS
         ============================================================ -->
-        <section id="projects" aria-labelledby="projects-title">
+        <section id="projects">
             <div class="section-header">
-                <div class="section-label">PROJECTS</div>
-                <h2 id="projects-title" class="section-title">Selected Projects</h2>
-                <p class="section-desc">A few things I've built recently</p>
+                <span class="emoji">💻</span>
+                <h2>Things I've Built</h2>
+                <p class="sub">Projects that I'm proud of</p>
             </div>
 
             <div class="projects-grid">
-                <article class="project-card featured">
-                    <div class="project-card-header">
-                        <span class="project-title">📖 Autobiography</span>
-                        <span class="project-version">v1.0</span>
+                <!-- Project 1: Autobiography -->
+                <div class="project-card">
+                    <span class="project-icon">📖</span>
+                    <h3>Autobiography</h3>
+                    <p>My life story in a single HTML page. Raw, honest, and unfiltered.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
                     </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">Autobiography</h2>
-                        <p class="project-desc">
-                            A personal narrative documenting my journey, challenges, and growth.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <div class="project-divider">✦</div>
-                        <nav class="project-links">
-                            <a href="autobiography.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
+                    <div class="project-buttons">
+                        <a href="autobiography.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
                     </div>
-                </article>
+                </div>
 
-                <article class="project-card">
-                    <div class="project-card-header project-card-featured">
-                        <span class="project-title">💬 Chatbox</span>
-                        <span class="project-version">v1.0</span>
+                <!-- Project 2: Chatbox -->
+                <div class="project-card">
+                    <span class="project-icon">💬</span>
+                    <h3>Chatbox</h3>
+                    <p>Interactive chat app with localStorage. No backend, all frontend magic.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
+                        <span>Storage</span>
                     </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">Chatbox</h2>
-                        <p class="project-desc">
-                            An interactive chat interface powered by local storage and JavaScript.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                            <span class="tech-badge">LocalStorage</span>
-                        </div>
-                        <div class="project-divider">✦</div>
-                        <nav class="project-links">
-                            <a href="chatbox.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
+                    <div class="project-buttons">
+                        <a href="chatbox.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
                     </div>
-                </article>
+                </div>
 
-                <article class="project-card">
-                    <div class="project-card-header">
-                        <span class="project-title">👥 Friends Gallery</span>
-                        <span class="project-version">v1.0</span>
+                <!-- Project 3: Friends Gallery -->
+                <div class="project-card">
+                    <span class="project-icon">👥</span>
+                    <h3>Friends Gallery</h3>
+                    <p>Photo gallery of the people who matter most in my life.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
                     </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">Friends Gallery</h2>
-                        <p class="project-desc">
-                            A photo gallery showcasing meaningful connections and memories.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <div class="project-divider">✦</div>
-                        <nav class="project-links">
-                            <a href="friends.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
+                    <div class="project-buttons">
+                        <a href="friends.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
                     </div>
-                </article>
+                </div>
 
-                <article class="project-card">
-                    <div class="project-card-header project-card-featured">
-                        <span class="project-title">📄 Resume</span>
-                        <span class="project-version">v1.0</span>
+                <!-- Project 4: Resume -->
+                <div class="project-card">
+                    <span class="project-icon">📄</span>
+                    <h3>Resume</h3>
+                    <p>Clean, printable, and professional. Everything a resume should be.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>Print</span>
                     </div>
-                    <div class="project-card-body">
-                        <h2 class="project-title">My Resume</h2>
-                        <p class="project-desc">
-                            A clean, printable resume highlighting my education, skills, and projects.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-badge">HTML5</span>
-                            <span class="tech-badge">CSS3</span>
-                            <span class="tech-badge">JavaScript</span>
-                        </div>
-                        <div class="project-divider">✦</div>
-                        <nav class="project-links">
-                            <a href="resume-pdf.html" class="project-link">→ Live Demo</a>
-                            <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" class="project-link" target="_blank">→ Source Code</a>
-                        </nav>
+                    <div class="project-buttons">
+                        <a href="resume-pdf.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
                     </div>
-                </article>
+                </div>
             </div>
 
-            <div style="text-align:center; margin-top: 40px;">
-                <a href="https://github.com/ravirajhere?tab=repositories" target="_blank" class="btn btn-outline">🔍 View All Projects</a>
+            <div class="view-all">
+                <a href="https://github.com/ravirajhere" target="_blank" class="btn btn-outline">🔍 See All on GitHub</a>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        ARTICLES
+        ============================================================ -->
+        <section id="articles">
+            <div class="section-header">
+                <span class="emoji">📝</span>
+                <h2>My Thoughts</h2>
+                <p class="sub">Random musings on coding, life, and everything in between</p>
             </div>
 
-            <div class="upcoming-projects">
-                <h3>🔜 What's Next?</h3>
-                <div class="upcoming-grid">
-                    <div class="upcoming-card">
-                        <span class="upcoming-badge">Planning</span>
-                        <h4>E-Commerce Website</h4>
-                        <p>Full-featured online store with cart and payment integration.</p>
-                    </div>
-                    <div class="upcoming-card">
-                        <span class="upcoming-badge">Idea</span>
-                        <h4>Blog Platform</h4>
-                        <p>Personal blogging engine where I'll share my coding journey.</p>
-                    </div>
+            <div class="articles-grid">
+                <article class="article-card">
+                    <span class="date">📅 June 2026</span>
+                    <h3>When I Wrote My First Line of Code</h3>
+                    <p>It was 2023. I didn't know what HTML was. I typed <code>&lt;h1&gt;</code> and something magical happened...</p>
+                    <a href="#" class="read-more">Read More →</a>
+                </article>
+
+                <article class="article-card">
+                    <span class="date">📅 July 2026</span>
+                    <h3>My Biggest Mistake as a Beginner</h3>
+                    <p>I thought I knew everything. I didn't. Here's what I learned from failing...</p>
+                    <a href="#" class="read-more">Read More →</a>
+                </article>
+
+                <article class="article-card">
+                    <span class="date">📅 July 2026</span>
+                    <h3>Why I Almost Quit Coding</h3>
+                    <p>There was a time I wanted to give up. This is why I didn't...</p>
+                    <a href="#" class="read-more">Read More →</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        MILESTONES
+        ============================================================ -->
+        <section id="milestones">
+            <div class="section-header">
+                <span class="emoji">🏆</span>
+                <h2>Milestones</h2>
+                <p class="sub">Things I'm proud of (big or small)</p>
+            </div>
+
+            <div class="milestones-grid">
+                <div class="milestone-card" onclick="location.href='autobiography.html'">
+                    <span class="milestone-icon">📖</span>
+                    <h3>2023: First Line of Code</h3>
+                    <p>Wrote my first HTML tag. The beginning of everything.</p>
+                </div>
+
+                <div class="milestone-card" onclick="location.href='#projects'">
+                    <span class="milestone-icon">🚀</span>
+                    <h3>2024: First Project</h3>
+                    <p>Built my first complete website. It was ugly. I was proud.</p>
+                </div>
+
+                <div class="milestone-card" onclick="location.href='friends.html'">
+                    <span class="milestone-icon">👥</span>
+                    <h3>2025: Network</h3>
+                    <p>Connected with amazing people in the dev community.</p>
+                </div>
+
+                <div class="milestone-card">
+                    <span class="milestone-icon">🎯</span>
+                    <h3>2026: 12th Passed</h3>
+                    <p>Balanced studies and coding. Survived. Thrived.</p>
                 </div>
             </div>
         </section>
@@ -452,316 +301,93 @@
         <!-- ============================================================
         EDUCATION
         ============================================================ -->
-        <section id="education" aria-labelledby="education-title">
+        <section id="education">
             <div class="section-header">
-                <div class="section-label">EDUCATION</div>
-                <h2 id="education-title" class="section-title">Education & Credentials</h2>
-                <p class="section-desc">My academic journey so far</p>
+                <span class="emoji">🎓</span>
+                <h2>Education</h2>
+                <p class="sub">Where I learned what I know</p>
             </div>
 
-            <div class="education-grid">
-                <div class="education-card">
-                    <div class="education-badge">Planning</div>
-                    <h3>Graduation</h3>
-                    <p>Planning for college admission in 2026. Excited for what's next.</p>
+            <div class="education-timeline">
+                <div class="edu-item">
+                    <span class="year">2024-26</span>
+                    <div>
+                        <h3>Senior Secondary (PCM)</h3>
+                        <p>Udaan International School, Begusarai</p>
+                    </div>
                 </div>
-
-                <div class="education-card">
-                    <div class="education-badge">2024 – 2026</div>
-                    <h3>Senior Secondary</h3>
-                    <h4>Udaan International School, Begusarai</h4>
-                    <p>Completed 12th with Physics, Chemistry, Maths.</p>
+                <div class="edu-item">
+                    <span class="year">2019-24</span>
+                    <div>
+                        <h3>Secondary School</h3>
+                        <p>Mother's Pride International School, Begusarai</p>
+                    </div>
                 </div>
-
-                <div class="education-card">
-                    <div class="education-badge">2019 – 2024</div>
-                    <h3>Secondary</h3>
-                    <h4>Mother's Pride International School, Begusarai</h4>
-                    <p>Completed 10th. Discovered passion for coding.</p>
+                <div class="edu-item">
+                    <span class="year">2014-19</span>
+                    <div>
+                        <h3>Primary Education</h3>
+                        <p>Gautam Buddha Global School, Begusarai</p>
+                    </div>
                 </div>
-
-                <div class="education-card">
-                    <div class="education-badge">2014 – 2019</div>
-                    <h3>Primary</h3>
-                    <h4>Gautam Buddha Global School, Begusarai</h4>
-                    <p>Completed Primary Education to 5th Standard.</p>
-                </div>
-            </div>
-
-            <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-border" onclick="openEducationModal()">📜 View Full Journey</button>
             </div>
         </section>
 
         <!-- ============================================================
         CONTACT
         ============================================================ -->
-        <section id="contact" aria-labelledby="contact-title">
+        <section id="contact">
             <div class="section-header">
-                <div class="section-label">CONTACT</div>
-                <h2 id="contact-title" class="section-title">Let's Connect</h2>
-                <p class="section-desc">I'd love to hear from you</p>
+                <span class="emoji">📬</span>
+                <h2>Let's Talk</h2>
+                <p class="sub">I reply within 24 hours. Promise.</p>
             </div>
 
             <div class="contact-wrapper">
-                <div class="contact-cta">
-                    <h3>Have a project in mind?</h3>
-                    <p>
-                        I respond to messages within 24 hours. Whether it's a project inquiry, 
-                        collaboration, or just a conversation — I'd love to hear from you.
-                    </p>
-                    <p class="online-status">
-                        <span class="green-dot">🟢</span> Usually replies within 24 hours
-                    </p>
-                    <a href="emailjs.html" class="btn btn-primary btn-large">💬 Get in Touch</a>
+                <p>💬 Have a question? Want to collaborate? Just want to say hi?</p>
+                <p>I'd love to hear from you.</p>
+                
+                <div class="contact-buttons">
+                    <a href="emailjs.html" class="btn btn-primary">✉️ Send a Message</a>
+                    <a href="chatbox.html" class="btn btn-outline">💬 Try My Chatbox</a>
                 </div>
             </div>
         </section>
-
-        <!-- ============================================================
-        MILESTONES
-        ============================================================ -->
-        <section id="milestones" aria-labelledby="milestones-title">
-            <div class="section-header">
-                <div class="section-label">MILESTONES</div>
-                <h2 id="milestones-title" class="section-title">Key Milestones</h2>
-                <p class="section-desc">Things I'm proud of — big or small</p>
-            </div>
-
-            <div class="milestones-grid">
-                <div class="milestone-card" onclick="window.location.href='friends.html'">
-                    <span class="milestone-icon">👥</span>
-                    <h4>My Network</h4>
-                    <p>People who matter, moments that count.</p>
-                </div>
-                <div class="milestone-card" onclick="openAchieveModal('experience')">
-                    <span class="milestone-icon">💼</span>
-                    <h4>Professional Experience</h4>
-                    <p>📌 Updating Soon</p>
-                </div>
-                <div class="milestone-card" onclick="openAchieveModal('memories')">
-                    <span class="milestone-icon">📸</span>
-                    <h4>Memorable Moments</h4>
-                    <p>🛠️ Updating Soon</p>
-                </div>
-                <div class="milestone-card" onclick="window.location.href='autobiography.html'">
-                    <span class="milestone-icon">📖</span>
-                    <h4>My Story</h4>
-                    <p>My life, my words, my journey.</p>
-                </div>
-                <div class="milestone-card" onclick="openAchieveModal('certificates')">
-                    <span class="milestone-icon">🏅</span>
-                    <h4>Certifications</h4>
-                    <p>📌 Updating Soon</p>
-                </div>
-            </div>
-
-            <div style="text-align:center; margin-top: 40px;">
-                <button class="btn btn-achieve" onclick="openRJModal()">🏆 View All Milestones</button>
-            </div>
-        </section>
-
-        <!-- ============================================================
-        CONTACT MODAL
-        ============================================================ -->
-        <div class="rj-modal" id="contactModal">
-            <div class="rj-modal-content">
-                <span class="rj-modal-close" onclick="closeContactModal()">✕</span>
-                <h2>📬 Contact Me</h2>
-                <p>Choose how you want to connect:</p>
-                <div class="rj-modal-grid">
-                    <div class="rj-modal-item" onclick="window.location.href='chatbox.html'">
-                        <span>🤖</span>
-                        <h4>AI Chatbox</h4>
-                        <p>Chat with RaviRaj's AI</p>
-                    </div>
-                    <div class="rj-modal-item" onclick="window.location.href='emailjs.html'">
-                        <span>✉️</span>
-                        <h4>Send a Message</h4>
-                        <p>I'll reply within 24hrs</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        ACHIEVE MODAL (RJ's Achieve)
-        ============================================================ -->
-        <div class="rj-modal" id="rjModal">
-            <div class="rj-modal-content">
-                <span class="rj-modal-close" onclick="closeRJModal()">✕</span>
-                <h2>🏆 Milestones</h2>
-                <p>Choose what you want to explore:</p>
-                <div class="rj-modal-grid">
-                    <div class="rj-modal-item" onclick="window.location.href='friends.html'">
-                        <span>👥</span>
-                        <h4>My Network</h4>
-                        <p>Beloved Circle</p>
-                    </div>
-                    <div class="rj-modal-item" onclick="openAchieveModal('experience')">
-                        <span>💼</span>
-                        <h4>Experience</h4>
-                        <p>📌 Updating Soon</p>
-                    </div>
-                    <div class="rj-modal-item" onclick="openAchieveModal('memories')">
-                        <span>📸</span>
-                        <h4>Photo Zone</h4>
-                        <p>🛠️ Updating Soon</p>
-                    </div>
-                    <div class="rj-modal-item" onclick="window.location.href='autobiography.html'">
-                        <span>📖</span>
-                        <h4>Autobiography</h4>
-                        <p>My life story</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        ARTICLES MODAL
-        ============================================================ -->
-        <div class="rj-modal" id="articlesModal">
-            <div class="rj-modal-content">
-                <span class="rj-modal-close" onclick="closeArticlesModal()">✕</span>
-                <h2>📄 All Articles</h2>
-                <p>All my writings in one place</p>
-                <div class="articles-modal-list">
-                    <div class="article-modal-item">
-                        <h4>When I Wrote My First Line of Code</h4>
-                        <p>June 2026 — Journey</p>
-                        <a href="#" class="article-readmore">Read More →</a>
-                    </div>
-                    <div class="article-modal-item">
-                        <h4>My Biggest Mistake as a Beginner</h4>
-                        <p>July 2026 — Learning</p>
-                        <a href="#" class="article-readmore">Read More →</a>
-                    </div>
-                    <div class="article-modal-item">
-                        <h4>Why I Almost Quit Coding</h4>
-                        <p>July 2026 — Tech</p>
-                        <a href="#" class="article-readmore">Read More →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        INTERESTS MODAL
-        ============================================================ -->
-        <div class="rj-modal" id="interestsModal">
-            <div class="rj-modal-content">
-                <span class="rj-modal-close" onclick="closeInterestsModal()">✕</span>
-                <h2>✨ Explore Interests</h2>
-                <p>What makes me, me</p>
-                <div class="interests-modal-grid">
-                    <div class="interest-modal-item">
-                        <span>📺</span>
-                        <h4>Old is Gold</h4>
-                        <p>Old songs, old movies — they still hit different.</p>
-                    </div>
-                    <div class="interest-modal-item">
-                        <span>💻</span>
-                        <h4>Now & Here</h4>
-                        <p>Code, study, sleep. That's my rhythm.</p>
-                    </div>
-                    <div class="interest-modal-item">
-                        <span>🤫</span>
-                        <h4>What Nobody Knows</h4>
-                        <p>I get nervous before hitting deploy. Every time.</p>
-                    </div>
-                    <div class="interest-modal-item">
-                        <span>🧠</span>
-                        <h4>What I've Learned</h4>
-                        <p>Failure is part of the process.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        EDUCATION MODAL
-        ============================================================ -->
-        <div class="rj-modal" id="educationModal">
-            <div class="rj-modal-content">
-                <span class="rj-modal-close" onclick="closeEducationModal()">✕</span>
-                <h2>📜 Full Journey</h2>
-                <p>My academic path in detail</p>
-                <div class="education-modal-list">
-                    <div class="education-modal-item">
-                        <span class="edu-badge">Planning</span>
-                        <h4>Graduation</h4>
-                        <p>Planning for college admission in 2026.</p>
-                    </div>
-                    <div class="education-modal-item">
-                        <span class="edu-badge">2024-26</span>
-                        <h4>Senior Secondary</h4>
-                        <p>Udaan International School, Begusarai — 12th with PCM.</p>
-                    </div>
-                    <div class="education-modal-item">
-                        <span class="edu-badge">2019-24</span>
-                        <h4>Secondary</h4>
-                        <p>Mother's Pride International School — 10th, discovered coding.</p>
-                    </div>
-                    <div class="education-modal-item">
-                        <span class="edu-badge">2014-19</span>
-                        <h4>Primary</h4>
-                        <p>Gautam Buddha Global School — 5th Standard.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        SCROLL TO TOP
-        ============================================================ -->
-        <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
-            <span>↑</span>
-        </button>
 
         <!-- ============================================================
         FOOTER
         ============================================================ -->
-        <footer role="contentinfo">
-            <p>© 2026 Ravi Raj</p>
-            <p>From Begusarai, with attitude.</p>
-
+        <footer>
+            <p>© 2026 Ravi Raj · From Begusarai, with ❤️</p>
+            
             <div class="footer-socials">
-                <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter">
-                    <i class="fab fa-x-twitter"></i>
-                </a>
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
+                <a href="https://github.com/ravirajhere" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://twitter.com/Raviraj2k09" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://youtube.com/@Ravirajhere" target="_blank"><i class="fab fa-youtube"></i></a>
             </div>
 
-            <p>Last Updated: <span id="lastUpdated"></span></p>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:8px;">Hand-coded. No shortcuts. Just code.</p>
-        </footer>
+            <!-- ====== LIVE TIME + LAST UPDATED ====== -->
+            <div class="footer-time">
+                <span id="live-time">⏱️ Loading...</span>
+                <span class="divider">|</span>
+                <span id="last-updated">📅 Last Updated: Loading...</span>
+            </div>
 
-        <!-- ============================================================
-        LIVE TIME BAR
-        ============================================================ -->
-        <div id="live-time-bar" role="status" aria-live="polite">
-            <span id="current-date-time">Loading...</span>
-        </div>
+            <p class="footer-motto">Hand-coded. No shortcuts. Just code.</p>
+        </footer>
 
     </main>
 
     <!-- ============================================================
-    SCRIPTS
+    SCROLL TO TOP BUTTON
     ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-    </script>
+    <button id="scrollTopBtn" aria-label="Scroll to top">↑</button>
+
+    <!-- ============================================================
+    JAVASCRIPT (EXTERNAL)
+    ============================================================ -->
     <script src="script.js"></script>
-    <script src="chatbox.js"></script>
-    <script src="emailjs.js"></script>
-    <script src="friends.js"></script>
 
 </body>
 </html>
