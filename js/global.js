@@ -216,7 +216,7 @@
         const wa = document.createElement('div');
         wa.className = 'floating-whatsapp';
         wa.innerHTML = `
-            <a href="https://wa.me/919102224971?text=Hi%20Ravi%2C%20I%20visited%20your%20website%20and%20wanted%20to%20connect%21" 
+            <a href="https://wa.me/919102224871?text=Hi%20RaviRaj%2C%20I%20visited%20your%20website%20and%20wanted%20to%20connect%21" 
                target="_blank" 
                aria-label="WhatsApp"
                title="Chat on WhatsApp">
