@@ -147,8 +147,8 @@
     console.log('✅ Global JS Loaded Successfully!');
 
 })();
-// ============================================================
-// 💚 MATRIX BACKGROUND — GLOBAL (Custom: rravirajhere)
+ // ============================================================
+// 💚 MATRIX BACKGROUND — GLOBAL (Color Matched)
 // ============================================================
 (function() {
     'use strict';
@@ -156,11 +156,23 @@
     // Canvas create karo
     const canvas = document.createElement('canvas');
     canvas.id = 'matrix-bg';
-    document.body.prepend(canvas);  // Body ke sabse upar (background ke liye)
+    document.body.prepend(canvas);
 
     const ctx = canvas.getContext('2d');
 
     let width, height, columns, drops;
+
+    // Website ke primary color ke hisaab se matrix color
+    function getMatrixColor() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return isDark ? '#00d9ff' : '#0984e3';  // Dark: Cyan, Light: Blue
+    }
+
+    // Website ke secondary color ke hisaab se glow
+    function getMatrixGlow() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        return isDark ? 'rgba(0, 217, 255, 0.15)' : 'rgba(9, 132, 227, 0.10)';
+    }
 
     function initMatrix() {
         width = window.innerWidth;
@@ -168,35 +180,57 @@
         canvas.width = width;
         canvas.height = height;
 
-        const chars = 'rravirajhere';  // 👈 Aapka custom text!
         const fontSize = 14;
         columns = Math.floor(width / fontSize);
         drops = Array(Math.floor(columns)).fill(1);
     }
 
     function drawMatrix() {
-        ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const color = getMatrixColor();
+        const glow = getMatrixGlow();
+
+        // Trail effect — website ke bg color ke hisaab se
+        ctx.fillStyle = isDark ? 'rgba(10, 10, 15, 0.05)' : 'rgba(245, 240, 235, 0.05)';
         ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = '#00d9ff';
+
+        // Glow effect
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 10;
+
+        // Matrix text
+        ctx.fillStyle = color;
         ctx.font = '14px Fira Code, monospace';
+        ctx.textAlign = 'center';
 
         const chars = 'rravirajhere';
 
         for (let i = 0; i < drops.length; i++) {
             const text = chars[Math.floor(Math.random() * chars.length)];
-            ctx.fillText(text, i * 14, drops[i] * 14);
+            const x = i * 14 + 7;
+            const y = drops[i] * 14;
 
-            if (drops[i] * 14 > height && Math.random() > 0.975) {
+            // Random brightness variation
+            const brightness = 0.7 + Math.random() * 0.3;
+            ctx.globalAlpha = brightness;
+
+            ctx.fillText(text, x, y);
+
+            if (y > height && Math.random() > 0.975) {
                 drops[i] = 0;
             }
             drops[i]++;
         }
+
+        // Reset shadow
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
     }
 
-    // Theme ke hisaab se opacity adjust karo
+    // Theme change par update
     function updateMatrixTheme() {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        canvas.style.opacity = isDark ? '0.12' : '0.06';
+        canvas.style.opacity = isDark ? '1' : '0.8';
     }
 
     // Resize handler
@@ -204,7 +238,7 @@
         initMatrix();
     });
 
-    // Theme change par update
+    // Theme change listener
     document.addEventListener('themeChanged', updateMatrixTheme);
 
     // Initial setup
@@ -214,7 +248,7 @@
     // Animation loop
     let matrixInterval = setInterval(drawMatrix, 35);
 
-    // Tab hidden ho toh pause (performance)
+    // Performance: Tab hidden ho toh pause
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             clearInterval(matrixInterval);
@@ -223,11 +257,11 @@
         }
     });
 
-    // Cleanup on page unload
+    // Cleanup
     window.addEventListener('beforeunload', function() {
         clearInterval(matrixInterval);
     });
 
-    console.log('💚 Matrix Background Loaded — rravirajhere!');
+    console.log('💚 Matrix Background Loaded — Color Matched!');
 
 })();
