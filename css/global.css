@@ -1,6 +1,6 @@
 /* ============================================================
-   GLOBAL.CSS — COMMON STYLES FOR ALL PAGES
-   (Dark/Light Mode, Navbar, Footer, Buttons, Typography)
+   GLOBAL.CSS — COMPLETE WITH ALL FEATURES
+   (Dark/Light Mode, Matrix, Loading, Progress, Glassmorphism, etc.)
    ============================================================ */
 
 /* ============================================================
@@ -21,7 +21,9 @@
     --accent: #6c5ce7;
     --gradient-bot: linear-gradient(135deg, var(--primary), var(--secondary));
     --gradient-user: linear-gradient(135deg, var(--accent), var(--primary));
+    --gradient-text: linear-gradient(135deg, #0984e3, #6c5ce7);
     --shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 16px 56px rgba(0, 0, 0, 0.15);
     --radius: 16px;
     --radius-sm: 10px;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -45,7 +47,9 @@
     --primary: #00d9ff;
     --secondary: #00ff88;
     --accent: #7c3aed;
+    --gradient-text: linear-gradient(135deg, #00d9ff, #7c3aed);
     --shadow: 0 8px 40px rgba(0, 217, 255, 0.15);
+    --shadow-hover: 0 16px 56px rgba(0, 217, 255, 0.25);
     --toggle-bg: rgba(255, 255, 255, 0.05);
     --toggle-border: rgba(255, 255, 255, 0.15);
     --toggle-text: #a0a0b0;
@@ -62,12 +66,19 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: var(--font);
     background: var(--bg-primary);
     color: var(--text-primary);
     transition: background var(--transition), color var(--transition);
     -webkit-font-smoothing: antialiased;
+    position: relative;
+    z-index: 1;
+    cursor: none;
 }
 
 a {
@@ -83,6 +94,26 @@ a:hover {
 img {
     max-width: 100%;
     display: block;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
 }
 
 /* ============================================================
@@ -166,7 +197,7 @@ img {
 [data-theme="dark"] .switch .moon { opacity: 1; }
 
 /* ============================================================
-   BUTTONS
+   BUTTONS (Global)
    ============================================================ */
 .btn {
     display: inline-block;
@@ -209,73 +240,278 @@ img {
 }
 
 /* ============================================================
-   RESPONSIVE - THEME TOGGLE
+   GLASSMORPHISM CARDS (Professional)
    ============================================================ */
-@media (max-width: 500px) {
-    .theme-toggle-wrapper {
-        top: 10px;
-        right: 10px;
-        padding: 4px 10px 4px 14px;
-        gap: 6px;
-    }
+.glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: all 0.4s ease;
+}
 
-    #themeLabel {
-        font-size: 10px;
-        min-width: 28px;
-    }
+.glass-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary);
+}
 
-    .switch {
-        width: 36px;
-        height: 20px;
-    }
+[data-theme="dark"] .glass-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.06);
+}
 
-    .switch .slider {
-        width: 12px;
-        height: 12px;
-        top: 2px;
-        left: 2px;
-    }
+[data-theme="dark"] .glass-card:hover {
+    border-color: var(--primary);
+}
 
-    [data-theme="dark"] .switch .slider {
-        left: 18px;
-    }
+/* ============================================================
+   GRADIENT TEXT (Headings)
+   ============================================================ */
+.gradient-text {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
 
-    .switch .switch-icon {
-        font-size: 9px;
+h1.gradient-text,
+h2.gradient-text,
+h3.gradient-text,
+.section-header h2 {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
+
+/* ============================================================
+   HOVER 3D LIFT EFFECT (Cards)
+   ============================================================ */
+.hover-lift {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#loader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.spinner {
+    width: 56px;
+    height: 56px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.loader-text {
+    margin-top: 20px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 2px;
+    animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-text {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* ============================================================
+   READING PROGRESS BAR
+   ============================================================ */
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gradient-text);
+    z-index: 99998;
+    width: 0%;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 20px rgba(9, 132, 227, 0.3);
+}
+
+[data-theme="dark"] #progress-bar {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+/* ============================================================
+   FLOATING SOCIAL ICONS (Left Side)
+   ============================================================ */
+.floating-socials {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9997;
+}
+
+.floating-socials a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.floating-socials a:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: scale(1.12) translateX(4px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 24px rgba(9, 132, 227, 0.3);
+}
+
+[data-theme="dark"] .floating-socials a:hover {
+    box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
+}
+
+/* ============================================================
+   FLOATING WHATSAPP BUTTON (Right Side)
+   ============================================================ */
+.floating-whatsapp {
+    position: fixed;
+    bottom: 120px;
+    right: 24px;
+    z-index: 9997;
+}
+
+.floating-whatsapp a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25D366;
+    color: #fff;
+    font-size: 28px;
+    box-shadow: 0 4px 24px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+}
+
+.floating-whatsapp a:hover {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.6);
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transition: transform 0.08s ease, width 0.2s ease, height 0.2s ease;
+    transform: translate(-50%, -50%);
+}
+
+.custom-cursor.hover {
+    width: 36px;
+    height: 36px;
+    background: rgba(9, 132, 227, 0.1);
+}
+
+[data-theme="dark"] .custom-cursor.hover {
+    background: rgba(0, 217, 255, 0.1);
+}
+
+/* ============================================================
+   MOUSE TRAIL
+   ============================================================ */
+.trail-dot {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    pointer-events: none;
+    z-index: 99998;
+    opacity: 0.4;
+    transition: opacity 0.5s ease;
+}
+
+/* ============================================================
+   FLOATING BUBBLES
+   ============================================================ */
+.bubble {
+    position: fixed;
+    border-radius: 50%;
+    background: var(--primary);
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatBubble linear infinite;
+}
+
+[data-theme="dark"] .bubble {
+    opacity: 0.08;
+}
+
+@keyframes floatBubble {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.06;
+    }
+    90% {
+        opacity: 0.06;
+    }
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
     }
 }
 
-@media (max-width: 768px) {
-    .theme-toggle-wrapper {
-        top: 15px;
-        right: 15px;
-        padding: 6px 12px 6px 16px;
-        gap: 8px;
-    }
-
-    #themeLabel {
-        font-size: 11px;
-        min-width: 34px;
-    }
-
-    .switch {
-        width: 42px;
-        height: 22px;
-    }
-
-    .switch .slider {
-        width: 14px;
-        height: 14px;
-    }
-
-    [data-theme="dark"] .switch .slider {
-        left: 22px;
-    }
-
-    .switch .switch-icon {
-        font-size: 10px;
-    }
-}
 /* ============================================================
    SCROLL TO TOP BUTTON
    ============================================================ */
@@ -296,7 +532,7 @@ img {
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
-    z-index: 999;
+    z-index: 9996;
 }
 
 #scrollTopBtn.visible {
@@ -317,6 +553,7 @@ img {
 [data-theme="dark"] #scrollTopBtn:hover {
     box-shadow: 0 6px 24px rgba(255, 255, 255, 0.2);
 }
+
 /* ============================================================
    TOAST NOTIFICATION
    ============================================================ */
@@ -369,8 +606,9 @@ img {
     border-color: #ff9800;
     color: #ff9800;
 }
+
 /* ============================================================
-   MATRIX BACKGROUND — GLOBAL
+   MATRIX BACKGROUND
    ============================================================ */
 #matrix-bg {
     position: fixed;
@@ -383,18 +621,112 @@ img {
     pointer-events: none;
 }
 
-/* Light mode mein thoda aur transparent */
 [data-theme="light"] #matrix-bg {
     opacity: 0.02;
 }
 
-/* Dark mode mein thoda aur visible */
 [data-theme="dark"] #matrix-bg {
     opacity: 0.05;
 }
 
-/* Matrix ke upar content readable */
-body {
-    position: relative;
-    z-index: 1;
+/* ============================================================
+   RESPONSIVE - THEME TOGGLE
+   ============================================================ */
+@media (max-width: 500px) {
+    .theme-toggle-wrapper {
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px 4px 14px;
+        gap: 6px;
+    }
+
+    #themeLabel {
+        font-size: 10px;
+        min-width: 28px;
+    }
+
+    .switch {
+        width: 36px;
+        height: 20px;
+    }
+
+    .switch .slider {
+        width: 12px;
+        height: 12px;
+        top: 2px;
+        left: 2px;
+    }
+
+    [data-theme="dark"] .switch .slider {
+        left: 18px;
+    }
+
+    .switch .switch-icon {
+        font-size: 9px;
+    }
+
+    .floating-socials {
+        left: 10px;
+    }
+
+    .floating-socials a {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .floating-whatsapp {
+        bottom: 100px;
+        right: 14px;
+    }
+
+    .floating-whatsapp a {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+
+    #scrollTopBtn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-wrapper {
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px 6px 16px;
+        gap: 8px;
+    }
+
+    #themeLabel {
+        font-size: 11px;
+        min-width: 34px;
+    }
+
+    .switch {
+        width: 42px;
+        height: 22px;
+    }
+
+    .switch .slider {
+        width: 14px;
+        height: 14px;
+    }
+
+    [data-theme="dark"] .switch .slider {
+        left: 22px;
+    }
+
+    .switch .switch-icon {
+        font-size: 10px;
+    }
+
+    .floating-socials {
+        display: none;
+    }
 }
