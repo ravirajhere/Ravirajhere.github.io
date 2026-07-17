@@ -385,12 +385,12 @@ img {
 
 /* Light mode mein thoda aur transparent */
 [data-theme="light"] #matrix-bg {
-    opacity: 0.04;
+    opacity: 0.02;
 }
 
 /* Dark mode mein thoda aur visible */
 [data-theme="dark"] #matrix-bg {
-    opacity: 0.10;
+    opacity: 0.05;
 }
 
 /* Matrix ke upar content readable */
