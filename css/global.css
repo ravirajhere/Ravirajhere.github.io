@@ -370,20 +370,30 @@ img {
     color: #ff9800;
 }
 /* ============================================================
-   RAIN BACKGROUND — GLOBAL
+   MATRIX BACKGROUND — GLOBAL
    ============================================================ */
-#rain-canvas {
+#matrix-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 0;
+    opacity: 0.06;
     pointer-events: none;
-    opacity: 0.5;
 }
 
-/* Rain effect ke upar content readable */
+/* Light mode mein thoda aur transparent */
+[data-theme="light"] #matrix-bg {
+    opacity: 0.04;
+}
+
+/* Dark mode mein thoda aur visible */
+[data-theme="dark"] #matrix-bg {
+    opacity: 0.10;
+}
+
+/* Matrix ke upar content readable */
 body {
     position: relative;
     z-index: 1;
