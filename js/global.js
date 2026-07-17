@@ -319,6 +319,7 @@
         }
     })();
 
+    /*
     // ============================================================
     // 15. MATRIX BACKGROUND — GLOBAL (Color Matched)
     // ============================================================
@@ -424,6 +425,7 @@
 
         console.log('💚 Matrix Background Loaded — Color Matched!');
     })();
+    */
 
     console.log('✅ All Global Features Loaded Successfully!');
     console.log('🔥 Features: Theme, Loading, Progress, Social, WhatsApp, Cursor, Trail, Bubbles, Matrix, and more!');
