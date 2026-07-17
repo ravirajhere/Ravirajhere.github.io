@@ -93,7 +93,6 @@ http://ravirajhere.github.io/
 🚀 How to Run Locally
 
 1. **Clone the repository**
-```bash
 git clone https://github.com/ravirajhere/ravirajhere.github.io.git
 2. *Navigate to the folder*
 cd ravirajhere.github.io
@@ -171,4 +170,4 @@ This project is licensed under the *MIT License*
   <br>
   <sub>© 2026 Ravi Raj</sub>
 </p>
-```
+
