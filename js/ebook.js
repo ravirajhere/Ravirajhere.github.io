@@ -15,7 +15,7 @@ const EBOOK_CONFIG = {
     currentYear: new Date().getFullYear(),
     images: {
         cover: 'assets/images/bookcover.jpg',
-        author: 'assets/images/Singh_ravirajhere.jpeg',
+        author: 'assets/images/formal.jpg',
         signature: 'assets/images/signature.jpg'
     },
     social: {},
