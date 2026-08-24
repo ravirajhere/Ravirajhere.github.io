@@ -1,7 +1,6 @@
 // ============================================
-// FRIENDS.JS — PREMIUM EDITION
-// (Glassmorphism Cards, Weather, Search Suggestions, Analytics, 
-//  Webcam Filters, QR Code in PDF, Search History, Share)
+// FRIENDS.JS — PREMIUM EDITION (CLEAN)
+// (No Voice, No Live Stats, No QR Code)
 // ============================================
 
 'use strict';
@@ -174,10 +173,8 @@ let capturedPhotoData = null;
 let stream = null;
 let webcamActive = false;
 let isDatabaseFriend = false;
-let recognition = null;
 let currentFilter = 'normal';
 let searchHistory = [];
-let weatherData = null;
 
 // ============================================
 // DOM REFERENCES
@@ -195,9 +192,6 @@ const DOM = {
     permissionDenied: document.getElementById('permissionDenied'),
     permissionMessage: document.getElementById('permissionMessage'),
     friendSearch: document.getElementById('friendSearch'),
-    searchSuggestions: document.getElementById('searchSuggestions'),
-    voiceBtn: document.getElementById('voiceBtn'),
-    voiceStatus: document.getElementById('voiceStatus'),
     foundAvatar: document.getElementById('foundAvatar'),
     foundName: document.getElementById('foundName'),
     timelineBar: document.getElementById('timelineBar'),
@@ -216,18 +210,8 @@ const DOM = {
     displaySchoolClass: document.getElementById('displaySchoolClass'),
     detailsTimelineBar: document.getElementById('detailsTimelineBar'),
     detailsTimelineText: document.getElementById('detailsTimelineText'),
-    liveDate: document.getElementById('liveDate'),
-    liveTime: document.getElementById('liveTime'),
-    liveYear: document.getElementById('liveYear'),
-    liveBattery: document.getElementById('liveBattery'),
-    liveDevice: document.getElementById('liveDevice'),
-    liveLocation: document.getElementById('liveLocation'),
-    liveWeather: document.getElementById('liveWeather'),
     confettiContainer: document.getElementById('confettiContainer'),
-    analyticsContainer: document.getElementById('analyticsContainer'),
-    qrContainer: document.getElementById('qrContainer'),
     shareButtons: document.getElementById('shareButtons'),
-    searchHistoryContainer: document.getElementById('searchHistoryContainer'),
     filterButtons: document.querySelectorAll('.filter-btn')
 };
 
@@ -235,17 +219,9 @@ const DOM = {
 // INITIALIZATION
 // ============================================
 function init() {
-    console.log('Friends Corner Premium JS loaded!');
-    
-    loadSearchHistory();
-    updateSearchHistoryUI();
-    getWeather();
-    updateAnalytics();
+    console.log('Friends Corner JS loaded!');
     
     if (DOM.friendSearch) {
-        DOM.friendSearch.addEventListener('input', function(e) {
-            showSuggestions(this.value);
-        });
         DOM.friendSearch.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') searchFriend();
         });
@@ -257,7 +233,7 @@ function init() {
             DOM.filterButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             currentFilter = this.dataset.filter;
-            applyFilter(currentFilter);
+            applyFilterToVideo(currentFilter);
         });
     });
     
@@ -267,260 +243,7 @@ function init() {
 }
 
 // ============================================
-// 1. SEARCH SUGGESTIONS
-// ============================================
-function showSuggestions(query) {
-    const container = DOM.searchSuggestions;
-    if (!container) return;
-    
-    if (!query || query.length < 1) {
-        container.style.display = 'none';
-        return;
-    }
-    
-    const matches = friendsData.filter(f => 
-        f.firstName.toLowerCase().includes(query.toLowerCase())
-    ).slice(0, 6);
-    
-    if (matches.length === 0) {
-        container.style.display = 'none';
-        return;
-    }
-    
-    container.style.display = 'block';
-    container.innerHTML = matches.map(f => `
-        <div class="suggestion-item" onclick="selectSuggestion('${f.firstName}')">
-            <span class="suggestion-name">${f.firstName}</span>
-            <span class="suggestion-tag">${f.tag}</span>
-        </div>
-    `).join('');
-}
-
-function selectSuggestion(name) {
-    if (DOM.friendSearch) DOM.friendSearch.value = name;
-    DOM.searchSuggestions.style.display = 'none';
-    searchFriend();
-}
-
-// ============================================
-// 2. SEARCH HISTORY
-// ============================================
-function loadSearchHistory() {
-    try {
-        const saved = localStorage.getItem('friendSearchHistory');
-        if (saved) {
-            searchHistory = JSON.parse(saved);
-        }
-    } catch(e) { searchHistory = []; }
-}
-
-function saveSearchHistory(name) {
-    searchHistory = searchHistory.filter(f => f !== name);
-    searchHistory.unshift(name);
-    if (searchHistory.length > 5) searchHistory.pop();
-    try {
-        localStorage.setItem('friendSearchHistory', JSON.stringify(searchHistory));
-    } catch(e) {}
-    updateSearchHistoryUI();
-}
-
-function updateSearchHistoryUI() {
-    const container = DOM.searchHistoryContainer;
-    if (!container) return;
-    
-    if (searchHistory.length === 0) {
-        container.innerHTML = '<p class="no-history">No recent searches</p>';
-        return;
-    }
-    
-    container.innerHTML = searchHistory.map(name => `
-        <span class="history-chip" onclick="selectSuggestion('${name}')">${name}</span>
-    `).join('');
-}
-
-// ============================================
-// 3. WEATHER + LOCATION
-// ============================================
-function getWeather() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async function(pos) {
-                const { latitude, longitude } = pos.coords;
-                await fetchWeather(latitude, longitude);
-            },
-            function() {
-                if (DOM.liveWeather) DOM.liveWeather.textContent = '🌤️ N/A';
-            },
-            { timeout: 10000, enableHighAccuracy: true }
-        );
-    }
-}
-
-async function fetchWeather(lat, lon) {
-    try {
-        const response = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
-        );
-        const data = await response.json();
-        
-        if (data.current_weather) {
-            const temp = data.current_weather.temperature;
-            const code = data.current_weather.weathercode;
-            const condition = getWeatherCondition(code);
-            weatherData = { temp, condition };
-            
-            if (DOM.liveWeather) {
-                DOM.liveWeather.textContent = `🌤️ ${temp}°C ${condition}`;
-            }
-            
-            const geoRes = await fetch(
-                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
-            );
-            const geoData = await geoRes.json();
-            if (geoData.locality && DOM.liveLocation) {
-                DOM.liveLocation.textContent = geoData.locality + ', ' + geoData.principalSubdivision;
-            }
-        }
-    } catch(e) {
-        if (DOM.liveWeather) DOM.liveWeather.textContent = '🌤️ N/A';
-    }
-}
-
-function getWeatherCondition(code) {
-    const conditions = {
-        0: '☀️ Clear', 1: '🌤️ Mainly Clear', 2: '⛅ Partly Cloudy', 3: '☁️ Overcast',
-        45: '🌫️ Foggy', 48: '🌫️ Foggy',
-        51: '🌧️ Light Drizzle', 53: '🌧️ Drizzle', 55: '🌧️ Heavy Drizzle',
-        61: '🌧️ Light Rain', 63: '🌧️ Rain', 65: '🌧️ Heavy Rain',
-        71: '🌨️ Light Snow', 73: '🌨️ Snow', 75: '❄️ Heavy Snow',
-        80: '🌧️ Rain Showers', 81: '🌧️ Heavy Rain Showers',
-        95: '⛈️ Thunderstorm'
-    };
-    return conditions[code] || '🌤️ Clear';
-}
-
-// ============================================
-// 4. ANALYTICS DASHBOARD
-// ============================================
-function updateAnalytics() {
-    const container = DOM.analyticsContainer;
-    if (!container) return;
-    
-    const total = friendsData.length;
-    const avgAge = (friendsData.reduce((sum, f) => sum + f.age, 0) / total).toFixed(1);
-    const tagCounts = {};
-    const classCounts = {};
-    
-    friendsData.forEach(f => {
-        tagCounts[f.tag] = (tagCounts[f.tag] || 0) + 1;
-        classCounts[f.sinceClass] = (classCounts[f.sinceClass] || 0) + 1;
-    });
-    
-    const mostCommonTag = Object.entries(tagCounts).sort((a,b) => b[1] - a[1])[0];
-    
-    container.innerHTML = `
-        <div class="analytics-grid">
-            <div class="analytics-card">
-                <span class="analytics-icon">👥</span>
-                <span class="analytics-number">${total}</span>
-                <span class="analytics-label">Total Friends</span>
-            </div>
-            <div class="analytics-card">
-                <span class="analytics-icon">📊</span>
-                <span class="analytics-number">${avgAge}</span>
-                <span class="analytics-label">Average Age</span>
-            </div>
-            <div class="analytics-card">
-                <span class="analytics-icon">🏷️</span>
-                <span class="analytics-number">${Object.keys(tagCounts).length}</span>
-                <span class="analytics-label">Unique Tags</span>
-            </div>
-            <div class="analytics-card">
-                <span class="analytics-icon">⭐</span>
-                <span class="analytics-number">${mostCommonTag ? mostCommonTag[0] : 'N/A'}</span>
-                <span class="analytics-label">Most Common Tag</span>
-            </div>
-        </div>
-        <div class="analytics-chart">
-            <h4>📈 Friendship Years</h4>
-            <div class="chart-bars">
-                ${Object.entries(classCounts).sort((a,b) => a[0] - b[0]).map(([cls, count]) => `
-                    <div class="chart-bar-wrapper">
-                        <span class="chart-label">Class ${cls}</span>
-                        <div class="chart-bar-bg">
-                            <div class="chart-bar-fill" style="width:${(count/total)*100}%"></div>
-                        </div>
-                        <span class="chart-count">${count}</span>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-}
-
-// ============================================
-// 5. APPLY FILTER
-// ============================================
-function applyFilter(filter) {
-    let filtered = friendsData;
-    if (filter !== 'all') {
-        filtered = friendsData.filter(f => f.tag === filter || f.connection === filter);
-    }
-    renderFriendCards(filtered);
-}
-
-function renderFriendCards(friends) {
-    const grid = document.querySelector('.friends-grid');
-    if (!grid) return;
-    
-    grid.innerHTML = friends.map(f => `
-        <div class="friend-card glass-card" onclick="searchFriendByName('${f.firstName}')">
-            <div class="friend-card-inner">
-                <div class="friend-card-avatar">${f.firstName.charAt(0)}</div>
-                <h3 class="friend-card-name">${f.firstName}</h3>
-                <span class="friend-card-tag" style="color:${getTagColor(f.tag)}">${f.tag}</span>
-                <p class="friend-card-connection">${f.connection}</p>
-                <div class="friend-card-hobbies">
-                    ${f.hobby.split(',').map(h => `<span class="hobby-chip">${h.trim()}</span>`).join('')}
-                </div>
-                <span class="friend-card-since">Since Class ${f.sinceClass}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-function getTagColor(tag) {
-    const colors = {
-        'Best Friend': '#DAA520',
-        'Oldest Friend': '#DAA520',
-        'Day One Friend': '#DAA520',
-        'Most Loyal': '#DAA520',
-        'Cricket Partner': '#00b894',
-        'Sports Buddy': '#00b894',
-        'Gaming Buddy': '#6c5ce7',
-        'Gamer Friend': '#6c5ce7',
-        'Drama Partner': '#fd79a8',
-        'Funniest Friend': '#fd79a8',
-        'Confident Friend': '#fd79a8',
-        'Study Partner': '#0984e3',
-        'Scholar Friend': '#0984e3',
-        'Positive Vibes': '#00b894',
-        'Tech Genius': '#6c5ce7',
-        'Rockstar Friend': '#fd79a8',
-        'Smartest Friend': '#0984e3',
-        'Sweetest Friend': '#ff7675',
-        'Creative Friend': '#00b894'
-    };
-    return colors[tag] || '#71717a';
-}
-
-function searchFriendByName(name) {
-    if (DOM.friendSearch) DOM.friendSearch.value = name;
-    searchFriend();
-}
-
-// ============================================
-// 6. SEARCH FRIEND
+// SEARCH FRIEND
 // ============================================
 function searchFriend() {
     const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
@@ -530,8 +253,6 @@ function searchFriend() {
         alert('Please enter a first name!');
         return;
     }
-    
-    saveSearchHistory(input);
     
     const found = friendsData.find(f => f.firstName.toLowerCase() === input.toLowerCase());
     
@@ -554,67 +275,7 @@ function searchFriend() {
 }
 
 // ============================================
-// 7. VOICE SEARCH
-// ============================================
-function toggleVoiceSearch() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert('Voice search not supported. Please use Chrome or Edge.');
-        return;
-    }
-    
-    if (recognition && DOM.voiceBtn && DOM.voiceBtn.classList.contains('listening')) {
-        recognition.stop();
-        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
-        if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
-        return;
-    }
-    
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'en-IN';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    
-    recognition.onstart = function() {
-        if (DOM.voiceBtn) DOM.voiceBtn.classList.add('listening');
-        if (DOM.voiceStatus) {
-            DOM.voiceStatus.classList.add('show');
-            DOM.voiceStatus.textContent = 'Listening... Speak name';
-        }
-    };
-    
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript.trim();
-        if (DOM.friendSearch) DOM.friendSearch.value = transcript;
-        if (DOM.voiceStatus) {
-            DOM.voiceStatus.textContent = 'Heard: "' + transcript + '" — Searching...';
-        }
-        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
-        setTimeout(function() {
-            if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
-            searchFriend();
-        }, 500);
-    };
-    
-    recognition.onerror = function() {
-        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
-        if (DOM.voiceStatus) {
-            DOM.voiceStatus.textContent = 'Could not hear. Try again.';
-            setTimeout(function() {
-                DOM.voiceStatus.classList.remove('show');
-            }, 1500);
-        }
-    };
-    
-    recognition.onend = function() {
-        if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
-    };
-    
-    recognition.start();
-}
-
-// ============================================
-// 8. WEBCAM WITH FILTERS
+// WEBCAM WITH FILTERS
 // ============================================
 async function startWebcam() {
     if (navigator.permissions) {
@@ -693,7 +354,7 @@ function retryCamera() {
 }
 
 // ============================================
-// 9. CAPTURE PHOTO
+// CAPTURE PHOTO
 // ============================================
 function captureFriendPhoto() {
     if (!webcamActive || !DOM.webcamVideo) {
@@ -734,7 +395,7 @@ function captureFriendPhoto() {
 }
 
 // ============================================
-// 10. FRIEND FOUND / NEW FRIEND
+// FRIEND FOUND / NEW FRIEND
 // ============================================
 function showFriendFound() {
     if (DOM.foundAvatar) {
@@ -743,8 +404,6 @@ function showFriendFound() {
     if (DOM.foundName) DOM.foundName.textContent = currentFriend.firstName;
     updateTimeline('found');
     if (DOM.foundScreen) DOM.foundScreen.style.display = 'block';
-    
-    generateQRCode(currentFriend.firstName);
     
     if (DOM.shareButtons) DOM.shareButtons.style.display = 'flex';
 }
@@ -759,58 +418,7 @@ function showNewFriend() {
 }
 
 // ============================================
-// 11. QR CODE GENERATION
-// ============================================
-function generateQRCode(friendName) {
-    const container = DOM.qrContainer;
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    const canvas = document.createElement('canvas');
-    canvas.width = 120;
-    canvas.height = 120;
-    const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 120, 120);
-    
-    ctx.fillStyle = '#000000';
-    const size = 10;
-    const gap = 2;
-    const patterns = [
-        [1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,0,1,1,1,0,1,1,0,1],
-        [1,0,1,1,1,0,1,1,0,1],
-        [1,0,1,1,1,0,1,1,0,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,0,1,1,0,1,1,0,1,1],
-        [1,0,1,1,0,1,1,0,1,1],
-        [1,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1]
-    ];
-    
-    const offset = 10;
-    patterns.forEach((row, i) => {
-        row.forEach((val, j) => {
-            if (val) {
-                ctx.fillRect(offset + j * (size + gap), offset + i * (size + gap), size, size);
-            }
-        });
-    });
-    
-    ctx.fillStyle = '#DAA520';
-    ctx.font = '8px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText(friendName, 60, 115);
-    
-    container.appendChild(canvas);
-    container.innerHTML += `<p style="font-size:10px;color:#999;margin-top:4px;">Scan to connect</p>`;
-}
-
-// ============================================
-// 12. SHARE FRIEND CARD
+// SHARE FRIEND CARD
 // ============================================
 function shareFriendCard(platform) {
     if (!capturedPhotoData) {
@@ -838,7 +446,7 @@ function shareFriendCard(platform) {
 }
 
 // ============================================
-// 13. TIMELINE
+// TIMELINE
 // ============================================
 function updateTimeline(prefix) {
     if (!currentFriend || currentFriend.sinceClass === 'new') return;
@@ -863,7 +471,7 @@ function updateTimeline(prefix) {
 }
 
 // ============================================
-// 14. CONFETTI
+// CONFETTI
 // ============================================
 function launchConfetti() {
     const container = DOM.confettiContainer;
@@ -900,7 +508,7 @@ function launchConfetti() {
 }
 
 // ============================================
-// 15. PROCEED TO DETAILS
+// PROCEED TO DETAILS
 // ============================================
 function proceedToDetails() {
     if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
@@ -920,11 +528,10 @@ function proceedToDetails() {
     if (DOM.displaySchoolClass) DOM.displaySchoolClass.textContent = 'School: ' + (currentFriend.school || '') + ' — Since Class ' + (currentFriend.sinceClass || '');
     
     updateTimeline('details');
-    updateLiveStats();
 }
 
 // ============================================
-// 16. FRIEND CARD PDF — PREMIUM CERTIFICATE
+// FRIEND CARD PDF — PREMIUM CERTIFICATE
 // ============================================
 function generateFriendCardPDF(isDBFriend) {
     if (!capturedPhotoData) {
@@ -1144,30 +751,6 @@ function generateFriendCardPDF(isDBFriend) {
             pdf.text('"' + currentFriend.tag + '"', pw/2, certY + 58, { align: 'center' });
         }
         
-        // QR CODE
-        const qrX = 30;
-        const qrY = 175;
-        const qrSize = 25;
-        
-        pdf.setDrawColor('#DAA520');
-        pdf.setLineWidth(0.5);
-        pdf.rect(qrX, qrY, qrSize, qrSize);
-        
-        pdf.setFillColor('#1a1a1a');
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if ((i * j) % 2 === 0 || i === 0 || j === 0 || i === 7 || j === 7) {
-                    const cellSize = qrSize / 10;
-                    pdf.rect(qrX + 2 + i * cellSize, qrY + 2 + j * cellSize, cellSize, cellSize, 'F');
-                }
-            }
-        }
-        
-        pdf.setTextColor('#999999');
-        pdf.setFontSize(6);
-        pdf.setFont(undefined, 'normal');
-        pdf.text('Scan to connect', qrX + qrSize/2, qrY + qrSize + 6, { align: 'center' });
-        
         // SIGNATURE
         const signX = pw - 30;
         const signY = 175;
@@ -1211,7 +794,7 @@ function generateFriendCardPDF(isDBFriend) {
 }
 
 // ============================================
-// 17. JSPDF LOADER
+// JSPDF LOADER
 // ============================================
 function loadJSPDF(callback) {
     if (window.jspdf || window.jsPDF) {
@@ -1233,44 +816,7 @@ function loadJSPDF(callback) {
 }
 
 // ============================================
-// 18. LIVE STATS
-// ============================================
-function updateLiveStats() {
-    const now = new Date();
-    if (DOM.liveDate) DOM.liveDate.textContent = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    if (DOM.liveTime) DOM.liveTime.textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-    if (DOM.liveYear) DOM.liveYear.textContent = now.getFullYear();
-    
-    if ('getBattery' in navigator) {
-        navigator.getBattery()
-            .then(function(b) {
-                const lvl = Math.round(b.level * 100);
-                if (DOM.liveBattery) {
-                    DOM.liveBattery.textContent = lvl + '%' + (b.charging ? ' ⚡' : '');
-                    DOM.liveBattery.className = 'value ' + (lvl > 50 ? 'green' : lvl > 20 ? 'yellow' : 'red');
-                }
-            })
-            .catch(function() {
-                if (DOM.liveBattery) {
-                    DOM.liveBattery.textContent = 'N/A';
-                    DOM.liveBattery.className = 'value';
-                }
-            });
-    } else {
-        if (DOM.liveBattery) {
-            DOM.liveBattery.textContent = 'N/A';
-            DOM.liveBattery.className = 'value';
-        }
-    }
-    
-    if (DOM.liveDevice) {
-        DOM.liveDevice.textContent = /Android/i.test(navigator.userAgent) ? 'Android' :
-            /iPhone|iPad/i.test(navigator.userAgent) ? 'iOS' : 'Desktop';
-    }
-}
-
-// ============================================
-// 19. RESET
+// RESET
 // ============================================
 function resetSearch() {
     hideAllScreens();
@@ -1280,8 +826,6 @@ function resetSearch() {
         DOM.friendSearch.value = '';
         DOM.friendSearch.focus();
     }
-    if (DOM.voiceBtn) DOM.voiceBtn.classList.remove('listening');
-    if (DOM.voiceStatus) DOM.voiceStatus.classList.remove('show');
     currentFriend = null;
     capturedPhotoData = null;
     isDatabaseFriend = false;
@@ -1295,25 +839,71 @@ function hideAllScreens() {
 }
 
 // ============================================
-// 20. INIT ON PAGE LOAD
+// DOWNLOAD FUNCTIONS
+// ============================================
+window.downloadFriendCard = function() {
+    console.log('Download Friend Card clicked!');
+    if (!capturedPhotoData) {
+        alert('No photo captured! Please capture photo first.');
+        return;
+    }
+    if (!currentFriend) {
+        alert('No friend found! Please search first.');
+        return;
+    }
+    if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+        alert('PDF library loading... Please try again in 2 seconds.');
+        loadJSPDF(function() {
+            setTimeout(function() {
+                generateFriendCardPDF(isDatabaseFriend);
+            }, 500);
+        });
+        return;
+    }
+    generateFriendCardPDF(isDatabaseFriend);
+};
+
+window.downloadNewFriendCard = function() {
+    console.log('Download New Friend Card clicked!');
+    if (!capturedPhotoData) {
+        alert('No photo captured! Please capture photo first.');
+        return;
+    }
+    if (!currentFriend) {
+        alert('No friend found! Please search first.');
+        return;
+    }
+    if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+        alert('PDF library loading... Please try again in 2 seconds.');
+        loadJSPDF(function() {
+            setTimeout(function() {
+                generateFriendCardPDF(false);
+            }, 500);
+        });
+        return;
+    }
+    generateFriendCardPDF(false);
+};
+
+// ============================================
+// INIT ON PAGE LOAD
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     init();
 });
 
 // ============================================
-// 21. EXPOSE FUNCTIONS TO GLOBAL SCOPE
+// EXPOSE FUNCTIONS TO GLOBAL SCOPE
 // ============================================
 window.searchFriend = searchFriend;
-window.searchFriendByName = searchFriendByName;
-window.selectSuggestion = selectSuggestion;
-window.toggleVoiceSearch = toggleVoiceSearch;
 window.captureFriendPhoto = captureFriendPhoto;
 window.retryCamera = retryCamera;
 window.applyFilterToVideo = applyFilterToVideo;
 window.proceedToDetails = proceedToDetails;
 window.shareFriendCard = shareFriendCard;
-window.generateFriendCardPDF = generateFriendCardPDF;
 window.resetSearch = resetSearch;
-window.downloadFriendCard = function() { generateFriendCardPDF(isDatabaseFriend); };
-window.downloadNewFriendCard = function() { generateFriendCardPDF(false); };
+window.generateFriendCardPDF = generateFriendCardPDF;
+window.downloadFriendCard = downloadFriendCard;
+window.downloadNewFriendCard = downloadNewFriendCard;
+
+console.log('✅ Friends Corner JS Loaded Successfully!');
