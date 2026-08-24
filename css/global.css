@@ -1,6 +1,6 @@
 /* ============================================================
    GLOBAL.CSS — COMPLETE WITH ALL FEATURES
-   (Dark/Light Mode, Loading, Progress, Social, WhatsApp, Cursor, Trail, Bubbles, Quick Tools, Profile Card, Popup)
+   (Dark/Light Mode, Loading, Progress, Social, Cursor, Trail, Bubbles, Quick Tools, Profile Card, Popup)
    ============================================================ */
 
 /* ============================================================
@@ -407,35 +407,6 @@ h3.gradient-text,
 
 [data-theme="dark"] .floating-socials a:hover {
     box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
-}
-
-/* ============================================================
-   FLOATING WHATSAPP BUTTON (Right Side)
-   ============================================================ */
-.floating-whatsapp {
-    position: fixed;
-    bottom: 120px;
-    right: 24px;
-    z-index: 9997;
-}
-
-.floating-whatsapp a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #25D366;
-    color: #fff;
-    font-size: 28px;
-    box-shadow: 0 4px 24px rgba(37, 211, 102, 0.4);
-    transition: all 0.3s ease;
-}
-
-.floating-whatsapp a:hover {
-    transform: scale(1.1) rotate(-5deg);
-    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.6);
 }
 
 /* ============================================================
@@ -859,17 +830,6 @@ h3.gradient-text,
         width: 36px;
         height: 36px;
         font-size: 14px;
-    }
-
-    .floating-whatsapp {
-        bottom: 100px;
-        right: 14px;
-    }
-
-    .floating-whatsapp a {
-        width: 48px;
-        height: 48px;
-        font-size: 24px;
     }
 
     #scrollTopBtn {
