@@ -10,14 +10,11 @@
     
     <!-- Global CSS -->
     <link rel="stylesheet" href="css/global.css" />
-    
-    <!-- Page-specific CSS -->
     <link rel="stylesheet" href="css/style.css">
 
     <style>
         /* ============================================
            FRIENDS PAGE SPECIFIC STYLES
-           (Only for Friends Corner page)
            ============================================ */
         :root {
             --bg: #0a0a0f;
@@ -41,9 +38,6 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ============================================
-           RESET & BASE
-        ============================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font);
@@ -58,17 +52,11 @@
             background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 217, 255, 0.05) 0%, transparent 70%);
         }
 
-        /* ============================================
-           SCROLLBAR — SAME AS PORTFOLIO
-        ============================================ */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
 
-        /* ============================================
-           CONTAINER
-        ============================================ */
         .friends-container {
             max-width: 580px;
             width: 100%;
@@ -96,11 +84,7 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%,100% { box-shadow: 0 0 20px rgba(108,92,231,0.2); } 50% { box-shadow: 0 0 40px rgba(108,92,231,0.5); } }
 
-        /* ============================================
-           HEADER
-        ============================================ */
         .friends-header { text-align: center; margin-bottom: 28px; position: relative; z-index: 1; }
         .friends-header h2 {
             font-size: 30px;
@@ -120,9 +104,6 @@
         }
         .friends-header p i { color: var(--primary); margin: 0 2px; }
 
-        /* ============================================
-           SEARCH AREA
-        ============================================ */
         .search-area {
             display: flex;
             gap: 10px;
@@ -167,37 +148,7 @@
             transform: scale(1.04);
             box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
         }
-        .voice-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 1.5px solid var(--border);
-            background: var(--bg2);
-            color: var(--text2);
-            font-size: 18px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .voice-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .voice-status {
-            display: none;
-            text-align: center;
-            color: var(--primary);
-            font-size: 13px;
-            margin-bottom: 12px;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
-        }
-        .voice-status.show { display: block; animation: fadeInUp 0.3s ease; }
 
-        /* ============================================
-           PHOTO SCREEN
-        ============================================ */
         .photo-screen {
             display: none;
             text-align: center;
@@ -218,6 +169,34 @@
             font-weight: 500;
             margin-bottom: 20px;
         }
+
+        /* ===== FILTER CONTROLS ===== */
+        .filter-controls {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+        .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-btn.active {
+            background: var(--primary);
+            color: #0a0a0f;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
         .webcam-box {
             position: relative;
             width: 100%;
@@ -280,9 +259,6 @@
         }
         .retry-btn:hover { background: rgba(0, 217, 255, 0.1); }
 
-        /* ============================================
-           FOUND SCREEN
-        ============================================ */
         .found-screen {
             display: none;
             text-align: center;
@@ -315,7 +291,47 @@
         .found-card h2.new-friend { color: #ffd93d; }
         .found-card p { color: var(--text2); font-size: 16px; margin-bottom: 6px; }
 
-        /* Timeline */
+        /* ===== SHARE BUTTONS ===== */
+        .share-buttons {
+            display: none;
+            justify-content: center;
+            gap: 10px;
+            margin: 14px 0;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            padding: 8px 18px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .share-btn.whatsapp { background: #25D366; }
+        .share-btn.instagram { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .share-btn.email { background: #ea4335; }
+        .share-btn.pdf { background: var(--grad2); color: #0a0a0f; }
+        .share-btn:hover { transform: scale(1.05); }
+
+        /* ===== QR CODE ===== */
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 14px 0;
+        }
+        .qr-container canvas {
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
         .friendship-timeline {
             background: var(--bg2);
             border-radius: var(--radius2);
@@ -371,9 +387,6 @@
             box-shadow: 0 10px 40px rgba(0, 217, 255, 0.4);
         }
 
-        /* ============================================
-           DETAILS SCREEN
-        ============================================ */
         .details-screen {
             display: none;
             animation: fadeIn 0.5s ease;
@@ -460,7 +473,6 @@
             font-size: 15px;
         }
 
-        /* Live Section */
         .live-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -487,7 +499,6 @@
         .live-section .value.yellow { color: #ffd93d; }
         .live-section .value.cyan { color: var(--primary); }
 
-        /* Buttons */
         .download-btn {
             width: 100%;
             padding: 14px;
@@ -531,9 +542,6 @@
             background: rgba(0, 217, 255, 0.05);
         }
 
-        /* ============================================
-           BACK TO HOME
-        ============================================ */
         .back-home {
             text-align: center;
             margin-top: 25px;
@@ -557,9 +565,6 @@
             gap: 12px;
         }
 
-        /* ============================================
-           POWERED BY
-        ============================================ */
         .powered-by {
             text-align: center;
             margin-top: 12px;
@@ -581,9 +586,6 @@
             text-decoration: underline;
         }
 
-        /* ============================================
-           RESPONSIVE
-        ============================================ */
         @media (max-width: 480px) {
             .friends-container { padding: 22px 16px; border-radius: 20px; }
             .friends-header h2 { font-size: 24px; }
@@ -597,6 +599,8 @@
             .webcam-box { max-width: 100%; }
             .found-avatar { width: 80px; height: 80px; font-size: 35px; }
             .name { font-size: 20px; }
+            .share-buttons { gap: 6px; }
+            .share-btn { font-size: 11px; padding: 6px 12px; }
         }
     </style>
 </head>
@@ -607,26 +611,31 @@
         <!-- HEADER -->
         <div class="friends-header">
             <h2>👥 Friends Corner</h2>
-            <p><i class="fas fa-microphone"></i> Voice Search · <i class="fas fa-clock"></i> Timeline · <i class="fas fa-id-card"></i> Friend Card</p>
+            <p><i class="fas fa-camera"></i> Photo Capture · <i class="fas fa-clock"></i> Timeline · <i class="fas fa-id-card"></i> Friend Card</p>
         </div>
 
         <!-- STEP 1: SEARCH -->
         <div class="search-area" id="searchArea">
-            <input type="text" id="friendSearch" placeholder="First name search karo ya mic dabao..." autocomplete="off" aria-label="Search friend name">
-            <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceSearch()" title="Voice Search" aria-label="Voice search">
-                <i class="fas fa-microphone"></i>
-            </button>
+            <input type="text" id="friendSearch" placeholder="First name search karo..." autocomplete="off" aria-label="Search friend name">
             <button onclick="searchFriend()">🔍 Search</button>
         </div>
-        <div class="voice-status" id="voiceStatus">🎤 Listening... Bol — "Sudhanshu"</div>
 
-        <!-- STEP 2: PHOTO MANDATORY -->
+        <!-- STEP 2: PHOTO -->
         <div class="photo-screen" id="photoScreen">
             <div class="photo-header">
                 <span class="lock-icon">🔒</span>
                 <h3>📸 <span id="photoFriendName">Friend</span>, Pehle Apni Live Photo Kheencho!</h3>
                 <p class="warning">⚠️ Photo required to continue — No Skip!</p>
             </div>
+
+            <!-- FILTER CONTROLS -->
+            <div class="filter-controls" id="filterControls">
+                <button class="filter-btn active" data-filter="normal" onclick="applyFilterToVideo('normal')">Normal</button>
+                <button class="filter-btn" data-filter="bw" onclick="applyFilterToVideo('bw')">B&W</button>
+                <button class="filter-btn" data-filter="sepia" onclick="applyFilterToVideo('sepia')">Sepia</button>
+                <button class="filter-btn" data-filter="vintage" onclick="applyFilterToVideo('vintage')">Vintage</button>
+            </div>
+
             <div class="webcam-box">
                 <video id="webcamVideo" autoplay playsinline muted></video>
                 <div class="webcam-placeholder" id="webcamPlaceholder">
@@ -652,6 +661,18 @@
                 <div class="found-avatar" id="foundAvatar">👤</div>
                 <h2 class="friend-found">FRIEND FOUND!</h2>
                 <p><strong id="foundName">Friend</strong>, you're in Ravi's friend list!</p>
+
+                <!-- QR CODE -->
+                <div class="qr-container" id="qrContainer"></div>
+
+                <!-- SHARE BUTTONS -->
+                <div class="share-buttons" id="shareButtons">
+                    <button class="share-btn whatsapp" onclick="shareFriendCard('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="share-btn instagram" onclick="shareFriendCard('instagram')"><i class="fab fa-instagram"></i> Instagram</button>
+                    <button class="share-btn email" onclick="shareFriendCard('email')"><i class="fas fa-envelope"></i> Email</button>
+                    <button class="share-btn pdf" onclick="shareFriendCard('download')"><i class="fas fa-id-card"></i> PDF</button>
+                </div>
+
                 <div class="friendship-timeline">
                     <div class="timeline-label">📅 Friendship Timeline</div>
                     <div class="timeline-bar-bg">
@@ -670,6 +691,15 @@
                 <div class="found-avatar" id="newFriendAvatar">👤</div>
                 <h2 class="new-friend">NEW FRIEND!</h2>
                 <p><strong id="newFriendName">Friend</strong>, you're now a Friend of Ravi!</p>
+
+                <!-- SHARE BUTTONS -->
+                <div class="share-buttons" style="display:flex;">
+                    <button class="share-btn whatsapp" onclick="shareFriendCard('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="share-btn instagram" onclick="shareFriendCard('instagram')"><i class="fab fa-instagram"></i> Instagram</button>
+                    <button class="share-btn email" onclick="shareFriendCard('email')"><i class="fas fa-envelope"></i> Email</button>
+                    <button class="share-btn pdf" onclick="shareFriendCard('download')"><i class="fas fa-id-card"></i> PDF</button>
+                </div>
+
                 <button class="proceed-btn" onclick="downloadNewFriendCard()">🪪 Download Friend Card</button>
                 <button class="search-again-btn" onclick="resetSearch()">🔄 Search Another Name</button>
             </div>
@@ -725,6 +755,9 @@
         <div class="powered-by">
             Powered by <a href="index.html">Ravi Raj</a> · Built with ❤️
         </div>
+
+        <!-- CONFETTI CONTAINER -->
+        <div id="confettiContainer"></div>
 
     </div>
 
