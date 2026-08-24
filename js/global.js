@@ -1,18 +1,82 @@
 // ============================================================
-// GLOBAL.JS — Theme, Toast, Live Time, Keyboard Shortcuts
+// GLOBAL.JS — PREMIUM EDITION
+// (Loader, Custom Cursor, Theme, Toast, Live Time)
 // ============================================================
 
 (function() {
     'use strict';
 
     // ============================================================
-    // 1. THEME TOGGLE
+    // 1. LOADER
+    // ============================================================
+    const loader = document.getElementById('loader');
+    
+    if (loader) {
+        // Hide loader after 1.5 seconds
+        setTimeout(function() {
+            loader.classList.add('hidden');
+        }, 1500);
+
+        // Fallback — agar 3 sec mein nahi hata toh force hide
+        setTimeout(function() {
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+            }
+        }, 3000);
+    }
+
+    // ============================================================
+    // 2. CUSTOM CURSOR
+    // ============================================================
+    const cursor = document.getElementById('custom-cursor');
+    
+    if (cursor && window.innerWidth > 768) {
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        // Hover effect on clickable elements
+        document.querySelectorAll('a, button, .btn, .clickable, .interest-card, .project-card, .milestone-card, .social-links a').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                cursor.classList.add('hover');
+            });
+            el.addEventListener('mouseleave', function() {
+                cursor.classList.remove('hover');
+            });
+        });
+
+        // Click effect
+        document.addEventListener('mousedown', function() {
+            cursor.classList.add('click');
+        });
+        document.addEventListener('mouseup', function() {
+            cursor.classList.remove('click');
+        });
+
+        // Hide cursor when leaving window
+        document.addEventListener('mouseleave', function() {
+            cursor.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', function() {
+            cursor.style.opacity = '1';
+        });
+    }
+
+    // ============================================================
+    // 3. THEME TOGGLE
     // ============================================================
     const themeSwitch = document.getElementById('themeSwitch');
     const toast = document.getElementById('toast');
     const html = document.documentElement;
 
-    const currentTheme = localStorage.getItem('theme') || 'dark';
+    // Load saved theme
+    const currentTheme = localStorage.getItem('theme') || 'light';
     html.setAttribute('data-theme', currentTheme);
 
     if (themeSwitch) {
@@ -34,7 +98,7 @@
     }
 
     // ============================================================
-    // 2. TOAST
+    // 4. TOAST
     // ============================================================
     let toastTimer;
 
@@ -49,7 +113,7 @@
     }
 
     // ============================================================
-    // 3. LIVE TIME
+    // 5. LIVE TIME
     // ============================================================
     function updateTime() {
         const now = new Date();
@@ -73,7 +137,7 @@
     let timeInterval = setInterval(updateTime, 1000);
 
     // ============================================================
-    // 4. PAGE VISIBILITY
+    // 6. PAGE VISIBILITY
     // ============================================================
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
@@ -85,7 +149,7 @@
     });
 
     // ============================================================
-    // 5. KEYBOARD SHORTCUTS — ESCAPE
+    // 7. KEYBOARD SHORTCUTS — ESCAPE
     // ============================================================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
@@ -99,10 +163,12 @@
     });
 
     // ============================================================
-    // 6. CONSOLE WELCOME
+    // 8. CONSOLE WELCOME
     // ============================================================
-    console.log('%c RAVIRAJ SINGH | Frontend Developer ', 'background: #00d9ff; color: #0a0a0f; font-size: 20px; font-weight: bold; padding: 10px;');
-    console.log('%c Status: Ready to Code | Location: Begusarai, Bihar ', 'color: #00ff88; font-size: 14px;');
+    console.log('%c ✨ RAVI RAJ | Premium Portfolio ✨ ', 'background: #c9a84c; color: #1a1a1a; font-size: 20px; font-weight: bold; padding: 12px 24px; border-radius: 8px;');
+    console.log('%c 🚀 Student • Author • Web Developer ', 'color: #c9a84c; font-size: 14px;');
+    console.log('%c 📍 Begusarai, Bihar | 🇮🇳 Jai Hind ', 'color: #8a8a8a; font-size: 13px;');
+    console.log('%c 🔥 Premium Features: Loader • Custom Cursor • Smooth Scroll • Animations ', 'color: #4a4a4a; font-size: 13px;');
     console.log('✅ Global JS Loaded Successfully!');
 
 })();
