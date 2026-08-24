@@ -1,6 +1,5 @@
 // ============================================================
-// GLOBAL.JS — COMPLETE WITH ALL FEATURES
-// (Theme, Toast, Live Time, Keyboard Shortcuts, Page Visibility)
+// GLOBAL.JS — Theme, Toast, Live Time, Keyboard Shortcuts
 // ============================================================
 
 (function() {
@@ -13,8 +12,7 @@
     const toast = document.getElementById('toast');
     const html = document.documentElement;
 
-    // Load saved theme
-    const currentTheme = localStorage.getItem('theme') || 'light';
+    const currentTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', currentTheme);
 
     if (themeSwitch) {
@@ -36,7 +34,7 @@
     }
 
     // ============================================================
-    // 2. TOAST FUNCTION
+    // 2. TOAST
     // ============================================================
     let toastTimer;
 
@@ -51,7 +49,7 @@
     }
 
     // ============================================================
-    // 3. LIVE TIME — REAL-TIME CLOCK
+    // 3. LIVE TIME
     // ============================================================
     function updateTime() {
         const now = new Date();
@@ -75,7 +73,7 @@
     let timeInterval = setInterval(updateTime, 1000);
 
     // ============================================================
-    // 4. PAGE VISIBILITY — PAUSE UPDATES WHEN TAB IS HIDDEN
+    // 4. PAGE VISIBILITY
     // ============================================================
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
@@ -87,15 +85,13 @@
     });
 
     // ============================================================
-    // 5. KEYBOARD SHORTCUTS — ESCAPE TO CLOSE
+    // 5. KEYBOARD SHORTCUTS — ESCAPE
     // ============================================================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            // Close all interest hidden contents
             document.querySelectorAll('.hidden-content').forEach(el => {
                 el.style.display = 'none';
             });
-            // Close chatbox if open
             if (window.closeChatbox) {
                 window.closeChatbox();
             }
@@ -105,9 +101,8 @@
     // ============================================================
     // 6. CONSOLE WELCOME
     // ============================================================
-    console.log('%c👋 Hey there, fellow developer!', 'font-size: 20px; font-weight: bold; color: #c9a84c;');
-    console.log('%cThanks for checking out my site. Built with ❤️ by Ravi Raj', 'font-size: 14px; color: #1a2a3a;');
-    console.log('%c📖 GitHub: https://github.com/ravirajhere', 'font-size: 14px; color: #c9a84c;');
+    console.log('%c RAVIRAJ SINGH | Frontend Developer ', 'background: #00d9ff; color: #0a0a0f; font-size: 20px; font-weight: bold; padding: 10px;');
+    console.log('%c Status: Ready to Code | Location: Begusarai, Bihar ', 'color: #00ff88; font-size: 14px;');
     console.log('✅ Global JS Loaded Successfully!');
 
 })();
