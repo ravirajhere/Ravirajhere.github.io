@@ -1,6 +1,6 @@
 // ============================================================
-// SCRIPT.JS — Page-Specific Logic
-// (Smooth Scroll, Active Nav, Skill Bars Animation)
+// SCRIPT.JS — PREMIUM EDITION
+// (Smooth Scroll, Active Nav, Interest Reveal, Typing Animation, Ripple Effect)
 // ============================================================
 
 // ============================================================
@@ -49,29 +49,98 @@ window.addEventListener('scroll', updateActiveLink);
 window.addEventListener('load', updateActiveLink);
 
 // ============================================================
-// 3. SKILL BARS — Animate on Scroll
+// 3. INTEREST REVEAL — CLICK TO EXPAND
 // ============================================================
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const bars = entry.target.querySelectorAll('.skill-bar-fill');
-            bars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
-            });
+function revealInterest(id) {
+    const content = document.getElementById(id);
+    if (!content) return;
+    
+    // Close all other hidden contents
+    document.querySelectorAll('.hidden-content').forEach(el => {
+        if (el.id !== id) {
+            el.style.display = 'none';
         }
     });
-}, { threshold: 0.5 });
+    
+    // Toggle this one
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+}
 
-document.querySelectorAll('.skill-box').forEach(box => {
-    observer.observe(box);
+// ============================================================
+// 4. KEYBOARD ACCESSIBILITY — Interest & Milestone Cards
+// ============================================================
+document.querySelectorAll('.interest-card, .milestone-card').forEach(el => {
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            el.click();
+        }
+        if (e.key === 'Escape') {
+            const hidden = el.querySelector('.hidden-content');
+            if (hidden) hidden.style.display = 'none';
+        }
+    });
 });
 
 // ============================================================
-// 4. DYNAMIC FOOTER YEAR
+// 5. TYPING ANIMATION FOR HERO SUBTITLE
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const typingElement = document.querySelector('.hero .subtitle');
+    if (!typingElement) return;
+    
+    const text = typingElement.textContent;
+    typingElement.textContent = '';
+    let index = 0;
+    
+    function typeWriter() {
+        if (index < text.length) {
+            typingElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+    
+    // Start typing after 1 second
+    setTimeout(typeWriter, 1000);
+});
+
+// ============================================================
+// 6. RIPPLE EFFECT ON HERO IMAGE
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const imageWrapper = document.querySelector('.hero-image-wrapper');
+    if (!imageWrapper) return;
+    
+    imageWrapper.addEventListener('click', function(e) {
+        // Create ripple element
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple-effect';
+        
+        // Position ripple at click point
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = size + 'px';
+        ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        
+        this.appendChild(ripple);
+        
+        // Remove ripple after animation
+        setTimeout(() => {
+            ripple.remove();
+        }, 800);
+    });
+});
+
+// ============================================================
+// 7. DYNAMIC FOOTER YEAR
 // ============================================================
 const yearSpan = document.getElementById('current-year');
 if (yearSpan) {
@@ -79,7 +148,7 @@ if (yearSpan) {
 }
 
 // ============================================================
-// 5. BACK TO TOP
+// 8. BACK TO TOP
 // ============================================================
 const backToTop = document.getElementById('back-to-top');
 if (backToTop) {
@@ -89,4 +158,8 @@ if (backToTop) {
     });
 }
 
-console.log('✅ Script JS Loaded Successfully!');
+// ============================================================
+// 9. CONSOLE WELCOME (Extra)
+// ============================================================
+console.log('%c 🔥 Premium Scripts Loaded! ', 'background: #c9a84c; color: #1a1a1a; font-size: 14px; font-weight: bold; padding: 6px 16px; border-radius: 4px;');
+console.log('✅ Features: Smooth Scroll • Active Nav • Interest Reveal • Typing • Ripple • Dynamic Year');
