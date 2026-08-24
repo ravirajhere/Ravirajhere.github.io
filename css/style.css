@@ -1,5 +1,6 @@
 /* ============================================================
-   STYLE.CSS — ORIGINAL DESIGN (Navy + Gold Theme)
+   STYLE.CSS — PREMIUM VERSION (Navy + Gold Theme)
+   Same elements, upgraded look
    ============================================================ */
 
 /* ============================================================
@@ -12,7 +13,7 @@
 }
 
 /* ============================================================
-   NAVIGATION
+   NAVIGATION — Premium
    ============================================================ */
 nav {
     display: flex;
@@ -24,16 +25,28 @@ nav {
     flex-wrap: wrap;
     gap: 12px;
     background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 0 0 var(--radius) var(--radius);
     position: sticky;
     top: 0;
     z-index: 100;
+    animation: fadeDown 0.6s ease;
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 [data-theme="dark"] nav {
-    background: rgba(13, 13, 13, 0.8);
+    background: rgba(13, 13, 13, 0.85);
 }
 
 .logo {
@@ -45,11 +58,12 @@ nav {
 
 .logo span {
     color: var(--accent);
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
 }
 
 .nav-links {
     display: flex;
-    gap: 24px;
+    gap: 28px;
     list-style: none;
     flex-wrap: wrap;
 }
@@ -59,18 +73,37 @@ nav {
     font-size: 14px;
     font-weight: 500;
     padding: 4px 0;
-    border-bottom: 2px solid transparent;
+    position: relative;
     transition: var(--transition);
     letter-spacing: 0.3px;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
 .nav-links a:hover {
     color: var(--accent);
 }
 
+.nav-links a:hover::after {
+    width: 100%;
+}
+
 .nav-links a.active {
     color: var(--accent);
-    border-bottom-color: var(--accent);
+}
+
+.nav-links a.active::after {
+    width: 60%;
 }
 
 /* ============================================================
@@ -97,6 +130,8 @@ section {
     font-weight: 700;
     margin-bottom: 4px;
     color: var(--text-primary);
+    position: relative;
+    display: inline-block;
 }
 
 .section-header h2 span {
@@ -109,7 +144,7 @@ section {
 }
 
 /* ============================================================
-   HERO
+   HERO — Premium
    ============================================================ */
 .hero {
     text-align: center;
@@ -128,8 +163,8 @@ section {
 }
 
 .hero-image:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 60px rgba(201, 168, 76, 0.2);
+    transform: scale(1.04);
+    box-shadow: 0 0 60px rgba(201, 168, 76, 0.25);
 }
 
 .hero h1 {
@@ -140,7 +175,11 @@ section {
 }
 
 .hero h1 span {
-    color: var(--accent);
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(201, 168, 76, 0.15);
 }
 
 .hero .subtitle {
@@ -148,7 +187,7 @@ section {
     color: var(--primary-light);
     font-weight: 500;
     margin-bottom: 8px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     min-height: 28px;
 }
 
@@ -161,48 +200,92 @@ section {
     color: var(--text-muted);
     max-width: 500px;
     margin: 0 auto 20px;
-}
-
-/* Social Links */
-.social-links {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.social-links a {
-    padding: 6px 16px;
-    border-radius: 50px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    font-size: 13px;
-    font-weight: 500;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.social-links a:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    transform: translateY(-2px);
-}
-
-/* Hero Actions */
-.hero-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
+    line-height: 1.8;
 }
 
 /* ============================================================
-   STORY
+   SOCIAL LINKS — Premium Glassmorphism
+   ============================================================ */
+.social-links {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.social-links a {
+    padding: 10px 22px;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--accent);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
+}
+
+.social-links a i {
+    font-size: 17px;
+    color: var(--accent);
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    transform: translateY(-4px) scale(1.04);
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.2);
+    color: #fff;
+}
+
+.social-links a:hover i {
+    color: #fff;
+}
+
+/* ============================================================
+   HERO ACTIONS — Premium Buttons
+   ============================================================ */
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-actions .btn-primary {
+    background: var(--gradient-text);
+    color: #fff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-actions .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3);
+}
+
+.hero-actions .btn-outline {
+    border: 2px solid var(--accent);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.hero-actions .btn-outline:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+/* ============================================================
+   STORY — Premium Card
    ============================================================ */
 .story-content {
     max-width: 680px;
@@ -210,8 +293,14 @@ section {
     background: var(--bg-secondary);
     padding: 32px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.story-content:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.06);
 }
 
 .story-content p {
@@ -221,11 +310,11 @@ section {
 }
 
 .story-content code {
-    background: var(--bg-primary);
-    padding: 2px 8px;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 10px;
     border-radius: 4px;
     font-size: 13px;
-    color: var(--accent);
 }
 
 .fun-fact {
@@ -234,6 +323,11 @@ section {
     border-radius: var(--radius-sm);
     margin: 14px 0;
     border-left: 4px solid var(--accent);
+    transition: all 0.3s ease;
+}
+
+.fun-fact:hover {
+    border-left-width: 6px;
 }
 
 .fun-fact span {
@@ -241,37 +335,33 @@ section {
     color: var(--accent);
 }
 
-.story-content .btn {
-    margin-top: 6px;
-}
-
 /* ============================================================
-   INTERESTS
+   INTERESTS — Premium Cards
    ============================================================ */
 .interests-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
+    gap: 20px;
 }
 
 .interest-card {
     background: var(--bg-secondary);
     padding: 22px 20px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-color);
 }
 
 .interest-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08);
     border-color: var(--accent);
 }
 
 .interest-card .icon {
-    font-size: 26px;
+    font-size: 28px;
     display: block;
     margin-bottom: 6px;
 }
@@ -294,15 +384,15 @@ section {
     background: var(--bg-primary);
     border-radius: var(--radius-sm);
     font-size: 14px;
-    animation: fadeIn 0.3s ease;
+    animation: slideDown 0.3s ease;
     color: var(--text-primary);
     border-left: 3px solid var(--accent);
 }
 
-@keyframes fadeIn {
+@keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-6px);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
@@ -311,33 +401,33 @@ section {
 }
 
 /* ============================================================
-   PROJECTS
+   PROJECTS — Premium Glass Cards
    ============================================================ */
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    gap: 28px;
 }
 
 .project-card {
     background: var(--bg-secondary);
     padding: 24px 20px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
 }
 
 .project-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08);
     border-color: var(--accent);
 }
 
 .project-card .project-icon {
-    font-size: 28px;
+    font-size: 30px;
     display: block;
     margin-bottom: 4px;
 }
@@ -353,7 +443,7 @@ section {
     font-size: 14px;
     margin-bottom: 12px;
     flex: 1;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .tech-tags {
@@ -365,11 +455,17 @@ section {
 
 .tech-tags span {
     background: var(--bg-primary);
-    padding: 2px 12px;
+    padding: 2px 14px;
     border-radius: 50px;
     font-size: 12px;
     color: var(--text-muted);
     border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.tech-tags span:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .project-buttons {
@@ -385,44 +481,71 @@ section {
     text-align: center;
 }
 
+.project-buttons .btn-primary {
+    background: var(--gradient-text);
+    color: #fff;
+    border: none;
+}
+
+.project-buttons .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(201, 168, 76, 0.25);
+}
+
+.project-buttons .btn-outline {
+    border: 2px solid var(--accent);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.project-buttons .btn-outline:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
 .view-all {
     text-align: center;
     margin-top: 30px;
 }
 
 /* ============================================================
-   ARTICLES
+   ARTICLES — Premium
    ============================================================ */
 .articles-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    gap: 24px;
 }
 
 .article-card {
     background: var(--bg-secondary);
     padding: 20px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .article-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08);
+    border-left: 4px solid var(--accent);
 }
 
 .article-card .date {
     font-size: 12px;
     color: var(--text-muted);
     font-weight: 500;
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
 }
 
 .article-card h3 {
     font-size: 16px;
-    margin: 6px 0 8px;
+    margin: 8px 0 8px;
     color: var(--text-primary);
 }
 
@@ -430,7 +553,7 @@ section {
     color: var(--text-muted);
     font-size: 14px;
     margin-bottom: 12px;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .article-card code {
@@ -445,40 +568,64 @@ section {
     font-weight: 600;
     font-size: 14px;
     color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
 }
 
 .read-more:hover {
     color: var(--accent-light);
+    gap: 8px;
 }
 
 /* ============================================================
-   MILESTONES
+   MILESTONES — Premium Numbered Cards
    ============================================================ */
 .milestones-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
+    gap: 18px;
 }
 
 .milestone-card {
     background: var(--bg-secondary);
     padding: 20px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
+    position: relative;
+}
+
+.milestone-card::before {
+    content: attr(data-number);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
 }
 
 .milestone-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08);
     border-color: var(--accent);
 }
 
 .milestone-card .milestone-icon {
-    font-size: 28px;
+    font-size: 30px;
     display: block;
     margin-bottom: 6px;
 }
@@ -495,17 +642,30 @@ section {
 }
 
 /* ============================================================
-   EDUCATION
+   EDUCATION — Premium Timeline
    ============================================================ */
 .education-timeline {
     max-width: 600px;
     margin: 0 auto;
+    position: relative;
+}
+
+.education-timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    opacity: 0.2;
 }
 
 .edu-item {
     display: flex;
-    gap: 20px;
-    padding: 16px 0;
+    gap: 24px;
+    padding: 16px 0 16px 20px;
+    position: relative;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -513,10 +673,25 @@ section {
     border-bottom: none;
 }
 
+.edu-item::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 22px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-secondary);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+}
+
 .edu-item .year {
     font-weight: 700;
     min-width: 80px;
     color: var(--accent);
+    font-size: 14px;
+    padding-left: 30px;
 }
 
 .edu-item h3 {
@@ -530,15 +705,21 @@ section {
 }
 
 /* ============================================================
-   CONTACT
+   CONTACT — Premium
    ============================================================ */
 .contact-wrapper {
     text-align: center;
     background: var(--bg-secondary);
     padding: 40px 30px;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.contact-wrapper:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.06);
 }
 
 .contact-wrapper p {
@@ -554,8 +735,31 @@ section {
     margin-top: 18px;
 }
 
+.contact-buttons .btn-primary {
+    background: var(--gradient-text);
+    color: #fff;
+    border: none;
+}
+
+.contact-buttons .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.25);
+}
+
+.contact-buttons .btn-outline {
+    border: 2px solid var(--accent);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.contact-buttons .btn-outline:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-3px);
+}
+
 /* ============================================================
-   FOOTER
+   FOOTER — Premium
    ============================================================ */
 footer {
     text-align: center;
@@ -564,11 +768,12 @@ footer {
     color: var(--text-muted);
     font-size: 14px;
     margin-top: 20px;
+    box-shadow: 0 -4px 20px rgba(201, 168, 76, 0.02);
 }
 
 footer .footer-socials {
     display: flex;
-    gap: 16px;
+    gap: 18px;
     justify-content: center;
     margin: 12px 0;
 }
@@ -576,12 +781,13 @@ footer .footer-socials {
 footer .footer-socials a {
     color: var(--text-muted);
     font-size: 18px;
-    transition: var(--transition);
+    transition: all 0.3s ease;
 }
 
 footer .footer-socials a:hover {
     color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.1);
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
 }
 
 .footer-time {
@@ -610,11 +816,15 @@ footer .footer-socials a:hover {
 .footer-bottom a {
     color: var(--text-muted);
     font-size: 13px;
-    transition: var(--transition);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .footer-bottom a:hover {
     color: var(--accent);
+    gap: 8px;
 }
 
 .footer-motto {
@@ -698,7 +908,11 @@ footer .footer-socials a:hover {
 
     .social-links a {
         font-size: 12px;
-        padding: 5px 12px;
+        padding: 6px 14px;
+    }
+
+    .social-links a i {
+        font-size: 15px;
     }
 
     .hero-actions {
@@ -709,6 +923,26 @@ footer .footer-socials a:hover {
     .hero-actions .btn {
         width: 100%;
         max-width: 280px;
+    }
+
+    .education-timeline::before {
+        display: none;
+    }
+
+    .edu-item::before {
+        display: none;
+    }
+
+    .edu-item .year {
+        padding-left: 0;
+    }
+
+    .milestone-card::before {
+        width: 22px;
+        height: 22px;
+        font-size: 10px;
+        top: -8px;
+        right: -8px;
     }
 }
 
@@ -782,5 +1016,18 @@ footer .footer-socials a:hover {
 
     .footer-bottom a {
         font-size: 12px;
+    }
+
+    .social-links {
+        gap: 10px;
+    }
+
+    .social-links a {
+        font-size: 11px;
+        padding: 5px 12px;
+    }
+
+    .social-links a i {
+        font-size: 13px;
     }
 }
