@@ -11,7 +11,7 @@
     <meta name="author" content="Ravi Raj" />
     <link rel="canonical" href="https://ravirajhere.github.io/" />
     
-    <!-- ====== OPEN GRAPH TAGS (Social Media Sharing) ====== -->
+    <!-- ====== OPEN GRAPH TAGS ====== -->
     <meta property="og:title" content="Ravi Raj | Personal Website & Portfolio" />
     <meta property="og:description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
     <meta property="og:type" content="website" />
@@ -37,7 +37,26 @@
 <body>
 
     <!-- ============================================================
-    THEME TOGGLE (Fixed Position)
+    LOADER
+    ============================================================ -->
+    <div id="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading</div>
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    CUSTOM CURSOR
+    ============================================================ -->
+    <div id="custom-cursor"></div>
+
+    <!-- ============================================================
+    THEME TOGGLE
     ============================================================ -->
     <div class="theme-toggle-wrapper">
         <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
@@ -48,7 +67,7 @@
     </div>
 
     <!-- ============================================================
-    TOAST NOTIFICATION
+    TOAST
     ============================================================ -->
     <div id="toast" class="toast"></div>
 
@@ -77,7 +96,9 @@
         HERO
         ============================================================ -->
         <section id="home" class="hero">
-            <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
+            <div class="hero-image-wrapper">
+                <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
+            </div>
             <h1>Hey, I'm <span>Ravi Raj</span> 👋</h1>
             <p class="subtitle">Student • Author • Web_Developer</p>
             <p class="bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
@@ -86,7 +107,7 @@
             <div class="social-links">
                 <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i> GitHub</a>
                 <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i> Twitter</a>
+                <a href="https://instagram.com/rravirajhere" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i> Instagram</a>
                 <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
 
@@ -316,25 +337,25 @@
             </div>
 
             <div class="milestones-grid">
-                <div class="milestone-card" onclick="location.href='autobiography.html'">
+                <div class="milestone-card" onclick="location.href='autobiography.html'" data-number="01">
                     <span class="milestone-icon">📖</span>
                     <h3>2023: First Line of Code</h3>
                     <p>Wrote my first HTML tag. The beginning of everything.</p>
                 </div>
 
-                <div class="milestone-card" onclick="location.href='#projects'">
+                <div class="milestone-card" onclick="location.href='#projects'" data-number="02">
                     <span class="milestone-icon">🚀</span>
                     <h3>2024: First Project</h3>
                     <p>Built my first complete website. It was ugly. I was proud.</p>
                 </div>
 
-                <div class="milestone-card" onclick="location.href='friends.html'">
+                <div class="milestone-card" onclick="location.href='friends.html'" data-number="03">
                     <span class="milestone-icon">👥</span>
                     <h3>Friends Network</h3>
                     <p>My Cycle of Trust</p>
                 </div>
 
-                <div class="milestone-card">
+                <div class="milestone-card" data-number="04">
                     <span class="milestone-icon">💼</span>
                     <h3>Experiences</h3>
                     <p>Updating Soon 🔜</p>
@@ -371,7 +392,7 @@
             <div class="footer-socials">
                 <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
                 <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://instagram.com/rravirajhere" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
 
