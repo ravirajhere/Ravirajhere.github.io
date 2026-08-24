@@ -273,6 +273,9 @@ section:nth-child(10) { animation-delay: 1.0s; }
 /* ============================================================
    SOCIAL LINKS — 2×2 GRID
    ============================================================ */
+/* ============================================================
+   SOCIAL LINKS — 2×2 GRID (Desktop + Mobile)
+   ============================================================ */
 .social-links {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -317,6 +320,40 @@ section:nth-child(10) { animation-delay: 1.0s; }
 .social-links a:hover i {
     color: #fff;
     transform: scale(1.1);
+}
+
+/* ====== RESPONSIVE — Mobile ====== */
+@media (max-width: 768px) {
+    .social-links {
+        max-width: 340px;
+        gap: 10px;
+    }
+
+    .social-links a {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+
+    .social-links a i {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .social-links {
+        grid-template-columns: 1fr 1fr;  /* ← 2 columns */
+        max-width: 280px;
+        gap: 10px;
+    }
+
+    .social-links a {
+        font-size: 11px;
+        padding: 7px 12px;
+    }
+
+    .social-links a i {
+        font-size: 13px;
+    }
 }
 
 /* ============================================================
