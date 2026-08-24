@@ -1,6 +1,6 @@
 /* ============================================================
-   STYLE.CSS — PREMIUM VERSION (Navy + Gold Theme)
-   Same elements, upgraded look
+   STYLE.CSS — PREMIUM EDITION
+   (Image Effect + Micro-Interactions + Scroll Animations)
    ============================================================ */
 
 /* ============================================================
@@ -112,6 +112,31 @@ nav {
 section {
     margin-bottom: 80px;
     scroll-margin-top: 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+section:nth-child(1) { animation-delay: 0.1s; }
+section:nth-child(2) { animation-delay: 0.2s; }
+section:nth-child(3) { animation-delay: 0.3s; }
+section:nth-child(4) { animation-delay: 0.4s; }
+section:nth-child(5) { animation-delay: 0.5s; }
+section:nth-child(6) { animation-delay: 0.6s; }
+section:nth-child(7) { animation-delay: 0.7s; }
+section:nth-child(8) { animation-delay: 0.8s; }
+section:nth-child(9) { animation-delay: 0.9s; }
+section:nth-child(10) { animation-delay: 1.0s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .section-header {
@@ -144,11 +169,36 @@ section {
 }
 
 /* ============================================================
-   HERO — Premium
+   HERO — Premium with Image Effect
    ============================================================ */
 .hero {
     text-align: center;
     padding: 20px 0 10px;
+}
+
+/* ====== HERO IMAGE — PREMIUM EFFECT ====== */
+.hero-image-wrapper {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    padding: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--primary), var(--accent));
+    background-size: 300% 300%;
+    animation: goldBorderRotate 4s ease-in-out infinite;
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.15);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes goldBorderRotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-image-wrapper:hover {
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 0 60px rgba(201, 168, 76, 0.3), 0 0 100px rgba(201, 168, 76, 0.1);
 }
 
 .hero-image {
@@ -156,17 +206,35 @@ section {
     height: 140px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--accent);
-    margin: 0 auto 16px;
-    box-shadow: 0 0 40px rgba(201, 168, 76, 0.15);
-    transition: var(--transition);
+    display: block;
+    border: 3px solid var(--bg-secondary);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hero-image:hover {
-    transform: scale(1.04);
-    box-shadow: 0 0 60px rgba(201, 168, 76, 0.25);
+.hero-image-wrapper:hover .hero-image {
+    transform: scale(1.02);
 }
 
+/* ====== RIPPLE EFFECT ON IMAGE CLICK ====== */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(201, 168, 76, 0.3);
+    transform: scale(0);
+    animation: rippleAnim 0.8s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes rippleAnim {
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   HERO TEXT
+   ============================================================ */
 .hero h1 {
     font-size: 36px;
     font-weight: 700;
@@ -247,6 +315,7 @@ section {
 
 .social-links a:hover i {
     color: #fff;
+    transform: rotate(5deg) scale(1.1);
 }
 
 /* ============================================================
@@ -267,6 +336,22 @@ section {
     overflow: hidden;
 }
 
+.hero-actions .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg) translateX(-100%);
+    transition: 0.6s;
+}
+
+.hero-actions .btn-primary:hover::after {
+    transform: rotate(45deg) translateX(100%);
+}
+
 .hero-actions .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3);
@@ -282,6 +367,7 @@ section {
     background: var(--accent);
     color: #fff;
     transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.15);
 }
 
 /* ============================================================
@@ -295,12 +381,13 @@ section {
     border-radius: var(--radius);
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .story-content:hover {
     border-color: var(--accent);
-    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.06);
+    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.08);
+    transform: translateY(-3px);
 }
 
 .story-content p {
@@ -328,6 +415,7 @@ section {
 
 .fun-fact:hover {
     border-left-width: 6px;
+    padding-left: 24px;
 }
 
 .fun-fact span {
@@ -364,6 +452,11 @@ section {
     font-size: 28px;
     display: block;
     margin-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+.interest-card:hover .icon {
+    transform: scale(1.1);
 }
 
 .interest-card h3 {
@@ -415,7 +508,7 @@ section {
     border-radius: var(--radius);
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
 }
@@ -430,6 +523,11 @@ section {
     font-size: 30px;
     display: block;
     margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .project-icon {
+    transform: scale(1.1);
 }
 
 .project-card h3 {
@@ -466,6 +564,7 @@ section {
 .tech-tags span:hover {
     border-color: var(--accent);
     color: var(--accent);
+    transform: translateY(-2px);
 }
 
 .project-buttons {
@@ -523,7 +622,7 @@ section {
     border-radius: var(--radius);
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .article-card:hover {
@@ -595,7 +694,7 @@ section {
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     position: relative;
 }
@@ -616,6 +715,12 @@ section {
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
+    transition: all 0.3s ease;
+}
+
+.milestone-card:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3);
 }
 
 .milestone-card:hover {
@@ -628,6 +733,11 @@ section {
     font-size: 30px;
     display: block;
     margin-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+.milestone-card:hover .milestone-icon {
+    transform: scale(1.1);
 }
 
 .milestone-card h3 {
@@ -667,10 +777,15 @@ section {
     padding: 16px 0 16px 20px;
     position: relative;
     border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
 }
 
 .edu-item:last-child {
     border-bottom: none;
+}
+
+.edu-item:hover {
+    transform: translateX(5px);
 }
 
 .edu-item::before {
@@ -684,6 +799,12 @@ section {
     background: var(--accent);
     border: 2px solid var(--bg-secondary);
     box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+    transition: all 0.3s ease;
+}
+
+.edu-item:hover::before {
+    transform: scale(1.2);
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
 }
 
 .edu-item .year {
@@ -714,12 +835,13 @@ section {
     border-radius: var(--radius);
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
     border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .contact-wrapper:hover {
     border-color: var(--accent);
     box-shadow: 0 8px 40px rgba(201, 168, 76, 0.06);
+    transform: translateY(-3px);
 }
 
 .contact-wrapper p {
@@ -835,6 +957,35 @@ footer .footer-socials a:hover {
 }
 
 /* ============================================================
+   CUSTOM SCROLLBAR — Gold Theme
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+    border: 2px solid var(--bg-primary);
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-light);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+}
+
+/* Firefox Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-primary);
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
@@ -944,6 +1095,15 @@ footer .footer-socials a:hover {
         top: -8px;
         right: -8px;
     }
+
+    .hero-image-wrapper {
+        padding: 4px;
+    }
+
+    .hero-image {
+        width: 120px;
+        height: 120px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -987,8 +1147,12 @@ footer .footer-socials a:hover {
     }
 
     .hero-image {
-        width: 110px;
-        height: 110px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .hero-image-wrapper {
+        padding: 3px;
     }
 
     .section-header h2 {
@@ -1030,70 +1194,4 @@ footer .footer-socials a:hover {
     .social-links a i {
         font-size: 13px;
     }
-}
-/* ============================================================
-   SMOOTH SCROLL — Pure Website
-   ============================================================ */
-html {
-    scroll-behavior: smooth;
-}
-
-/* ============================================================
-   FADE-IN ANIMATION ON SCROLL — Sections
-   ============================================================ */
-section {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.8s ease forwards;
-}
-
-section:nth-child(1) { animation-delay: 0.1s; }
-section:nth-child(2) { animation-delay: 0.2s; }
-section:nth-child(3) { animation-delay: 0.3s; }
-section:nth-child(4) { animation-delay: 0.4s; }
-section:nth-child(5) { animation-delay: 0.5s; }
-section:nth-child(6) { animation-delay: 0.6s; }
-section:nth-child(7) { animation-delay: 0.7s; }
-section:nth-child(8) { animation-delay: 0.8s; }
-section:nth-child(9) { animation-delay: 0.9s; }
-section:nth-child(10) { animation-delay: 1.0s; }
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ============================================================
-   CUSTOM SCROLLBAR — Gold Theme
-   ============================================================ */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 10px;
-    border: 2px solid var(--bg-primary);
-    transition: all 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-light);
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
-}
-
-/* Firefox Scrollbar */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) var(--bg-primary);
 }
