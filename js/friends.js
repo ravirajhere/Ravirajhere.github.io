@@ -837,7 +837,7 @@ function renderCertificateToPDF(certHTML, isDBFriend) {
     
     setTimeout(function() {
         html2canvas(container, {
-            scale: 1.8,
+            scale: 2.0,
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false,
@@ -847,21 +847,26 @@ function renderCertificateToPDF(certHTML, isDBFriend) {
             document.body.removeChild(container);
             
             const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
-            const pdf = new jsPDF('l', 'mm', 'a4');
+            const pdf = new jsPDF('p', 'mm', 'a4');
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const pdfWidth = 297;
+            const pdfWidth = 210;
             const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
             
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save('Friendship_Certificate_' + (currentFriend.firstName || 'Friend') + '.pdf');
+            if (pdfHeight > 297) {
+                const ratio = 297 / pdfHeight;
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth * ratio, pdfHeight * ratio);
+            } else {
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            }
             
+            pdf.save('Friendship_Certificate_' + (currentFriend.firstName || 'Friend') + '.pdf');
             console.log('✅ PDF downloaded successfully!');
         }).catch(function(error) {
             console.error('❌ html2canvas error:', error);
             document.body.removeChild(container);
             alert('❌ PDF generation failed: ' + error.message);
         });
-    }, 500);
+    }, 800);
 }
 
 // ============================================
