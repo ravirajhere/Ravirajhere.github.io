@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -85,25 +85,91 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .friends-header { text-align: center; margin-bottom: 28px; position: relative; z-index: 1; }
-        .friends-header h2 {
+        /* ============================================
+           HEADER — WITH PHOTO + SIGNATURE
+           ============================================ */
+        .friends-header {
+            text-align: center;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .header-avatar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.15);
+            transition: var(--transition);
+        }
+
+        .header-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.25);
+        }
+
+        .header-signature {
+            width: 50px;
+            height: 18px;
+            object-fit: contain;
+            margin-top: 4px;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .header-signature:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header-text h2 {
             font-size: 30px;
             font-weight: 700;
             background: var(--grad2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
             letter-spacing: -0.5px;
         }
-        .friends-header p {
+
+        .header-text p {
             color: var(--text3);
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
             font-weight: 400;
         }
-        .friends-header p i { color: var(--primary); margin: 0 2px; }
 
+        .header-text .header-credit {
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* ============================================
+           SEARCH AREA
+           ============================================ */
         .search-area {
             display: flex;
             gap: 10px;
@@ -149,6 +215,9 @@
             box-shadow: 0 8px 30px rgba(0, 217, 255, 0.3);
         }
 
+        /* ============================================
+           PHOTO SCREEN
+           ============================================ */
         .photo-screen {
             display: none;
             text-align: center;
@@ -170,7 +239,6 @@
             margin-bottom: 20px;
         }
 
-        /* ===== FILTER CONTROLS ===== */
         .filter-controls {
             display: none;
             justify-content: center;
@@ -259,6 +327,9 @@
         }
         .retry-btn:hover { background: rgba(0, 217, 255, 0.1); }
 
+        /* ============================================
+           FOUND SCREEN
+           ============================================ */
         .found-screen {
             display: none;
             text-align: center;
@@ -291,7 +362,6 @@
         .found-card h2.new-friend { color: #ffd93d; }
         .found-card p { color: var(--text2); font-size: 16px; margin-bottom: 6px; }
 
-        /* ===== SHARE BUTTONS ===== */
         .share-buttons {
             display: none;
             justify-content: center;
@@ -319,7 +389,6 @@
         .share-btn.pdf { background: var(--grad2); color: #0a0a0f; }
         .share-btn:hover { transform: scale(1.05); }
 
-        /* ===== QR CODE ===== */
         .qr-container {
             display: flex;
             flex-direction: column;
@@ -387,6 +456,9 @@
             box-shadow: 0 10px 40px rgba(0, 217, 255, 0.4);
         }
 
+        /* ============================================
+           DETAILS SCREEN
+           ============================================ */
         .details-screen {
             display: none;
             animation: fadeIn 0.5s ease;
@@ -473,32 +545,6 @@
             font-size: 15px;
         }
 
-        .live-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-            padding: 15px;
-            background: var(--bg3);
-            border-radius: var(--radius2);
-            border: 1px solid var(--border);
-        }
-        .live-section .item {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text3);
-            font-weight: 500;
-        }
-        .live-section .value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-            margin-top: 3px;
-        }
-        .live-section .value.green { color: var(--secondary); }
-        .live-section .value.yellow { color: #ffd93d; }
-        .live-section .value.cyan { color: var(--primary); }
-
         .download-btn {
             width: 100%;
             padding: 14px;
@@ -542,14 +588,44 @@
             background: rgba(0, 217, 255, 0.05);
         }
 
-        .back-home {
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .friends-footer {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid var(--border);
             position: relative;
             z-index: 1;
         }
+
+        .friends-footer .footer-motto {
+            font-size: 14px;
+            color: var(--text2);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .friends-footer .footer-motto i {
+            color: #ff6b6b;
+        }
+
+        .friends-footer .footer-init {
+            font-size: 13px;
+            color: var(--text3);
+            margin-bottom: 16px;
+        }
+
+        .friends-footer .footer-init span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .back-home {
+            text-align: center;
+        }
+
         .back-home a {
             color: var(--text3);
             text-decoration: none;
@@ -560,47 +636,51 @@
             align-items: center;
             gap: 8px;
         }
+
         .back-home a:hover {
             color: var(--primary);
             gap: 12px;
         }
 
-        .powered-by {
-            text-align: center;
-            margin-top: 12px;
-            padding-top: 10px;
-            font-size: 11px;
-            color: var(--text3);
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
-        }
-        .powered-by a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        .powered-by a:hover {
-            color: var(--secondary);
-            text-decoration: underline;
-        }
-
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 480px) {
             .friends-container { padding: 22px 16px; border-radius: 20px; }
-            .friends-header h2 { font-size: 24px; }
-            .friends-header p { font-size: 12px; }
+            
+            .header-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-text {
+                text-align: center;
+            }
+            .header-photo {
+                width: 50px;
+                height: 50px;
+            }
+            .header-signature {
+                width: 40px;
+                height: 14px;
+            }
+            .header-text h2 { font-size: 24px; }
+            .header-text p { font-size: 12px; }
+
             .search-area { flex-wrap: wrap; }
             .search-area input { min-width: 140px; }
             .search-area button { padding: 14px 18px; font-size: 14px; }
+
             .profile-row { flex-direction: column; text-align: center; }
-            .live-section { grid-template-columns: repeat(2, 1fr); }
             .detail-grid { grid-template-columns: 1fr; }
             .webcam-box { max-width: 100%; }
             .found-avatar { width: 80px; height: 80px; font-size: 35px; }
             .name { font-size: 20px; }
+            
             .share-buttons { gap: 6px; }
             .share-btn { font-size: 11px; padding: 6px 12px; }
+
+            .friends-footer .footer-motto { font-size: 13px; }
+            .friends-footer .footer-init { font-size: 12px; }
         }
     </style>
 </head>
@@ -608,10 +688,21 @@
 
     <div class="friends-container">
 
-        <!-- HEADER -->
+        <!-- ============================================
+        HEADER — WITH PHOTO + SIGNATURE
+        ============================================ -->
         <div class="friends-header">
-            <h2>👥 Friends Corner</h2>
-            <p><i class="fas fa-camera"></i> Photo Capture · <i class="fas fa-clock"></i> Timeline · <i class="fas fa-id-card"></i> Friend Card</p>
+            <div class="header-profile">
+                <div class="header-avatar-wrapper">
+                    <img src="assets/images/formal.jpg" alt="Ravi Raj" class="header-photo" />
+                    <img src="assets/images/signature.jpg" alt="Signature" class="header-signature" />
+                </div>
+                <div class="header-text">
+                    <h2>👥 Friends Corner</h2>
+                    <p><i class="fas fa-camera"></i> Photo Capture · <i class="fas fa-clock"></i> Timeline · <i class="fas fa-id-card"></i> Friend Card</p>
+                    <p class="header-credit">— Ravi Raj</p>
+                </div>
+            </div>
         </div>
 
         <!-- STEP 1: SEARCH -->
@@ -716,6 +807,7 @@
                         <div class="connection" id="displayConnection">🤝 Best Friend</div>
                     </div>
                 </div>
+
                 <div class="friendship-timeline">
                     <div class="timeline-label">📅 Friendship Timeline</div>
                     <div class="timeline-bar-bg">
@@ -723,22 +815,19 @@
                     </div>
                     <div class="timeline-text" id="detailsTimelineText">Since Class 7 — 7 Years of Friendship ❤️</div>
                 </div>
+
                 <div class="experience" id="displayExperience">We grew up together, played cricket every evening, and copied each other's homework 😂 He's the most loyal friend I have.</div>
                 <div class="school-class" id="displaySchoolClass">📚 Mother's Pride — Since Class 7</div>
+
                 <div class="detail-grid">
                     <div><span class="label">Age</span><br><span class="value" id="displayAge">18</span></div>
                     <div><span class="label">School</span><br><span class="value" id="displaySchool">Mother's Pride</span></div>
                     <div><span class="label">Hobby</span><br><span class="value" id="displayHobby">Cricket, Coding</span></div>
                     <div><span class="label">Since Class</span><br><span class="value" id="displaySinceClass">7</span></div>
                 </div>
-                <div class="live-section">
-                    <div class="item">📅 Date<div class="value" id="liveDate">--</div></div>
-                    <div class="item">⏰ Time<div class="value" id="liveTime">--:--</div></div>
-                    <div class="item">📆 Year<div class="value" id="liveYear">--</div></div>
-                    <div class="item">🔋 Battery<div class="value green" id="liveBattery">--%</div></div>
-                    <div class="item">📱 Device<div class="value" id="liveDevice">--</div></div>
-                    <div class="item">📍 Location<div class="value" id="liveLocation">--</div></div>
-                </div>
+
+                <!-- LIVE SECTION REMOVED ✅ -->
+
                 <button class="download-btn" onclick="downloadFriendCard()">
                     <i class="fas fa-id-card"></i> Download Friend Card
                 </button>
@@ -746,15 +835,17 @@
             </div>
         </div>
 
-        <!-- BACK TO HOME -->
-        <div class="back-home">
-            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
-        </div>
-
-        <!-- POWERED BY -->
-        <div class="powered-by">
-            Powered by <a href="index.html">Ravi Raj</a> · Built with ❤️
-        </div>
+        <!-- ============================================
+        FOOTER — WITH MOTTO + INITIATIVE
+        ============================================ -->
+        <footer class="friends-footer">
+            <p class="footer-motto">Made with ❤️ &amp; Curiosity</p>
+            <p class="footer-init">An initiative by <span>Raviraj Singh</span></p>
+            
+            <div class="back-home">
+                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </footer>
 
         <!-- CONFETTI CONTAINER -->
         <div id="confettiContainer"></div>
@@ -764,7 +855,6 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script src="js/global.js"></script>
     <script src="js/friends.js"></script>
-    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </body>
