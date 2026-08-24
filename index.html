@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ravi Raj | Personal Website</title>
+    
+    <!-- ====== SEO & META TAGS ====== -->
+    <title>Ravi Raj | Personal Website & Portfolio</title>
+    <meta name="description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
+    <meta name="keywords" content="Ravi Raj, portfolio, web developer, student, author, projects, autobiography" />
+    <meta name="author" content="Ravi Raj" />
+    <link rel="canonical" href="https://ravirajhere.github.io/" />
+    
+    <!-- ====== OPEN GRAPH TAGS (Social Media Sharing) ====== -->
+    <meta property="og:title" content="Ravi Raj | Personal Website & Portfolio" />
+    <meta property="og:description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ravirajhere.github.io/" />
+    <meta property="og:image" content="https://ravirajhere.github.io/assets/images/formal.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ravi Raj | Personal Website & Portfolio" />
+    <meta name="twitter:description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
+    
+    <!-- ====== FAVICON ====== -->
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
     
     <!-- ====== FONTS & ICONS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,37 +30,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
-    <!-- ====== CSS (EXTERNAL) ====== -->
+    <!-- ====== CSS ====== -->
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
+
+    <!-- ============================================================
+    THEME TOGGLE (Fixed Position)
+    ============================================================ -->
+    <div class="theme-toggle-wrapper">
+        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+            <span class="switch-icon sun">☀️</span>
+            <span class="switch-icon moon">🌙</span>
+            <div class="slider"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    TOAST NOTIFICATION
+    ============================================================ -->
+    <div id="toast" class="toast"></div>
 
     <!-- ============================================================
     NAVIGATION
     ============================================================ -->
     <nav>
-        <div class="logo">Singh<span>_Ravirajhere</span></div>
+        <div class="logo">Ravi <span>Raj</span></div>
         
         <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
+            <li><a href="#home" class="active">Home</a></li>
             <li><a href="#story">Story</a></li>
             <li><a href="#interests">Interests</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#articles">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-
-        <!-- ====== THEME TOGGLE (ON/OFF SWITCH) ====== -->
-        <div class="theme-toggle-wrapper">
-            <span id="themeLabel">Light</span>
-            <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
-                <span class="switch-icon sun">☀️</span>
-                <span class="switch-icon moon">🌙</span>
-                <div class="slider"></div>
-            </div>
-        </div>
     </nav>
 
     <!-- ============================================================
@@ -53,22 +77,22 @@
         HERO
         ============================================================ -->
         <section id="home" class="hero">
-            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="hero-image" />
-            <h1>Hey, I'm Ravi Raj 👋</h1>
+            <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
+            <h1>Hey, I'm <span>Ravi Raj</span> 👋</h1>
             <p class="subtitle">Student • Author • Web_Developer</p>
             <p class="bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
             
             <!-- SOCIAL LINKS -->
             <div class="social-links">
-                <a href="https://github.com/ravirajhere" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                <a href="https://twitter.com/Raviraj2k09" target="_blank"><i class="fab fa-x-twitter"></i> Twitter</a>
-                <a href="https://youtube.com/@Ravirajhere" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i> Twitter</a>
+                <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i> YouTube</a>
             </div>
 
             <!-- HERO ACTIONS -->
             <div class="hero-actions">
-                <a href="resume-pdf.html" class="btn btn-outline">Download Resume 📃</a>
+                <a href="resume-pdf.html" class="btn btn-primary">📃 Download Resume</a>
                 <a href="#projects" class="btn btn-outline">💻 See My Work</a>
             </div>
         </section>
@@ -79,7 +103,7 @@
         <section id="story">
             <div class="section-header">
                 <span class="emoji">📖</span>
-                <h2>My Story</h2>
+                <h2>My <span>Story</span></h2>
                 <p class="sub">Journey from student to building for the web</p>
             </div>
             
@@ -98,96 +122,13 @@
             </div>
         </section>
 
-        
-        <!-- ============================================================
-        PROJECTS
-        ============================================================ -->
-        <section id="projects">
-            <div class="section-header">
-                <span class="emoji">💻</span>
-                <h2>Things I've Built</h2>
-                <p class="sub">Projects that I'm proud of</p>
-            </div>
-
-            <div class="projects-grid">
-                <!-- Project 1: Autobiography -->
-                <div class="project-card">
-                    <span class="project-icon">📖</span>
-                    <h3>Autobiography</h3>
-                    <p>My life story in a single HTML page. Raw, honest, and unfiltered.</p>
-                    <div class="tech-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JS</span>
-                    </div>
-                    <div class="project-buttons">
-                        <a href="autobiography.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
-                    </div>
-                </div>
-
-                <!-- Project 2: Chatbox -->
-                <div class="project-card">
-                    <span class="project-icon">💬</span>
-                    <h3>Chatbox</h3>
-                    <p>Interactive chat app with localStorage. No backend, all frontend magic.</p>
-                    <div class="tech-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JS</span>
-                        <span>Storage</span>
-                    </div>
-                    <div class="project-buttons">
-                        <a href="chatbox.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
-                    </div>
-                </div>
-
-                <!-- Project 3: Friends Gallery -->
-                <div class="project-card">
-                    <span class="project-icon">👥</span>
-                    <h3>Friends Gallery</h3>
-                    <p>Photo gallery of the people who matter most in my life.</p>
-                    <div class="tech-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>JS</span>
-                    </div>
-                    <div class="project-buttons">
-                        <a href="friends.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
-                    </div>
-                </div>
-
-                <!-- Project 4: Resume -->
-                <div class="project-card">
-                    <span class="project-icon">📄</span>
-                    <h3>Resume</h3>
-                    <p>Clean, printable, and professional. Everything a resume should be.</p>
-                    <div class="tech-tags">
-                        <span>HTML</span>
-                        <span>CSS</span>
-                        <span>Print</span>
-                    </div>
-                    <div class="project-buttons">
-                        <a href="resume-pdf.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" target="_blank" class="btn btn-outline btn-sm">📂 Source Code</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="view-all">
-                <a href="https://github.com/ravirajhere" target="_blank" class="btn btn-outline">🔍 See All on GitHub</a>
-            </div>
-        </section>
-
         <!-- ============================================================
         INTERESTS
         ============================================================ -->
         <section id="interests">
             <div class="section-header">
                 <span class="emoji">🎯</span>
-                <h2>What Makes Me Tick</h2>
+                <h2>What Makes Me <span>Tick</span></h2>
                 <p class="sub">Click on any card to reveal more</p>
             </div>
 
@@ -230,14 +171,95 @@
             </div>
         </section>
 
+        <!-- ============================================================
+        PROJECTS
+        ============================================================ -->
+        <section id="projects">
+            <div class="section-header">
+                <span class="emoji">💻</span>
+                <h2>Things I've <span>Built</span></h2>
+                <p class="sub">Projects that I'm proud of</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Project 1: Autobiography -->
+                <div class="project-card">
+                    <span class="project-icon">📖</span>
+                    <h3>Autobiography</h3>
+                    <p>My life story in a single HTML page. Raw, honest, and unfiltered.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="autobiography.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" class="btn btn-outline btn-sm">📂 Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Chatbox -->
+                <div class="project-card">
+                    <span class="project-icon">💬</span>
+                    <h3>Chatbox</h3>
+                    <p>Interactive chat app with localStorage. No backend, all frontend magic.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
+                        <span>Storage</span>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="chatbox.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank" class="btn btn-outline btn-sm">📂 Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 3: Friends Gallery -->
+                <div class="project-card">
+                    <span class="project-icon">👥</span>
+                    <h3>Friends Gallery</h3>
+                    <p>Photo gallery of the people who matter most in my life.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="friends.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" class="btn btn-outline btn-sm">📂 Source</a>
+                    </div>
+                </div>
+
+                <!-- Project 4: Resume -->
+                <div class="project-card">
+                    <span class="project-icon">📄</span>
+                    <h3>Resume</h3>
+                    <p>Clean, printable, and professional. Everything a resume should be.</p>
+                    <div class="tech-tags">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>Print</span>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="resume-pdf.html" target="_blank" class="btn btn-primary btn-sm">🔗 Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" target="_blank" class="btn btn-outline btn-sm">📂 Source</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-all">
+                <a href="https://github.com/ravirajhere" target="_blank" class="btn btn-outline">🔍 See All on GitHub</a>
+            </div>
+        </section>
 
         <!-- ============================================================
-        ARTICLES
+        ARTICLES / BLOG
         ============================================================ -->
         <section id="articles">
             <div class="section-header">
                 <span class="emoji">📝</span>
-                <h2>My Thoughts</h2>
+                <h2>My <span>Thoughts</span></h2>
                 <p class="sub">Random musings on coding, life, and everything in between</p>
             </div>
 
@@ -271,7 +293,7 @@
         <section id="education">
             <div class="section-header">
                 <span class="emoji">🎓</span>
-                <h2>Education</h2>
+                <h2><span>Education</span></h2>
                 <p class="sub">Where I learned what I know</p>
             </div>
 
@@ -306,7 +328,7 @@
         <section id="milestones">
             <div class="section-header">
                 <span class="emoji">🏆</span>
-                <h2>Milestones</h2>
+                <h2><span>Milestones</span></h2>
                 <p class="sub">Things I'm proud of (big or small)</p>
             </div>
 
@@ -337,15 +359,13 @@
             </div>
         </section>
 
-        
-
         <!-- ============================================================
         CONTACT
         ============================================================ -->
         <section id="contact">
             <div class="section-header">
                 <span class="emoji">📬</span>
-                <h2>Let's Talk</h2>
+                <h2>Let's <span>Talk</span></h2>
                 <p class="sub">I reply within 24 hours. Promise.</p>
             </div>
 
@@ -364,19 +384,23 @@
         FOOTER
         ============================================================ -->
         <footer>
-            <p>© 2026 Ravi Raj </p>
+            <p>© <span id="current-year">2026</span> Ravi Raj</p>
             
             <div class="footer-socials">
-                <a href="https://github.com/ravirajhere" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://twitter.com/Raviraj2k09" target="_blank"><i class="fab fa-x-twitter"></i></a>
-                <a href="https://youtube.com/@Ravirajhere" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://twitter.com/Raviraj2k09" target="_blank" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
 
-            <!-- ====== LIVE TIME + LAST UPDATED ====== -->
             <div class="footer-time">
                 <span id="live-time">⏱️ Loading...</span>
                 <span class="divider">|</span>
+                <span>🇮🇳 IST</span>
+            </div>
+
+            <div class="footer-bottom">
+                <a href="#home" id="back-to-top">↑ Back to Top</a>
             </div>
 
             <p class="footer-motto">Made with ❤️ & Curiosity</p>
@@ -385,12 +409,7 @@
     </main>
 
     <!-- ============================================================
-    SCROLL TO TOP BUTTON
-    ============================================================ -->
-    <button id="scrollTopBtn" aria-label="Scroll to top">↑</button>
-
-    <!-- ============================================================
-    JAVASCRIPT (EXTERNAL)
+    JAVASCRIPT
     ============================================================ -->
     <script src="js/global.js"></script>
     <script src="js/script.js"></script>
