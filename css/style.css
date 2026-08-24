@@ -1,6 +1,5 @@
 /* ============================================================
-   STYLE.CSS — PREMIUM EDITION
-   (Image Effect + Micro-Interactions + Scroll Animations)
+   STYLE.CSS — PREMIUM EDITION (2×2 Social Grid)
    ============================================================ */
 
 /* ============================================================
@@ -272,14 +271,14 @@ section:nth-child(10) { animation-delay: 1.0s; }
 }
 
 /* ============================================================
-   SOCIAL LINKS — Premium Glassmorphism
+   SOCIAL LINKS — 2×2 GRID
    ============================================================ */
 .social-links {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 420px;
+    margin: 0 auto 22px;
 }
 
 .social-links a {
@@ -293,10 +292,12 @@ section:nth-child(10) { animation-delay: 1.0s; }
     font-size: 13px;
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     box-shadow: 0 4px 20px rgba(201, 168, 76, 0.04);
+    text-align: center;
 }
 
 .social-links a i {
@@ -306,16 +307,16 @@ section:nth-child(10) { animation-delay: 1.0s; }
 }
 
 .social-links a:hover {
-    transform: translateY(-4px) scale(1.04);
+    transform: translateY(-3px) scale(1.03);
     background: var(--accent);
     border-color: var(--accent);
-    box-shadow: 0 8px 40px rgba(201, 168, 76, 0.2);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.2);
     color: #fff;
 }
 
 .social-links a:hover i {
     color: #fff;
-    transform: rotate(5deg) scale(1.1);
+    transform: scale(1.1);
 }
 
 /* ============================================================
@@ -421,6 +422,10 @@ section:nth-child(10) { animation-delay: 1.0s; }
 .fun-fact span {
     font-weight: 700;
     color: var(--accent);
+}
+
+.story-content .btn {
+    margin-top: 6px;
 }
 
 /* ============================================================
@@ -1057,9 +1062,14 @@ footer .footer-socials a:hover {
         flex: 1 1 100%;
     }
 
+    .social-links {
+        max-width: 320px;
+        gap: 10px;
+    }
+
     .social-links a {
         font-size: 12px;
-        padding: 6px 14px;
+        padding: 8px 16px;
     }
 
     .social-links a i {
@@ -1183,15 +1193,17 @@ footer .footer-socials a:hover {
     }
 
     .social-links {
+        grid-template-columns: 1fr;
+        max-width: 260px;
         gap: 10px;
     }
 
     .social-links a {
-        font-size: 11px;
-        padding: 5px 12px;
+        font-size: 12px;
+        padding: 8px 16px;
     }
 
     .social-links a i {
-        font-size: 13px;
+        font-size: 14px;
     }
 }
