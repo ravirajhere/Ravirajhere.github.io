@@ -1,7 +1,5 @@
 // ============================================================
-// SCRIPT.JS — PAGE-SPECIFIC LOGIC (INDEX.HTML)
-// (Interest Reveal, Smooth Scroll, Active Nav, Typing Animation, 
-//  Hamburger Menu, Dynamic Year, Back to Top)
+// SCRIPT.JS — COMPLETE (Hamburger Menu + New Theme + All Features)
 // ============================================================
 
 // ============================================================
@@ -71,11 +69,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(link) {
 });
 
 // ============================================================
-// 3. ACTIVE NAV LINK (Sidebar + Nav)
+// 3. ACTIVE NAV LINK (Sidebar)
 // ============================================================
 const sections = document.querySelectorAll('section[id]');
 const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
-const navLinks = document.querySelectorAll('.top-nav .nav-links a');
 
 function updateActiveLink() {
     let current = '';
@@ -92,15 +89,8 @@ function updateActiveLink() {
     // Update sidebar links
     sidebarLinks.forEach(function(link) {
         link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active');
-        }
-    });
-
-    // Update nav links (if any in top nav)
-    navLinks.forEach(function(link) {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
+        const href = link.getAttribute('href');
+        if (href === '#' + current) {
             link.classList.add('active');
         }
     });
@@ -192,13 +182,60 @@ if (backToTop) {
 }
 
 // ============================================================
-// 9. CONSOLE WELCOME (Fun Easter Egg)
+// 9. SKILL BARS — ANIMATE ON SCROLL
+// ============================================================
+const skillObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            const bars = entry.target.querySelectorAll('.skill-bar-fill');
+            bars.forEach(function(bar) {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(function() {
+                    bar.style.width = width;
+                }, 100);
+            });
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.skill-box').forEach(function(box) {
+    skillObserver.observe(box);
+});
+
+// ============================================================
+// 10. CONSOLE WELCOME (Easter Egg)
 // ============================================================
 console.log('%c 👋 Hey there, fellow developer!', 'font-size: 20px; font-weight: bold; color: #d4a373;');
 console.log('%c Thanks for checking out my site. Built with ❤️ by Ravi Raj', 'font-size: 14px; color: #f5ede4;');
 console.log('%c 📖 GitHub: https://github.com/ravirajhere', 'font-size: 14px; color: #d4a373;');
 
 // ============================================================
-// 10. INITIAL SETUP COMPLETE
+// 11. LIVE TIME — FOOTER
+// ============================================================
+function updateLiveTime() {
+    const now = new Date();
+    const options = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    };
+    const timeStr = now.toLocaleString('en-IN', options);
+    const liveTimeEl = document.getElementById('live-time');
+    if (liveTimeEl) {
+        liveTimeEl.textContent = '⏱️ ' + timeStr + ' IST';
+    }
+}
+
+updateLiveTime();
+setInterval(updateLiveTime, 1000);
+
+// ============================================================
+// 12. INITIAL SETUP COMPLETE
 // ============================================================
 console.log('✅ Ravi Raj Personal Website — Loaded Successfully!');
