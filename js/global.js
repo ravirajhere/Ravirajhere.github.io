@@ -1,91 +1,44 @@
 // ============================================================
-// GLOBAL.JS — PREMIUM EDITION
-// (Loader, Custom Cursor, Theme, Toast, Live Time)
+// GLOBAL.JS — COMPLETE WITH ALL FEATURES
+// (Theme, Toast, Live Time, Keyboard Shortcuts, Page Visibility)
 // ============================================================
 
 (function() {
     'use strict';
 
     // ============================================================
-    // 1. LOADER
+    // 1. THEME TOGGLE — Global + Navbar
     // ============================================================
-    const loader = document.getElementById('loader');
-    
-    if (loader) {
-        // Hide loader after 1.5 seconds
-        setTimeout(function() {
-            loader.classList.add('hidden');
-        }, 1500);
-
-        // Fallback — agar 3 sec mein nahi hata toh force hide
-        setTimeout(function() {
-            if (loader && !loader.classList.contains('hidden')) {
-                loader.classList.add('hidden');
-            }
-        }, 3000);
-    }
-
-    // ============================================================
-    // 2. CUSTOM CURSOR
-    // ============================================================
-    const cursor = document.getElementById('custom-cursor');
-    
-    if (cursor && window.innerWidth > 768) {
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-
-        document.addEventListener('mousemove', function(e) {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            cursor.style.left = mouseX + 'px';
-            cursor.style.top = mouseY + 'px';
-        });
-
-        // Hover effect on clickable elements
-        document.querySelectorAll('a, button, .btn, .clickable, .interest-card, .project-card, .milestone-card, .social-links a').forEach(el => {
-            el.addEventListener('mouseenter', function() {
-                cursor.classList.add('hover');
-            });
-            el.addEventListener('mouseleave', function() {
-                cursor.classList.remove('hover');
-            });
-        });
-
-        // Click effect
-        document.addEventListener('mousedown', function() {
-            cursor.classList.add('click');
-        });
-        document.addEventListener('mouseup', function() {
-            cursor.classList.remove('click');
-        });
-
-        // Hide cursor when leaving window
-        document.addEventListener('mouseleave', function() {
-            cursor.style.opacity = '0';
-        });
-        document.addEventListener('mouseenter', function() {
-            cursor.style.opacity = '1';
-        });
-    }
-
-    // ============================================================
-    // 3. THEME TOGGLE
-    // ============================================================
-    const themeSwitch = document.getElementById('themeSwitch');
+    const themeSwitches = document.querySelectorAll('.switch');
     const toast = document.getElementById('toast');
     const html = document.documentElement;
 
     // Load saved theme
-    const currentTheme = localStorage.getItem('theme') || 'light';
+    const currentTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', currentTheme);
 
-    if (themeSwitch) {
+    // Update all toggles based on current theme
+    function updateThemeToggles() {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        themeSwitches.forEach(function(sw) {
+            if (isDark) {
+                sw.setAttribute('data-theme', 'dark');
+            } else {
+                sw.removeAttribute('data-theme');
+            }
+        });
+    }
+    updateThemeToggles();
+
+    // Toggle click handler
+    themeSwitches.forEach(function(themeSwitch) {
         themeSwitch.addEventListener('click', function(e) {
             e.stopPropagation();
             const current = html.getAttribute('data-theme');
             const next = current === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
+            updateThemeToggles();
             showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
         });
 
@@ -95,25 +48,29 @@
                 this.click();
             }
         });
-    }
+    });
 
     // ============================================================
-    // 4. TOAST
+    // 2. TOAST FUNCTION
     // ============================================================
     let toastTimer;
 
-    function showToast(message) {
+    function showToast(message, type) {
         if (!toast) return;
         clearTimeout(toastTimer);
         toast.textContent = message;
         toast.className = 'toast show';
+        if (type) toast.classList.add(type);
         toastTimer = setTimeout(function() {
             toast.classList.remove('show');
         }, 2000);
     }
 
+    // Expose toast globally
+    window.showToast = showToast;
+
     // ============================================================
-    // 5. LIVE TIME
+    // 3. LIVE TIME — REAL-TIME CLOCK
     // ============================================================
     function updateTime() {
         const now = new Date();
@@ -130,14 +87,14 @@
         const timeStr = now.toLocaleString('en-IN', options);
         const liveTimeEl = document.getElementById('live-time');
         if (liveTimeEl) {
-            liveTimeEl.textContent = `⏱️ ${timeStr} IST`;
+            liveTimeEl.textContent = '⏱️ ' + timeStr + ' IST';
         }
     }
     updateTime();
     let timeInterval = setInterval(updateTime, 1000);
 
     // ============================================================
-    // 6. PAGE VISIBILITY
+    // 4. PAGE VISIBILITY — PAUSE UPDATES WHEN TAB IS HIDDEN
     // ============================================================
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
@@ -149,26 +106,57 @@
     });
 
     // ============================================================
-    // 7. KEYBOARD SHORTCUTS — ESCAPE
+    // 5. KEYBOARD SHORTCUTS — ESCAPE TO CLOSE
     // ============================================================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            document.querySelectorAll('.hidden-content').forEach(el => {
+            // Close all interest hidden contents
+            document.querySelectorAll('.hidden-content').forEach(function(el) {
                 el.style.display = 'none';
             });
+            // Close chatbox if open
             if (window.closeChatbox) {
                 window.closeChatbox();
+            }
+            // Close sidebar if open
+            if (window.closeSidebar) {
+                window.closeSidebar();
             }
         }
     });
 
     // ============================================================
-    // 8. CONSOLE WELCOME
+    // 6. CONSOLE WELCOME
     // ============================================================
-    console.log('%c ✨ RAVI RAJ | Premium Portfolio ✨ ', 'background: #c9a84c; color: #1a1a1a; font-size: 20px; font-weight: bold; padding: 12px 24px; border-radius: 8px;');
-    console.log('%c 🚀 Student • Author • Web Developer ', 'color: #c9a84c; font-size: 14px;');
-    console.log('%c 📍 Begusarai, Bihar | 🇮🇳 Jai Hind ', 'color: #8a8a8a; font-size: 13px;');
-    console.log('%c 🔥 Premium Features: Loader • Custom Cursor • Smooth Scroll • Animations ', 'color: #4a4a4a; font-size: 13px;');
+    console.log('%c 👋 Hey there, fellow developer!', 'font-size: 20px; font-weight: bold; color: #d4a373;');
+    console.log('%c Thanks for checking out my site. Built with ❤️ by Ravi Raj', 'font-size: 14px; color: #f5ede4;');
+    console.log('%c 📖 GitHub: https://github.com/ravirajhere', 'font-size: 14px; color: #d4a373;');
     console.log('✅ Global JS Loaded Successfully!');
+
+    // ============================================================
+    // 7. LOADING SCREEN
+    // ============================================================
+    (function() {
+        const loader = document.getElementById('loader');
+        if (!loader) return;
+
+        // Hide loader after 1.5 seconds
+        setTimeout(function() {
+            loader.classList.add('fade-out');
+            setTimeout(function() {
+                if (loader.parentNode) loader.remove();
+            }, 600);
+        }, 1500);
+
+        // Fallback — agar 3 sec mein nahi hata toh force hide
+        setTimeout(function() {
+            if (loader && !loader.classList.contains('fade-out')) {
+                loader.classList.add('fade-out');
+                setTimeout(function() {
+                    if (loader.parentNode) loader.remove();
+                }, 600);
+            }
+        }, 3000);
+    })();
 
 })();
