@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Corner — Ravi Raj</title>
+    <title>Friends Gallery — Ravi Raj</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -14,7 +14,7 @@
 
     <style>
         /* ============================================
-           FRIENDS PAGE — ULTRA PREMIUM DESIGN
+           FRIENDS GALLERY — ULTRA PREMIUM DESIGN
            ============================================ */
         :root {
             --bg: #0a0806;
@@ -56,7 +56,6 @@
             position: relative;
         }
 
-        /* Subtle texture overlay */
         body::before {
             content: '';
             position: fixed;
@@ -80,7 +79,7 @@
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border);
             border-radius: 28px;
-            padding: 40px 32px 32px;
+            padding: 0;
             box-shadow: var(--shadow);
             animation: fadeIn 0.8s ease;
             position: relative;
@@ -118,105 +117,112 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-6px); }
         }
-        @keyframes glowPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(212,163,115,0.1); }
+            50% { box-shadow: 0 0 60px rgba(212,163,115,0.2); }
         }
 
         /* ============================================
-           HEADER — GOLD + WOOD THEME
+           TOP NAVBAR
            ============================================ */
-        .friends-header {
-            text-align: center;
-            margin-bottom: 32px;
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px 12px 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-menu {
+            font-size: 20px;
+            color: var(--text2);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .nav-menu:hover { color: var(--gold); }
+
+        .nav-brand {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .nav-brand span { color: var(--gold); }
+
+        .nav-brand-sub {
+            font-size: 9px;
+            color: var(--text3);
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            color: var(--text2);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        .nav-icon:hover { color: var(--gold); }
+
+        .nav-icon .badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: #e74c3c;
+            border-radius: 50%;
+            font-size: 8px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .nav-avatar:hover { transform: scale(1.06); }
+
+        /* ============================================
+           MAIN CONTENT AREA
+           ============================================ */
+        .main-content {
+            padding: 0 22px 22px 22px;
             position: relative;
             z-index: 1;
         }
 
-        .header-profile {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .header-avatar-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .header-photo {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2.5px solid var(--gold);
-            box-shadow: 0 0 40px rgba(212,163,115,0.15);
-            transition: var(--transition);
-        }
-
-        .header-photo:hover {
-            transform: scale(1.06);
-            box-shadow: 0 0 60px rgba(212,163,115,0.25);
-        }
-
-        .header-signature {
-            width: 48px;
-            height: 16px;
-            object-fit: contain;
-            opacity: 0.5;
-            transition: var(--transition);
-        }
-
-        .header-signature:hover {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-
-        .header-text {
-            text-align: left;
-        }
-
-        .header-text h2 {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: -0.5px;
-            margin-bottom: 2px;
-        }
-
-        .header-text h2 .gold-text {
-            color: var(--gold);
-            font-weight: 900;
-        }
-
-        .header-text .header-tagline {
-            color: var(--text3);
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .header-text .header-tagline i {
-            color: var(--gold);
-            margin: 0 2px;
-        }
-
-        .header-text .header-credit {
-            font-size: 10px;
-            color: var(--gold);
-            font-weight: 500;
-            letter-spacing: 1px;
-            margin-top: 2px;
-            font-family: var(--font-serif);
-            font-style: italic;
-        }
-
         /* ============================================
-           SEARCH AREA — LUXURY
+           SEARCH BAR — FLOATING
            ============================================ */
         .search-area {
             display: flex;
@@ -228,7 +234,7 @@
         }
         .search-area input {
             flex: 1;
-            padding: 15px 20px;
+            padding: 14px 18px 14px 46px;
             border-radius: 60px;
             border: 1.5px solid var(--border);
             background: var(--bg2);
@@ -248,9 +254,34 @@
         }
         .search-area input::placeholder { color: var(--text3); }
         .search-area input:focus::placeholder { color: var(--text2); }
-        
-        .search-area button {
-            padding: 15px 28px;
+
+        .search-icon-left {
+            position: absolute;
+            left: 18px;
+            color: var(--text3);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .search-voice {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            color: var(--text2);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .search-voice:hover { border-color: var(--gold); color: var(--gold); }
+
+        .search-btn {
+            padding: 14px 20px;
             border: none;
             border-radius: 60px;
             background: linear-gradient(135deg, var(--gold), var(--gold2));
@@ -263,42 +294,80 @@
             white-space: nowrap;
             letter-spacing: 0.5px;
             box-shadow: 0 4px 25px rgba(212,163,115,0.2);
+            flex-shrink: 0;
         }
-        .search-area button:hover {
+        .search-btn:hover {
             transform: scale(1.04);
             box-shadow: 0 8px 40px rgba(212,163,115,0.35);
         }
 
         /* ============================================
-           PHOTO SCREEN
+           SECTION HEADER
+           ============================================ */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .section-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.2px;
+        }
+        .section-header h3 i { color: var(--gold); margin-right: 6px; }
+        .section-header .section-action {
+            font-size: 12px;
+            color: var(--text3);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .section-header .section-action:hover { color: var(--gold); }
+
+        /* ============================================
+           CAMERA SCREEN
            ============================================ */
         .photo-screen {
             display: none;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
+            animation: slideUp 0.5s ease;
             position: relative;
             z-index: 1;
         }
-        .lock-icon { font-size: 32px; display: block; margin-bottom: 6px; }
-        .photo-header h3 {
-            font-size: 17px;
-            margin-bottom: 4px;
-            font-weight: 600;
-            color: var(--text);
-        }
-        .photo-header h3 span { color: var(--gold); }
-        .warning {
-            color: rgba(255,107,107,0.7);
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
 
+        .photo-screen .section-header { margin-bottom: 12px; }
+
+        .webcam-box {
+            position: relative;
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            background: #0a0806;
+            aspect-ratio: 4/3;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+        .webcam-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .webcam-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            background: rgba(10,8,6,0.85);
+        }
+        .webcam-placeholder i { font-size: 44px; margin-bottom: 10px; color: var(--gold); opacity: 0.5; }
+        .webcam-placeholder p { font-size: 13px; }
+
+        /* FILTER STRIP */
         .filter-controls {
             display: none;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 16px;
+            margin: 14px 0 16px 0;
             flex-wrap: wrap;
         }
         .filter-btn {
@@ -322,31 +391,12 @@
             font-weight: 700;
         }
 
-        .webcam-box {
-            position: relative;
-            width: 100%;
-            max-width: 320px;
-            margin: 0 auto 18px;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 2px solid var(--border);
-            background: #0a0806;
-            aspect-ratio: 4/3;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-        }
-        .webcam-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .webcam-placeholder {
-            position: absolute;
-            inset: 0;
+        /* CAPTURE BUTTON — FLOATING */
+        .capture-wrapper {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            color: var(--text3);
-            background: rgba(10,8,6,0.85);
+            margin-top: 16px;
         }
-        .webcam-placeholder i { font-size: 44px; margin-bottom: 10px; color: var(--gold); opacity: 0.5; }
-        .webcam-placeholder p { font-size: 13px; }
         .capture-btn {
             padding: 16px 44px;
             border: none;
@@ -360,11 +410,15 @@
             transition: var(--transition);
             box-shadow: 0 4px 30px rgba(212,163,115,0.2);
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .capture-btn:hover {
             transform: scale(1.04);
             box-shadow: 0 10px 50px rgba(212,163,115,0.35);
         }
+
         .permission-denied {
             display: none;
             text-align: center;
@@ -386,202 +440,339 @@
         }
         .retry-btn:hover { background: rgba(212,163,115,0.1); }
 
-        /* ============================================
-           FOUND SCREEN
-           ============================================ */
-        .found-screen {
-            display: none;
-            text-align: center;
-            animation: fadeIn 0.6s ease;
-            position: relative;
-            z-index: 1;
+        .photo-header .lock-icon { font-size: 28px; display: block; margin-bottom: 4px; }
+        .photo-header h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            color: var(--text);
         }
-        .found-icon { font-size: 48px; margin-bottom: 10px; animation: float 3s ease-in-out infinite; }
-        .found-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 14px;
-            border: 3px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 45px;
-            overflow: hidden;
-            background: var(--bg2);
-            box-shadow: 0 0 50px rgba(212,163,115,0.08);
-        }
-        .found-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .found-card h2 {
-            font-size: 24px;
-            margin-bottom: 4px;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-        }
-        .found-card h2.friend-found { color: var(--gold); }
-        .found-card h2.new-friend { color: var(--gold3); }
-        .found-card p { color: var(--text2); font-size: 15px; margin-bottom: 4px; }
-        .found-card .friend-name-highlight {
-            color: var(--gold);
-            font-weight: 700;
+        .photo-header h3 span { color: var(--gold); }
+        .photo-header .warning {
+            color: rgba(255,107,107,0.7);
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
         }
 
         /* ============================================
-           TIMELINE — LUXURY
+           FOUND SCREEN — LEFT-RIGHT CARD
            ============================================ */
-        .friendship-timeline {
-            background: var(--bg2);
-            border-radius: var(--radius2);
-            padding: 16px 20px;
-            margin: 16px 0;
-            text-align: left;
-            border: 1px solid var(--border2);
-            backdrop-filter: blur(8px);
+        .found-screen {
+            display: none;
+            animation: slideUp 0.6s ease;
+            position: relative;
+            z-index: 1;
         }
-        .timeline-label {
+
+        .found-card {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border2);
+            backdrop-filter: blur(12px);
+        }
+
+        .found-card-inner {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .found-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--bg3);
+            box-shadow: 0 0 40px rgba(212,163,115,0.08);
+        }
+        .found-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .found-avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
             color: var(--text3);
+        }
+
+        .found-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .found-badge {
+            display: inline-block;
             font-size: 10px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
+        }
+
+        .found-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        .found-tag {
+            font-size: 13px;
+            color: var(--text2);
+            font-weight: 500;
+        }
+        .found-tag i { color: var(--gold); margin-right: 4px; }
+
+        .found-timeline {
+            margin: 10px 0 12px 0;
+        }
+        .found-timeline .tl-label {
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
             font-weight: 600;
         }
-        .timeline-bar-bg {
-            height: 6px;
+        .found-timeline .tl-bar {
+            height: 4px;
             background: var(--bg3);
             border-radius: 10px;
             overflow: hidden;
-            margin: 6px 0;
+            margin: 4px 0;
         }
-        .timeline-bar-fill {
+        .found-timeline .tl-fill {
             height: 100%;
             border-radius: 10px;
             background: linear-gradient(90deg, var(--gold), var(--gold2));
             transition: width 1.2s ease;
         }
-        .timeline-text {
+        .found-timeline .tl-text {
+            font-size: 11px;
             color: var(--text2);
-            font-size: 12px;
             text-align: right;
             font-weight: 500;
         }
 
-        .proceed-btn {
-            padding: 14px 38px;
+        .found-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .found-btn {
+            flex: 1;
+            padding: 10px 16px;
             border: none;
             border-radius: 60px;
-            background: linear-gradient(135deg, var(--gold), var(--gold2));
-            color: var(--bg);
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             font-family: var(--font);
-            margin: 4px;
             transition: var(--transition);
-            box-shadow: 0 4px 30px rgba(212,163,115,0.15);
+            text-align: center;
             letter-spacing: 0.3px;
         }
-        .proceed-btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 50px rgba(212,163,115,0.3);
+        .found-btn.primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--bg);
+            box-shadow: 0 4px 20px rgba(212,163,115,0.15);
+        }
+        .found-btn.primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 30px rgba(212,163,115,0.3);
+        }
+        .found-btn.secondary {
+            background: var(--bg2);
+            color: var(--text2);
+            border: 1px solid var(--border);
+        }
+        .found-btn.secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212,163,115,0.04);
         }
 
         /* ============================================
-           DETAILS SCREEN — ELEGANT
+           DETAILS SCREEN — PROFILE VIEW
            ============================================ */
         .details-screen {
             display: none;
-            animation: fadeIn 0.6s ease;
+            animation: slideUp 0.6s ease;
             position: relative;
             z-index: 1;
         }
-        .result-card {
+
+        .profile-card {
             background: var(--bg2);
             border-radius: var(--radius);
-            padding: 26px 24px;
+            padding: 20px;
             border: 1px solid var(--border2);
             backdrop-filter: blur(12px);
         }
-        .profile-row {
+
+        .profile-top {
             display: flex;
-            align-items: center;
             gap: 18px;
-            margin-bottom: 14px;
-        }
-        .avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2.5px solid var(--gold);
-            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 35px;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
             overflow: hidden;
             flex-shrink: 0;
             background: var(--bg3);
-            box-shadow: 0 0 30px rgba(212,163,115,0.04);
+            box-shadow: 0 0 40px rgba(212,163,115,0.08);
         }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .name {
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--text3);
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-name {
             font-size: 22px;
             font-weight: 800;
             color: var(--text);
             letter-spacing: -0.3px;
-        }
-        .name span { color: var(--gold); }
-        .personal-name {
-            font-size: 13px;
-            color: var(--gold2);
-            margin-top: 2px;
-            font-weight: 500;
-        }
-        .connection {
-            font-size: 14px;
-            color: var(--text2);
-            margin-top: 2px;
-        }
-        .experience {
-            background: rgba(255,248,240,0.02);
-            padding: 14px 16px;
-            border-radius: var(--radius2);
-            margin: 12px 0;
-            color: var(--text2);
-            border-left: 3px solid var(--gold);
-            font-style: italic;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-        .school-class {
-            font-size: 13px;
-            color: var(--gold);
-            margin-bottom: 14px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-        .detail-grid .label {
-            color: var(--text3);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-        }
-        .detail-grid .value {
-            color: var(--text);
-            font-weight: 600;
-            font-size: 15px;
-            margin-top: 2px;
+            margin-bottom: 2px;
         }
 
-        .download-btn {
+        .profile-connection {
+            font-size: 14px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .profile-location {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 2px;
+        }
+        .profile-location i { margin-right: 4px; }
+
+        .profile-rating {
+            margin-top: 4px;
+            font-size: 14px;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+        .profile-rating .rating-num {
+            font-size: 11px;
+            color: var(--text3);
+            margin-left: 4px;
+        }
+
+        /* STATS GRID — 3 Columns */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: var(--bg3);
+            border-radius: var(--radius2);
+            padding: 12px 10px;
+            text-align: center;
+            border: 1px solid var(--border2);
+            transition: var(--transition);
+        }
+        .stat-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+        .stat-card .stat-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+        .stat-card .stat-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            display: block;
+        }
+        .stat-card .stat-label {
+            font-size: 9px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* INFO GRID — 3 Columns */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .info-card {
+            background: var(--bg3);
+            border-radius: var(--radius2);
+            padding: 10px 10px;
+            text-align: center;
+            border: 1px solid var(--border2);
+            transition: var(--transition);
+        }
+        .info-card:hover { border-color: var(--gold); }
+
+        .info-card .info-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+        .info-card .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: block;
+        }
+        .info-card .info-label {
+            font-size: 9px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* EXPERIENCE CARD */
+        .experience-card {
+            background: rgba(212,163,115,0.04);
+            border-left: 3px solid var(--gold);
+            border-radius: var(--radius2);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .experience-card .exp-icon {
+            font-size: 14px;
+            color: var(--gold);
+            margin-right: 6px;
+        }
+        .experience-card .exp-text {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        /* CERTIFICATE BUTTON */
+        .cert-btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: none;
             border-radius: 60px;
             background: linear-gradient(135deg, var(--gold), var(--gold2));
@@ -590,7 +781,6 @@
             font-weight: 700;
             cursor: pointer;
             font-family: var(--font);
-            margin-top: 10px;
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -598,11 +788,13 @@
             gap: 10px;
             box-shadow: 0 4px 25px rgba(212,163,115,0.12);
             letter-spacing: 0.3px;
+            margin-bottom: 10px;
         }
-        .download-btn:hover {
+        .cert-btn:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 40px rgba(212,163,115,0.25);
         }
+
         .search-again-btn {
             width: 100%;
             padding: 12px;
@@ -614,7 +806,6 @@
             font-weight: 600;
             cursor: pointer;
             font-family: var(--font);
-            margin-top: 10px;
             transition: var(--transition);
             letter-spacing: 0.3px;
         }
@@ -625,44 +816,73 @@
         }
 
         /* ============================================
-           FOOTER — ELEGANT
+           NEW FRIEND SCREEN
+           ============================================ */
+        .new-friend-screen {
+            display: none;
+            animation: slideUp 0.6s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .new-friend-card {
+            text-align: center;
+            background: var(--bg2);
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            border: 1px solid var(--border2);
+            backdrop-filter: blur(12px);
+        }
+
+        .new-friend-card .nf-icon { font-size: 56px; margin-bottom: 10px; animation: float 3s ease-in-out infinite; }
+        .new-friend-card .nf-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gold3);
+            margin-bottom: 4px;
+        }
+        .new-friend-card .nf-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* ============================================
+           FOOTER
            ============================================ */
         .friends-footer {
-            text-align: center;
-            margin-top: 32px;
-            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 18px;
+            margin-top: 22px;
             border-top: 1px solid var(--border2);
             position: relative;
             z-index: 1;
         }
 
-        .friends-footer .footer-motto {
-            font-size: 13px;
+        .footer-left {
+            text-align: left;
+        }
+        .footer-left .footer-motto {
+            font-size: 12px;
             color: var(--text2);
             font-weight: 400;
-            margin-bottom: 4px;
             font-family: var(--font-serif);
             font-style: italic;
         }
-
-        .friends-footer .footer-motto i {
-            color: #e74c3c;
-            font-style: normal;
-        }
-
-        .friends-footer .footer-init {
-            font-size: 12px;
+        .footer-left .footer-motto i { color: #e74c3c; font-style: normal; }
+        .footer-left .footer-init {
+            font-size: 11px;
             color: var(--text3);
-            margin-bottom: 14px;
-            letter-spacing: 0.5px;
+            margin-top: 2px;
+            letter-spacing: 0.3px;
         }
+        .footer-left .footer-init span { color: var(--gold); font-weight: 700; }
 
-        .friends-footer .footer-init span {
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        .back-home a {
+        .footer-right a {
             color: var(--text3);
             text-decoration: none;
             font-size: 13px;
@@ -670,56 +890,78 @@
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: 0.3px;
         }
+        .footer-right a:hover { color: var(--gold); gap: 10px; }
 
-        .back-home a:hover {
-            color: var(--gold);
-            gap: 12px;
+        /* ============================================
+           CONFETTI
+           ============================================ */
+        #confettiContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.9;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
         }
 
         /* ============================================
            RESPONSIVE
            ============================================ */
         @media (max-width: 480px) {
-            .friends-container { padding: 24px 16px; border-radius: 22px; }
-            
-            .header-profile {
-                flex-direction: column;
-                text-align: center;
-            }
-            .header-text {
-                text-align: center;
-            }
-            .header-photo {
-                width: 54px;
-                height: 54px;
-            }
-            .header-signature {
-                width: 36px;
-                height: 12px;
-            }
-            .header-text h2 { font-size: 22px; }
-            .header-text .header-tagline { font-size: 11px; }
+            .friends-container { border-radius: 22px; }
+            .top-nav { padding: 14px 16px 8px 16px; }
+            .main-content { padding: 0 16px 16px 16px; }
 
-            .search-area { flex-wrap: wrap; }
-            .search-area input { min-width: 140px; font-size: 13px; padding: 13px 16px; }
-            .search-area button { padding: 13px 20px; font-size: 13px; }
+            .nav-brand { font-size: 16px; }
+            .nav-avatar { width: 30px; height: 30px; }
+            .nav-icon { font-size: 16px; }
 
-            .profile-row { flex-direction: column; text-align: center; }
-            .detail-grid { grid-template-columns: 1fr; }
-            .webcam-box { max-width: 100%; }
-            .found-avatar { width: 80px; height: 80px; font-size: 35px; }
-            .name { font-size: 20px; }
+            .search-area input { font-size: 13px; padding: 12px 14px 12px 40px; }
+            .search-btn { padding: 12px 16px; font-size: 13px; }
 
-            .friends-footer .footer-motto { font-size: 12px; }
-            .friends-footer .footer-init { font-size: 11px; }
+            .found-card-inner { flex-direction: column; text-align: center; }
+            .found-actions { flex-direction: column; }
+
+            .profile-top { flex-direction: column; text-align: center; }
+            .profile-avatar { width: 80px; height: 80px; }
+
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .info-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+
+            .stat-card { padding: 8px 6px; }
+            .stat-card .stat-value { font-size: 13px; }
+            .stat-card .stat-label { font-size: 8px; }
+
+            .info-card { padding: 8px 6px; }
+            .info-card .info-value { font-size: 11px; }
+            .info-card .info-label { font-size: 8px; }
+
+            .friends-footer { flex-direction: column; text-align: center; }
+            .footer-left { text-align: center; }
         }
 
         @media (max-width: 380px) {
-            .friends-container { padding: 18px 12px; border-radius: 18px; }
-            .header-text h2 { font-size: 19px; }
+            .top-nav { padding: 10px 12px 6px 12px; }
+            .main-content { padding: 0 12px 12px 12px; }
+            .nav-brand { font-size: 14px; }
         }
     </style>
 </head>
@@ -728,146 +970,246 @@
     <div class="friends-container">
 
         <!-- ============================================
-        HEADER — GOLD LUXURY
+        TOP NAVBAR
         ============================================ -->
-        <div class="friends-header">
-            <div class="header-profile">
-                <div class="header-avatar-wrapper">
-                    <img src="assets/images/formal.jpg" alt="Ravi Raj" class="header-photo" />
-                    <img src="assets/images/signature.jpg" alt="Signature" class="header-signature" />
-                </div>
-                <div class="header-text">
-                    <h2><span class="gold-text">Friends</span> Corner</h2>
-                    <p class="header-tagline">
-                        <i class="fas fa-camera"></i> Capture · 
-                        <i class="fas fa-clock"></i> Timeline · 
-                        <i class="fas fa-id-card"></i> Certificate
-                    </p>
-                    <p class="header-credit">— Ravi Raj</p>
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="nav-menu"><i class="fas fa-bars"></i></div>
+                <div>
+                    <div class="nav-brand">Friends <span>Gallery</span></div>
+                    <span class="nav-brand-sub">✦ Premium Edition</span>
                 </div>
             </div>
-        </div>
-
-        <!-- STEP 1: SEARCH -->
-        <div class="search-area" id="searchArea">
-            <input type="text" id="friendSearch" placeholder="🔍 Search friend by name..." autocomplete="off" aria-label="Search friend name">
-            <button onclick="searchFriend()">Find</button>
-        </div>
-
-        <!-- STEP 2: PHOTO -->
-        <div class="photo-screen" id="photoScreen">
-            <div class="photo-header">
-                <span class="lock-icon">🔒</span>
-                <h3>📸 <span id="photoFriendName">Friend</span>, capture your live photo!</h3>
-                <p class="warning">⚠️ Photo required — No Skip!</p>
-            </div>
-
-            <!-- FILTER CONTROLS -->
-            <div class="filter-controls" id="filterControls">
-                <button class="filter-btn active" data-filter="normal" onclick="applyFilterToVideo('normal')">Normal</button>
-                <button class="filter-btn" data-filter="bw" onclick="applyFilterToVideo('bw')">B&W</button>
-                <button class="filter-btn" data-filter="sepia" onclick="applyFilterToVideo('sepia')">Sepia</button>
-                <button class="filter-btn" data-filter="vintage" onclick="applyFilterToVideo('vintage')">Vintage</button>
-            </div>
-
-            <div class="webcam-box">
-                <video id="webcamVideo" autoplay playsinline muted></video>
-                <div class="webcam-placeholder" id="webcamPlaceholder">
-                    <i class="fas fa-camera"></i>
-                    <p>Camera will appear here</p>
+            <div class="nav-right">
+                <div class="nav-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
                 </div>
+                <img src="assets/images/formal.jpg" alt="Ravi Raj" class="nav-avatar" />
             </div>
-            <button class="capture-btn" id="captureBtn" onclick="captureFriendPhoto()">
-                <i class="fas fa-camera"></i> Capture Photo
-            </button>
-            <div class="permission-denied" id="permissionDenied">
-                <div style="font-size:50px;">🚫</div>
-                <h3>Camera Permission Required!</h3>
-                <p id="permissionMessage">Please allow camera access in browser settings.</p>
-                <button class="retry-btn" onclick="retryCamera()">🔄 Try Again</button>
-            </div>
-        </div>
-
-        <!-- STEP 3A: FRIEND FOUND -->
-        <div class="found-screen" id="foundScreen">
-            <div class="found-card">
-                <div class="found-icon">✅</div>
-                <div class="found-avatar" id="foundAvatar">👤</div>
-                <h2 class="friend-found">FRIEND FOUND!</h2>
-                <p><span class="friend-name-highlight" id="foundName">Friend</span> is in Ravi's list!</p>
-
-                <div class="friendship-timeline">
-                    <div class="timeline-label">📅 Friendship Timeline</div>
-                    <div class="timeline-bar-bg">
-                        <div class="timeline-bar-fill" id="timelineBar" style="width: 85%;"></div>
-                    </div>
-                    <div class="timeline-text" id="timelineText">Since Class 7 — 7 Years ❤️</div>
-                </div>
-                <button class="proceed-btn" onclick="proceedToDetails()">View Details →</button>
-            </div>
-        </div>
-
-        <!-- STEP 3B: NEW FRIEND -->
-        <div class="found-screen" id="newFriendScreen">
-            <div class="found-card">
-                <div class="found-icon">🤝</div>
-                <div class="found-avatar" id="newFriendAvatar">👤</div>
-                <h2 class="new-friend">NEW FRIEND!</h2>
-                <p><span class="friend-name-highlight" id="newFriendName">Friend</span> is now a Friend!</p>
-
-                <button class="proceed-btn" onclick="downloadNewFriendCard()">🪪 Get Certificate</button>
-                <button class="search-again-btn" onclick="resetSearch()">🔄 Search Another</button>
-            </div>
-        </div>
-
-        <!-- STEP 4: DETAILS -->
-        <div class="details-screen" id="detailsScreen">
-            <div class="result-card">
-                <div class="profile-row">
-                    <div class="avatar" id="profileAvatar">👤</div>
-                    <div>
-                        <div class="name" id="displayName">Sudhanshu</div>
-                        <div class="personal-name" id="displayPersonalName"></div>
-                        <div class="connection" id="displayConnection">🤝 Best Friend</div>
-                    </div>
-                </div>
-
-                <div class="friendship-timeline">
-                    <div class="timeline-label">📅 Friendship Timeline</div>
-                    <div class="timeline-bar-bg">
-                        <div class="timeline-bar-fill" id="detailsTimelineBar" style="width: 85%;"></div>
-                    </div>
-                    <div class="timeline-text" id="detailsTimelineText">Since Class 7 — 7 Years ❤️</div>
-                </div>
-
-                <div class="experience" id="displayExperience">We grew up together, played cricket every evening, and copied each other's homework 😂 He's the most loyal friend I have.</div>
-                <div class="school-class" id="displaySchoolClass">📚 Mother's Pride — Since Class 7</div>
-
-                <div class="detail-grid">
-                    <div><span class="label">Age</span><br><span class="value" id="displayAge">18</span></div>
-                    <div><span class="label">School</span><br><span class="value" id="displaySchool">Mother's Pride</span></div>
-                    <div><span class="label">Hobby</span><br><span class="value" id="displayHobby">Cricket, Coding</span></div>
-                    <div><span class="label">Since Class</span><br><span class="value" id="displaySinceClass">7</span></div>
-                </div>
-
-                <button class="download-btn" onclick="downloadFriendCard()">
-                    <i class="fas fa-award"></i> Download Certificate
-                </button>
-                <button class="search-again-btn" onclick="resetSearch()">🔄 Search Another</button>
-            </div>
-        </div>
+        </nav>
 
         <!-- ============================================
-        FOOTER — ELEGANT
+        MAIN CONTENT
         ============================================ -->
-        <footer class="friends-footer">
-            <p class="footer-motto">Made with <i>❤️</i> &amp; Curiosity</p>
-            <p class="footer-init">An initiative by <span>Raviraj Singh</span></p>
-            
-            <div class="back-home">
-                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <div class="main-content">
+
+            <!-- SEARCH BAR -->
+            <div class="search-area" id="searchArea">
+                <i class="fas fa-search search-icon-left"></i>
+                <input type="text" id="friendSearch" placeholder="Search your friend..." autocomplete="off" aria-label="Search friend name">
+                <button class="search-voice" onclick="toggleVoiceSearch()" title="Voice Search"><i class="fas fa-microphone"></i></button>
+                <button class="search-btn" onclick="searchFriend()"><i class="fas fa-arrow-right"></i></button>
             </div>
-        </footer>
+
+            <!-- ============================================
+            CAMERA SCREEN
+            ============================================ -->
+            <div class="photo-screen" id="photoScreen">
+                <div class="section-header">
+                    <h3><i class="fas fa-camera"></i> Live Capture</h3>
+                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                </div>
+
+                <div class="photo-header">
+                    <span class="lock-icon">🔒</span>
+                    <h3>📸 <span id="photoFriendName">Friend</span>, capture your live photo!</h3>
+                    <p class="warning">⚠️ Photo required — No Skip!</p>
+                </div>
+
+                <!-- FILTER CONTROLS -->
+                <div class="filter-controls" id="filterControls">
+                    <button class="filter-btn active" data-filter="normal" onclick="applyFilterToVideo('normal')">Normal</button>
+                    <button class="filter-btn" data-filter="bw" onclick="applyFilterToVideo('bw')">B&W</button>
+                    <button class="filter-btn" data-filter="sepia" onclick="applyFilterToVideo('sepia')">Sepia</button>
+                    <button class="filter-btn" data-filter="vintage" onclick="applyFilterToVideo('vintage')">Vintage</button>
+                </div>
+
+                <div class="webcam-box">
+                    <video id="webcamVideo" autoplay playsinline muted></video>
+                    <div class="webcam-placeholder" id="webcamPlaceholder">
+                        <i class="fas fa-camera"></i>
+                        <p>Camera will appear here</p>
+                    </div>
+                </div>
+
+                <div class="capture-wrapper">
+                    <button class="capture-btn" id="captureBtn" onclick="captureFriendPhoto()">
+                        <i class="fas fa-camera"></i> Capture Photo
+                    </button>
+                </div>
+
+                <div class="permission-denied" id="permissionDenied">
+                    <div style="font-size:50px;">🚫</div>
+                    <h3>Camera Permission Required!</h3>
+                    <p id="permissionMessage">Please allow camera access in browser settings.</p>
+                    <button class="retry-btn" onclick="retryCamera()">🔄 Try Again</button>
+                </div>
+            </div>
+
+            <!-- ============================================
+            FRIEND FOUND SCREEN
+            ============================================ -->
+            <div class="found-screen" id="foundScreen">
+                <div class="section-header">
+                    <h3><i class="fas fa-check-circle" style="color:#4caf50;"></i> Friend Found!</h3>
+                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                </div>
+
+                <div class="found-card">
+                    <div class="found-card-inner">
+                        <div class="found-avatar" id="foundAvatar">
+                            <div class="found-avatar-placeholder">👤</div>
+                        </div>
+                        <div class="found-info">
+                            <div class="found-badge">✦ Verified Friend</div>
+                            <div class="found-name" id="foundName">Friend</div>
+                            <div class="found-tag"><i class="fas fa-tag"></i> <span id="foundTag">Best Friend</span></div>
+                            <div class="found-timeline">
+                                <div class="tl-label">📅 Friendship Timeline</div>
+                                <div class="tl-bar">
+                                    <div class="tl-fill" id="timelineBar" style="width: 85%;"></div>
+                                </div>
+                                <div class="tl-text" id="timelineText">Since Class 7 — 7 Years ❤️</div>
+                            </div>
+                            <div class="found-actions">
+                                <button class="found-btn primary" onclick="proceedToDetails()"><i class="fas fa-user"></i> View Profile</button>
+                                <button class="found-btn secondary" onclick="downloadFriendCard()"><i class="fas fa-award"></i> Certificate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+            NEW FRIEND SCREEN
+            ============================================ -->
+            <div class="new-friend-screen" id="newFriendScreen">
+                <div class="section-header">
+                    <h3><i class="fas fa-handshake" style="color:#ffd93d;"></i> New Friend!</h3>
+                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                </div>
+
+                <div class="new-friend-card">
+                    <div class="nf-icon">🤝</div>
+                    <div class="nf-title">NEW FRIEND!</div>
+                    <p style="color:var(--text2);margin-bottom:4px;">You're now a Friend of Ravi!</p>
+                    <div class="found-avatar" style="margin:12px auto;width:80px;height:80px;" id="newFriendAvatar">
+                        <div class="found-avatar-placeholder">👤</div>
+                    </div>
+                    <div class="nf-name" id="newFriendName">Friend</div>
+
+                    <div style="margin-top:16px;display:flex;gap:10px;flex-direction:column;">
+                        <button class="found-btn primary" onclick="downloadNewFriendCard()"><i class="fas fa-award"></i> Get Certificate</button>
+                        <button class="found-btn secondary" onclick="resetSearch()"><i class="fas fa-search"></i> Search Another</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+            DETAILS / PROFILE SCREEN
+            ============================================ -->
+            <div class="details-screen" id="detailsScreen">
+                <div class="section-header">
+                    <h3><i class="fas fa-id-card" style="color:var(--gold);"></i> Friend Profile</h3>
+                    <span class="section-action" onclick="resetSearch()">✕ Close</span>
+                </div>
+
+                <div class="profile-card">
+                    <!-- Profile Top -->
+                    <div class="profile-top">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <div class="profile-avatar-placeholder">👤</div>
+                        </div>
+                        <div class="profile-info">
+                            <div class="profile-name" id="displayName">Sudhanshu</div>
+                            <div class="profile-connection" id="displayConnection">🤝 Best Friend</div>
+                            <div class="profile-location"><i class="fas fa-map-marker-alt"></i> Begusarai, Bihar</div>
+                            <div class="profile-rating">⭐ ⭐ ⭐ ⭐ ☆ <span class="rating-num">4.8</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-icon">🏷️</span>
+                            <span class="stat-value" id="displayTag">Best Friend</span>
+                            <span class="stat-label">Tag</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">🤝</span>
+                            <span class="stat-value" id="displaySince">7 Years</span>
+                            <span class="stat-label">Since</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-icon">🎂</span>
+                            <span class="stat-value" id="displayAge">18</span>
+                            <span class="stat-label">Age</span>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <span class="info-icon">🏫</span>
+                            <span class="info-value" id="displaySchool">Mother's Pride</span>
+                            <span class="info-label">School</span>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">🎯</span>
+                            <span class="info-value" id="displayHobby">🏏 💻</span>
+                            <span class="info-label">Hobby</span>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon">💬</span>
+                            <span class="info-value" id="displayQuote">Loyal</span>
+                            <span class="info-label">Quote</span>
+                        </div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="experience-card">
+                        <span class="exp-icon">💬</span>
+                        <span class="exp-text" id="displayExperience">We grew up together, played cricket every evening, and copied each other's homework 😂 He's the most loyal friend I have.</span>
+                    </div>
+
+                    <!-- Timeline inside details -->
+                    <div style="margin-bottom:14px;">
+                        <div class="found-timeline">
+                            <div class="tl-label">📅 Friendship Timeline</div>
+                            <div class="tl-bar">
+                                <div class="tl-fill" id="detailsTimelineBar" style="width: 85%;"></div>
+                            </div>
+                            <div class="tl-text" id="detailsTimelineText">Since Class 7 — 7 Years ❤️</div>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Button -->
+                    <button class="cert-btn" onclick="downloadFriendCard()">
+                        <i class="fas fa-award"></i> Download Friendship Certificate
+                    </button>
+
+                    <!-- Search Again -->
+                    <button class="search-again-btn" onclick="resetSearch()">
+                        <i class="fas fa-search"></i> Search Another Friend
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================
+            FOOTER
+            ============================================ -->
+            <footer class="friends-footer">
+                <div class="footer-left">
+                    <p class="footer-motto">Made with <i>❤️</i> &amp; Curiosity</p>
+                    <p class="footer-init">An initiative by <span>Ravi Raj</span></p>
+                </div>
+                <div class="footer-right">
+                    <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                </div>
+            </footer>
+
+        </div>
 
         <!-- CONFETTI CONTAINER -->
         <div id="confettiContainer"></div>
