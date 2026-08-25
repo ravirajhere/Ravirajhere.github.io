@@ -27,7 +27,7 @@
     <!-- ====== FONTS & ICONS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
     <!-- ====== CSS ====== -->
@@ -56,15 +56,57 @@
     <div id="custom-cursor"></div>
 
     <!-- ============================================================
-    THEME TOGGLE
+    TOP NAVBAR
     ============================================================ -->
-    <div class="theme-toggle-wrapper">
-        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
-            <span class="switch-icon sun">☀️</span>
-            <span class="switch-icon moon">🌙</span>
-            <div class="slider"></div>
+    <nav class="top-nav" id="topNav">
+        <div class="nav-left">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <div class="nav-brand">Ravi <span>Raj</span></div>
+                <span class="nav-brand-sub">✦ Personal Portfolio</span>
+            </div>
         </div>
-    </div>
+        <div class="nav-right">
+            <div class="theme-toggle-nav">
+                <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="switch-icon sun">☀️</span>
+                    <span class="switch-icon moon">🌙</span>
+                    <div class="slider"></div>
+                </div>
+            </div>
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="nav-avatar" />
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    SIDEBAR / HAMBURGER MENU
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        
+        <div class="sidebar-profile">
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" />
+            <div class="sp-name">Ravi Raj</div>
+            <div class="sp-title">Student · Author · Developer</div>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#story"><i class="fas fa-book-open"></i> Story</a></li>
+            <li><a href="#interests"><i class="fas fa-heart"></i> Interests</a></li>
+            <li><a href="#projects"><i class="fas fa-code"></i> Projects</a></li>
+            <li><a href="#articles"><i class="fas fa-pen-fancy"></i> Blog</a></li>
+            <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <p class="sf-motto">Made with <i>❤️</i> &amp; Curiosity</p>
+        </div>
+    </aside>
 
     <!-- ============================================================
     TOAST
@@ -72,39 +114,23 @@
     <div id="toast" class="toast"></div>
 
     <!-- ============================================================
-    NAVIGATION
+    MAIN CONTAINER
     ============================================================ -->
-    <nav>
-        <div class="logo">Ravi <span>Raj</span></div>
-        
-        <ul class="nav-links">
-            <li><a href="#home" class="active">Home</a></li>
-            <li><a href="#story">Story</a></li>
-            <li><a href="#interests">Interests</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#articles">Blog</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- ============================================================
-    MAIN
-    ============================================================ -->
-    <main class="container">
+    <main class="main-container">
 
         <!-- ============================================================
-        HERO
+        HERO SECTION
         ============================================================ -->
-        <section id="home" class="hero">
+        <section id="home" class="hero-section">
             <div class="hero-image-wrapper">
                 <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
             </div>
-            <h1>Hey, I'm <span>Ravi Raj</span> 👋</h1>
-            <p class="subtitle">Student • Author • Web_Developer</p>
-            <p class="bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
+            <h1 class="hero-title">Hey, I'm <span>Ravi Raj</span> 👋</h1>
+            <p class="hero-subtitle">Student • <span class="highlight">Author</span> • Web_Developer</p>
+            <p class="hero-bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
             
-            <!-- SOCIAL LINKS -->
-            <div class="social-links">
+            <!-- SOCIAL LINKS — 2×2 Grid -->
+            <div class="social-grid">
                 <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i> GitHub</a>
                 <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
                 <a href="https://instagram.com/rravirajhere" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i> Instagram</a>
@@ -121,14 +147,14 @@
         <!-- ============================================================
         STORY
         ============================================================ -->
-        <section id="story">
-            <div class="section-header">
+        <section id="story" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">📖</span>
                 <h2>My <span>Story</span></h2>
                 <p class="sub">Journey from student to building for the web</p>
             </div>
             
-            <div class="story-content">
+            <div class="story-card">
                 <p>I'm Ravi Raj Singh, born and raised in Begusarai, Bihar. I started coding in 2023 with a single HTML tag. That simple <code>&lt;h1&gt;</code> changed everything.</p>
                 
                 <p>Today, I build websites that work for real people. I believe in clean code, responsive design, and continuous learning.</p>
@@ -146,8 +172,8 @@
         <!-- ============================================================
         INTERESTS
         ============================================================ -->
-        <section id="interests">
-            <div class="section-header">
+        <section id="interests" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">🎯</span>
                 <h2>What Makes Me <span>Tick</span></h2>
                 <p class="sub">Click on any card to reveal more</p>
@@ -195,8 +221,8 @@
         <!-- ============================================================
         PROJECTS
         ============================================================ -->
-        <section id="projects">
-            <div class="section-header">
+        <section id="projects" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">💻</span>
                 <h2>Things I've <span>Built</span></h2>
                 <p class="sub">Projects that I'm proud of</p>
@@ -260,8 +286,8 @@
         <!-- ============================================================
         ARTICLES / BLOG
         ============================================================ -->
-        <section id="articles">
-            <div class="section-header">
+        <section id="articles" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">📝</span>
                 <h2>My <span>Thoughts</span></h2>
                 <p class="sub">Random musings on coding, life, and everything in between</p>
@@ -294,8 +320,8 @@
         <!-- ============================================================
         EDUCATION
         ============================================================ -->
-        <section id="education">
-            <div class="section-header">
+        <section id="education" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">🎓</span>
                 <h2><span>Education</span></h2>
                 <p class="sub">Where I learned what I know</p>
@@ -329,8 +355,8 @@
         <!-- ============================================================
         MILESTONES
         ============================================================ -->
-        <section id="milestones">
-            <div class="section-header">
+        <section id="milestones" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">🏆</span>
                 <h2><span>Milestones</span></h2>
                 <p class="sub">Things I'm proud of (big or small)</p>
@@ -366,14 +392,14 @@
         <!-- ============================================================
         CONTACT
         ============================================================ -->
-        <section id="contact">
-            <div class="section-header">
+        <section id="contact" class="section-block">
+            <div class="section-header-custom">
                 <span class="emoji">📬</span>
                 <h2>Let's <span>Talk</span></h2>
                 <p class="sub">I reply within 24 hours. Promise.</p>
             </div>
 
-            <div class="contact-wrapper">
+            <div class="contact-card">
                 <p>💬 Have a question? Want to collaborate? Just want to say hi?</p>
                 <p>I'd love to hear from you.</p>
                 
@@ -386,27 +412,20 @@
         <!-- ============================================================
         FOOTER
         ============================================================ -->
-        <footer>
-            <p>© <span id="current-year">2026</span> Ravi Raj</p>
-            
-            <div class="footer-socials">
-                <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://instagram.com/rravirajhere" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <footer class="footer-premium">
+            <div class="footer-left">
+                <p class="fm">Made with <i>❤️</i> &amp; Curiosity</p>
+                <p class="fi">An initiative by <span>Raviraj Singh</span></p>
             </div>
-
-            <div class="footer-time">
-                <span id="live-time">⏱️ Loading...</span>
-                <span class="divider">|</span>
-                <span>🇮🇳 IST</span>
+            <div class="footer-right">
+                <div class="footer-socials">
+                    <a href="https://github.com/ravirajhere" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://linkedin.com/in/Ravirajhere" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://instagram.com/rravirajhere" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com/@Ravirajhere" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <a href="#home" id="backToTop"><i class="fas fa-arrow-up"></i> Top</a>
             </div>
-
-            <div class="footer-bottom">
-                <a href="#home" id="back-to-top">↑ Back to Top</a>
-            </div>
-
-            <p class="footer-motto">Made with ❤️ & Code</p>
         </footer>
 
     </main>
