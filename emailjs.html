@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>✉️ Send a Message — Ravi Raj</title>
+    
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- Google Fonts: Executive Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="css/global.css" />
+    
+    <style>
+        /* ============================================================
+           EMAILJS — ULTIMATE PREMIUM EXECUTIVE STYLE
+           ============================================================ */
+        :root {
+            --bg: #0a0806;
+            --bg2: rgba(255,248,240,0.03);
+            --bg3: rgba(255,248,240,0.06);
+            --bg4: rgba(212,163,115,0.06);
+            --text: #f5ede4;
+            --text2: rgba(245,237,228,0.75);
+            --text3: rgba(245,237,228,0.4);
+            --border: rgba(212,163,115,0.12);
+            --border2: rgba(212,163,115,0.06);
+            --gold: #d4a373;
+            --gold2: #cc8e5a;
+            --gold3: #e6b88a;
+            --shadow: 0 20px 60px rgba(0,0,0,0.6);
+            --shadow2: 0 8px 32px rgba(212,163,115,0.04);
+            --radius: 20px;
+            --radius2: 12px;
+            --font-serif: 'Playfair Display', 'Georgia', serif;
+            --font-sans: 'Inter', 'Space Grotesk', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0806;
+            --bg2: rgba(255,248,240,0.03);
+            --bg3: rgba(255,248,240,0.06);
+            --bg4: rgba(212,163,115,0.06);
+            --text: #f5ede4;
+            --text2: rgba(245,237,228,0.75);
+            --text3: rgba(245,237,228,0.4);
+            --border: rgba(212,163,115,0.12);
+            --border2: rgba(212,163,115,0.06);
+            --gold: #d4a373;
+            --gold2: #cc8e5a;
+            --gold3: #e6b88a;
+            --shadow: 0 20px 60px rgba(0,0,0,0.6);
+            --shadow2: 0 8px 32px rgba(212,163,115,0.04);
+        }
+
+        [data-theme="light"] {
+            --bg: #f8f6f3;
+            --bg2: rgba(26,20,16,0.03);
+            --bg3: rgba(26,20,16,0.06);
+            --bg4: rgba(212,163,115,0.06);
+            --text: #1a1410;
+            --text2: rgba(26,20,16,0.75);
+            --text3: rgba(26,20,16,0.4);
+            --border: rgba(212,163,115,0.15);
+            --border2: rgba(212,163,115,0.08);
+            --gold: #b8952e;
+            --gold2: #a07d2a;
+            --gold3: #d4a373;
+            --shadow: 0 20px 60px rgba(0,0,0,0.06);
+            --shadow2: 0 8px 32px rgba(212,163,115,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(212,163,115,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse at 0% 100%, rgba(212,163,115,0.02) 0%, transparent 50%);
+            transition: background var(--transition), color var(--transition);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold2); }
+
+        ::selection {
+            background: var(--gold);
+            color: var(--bg);
+        }
+
+        /* ---- THEME TOGGLE ---- */
+        .theme-toggle-wrapper {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9999;
+            background: var(--bg2);
+            padding: 8px 16px 8px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow2);
+            transition: all var(--transition);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #themeLabel {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text2);
+            transition: color var(--transition);
+            min-width: 38px;
+        }
+
+        .switch {
+            position: relative;
+            width: 38px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3px;
+            background: var(--bg3);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .switch .slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            border-radius: 50%;
+            transition: all var(--transition);
+            box-shadow: 0 2px 8px rgba(212,163,115,0.3);
+        }
+
+        [data-theme="dark"] .switch .slider {
+            left: 18px;
+            background: var(--gold);
+        }
+
+        .switch .switch-icon {
+            font-size: 9px;
+            line-height: 1;
+            z-index: 1;
+            transition: opacity var(--transition);
+        }
+        .switch .sun { opacity: 1; }
+        .switch .moon { opacity: 0.3; }
+        [data-theme="dark"] .switch .sun { opacity: 0.3; }
+        [data-theme="dark"] .switch .moon { opacity: 1; }
+
+        /* ---- CONTAINER ---- */
+        .email-container {
+            width: 100%;
+            max-width: 560px;
+            background: var(--bg2);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 48px 44px;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1;
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+
+        .email-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), var(--gold), transparent);
+            opacity: 0.6;
+        }
+
+        .email-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(212,163,115,0.02) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ---- HEADER ---- */
+        .email-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .email-header h2 {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: color var(--transition);
+        }
+
+        .email-header h2 span {
+            font-size: 28px;
+        }
+
+        .email-header h2 .gold-text {
+            color: var(--gold);
+        }
+
+        .email-header .close-btn {
+            background: none;
+            border: 1px solid var(--border2);
+            color: var(--text3);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .email-header .close-btn:hover {
+            color: #ff4444;
+            border-color: #ff4444;
+            transform: rotate(90deg);
+            background: rgba(255,68,68,0.06);
+        }
+
+        .ornament {
+            text-align: center;
+            color: var(--gold);
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin: 2px 0 18px 0;
+            opacity: 0.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        .email-subtitle {
+            color: var(--text2);
+            font-size: 14px;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border2);
+            transition: all var(--transition);
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* ---- FORM ---- */
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 5px;
+            transition: color var(--transition);
+            letter-spacing: 0.5px;
+        }
+
+        .form-group label .required {
+            color: #ff6b6b;
+            margin-left: 2px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg3);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius2);
+            color: var(--text);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: all var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212,163,115,0.04);
+            background: var(--bg4);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* ---- SUBMIT BUTTON ---- */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            border: none;
+            border-radius: 60px;
+            color: var(--bg);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 6px;
+            box-shadow: 0 4px 30px rgba(212,163,115,0.15);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg) translateX(-100%);
+            transition: 0.6s;
+        }
+
+        .submit-btn:hover::after {
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(212,163,115,0.3);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.97);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ---- STATUS ---- */
+        #formStatus {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            padding: 12px 16px;
+            border-radius: var(--radius2);
+            position: relative;
+            z-index: 1;
+        }
+
+        #formStatus.success {
+            display: block;
+            background: rgba(0,255,136,0.06);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+
+        #formStatus.error {
+            display: block;
+            background: rgba(255,68,68,0.06);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        #formStatus.loading {
+            display: block;
+            background: rgba(212,163,115,0.06);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        /* ---- FOOTER ---- */
+        .email-footer {
+            text-align: center;
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border2);
+            font-size: 11px;
+            color: var(--text3);
+            transition: all var(--transition);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.3px;
+        }
+
+        .email-footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+
+        .email-footer a:hover {
+            color: var(--gold2);
+            text-decoration: underline;
+        }
+
+        .email-footer .stars {
+            color: var(--gold);
+            letter-spacing: 2px;
+            opacity: 0.3;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 500px) {
+            .email-container {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+            .email-header h2 {
+                font-size: 20px;
+            }
+            .email-header .close-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 15px;
+            }
+            .submit-btn {
+                font-size: 15px;
+                padding: 14px;
+            }
+            .form-group input,
+            .form-group textarea {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+            .theme-toggle-wrapper {
+                top: 10px;
+                right: 10px;
+                padding: 4px 10px 4px 12px;
+            }
+            .theme-toggle-wrapper .switch {
+                width: 32px;
+                height: 18px;
+            }
+            .theme-toggle-wrapper .switch .slider {
+                width: 12px;
+                height: 12px;
+            }
+            [data-theme="dark"] .theme-toggle-wrapper .switch .slider {
+                left: 14px;
+            }
+            #themeLabel {
+                font-size: 10px;
+                min-width: 32px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .email-container {
+                padding: 22px 14px;
+                border-radius: 16px;
+            }
+            .email-header h2 {
+                font-size: 18px;
+            }
+            .email-header h2 span {
+                font-size: 20px;
+            }
+            .submit-btn {
+                font-size: 13px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== THEME TOGGLE ===== -->
+    <div class="theme-toggle-wrapper">
+        <span id="themeLabel">Light</span>
+        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+            <span class="switch-icon sun">☀️</span>
+            <span class="switch-icon moon">🌙</span>
+            <div class="slider"></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="email-container">
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
+        <!-- ===== HEADER ===== -->
+        <div class="email-header">
+            <h2>
+                <span>✉️</span> Send a <span class="gold-text">Message</span>
+            </h2>
+            <button class="close-btn" onclick="goBack()" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <p class="email-subtitle">Fill in the details and I'll get back to you soon.</p>
+
+        <!-- ===== FORM ===== -->
+        <form id="contactForm">
+            <div class="form-group">
+                <label>Your Name <span class="required">*</span></label>
+                <input type="text" id="user_name" placeholder="e.g. Ravi Raj" required />
+            </div>
+
+            <div class="form-group">
+                <label>Your Email <span class="required">*</span></label>
+                <input type="email" id="user_email" placeholder="e.g. you@example.com" required />
+            </div>
+
+            <div class="form-group">
+                <label>Your Message <span class="required">*</span></label>
+                <textarea id="user_message" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+        </form>
+
+        <!-- ===== STATUS ===== -->
+        <div id="formStatus"></div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="email-footer">
+            Powered by <a href="index.html">Ravi Raj</a> &bull; Your message will be sent via EmailJS
+            <div class="stars">✦ ✦ ✦ ✦ ✦</div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+       EMAILJS LIBRARY
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+
+    <!-- ============================================================
+       EMAILJS.JS — COMPLETE LOGIC
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================
+            // CONFIGURATION
+            // ============================================
+            const EMAILJS_CONFIG = {
+                publicKey: 'ZKEUMnGSjznurORAI',
+                serviceID: 'service_kc0c1i5',
+                templateID: 'template_s53pk7r'
+            };
+
+            // ============================================
+            // INITIALIZE EMAILJS
+            // ============================================
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init(EMAILJS_CONFIG.publicKey);
+                console.log('✅ EmailJS initialized!');
+            } else {
+                console.warn('⚠️ EmailJS library not loaded!');
+            }
+
+            // ============================================
+            // DOM ELEMENTS
+            // ============================================
+            const form = document.getElementById('contactForm');
+            const status = document.getElementById('formStatus');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // ============================================
+            // FORM SUBMIT HANDLER
+            // ============================================
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Get form data
+                    const name = document.getElementById('user_name')?.value.trim() || '';
+                    const email = document.getElementById('user_email')?.value.trim() || '';
+                    const message = document.getElementById('user_message')?.value.trim() || '';
+
+                    // Validate
+                    if (!name || !email || !message) {
+                        showStatus('❌ Please fill all fields!', 'error');
+                        return;
+                    }
+
+                    // Email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        showStatus('❌ Please enter a valid email address!', 'error');
+                        return;
+                    }
+
+                    // Show loading
+                    showStatus('⏳ Sending...', 'loading');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+                    const templateParams = {
+                        name: name,
+                        email: email,
+                        message: message
+                    };
+
+                    emailjs.send(
+                            EMAILJS_CONFIG.serviceID,
+                            EMAILJS_CONFIG.templateID,
+                            templateParams,
+                            EMAILJS_CONFIG.publicKey
+                        )
+                        .then(function(response) {
+                            console.log('✅ Email sent!', response);
+                            showStatus('✅ Message sent successfully! I\'ll reply soon.', 'success');
+                            form.reset();
+
+                            setTimeout(function() {
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                            }, 3000);
+                        })
+                        .catch(function(error) {
+                            console.error('❌ EmailJS Error:', error);
+                            showStatus('❌ Failed to send. Please try again later.', 'error');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+                        });
+                });
+            } else {
+                console.warn('⚠️ Contact form not found!');
+            }
+
+            // ============================================
+            // HELPER: Show Status
+            // ============================================
+            function showStatus(message, type) {
+                status.textContent = message;
+                status.className = type;
+                status.style.display = 'block';
+
+                if (type !== 'loading') {
+                    setTimeout(function() {
+                        status.style.display = 'none';
+                        status.className = '';
+                    }, 5000);
+                }
+            }
+
+            // ============================================
+            // GO BACK FUNCTION
+            // ============================================
+            window.goBack = function() {
+                if (document.referrer) {
+                    window.location.href = document.referrer;
+                } else {
+                    window.history.back();
+                }
+            };
+
+            // ============================================
+            // KEYBOARD SHORTCUTS
+            // ============================================
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    goBack();
+                }
+            });
+
+            console.log('✅ Email form loaded successfully!');
+
+        })();
+    </script>
+
+    <!-- ===== GLOBAL JS ===== -->
+    <script src="js/global.js"></script>
+
+</body>
+</html>
