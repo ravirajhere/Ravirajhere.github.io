@@ -38,7 +38,6 @@ This project is more than just a portfolio. It's a reflection of who I am — my
 - 🏠 **Portfolio** — Showcase of projects, skills & milestones
 - 📖 **Autobiography** — 12 chapters in English & Hinglish + E-book download
 - 👥 **Friends Corner** — 14 friends with voice search, filters & PDF friend cards  
-- 💬 **AI Chatbox (RJ AI)** — Virtual assistant with 20+ intent detection
 - 📄 **Resume** — Professional CV with print & download support
 - ✉️ **Contact Form** — EmailJS-powered messaging, no backend needed
 - 🌓 **Theme Toggle** — Dark/Light mode with localStorage
