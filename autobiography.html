@@ -31,7 +31,100 @@
     <!-- ===== TOAST ===== -->
     <div class="toast" id="toast"></div>
 
-    <!-- ===== DOWNLOAD MODAL ===== -->
+    <!-- ============================================================
+    SIDEBAR OVERLAY
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================================================
+    SIDEBAR / HAMBURGER MENU
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        
+        <div class="sidebar-profile">
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" />
+            <div class="sp-name">Ravi Raj</div>
+            <div class="sp-title">Student · Author · Developer</div>
+        </div>
+        
+        <!-- QUICK LINKS -->
+        <div class="sidebar-section-label">🔹 Quick Links</div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="friends.html"><i class="fas fa-users"></i> Friends Gallery</a></li>
+            <li><a href="resume-pdf.html"><i class="fas fa-file-pdf"></i> Resume (PDF)</a></li>
+        </ul>
+        
+        <!-- CHAPTERS LIST -->
+        <div class="sidebar-section-label">📖 Chapters (13)</div>
+        <ul class="sidebar-menu" id="chapterSidebarMenu">
+            <li><a href="#" data-chapter="1"><span class="chapter-num">1.</span> The Beginning</a></li>
+            <li><a href="#" data-chapter="2"><span class="chapter-num">2.</span> Primary School Days</a></li>
+            <li><a href="#" data-chapter="3"><span class="chapter-num">3.</span> Secondary School Years</a></li>
+            <li><a href="#" data-chapter="4"><span class="chapter-num">4.</span> JEE Coaching — The Journey</a></li>
+            <li><a href="#" data-chapter="5"><span class="chapter-num">5.</span> Coding Discovery</a></li>
+            <li><a href="#" data-chapter="6"><span class="chapter-num">6.</span> Coding Journey Begins</a></li>
+            <li><a href="#" data-chapter="7"><span class="chapter-num">7.</span> The Present</a></li>
+            <li><a href="#" data-chapter="8"><span class="chapter-num">8.</span> Family — My Anchor</a></li>
+            <li><a href="#" data-chapter="9"><span class="chapter-num">9.</span> Friends & Relationships</a></li>
+            <li><a href="#" data-chapter="10"><span class="chapter-num">10.</span> Biggest Struggle</a></li>
+            <li><a href="#" data-chapter="11"><span class="chapter-num">11.</span> Biggest Happiness</a></li>
+            <li><a href="#" data-chapter="12"><span class="chapter-num">12.</span> Message & Motto</a></li>
+            <li><a href="#" data-chapter="13"><span class="chapter-num">13.</span> Friend Memory — 12th Ke Last Pages</a></li>
+        </ul>
+        
+        <!-- ACTION BUTTONS -->
+        <div class="sidebar-actions">
+            <button class="sidebar-action-btn primary" onclick="openModal()">
+                <i class="fas fa-download"></i> Download Full Ebook
+            </button>
+            <button class="sidebar-action-btn secondary" onclick="location.href='emailjs.html'">
+                <i class="fas fa-envelope"></i> Report Issue
+            </button>
+        </div>
+        
+        <!-- THEME TOGGLE INSIDE SIDEBAR -->
+        <div class="sidebar-footer">
+            <div class="sidebar-theme-toggle">
+                <span>🌙 Dark Mode</span>
+                <div class="switch" id="themeSwitchSidebar" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="switch-icon sun">☀️</span>
+                    <span class="switch-icon moon">🌙</span>
+                    <div class="slider"></div>
+                </div>
+            </div>
+            <p class="sf-motto">Made with <i>❤️</i> &amp; Curiosity</p>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    TOP NAVBAR WITH HAMBURGER
+    ============================================================ -->
+    <nav class="top-nav" id="topNav">
+        <div class="nav-left">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <div class="nav-brand">Ravi <span>Raj</span></div>
+                <span class="nav-brand-sub">✦ My Autobiography</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="theme-toggle-nav">
+                <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="switch-icon sun">☀️</span>
+                    <span class="switch-icon moon">🌙</span>
+                    <div class="slider"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+    DOWNLOAD MODAL
+    ============================================================ -->
     <div class="modal-overlay" id="downloadModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
@@ -56,6 +149,9 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
     <div class="autobio-wrapper">
 
         <!-- ===== BACK LINK (TOP) ===== -->
@@ -824,10 +920,112 @@
 
     </div>
 
-    <!-- ===== EXTERNAL JAVASCRIPT ===== -->
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
     <script src="js/global.js"></script>
     <script src="js/autobiography.js"></script>
     <script src="js/ebook.js"></script>
+    
+    <!-- ============================================================
+    SIDEBAR LOGIC
+    ============================================================ -->
+    <script>
+        // ============================================
+        // HAMBURGER MENU TOGGLE
+        // ============================================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', toggleSidebar);
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeSidebar);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+
+        // ============================================
+        // CHAPTER NAVIGATION FROM SIDEBAR
+        // ============================================
+        document.querySelectorAll('#chapterSidebarMenu a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const chapterNum = parseInt(this.dataset.chapter);
+                if (chapterNum) {
+                    // Get current language
+                    const lang = currentLang || 'en';
+                    goToChapter(lang, chapterNum);
+                    closeSidebar();
+                }
+            });
+        });
+
+        // ============================================
+        // THEME TOGGLE IN SIDEBAR
+        // ============================================
+        const themeSwitchSidebar = document.getElementById('themeSwitchSidebar');
+        if (themeSwitchSidebar) {
+            themeSwitchSidebar.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                // Update label if exists
+                const label = document.getElementById('themeLabel');
+                if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
+                if (window.showToast) {
+                    window.showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+                }
+            });
+        }
+
+        // ============================================
+        // CLOSE SIDEBAR ON MENU ITEM CLICK (Quick Links)
+        // ============================================
+        document.querySelectorAll('.sidebar-menu a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                setTimeout(closeSidebar, 300);
+            });
+        });
+
+        // ============================================
+        // SIDEBAR ACTION BUTTONS
+        // ============================================
+        document.querySelectorAll('.sidebar-action-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                setTimeout(closeSidebar, 400);
+            });
+        });
+
+        console.log('✅ Autobiography Sidebar Loaded Successfully!');
+    </script>
 
 </body>
 </html>
