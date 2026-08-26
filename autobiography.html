@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Autobiography — Ravi Raj</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- ====== FONTS & ICONS ====== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- ====== EXTERNAL CSS ====== -->
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/autobiography.css" />
+</head>
+<body>
+
+    <!-- ===== THEME TOGGLE ===== -->
+    <div class="theme-toggle-wrapper">
+        <span id="themeLabel">Light</span>
+        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+            <span class="switch-icon sun">☀️</span>
+            <span class="switch-icon moon">🌙</span>
+            <div class="slider"></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== DOWNLOAD MODAL ===== -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h2>📥 Download Ebook</h2>
+            <p class="modal-desc">Choose your preferred language</p>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🇬🇧 English Ebook</span>
+                    <span class="opt-desc">All 13 chapters in English</span>
+                </div>
+                <button class="modal-btn" onclick="downloadEnglishEbook()">Download</button>
+            </div>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🗣️ Hinglish Ebook</span>
+                    <span class="opt-desc">All 13 chapters in Hinglish</span>
+                </div>
+                <button class="modal-btn" onclick="downloadHinglishEbook()">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="autobio-wrapper">
+
+        <!-- ===== BACK LINK (TOP) ===== -->
+        <a href="index.html" class="back-link-top">← Back to Home</a>
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
+        <!-- ===== HERO ===== -->
+        <div class="autobio-header">
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="profile-photo" />
+            <h1>📖 My <span>Autobiography</span></h1>
+            <div class="intro-line">"A Boy Who Never Thought"</div>
+            <div class="sub-line">Safar Se Safar Tak</div>
+            <div class="bio-line">March 2008 · Patna, India</div>
+        </div>
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
+        <!-- ===== STATS ===== -->
+        <div class="stats-grid">
+            <div class="stat-card"><span class="stat-number">3+</span><span class="stat-label">Years of Coding</span></div>
+            <div class="stat-card"><span class="stat-number">5+</span><span class="stat-label">Projects Built</span></div>
+            <div class="stat-card"><span class="stat-number">10K+</span><span class="stat-label">Lines of Code</span></div>
+            <div class="stat-card"><span class="stat-number">14</span><span class="stat-label">Friends</span></div>
+        </div>
+
+        <!-- ===== LANGUAGE CONTROLS ===== -->
+        <div class="lang-controls">
+            <button class="lang-btn active" id="btnEn" onclick="switchLang('en')">🇬🇧 English</button>
+            <button class="lang-btn" id="btnHi" onclick="switchLang('hi')">🗣️ Hinglish</button>
+            <button class="lang-btn translate-btn" onclick="openGoogleTranslate()">🌐 Translate</button>
+        </div>
+
+        <!-- ===== DOWNLOAD BUTTON ===== -->
+        <div class="download-actions">
+            <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
+        </div>
+
+        <!-- =============================================================
+        CHAPTERS — ENGLISH
+        ============================================================= -->
+        <div id="chaptersEn">
+
+            <!-- CHAPTER 1 -->
+            <div class="chapter active" data-chapter="1">
+                <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008–2013)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot has-image" id="photo-ch1-en">
+                        <img src="assets/images/child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: My childhood photo</span>
+                    </div>
+                </div>
+                
+                <p>I was born in March 2008 in Begusarai, Bihar. My father told me that when I was born, my mother said, <em>"Name him Ravi, because he will bring light to this house."</em> Since then, I have been the light of my family.</p>
+                
+                <p>My childhood home was in <strong>Bandwar</strong>, a village where life moved at its own pace. The house was big, with open courtyards and long corridors. I grew up under the loving yet strict guardianship of my parents. They were caring, supportive, but firm when it came to discipline.</p>
+                
+                <p>I have <strong>two elder sisters</strong> — my first teachers, my first friends, and my first protectors. Growing up with them taught me patience, sharing, and the quiet strength that comes from being part of a close-knit family.</p>
+                
+                <p>One of my favorite childhood memories is spending hours on the <strong>swing (jhula)</strong> in our courtyard. I could swing for hours, looking at the sky, imagining things, and letting my mind wander. I also remember stealing my sister's cycle one day to join a race — and falling straight into a gutter! My father picked me up, laughed, and said, <em>"Beta, pehle balance seekh, phir speed."</em></p>
+                
+                <p>In 2014, I started my first school — a small one, but it held a universe of memories. Those early years shaped the person I would become.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 2 -->
+            <div class="chapter" data-chapter="2">
+                <h3><span class="emoji-big">🏫</span> Chapter 2: Primary School Days (2014–2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>From 2014 to 2019, I studied at <strong>Gautam Buddha Global School (GBGS)</strong> in Begusarai. It was my first real school, and it shaped my early years.</p>
+                
+                <p>My favorite teacher was <strong>Binod Sir</strong>, who taught Hindi. He didn't just teach grammar and poetry — he taught <strong>life lessons</strong>. He believed that Hindi wasn't just a subject — it was an emotion, a way to connect with our roots. His words stayed with me long after the class ended.</p>
+                
+                <p>My earliest friends are a <strong>blur of laughter and memories</strong> — Sitanashu, Satyam, and Rohit were my first companions. Later, in Mother's Pride, <strong>Ayush and Rishidev</strong> became my closest friends.</p>
+                
+                <p>School wasn't always easy. I was an <strong>introvert</strong> — painfully shy, quiet, and always in my own head. I struggled to speak up in class, was scared to approach teachers, and found it hard to talk to classmates. But those years taught me a valuable lesson: <strong>growth begins where comfort ends.</strong></p>
+                
+                <p>In GBGS, I participated in a quiz competition organized by <strong>Chetna Samiti</strong> and won a <strong>medal, a certificate, and a book</strong>. It was a small moment, but it planted a seed of confidence inside me.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 3 -->
+            <div class="chapter" data-chapter="3">
+                <h3><span class="emoji-big">📚</span> Chapter 3: Secondary School Years (2019–2024)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>From 2019 to 2024, I studied at <strong>Mother's Pride International School (MPS)</strong> in Begusarai. It was a new chapter, full of new challenges and opportunities.</p>
+                
+                <p>I had inspiring teachers who shaped my thinking: <strong>Binod Sir</strong> (Hindi) continued to influence me, and <strong>Ujjwal Sir</strong> (Mathematics) made me fall in love with numbers. He didn't just teach formulas — he taught patterns, logic, and the beauty of solving problems.</p>
+                
+                <p>One of the most painful moments of my academic life came during my first math test. I scored <strong>10 out of 25</strong>. I remember coming home, sitting alone, and <strong>crying</strong>. But that day became a turning point. I worked harder. By Term 1, I had climbed to <strong>3rd position in class</strong>.</p>
+                
+                <p>This was also the time when I truly connected with <strong>Rishidev and Ayush</strong>. They understood me, accepted my quietness, and never made me feel like I had to pretend to be someone else.</p>
+                
+                <p>In 2021, I was the <strong>co-head</strong> of a school project — a <strong>solar cooker</strong> — with my friend <strong>Suraj</strong> as the lead. That project taught me: <em>"If you understand the principle, you can build anything."</em></p>
+                
+                <p>I also created my first <strong>LinkedIn profile</strong> during this time — my first step into the digital world.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 4 -->
+            <div class="chapter" data-chapter="4">
+                <h3><span class="emoji-big">🚀</span> Chapter 4: JEE Coaching — The Journey (2024–2026)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In 2024, I started my JEE preparation at <strong>Physics Wallah Iskon Vidyapeeth, Patna</strong>. It was my first time away from home, sitting in a room with hundreds of students who all wanted the same thing.</p>
+                
+                <p>It was a <strong>unique experience</strong> — challenging, intense, and life-changing. I learned to perform under <strong>time-bound pressure</strong>, and I became more disciplined and focused.</p>
+                
+                <p>I had incredible teachers: <strong>Amarjeet Sir</strong> (Physics/Mentor), <strong>Aditya Gaurav Sir</strong> (Physical Chemistry), and <strong>Deepak Manas Sir</strong> (Organic Chemistry). They taught me how to think, not just how to solve problems.</p>
+                
+                <p>But the <strong>competitive pressure</strong> was overwhelming at times. I had <strong>suicidal thoughts</strong>. I didn't tell anyone. But I survived. I kept going — not because I was strong, but because I didn't know what else to do.</p>
+                
+                <p>During this phase, I had to <strong>pause coding</strong>. The JEE preparation demanded everything. But that break wasn't a failure — it was a detour. And sometimes, detours are necessary to find your way back.</p>
+                
+                <p>I realized that <strong>coding was my calling</strong>, not JEE. I don't regret walking that path for a while — because it taught me what I didn't want, and helped me find what I did.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 5 -->
+            <div class="chapter" data-chapter="5">
+                <h3><span class="emoji-big">💻</span> Chapter 5: Coding Discovery (2020–2022)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In 2019, a phone arrived at home. It wasn't mine — it was a family phone. But it opened a window to a world I had never seen before. It took until <strong>2024</strong> for me to get my <strong>personal phone and laptop</strong>.</p>
+                
+                <p>My journey into coding started with <strong>Sumit Sir</strong>, our computer teacher in Class 6. He introduced us to the magic behind websites. I typed <code>&lt;h1&gt;Hello World&lt;/h1&gt;</code> and watched in awe as it appeared on the screen. That was my first step into coding.</p>
+                
+                <p>Around this time, I also discovered the joy of reading books beyond textbooks: <strong>Helen Keller's autobiography</strong>, <strong>Wings of Fire</strong> by APJ Abdul Kalam, and <strong>Long Walk to Freedom</strong> by Nelson Mandela. These books shaped my thinking and made me believe in possibility.</p>
+                
+                <p>During this time, one friend stood out — <strong>Sitanashu</strong>. He was the one who knew me before I knew myself. He didn't understand my love for code or books, but he didn't need to — he just stayed.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 6 -->
+            <div class="chapter" data-chapter="6">
+                <h3><span class="emoji-big">🚀</span> Chapter 6: Coding Journey Begins (2023–2024)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Although I had learned HTML from <strong>Sumit Sir</strong> in Class 6, I didn't start coding <strong>seriously</strong> until <strong>2026</strong>. That was the year I stopped saying "someday."</p>
+                
+                <p>I used <strong>AI</strong> to generate code at first. I copied, pasted, and felt like I was cheating — not the system, but myself. So I started breaking the code apart, understanding each line, and rewriting it myself. Slowly, I started writing my own code.</p>
+                
+                <p>I created my first real project — my <strong>personal portfolio</strong> — and hosted it on <strong>GitHub Pages</strong>. It wasn't perfect. It had bugs and broken layouts. But it was mine. When I shared it with a few friends and they said, <em>"Bhai, yeh tune banaya?"</em> — that moment changed something inside me.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 7 -->
+            <div class="chapter" data-chapter="7">
+                <h3><span class="emoji-big">🎯</span> Chapter 7: The Present (2025–2026)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In <strong>March 2026</strong>, I finally launched my portfolio. It wasn't perfect — I even forgot to add a <strong>close button</strong> on one of the modals. My <strong>mentor</strong> noticed it and pointed it out with a smile. I fixed it using the browser console, and that moment taught me how to debug and rely on tools rather than guesswork.</p>
+                
+                <p>When I asked my mentor what he thought, he smiled and said, <em>"It's a good start. Now make it better."</em> That one line pushed me to keep going.</p>
+                
+                <p>In 2026, I started learning <strong>JavaScript</strong> — functions, arrays, objects, and DOM manipulation. My first project was a <strong>Chatbox</strong> — a simple messaging interface that stored conversations locally. It wasn't advanced, but it proved I could build interactive experiences.</p>
+                
+                <p>My goals for the future: <strong>DSA (Data Structures & Algorithms)</strong> and <strong>Hackathon participation</strong>. I want to move beyond building websites — I want to solve real problems.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 8 -->
+            <div class="chapter" data-chapter="8">
+                <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 8: Family — My Anchor</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>My parents taught me <strong>honesty, hard work, and helping others</strong>. They were caring yet strict, and they never let me forget where I came from. They always pushed me to dream bigger.</p>
+                
+                <p>I have <strong>2 elder sisters and 2 younger brothers</strong>. Each one has taught me patience and love. My sisters were my first teachers, my first friends, and my first protectors. My younger brothers taught me responsibility and how to be a role model.</p>
+                
+                <p>One of my fondest family memories is <strong>Diwali nights</strong> when the whole family is together — the lights, the laughter, the peace. That togetherness is unmatched.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 9 -->
+            <div class="chapter" data-chapter="9">
+                <h3><span class="emoji-big">💬</span> Chapter 9: Friends & Relationships</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>I didn't have a large circle of friends. I never did. But the ones I had — <strong>Ayush and Rishidev</strong> — they mattered. They were the ones who saw me at my quietest, my most awkward, and my most honest. We met in school, and from those early days, a bond formed.</p>
+                
+                <p>Today, we don't talk regularly. Life happened. Schools ended. Paths diverged. But the strange thing about real friendship is this: when we meet, even after months, even after years, <strong>it feels like nothing has changed</strong>.</p>
+                
+                <p>I've realized that some bonds don't need constant maintenance. They just exist — quietly, patiently, waiting.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 10 -->
+            <div class="chapter" data-chapter="10">
+                <h3><span class="emoji-big">💪</span> Chapter 10: Biggest Struggle</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>There was a time when I woke up every morning with one question echoing in my mind: <em>"What am I supposed to become?"</em></p>
+                
+                <p>I didn't know what I wanted to do. I didn't know what I was good at. I saw people around me who seemed so sure of themselves — and I felt lost.</p>
+                
+                <p>I was quiet. And in a world that rewards loudness, silence often feels like a weakness. I didn't speak up. I didn't ask for help. But deep down, I wanted to be seen. I wanted to matter.</p>
+                
+                <p>The turning point came quietly. It wasn't a dramatic speech or a moment of clarity — it was a slow realization that <strong>not knowing is okay</strong>. That life doesn't always give you answers. Sometimes, it gives you questions. And I learned that growth comes from being okay with what you don't know — and continuing anyway.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 11 -->
+            <div class="chapter" data-chapter="11">
+                <h3><span class="emoji-big">😊</span> Chapter 11: Biggest Happiness</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch11-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 11.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In <strong>2024</strong>, I passed out of school. It wasn't a grand celebration. It wasn't a party. But it gave me more happiness than I expected.</p>
+                
+                <p>I walked out of those gates not with a crowd, not with friends waving goodbye, but with a quiet sense of achievement. I had done it. Not perfectly. Not loudly. But I had done it.</p>
+                
+                <p>I was alone that day. But I wasn't lonely. I was proud. I had completed something that once felt impossible. And that quiet pride stayed with me.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 12 -->
+            <div class="chapter" data-chapter="12">
+                <h3><span class="emoji-big">🌍</span> Chapter 12: Message & Motto</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch12-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 12.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <div class="quote-box gold">
+                    "Humi hum hain to kya hum hain! Tumhi tum ho to kya tum ho!!"
+                    <span class="author">— Ravi Raj</span>
+                </div>
+                <div class="quote-box purple">
+                    "Somewhere Between I Want It & I Got It"
+                    <span class="author">— Ravi Raj's Motto</span>
+                </div>
+                
+                <p>These words came from within — from the moments I sat alone, thinking, wondering, and trying to make sense of everything.</p>
+                
+                <p>The motto I live by is <strong>"Somewhere Between I Want It & I Got It."</strong> Life is not a destination. It's the space between wanting and getting — between dreaming and becoming. That space is where growth happens. Where struggle lives. Where hope survives.</p>
+                
+                <p>If I could say one thing to anyone reading this: <em>"You don't need to know everything. You don't need to have everything figured out. You just need to keep moving. One step. One day. One chapter at a time."</em></p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 13 -->
+            <div class="chapter" data-chapter="13">
+                <h3><span class="emoji-big">📖</span> Chapter 13: Friend Memory — 12th Ke Last Pages</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch13-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 13.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <div class="friend-memory-pdf">
+                    <span class="pdf-label">📄 PDF — Friend Memory</span>
+                    <p><strong>12th ke aakhri din...</strong></p>
+                    <p>School khatam hone ka ehsaas... woh doston ke saath bitaye pal... woh class ke aakhri lecture ki silence... aur woh smile jo kehti thi — <em>"abhi toh shuruat hai."</em></p>
+                    <p>I remember walking through the corridors one last time, collecting <strong>everyone's signatures</strong> on my notebook. We made <strong>promises</strong> — that we'd stay in touch, that we'd meet again.</p>
+                    <p>But then the results came. And slowly, the messages stopped. The calls stopped. The promises faded. It wasn't anyone's fault. Life just moved on.</p>
+                    <p>I realized something that day: <strong>some promises are made to be broken</strong>. Not because people are dishonest, but because life gets in the way. And that's okay.</p>
+                    <p>Woh din, woh yaadein, woh dosti — sab kuch alag tha. Kuch khatam ho raha tha, kuch shuru ho raha tha.</p>
+                    <p style="margin-top:10px;"><strong>Yeh sirf memory nahi, ek ehsaas hai.</strong></p>
+                </div>
+                
+                <p style="margin-top:20px; color:var(--text3); font-size:14px; text-align:center; border-top:1px solid var(--border); padding-top:18px;">
+                    No regrets in life — that's my biggest achievement.
+                </p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =============================================================
+        CHAPTERS — HINGLISH
+        ============================================================= -->
+        <div id="chaptersHi" style="display:none;">
+
+            <!-- CHAPTER 1 -->
+            <div class="chapter active" data-chapter="1">
+                <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008–2013)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot has-image" id="photo-ch1-hi">
+                        <img src="assets/images/child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: Bachpan ki tasveer</span>
+                    </div>
+                </div>
+                
+                <p>Mera janam March 2008 mein Begusarai, Bihar mein hua. Papa ne bataya ki jab main paida hua, toh mummy ne kaha, <em>"Iska naam Ravi rakho, kyunki yeh ghar mein roshni layega."</em> Tab se main apni family ki roshni ban gaya.</p>
+                
+                <p>Mera childhood home <strong>Bandwar</strong> village mein tha — bada sa ghar, khule aangan, aur lambi corridors. Main apne parents ki <strong>loving par strict guardianship</strong> mein bada hua. Unhone mujhe honesty, hard work, aur helping others ki value sikhayi.</p>
+                
+                <p>Meri <strong>2 elder sisters</strong> hain — meri first teachers, first friends, aur first protectors. Unke saath grow karte hue maine patience, sharing, aur family ki strength seekhi.</p>
+                
+                <p>Meri favorite childhood memory — <strong>jhula</strong>! Din bhar usi pe jhoolta tha, sky mein dekhta tha, aur sapne dekhta tha. Ek baar maine apni sister ki cycle chura kar race lagayi — aur gutter mein gir gaya! Papa ne mujhe uthaya aur bola, <em>"Beta, pehle balance seekh, phir speed."</em></p>
+                
+                <p>2014 mein mera first school start hua — chota sa school, lekin bahut saari memories. Un early years ne mujhe shape kiya.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 2 -->
+            <div class="chapter" data-chapter="2">
+                <h3><span class="emoji-big">🏫</span> Chapter 2: Primary School Days (2014–2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2014 se 2019 tak maine <strong>Gautam Buddha Global School (GBGS)</strong>, Begusarai mein padhai ki. Yeh mera pehla real school tha.</p>
+                
+                <p>Mere favorite teacher the <strong>Binod Sir</strong> — Hindi teacher. Woh sirf grammar nahi, <strong>life lessons</strong> bhi sikhate the. Unhone sikhaya ki Hindi sirf bhasha nahi, bhaavna hai.</p>
+                
+                <p>Mere earliest friends the Sitanashu, Satyam, aur Rohit. Baad mein Mother's Pride mein <strong>Ayush aur Rishidev</strong> mere closest friends bane.</p>
+                
+                <p>School hamesha easy nahi tha. Main <strong>introvert</strong> tha — shy, quiet, aur apni duniya mein rehne wala. Class mein bolne se darta tha, teachers se approach karne mein dar lagta tha. Lekin un years ne mujhe sikhaya: <strong>growth begins where comfort ends.</strong></p>
+                
+                <p>GBGS mein <strong>Chetna Samiti</strong> ki quiz competition mein participate kiya aur <strong>medal, certificate, aur book</strong> jeeti. Chhota sa moment tha, lekin usne mere andar confidence ka beej boya.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 3 -->
+            <div class="chapter" data-chapter="3">
+                <h3><span class="emoji-big">📚</span> Chapter 3: Secondary School Years (2019–2024)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2019 se 2024 tak maine <strong>Mother's Pride International School (MPS)</strong>, Begusarai mein padhai ki. Naya chapter, naye challenges.</p>
+                
+                <p>Mere inspiring teachers the — <strong>Binod Sir</strong> (Hindi) aur <strong>Ujjwal Sir</strong> (Mathematics). Ujjwal Sir ne numbers se pyaar karaya — unhone sirf formulas nahi, patterns aur logic sikhaye.</p>
+                
+                <p>Meri academic life ka sabse painful moment — pehli maths test mein <strong>10/25</strong> aaye. Ghar aakar <strong>roya</strong> tha. Lekin us din ne mujhe turn kiya. Mehnat kari. Term 1 mein <strong>3rd position</strong> aayi.</p>
+                
+                <p>Is time mein <strong>Rishidev aur Ayush</strong> se deep connection bana. Unhone meri silence ko accept kiya, aur kabhi pretend karne ko nahi bola.</p>
+                
+                <p>2021 mein, main <strong>solar cooker</strong> project ka <strong>co-head</strong> tha — lead mera friend <strong>Suraj</strong> tha. Us project ne sikhaya: <em>"If you understand the principle, you can build anything."</em></p>
+                
+                <p>Is time mein mera first <strong>LinkedIn profile</strong> bhi create kiya — digital world mein pehla kadam.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 4 -->
+            <div class="chapter" data-chapter="4">
+                <h3><span class="emoji-big">🚀</span> Chapter 4: JEE Coaching — The Journey (2024–2026)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2024 mein maine <strong>Physics Wallah Iskon Vidyapeeth, Patna</strong> mein JEE preparation start kari. Pehli baar ghar se door, hundreds of students ke saath.</p>
+                
+                <p>Yeh <strong>unique experience</strong> tha — challenging, intense, life-changing. <strong>Time-bound pressure</strong> mein perform karna seekha, disciplined aur focused bana.</p>
+                
+                <p>Mere teachers the — <strong>Amarjeet Sir</strong> (Physics/Mentor), <strong>Aditya Gaurav Sir</strong> (Physical Chemistry), aur <strong>Deepak Manas Sir</strong> (Organic Chemistry). Unhone sikhaya ki problems ko kaise approach karein.</p>
+                
+                <p>Lekin <strong>competitive pressure</strong> overwhelming tha. <strong>Suicidal thoughts</strong> bhi aaye. Kisi ko nahi bataya. Lekin survive kiya — chalta raha.</p>
+                
+                <p>Is phase mein <strong>coding pause</strong> kar di. JEE preparation demanded everything. Lekin woh break failure nahi tha — woh detour tha.</p>
+                
+                <p>Mujhe realize hua ki <strong>coding meri calling hai</strong>, JEE nahi. Us path ko walk karne ka regret nahi — kyunki usne mujhe sikhaya ki mujhe kya nahi chahiye, aur kya chahiye.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 5 -->
+            <div class="chapter" data-chapter="5">
+                <h3><span class="emoji-big">💻</span> Chapter 5: Coding Discovery (2020–2022)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2019 mein ghar mein phone aaya — family phone tha. 2024 mein mera <strong>personal phone aur laptop</strong> mila.</p>
+                
+                <p>Meri coding journey start hui <strong>Sumit Sir</strong> se — Class 6 mein computer teacher. Unhone HTML sikhaya. Maine <code>&lt;h1&gt;Hello World&lt;/h1&gt;</code> type kiya aur screen par dekha — woh magic tha.</p>
+                
+                <p>Is time mein books padhna shuru kiya: <strong>Helen Keller</strong>, <strong>Wings of Fire</strong> (APJ Abdul Kalam), aur <strong>Long Walk to Freedom</strong> (Nelson Mandela). In books ne mere thinking ko shape kiya.</p>
+                
+                <p>Is phase mein mera friend <strong>Sitanashu</strong> tha — woh mujhe pehle se jaanta tha, aur mere saath raha.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 6 -->
+            <div class="chapter" data-chapter="6">
+                <h3><span class="emoji-big">🚀</span> Chapter 6: Coding Journey Begins (2023–2024)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Sumit Sir ne Class 6 mein HTML sikhaya tha, lekin <strong>seriously coding</strong> 2026 mein start kari.</p>
+                
+                <p>Pehle <strong>AI</strong> se code likhwaya, copy-paste kiya — lekin laga ki main khud ko cheat kar raha hoon. Phir code ko todna shuru kiya, har line ko samjha, aur khud likhna shuru kiya.</p>
+                
+                <p>Mera first real project — <strong>personal portfolio</strong> — <strong>GitHub Pages</strong> pe host kiya. Perfect nahi tha, bugs the, broken layouts the. Lekin mera tha. Jab friends ne dekha aur kaha — <em>"Bhai, yeh tune banaya?"</em> — woh moment magical tha.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 7 -->
+            <div class="chapter" data-chapter="7">
+                <h3><span class="emoji-big">🎯</span> Chapter 7: The Present (2025–2026)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p><strong>March 2026</strong> mein portfolio launch kiya. Perfect nahi tha — ek modal mein <strong>close button</strong> lagaana bhool gaya tha. <strong>Mentor</strong> ne notice kiya aur smile ke saath bataya. Console check karke fix kiya — us moment ne debugging sikhayi.</p>
+                
+                <p>Mentor ne kaha, <em>"It's a good start. Now make it better."</em> Us ek line ne mujhe aage badhne ka push diya.</p>
+                
+                <p>2026 mein <strong>JavaScript</strong> seekhna shuru kiya — functions, arrays, objects, DOM manipulation. Pehla project — <strong>Chatbox</strong> — simple messaging interface. Advanced nahi tha, lekin interactive experiences bana sakta hoon, yeh prove kiya.</p>
+                
+                <p>Future goals: <strong>DSA</strong> aur <strong>Hackathon</strong> participation. Sirf websites nahi, real problems solve karna hai.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 8 -->
+            <div class="chapter" data-chapter="8">
+                <h3><span class="emoji-big">👨‍👩‍👧</span> Chapter 8: Family — Meri Anchor</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Parents ne sikhaya — <strong>honesty, hard work, aur helping others</strong>. Caring the, lekin strict bhi. Kabhi nahi bhoolne diya ki main kahan se aaya hoon.</p>
+                
+                <p>Meri <strong>2 badi behen</strong> aur <strong>2 chhote bhai</strong> hain. Har ek ne sabar aur pyaar sikhaya. Behenein meri first teachers, first friends, aur first protectors thin. Chhote bhaiyon ne responsibility aur role model banana sikhaya.</p>
+                
+                <p>Sabse yaadgar family memory — <strong>Diwali ki raat</strong> jab poori family saath hoti hai — lights, laughter, peace. Woh togetherness unmatched hai.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 9 -->
+            <div class="chapter" data-chapter="9">
+                <h3><span class="emoji-big">💬</span> Chapter 9: Friends & Relationships</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Mera friend circle chhota tha — hamesha raha. Lekin jo the — <strong>Ayush aur Rishidev</strong> — woh matter karte the. Unhone mujhe meri quietest, most awkward, aur most honest state mein dekha. School mein mile, aur wahan se bond bana.</p>
+                
+                <p>Aaj regularly baat nahi hoti. Life ho gayi. Schools khatam. Paths alag. Lekin real friendship ka strange thing yeh hai — mahino, saalon baad bhi milte hain toh <strong>lagta hai ki kuch nahi badla</strong>.</p>
+                
+                <p>Maine realize kiya ki kuch bonds ko constant maintenance nahi chahiye. Woh bas exist karte hain — quietly, patiently, waiting.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 10 -->
+            <div class="chapter" data-chapter="10">
+                <h3><span class="emoji-big">💪</span> Chapter 10: Biggest Struggle</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Ek time tha jab har subah uthke ek sawaal dimaag mein aata tha — <em>"Mujhe kya banna hai?"</em></p>
+                
+                <p>Pata nahi tha kya karna hai, kya pasand hai. Sabko dekhta tha — confident, sure — aur main lost feel karta tha.</p>
+                
+                <p>Main quiet tha. Aur jo world loudness ko reward karta hai, wahan silence weakness lagti hai. Na bolta tha, na help maangta tha. Lekin andar se chahta tha ki koi dekhe, koi soche ki main matter karta hoon.</p>
+                
+                <p>Turning point quietly aaya. Koi dramatic speech nahi, koi clarity nahi — bas slow realization ki <strong>not knowing is okay</strong>. Life hamesha answers nahi deti. Kabhi kabhi questions deti hai. Aur maine seekha ki growth comes from being okay with what you don't know — aur continue karna.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 11 -->
+            <div class="chapter" data-chapter="11">
+                <h3><span class="emoji-big">😊</span> Chapter 11: Biggest Happiness</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch11-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 11.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p><strong>2024</strong> mein school passout hua. Koi grand celebration nahi, koi party nahi. Lekin us moment ne mujhe unexpected happiness di.</p>
+                
+                <p>School ke gates se nikla — bheed nahi, friends nahi, bas quiet achievement ka ehsaas. Kiya tha maine. Perfect nahi. Loud nahi. Lekin kiya tha.</p>
+                
+                <p>Us din main akela tha. Lekin lonely nahi tha. Proud tha. Kuch kiya tha jo kabhi impossible lagta tha. Aur woh quiet pride mere saath reh gaya.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 12 -->
+            <div class="chapter" data-chapter="12">
+                <h3><span class="emoji-big">🌍</span> Chapter 12: Message & Motto</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch12-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 12.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <div class="quote-box gold">
+                    "Humi hum hain to kya hum hain! Tumhi tum ho to kya tum ho!!"
+                    <span class="author">— Ravi Raj</span>
+                </div>
+                <div class="quote-box purple">
+                    "Somewhere Between I Want It & I Got It"
+                    <span class="author">— Ravi Raj's Motto</span>
+                </div>
+                
+                <p>Yeh words andar se aaye — un moments se jab main akela baithta tha, sochta tha, wonder karta tha, aur sab kuch samajhne ki koshish karta tha.</p>
+                
+                <p>Mera motto — <strong>"Somewhere Between I Want It & I Got It."</strong> Life destination nahi hai. Woh space hai wanting aur getting ke beech — dreaming aur becoming ke beech. Woh space hai jahan growth hoti hai, struggle rehta hai, hope survive karti hai.</p>
+                
+                <p>Agar ek baat keh sakta hoon toh: <em>"You don't need to know everything. You don't need to have everything figured out. You just need to keep moving. One step. One day. One chapter at a time."</em></p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 13 -->
+            <div class="chapter" data-chapter="13">
+                <h3><span class="emoji-big">📖</span> Chapter 13: Friend Memory — 12th Ke Last Pages</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch13-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 13.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <div class="friend-memory-pdf">
+                    <span class="pdf-label">📄 PDF — Friend Memory</span>
+                    <p><strong>12th ke aakhri din...</strong></p>
+                    <p>School khatam hone ka ehsaas... woh doston ke saath bitaye pal... woh class ki aakhri lecture... aur woh smile jo kehti thi — <em>"abhi toh shuruat hai."</em></p>
+                    <p>Corridors mein last time walk kiya, sabke <strong>signatures</strong> liye notebook mein. <strong>Promises</strong> kiye — contact mein rahenge, phir milenge.</p>
+                    <p>Lekin results aaye, aur slowly messages band ho gaye. Calls band ho gaye. Promises fade ho gaye. Kisi ki galti nahi. Life ne apna kaam kiya.</p>
+                    <p>Us din ek realization aaya: <strong>some promises are made to be broken</strong>. Log dishonest nahi hain — life gets in the way. Aur woh bhi okay hai.</p>
+                    <p>Woh din, woh yaadein, woh dosti — sab kuch alag tha. Kuch khatam ho raha tha, kuch shuru ho raha tha.</p>
+                    <p style="margin-top:10px;"><strong>Yeh sirf memory nahi, ek ehsaas hai.</strong></p>
+                </div>
+                
+                <p style="margin-top:20px; color:var(--text3); font-size:14px; text-align:center; border-top:1px solid var(--border); padding-top:18px;">
+                    Life mein koi regret nahi — yeh meri sabse badi achievement hai.
+                </p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== CHAPTER PROGRESS INFO ===== -->
+        <div class="chapter-progress-info">
+            <span class="chapter-num" id="chapterNumDisplay">Chapter 1 of 13</span>
+            <span class="chapter-percent" id="chapterPercentDisplay">0% complete</span>
+        </div>
+
+        <!-- ===== PROGRESS DOTS ===== -->
+        <div class="progress-dots" id="progressDots">
+            <span class="dot active" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+            <span class="dot" data-dot="4"></span>
+            <span class="dot" data-dot="5"></span>
+            <span class="dot" data-dot="6"></span>
+            <span class="dot" data-dot="7"></span>
+            <span class="dot" data-dot="8"></span>
+            <span class="dot" data-dot="9"></span>
+            <span class="dot" data-dot="10"></span>
+            <span class="dot" data-dot="11"></span>
+            <span class="dot" data-dot="12"></span>
+            <span class="dot" data-dot="13"></span>
+        </div>
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
+    </div>
+
+    <!-- ===== EXTERNAL JAVASCRIPT ===== -->
+    <script src="js/global.js"></script>
+    <script src="js/autobiography.js"></script>
+    <script src="js/ebook.js"></script>
+
+</body>
+</html>
