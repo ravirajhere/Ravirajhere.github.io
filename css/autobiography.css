@@ -1008,3 +1008,129 @@ body {
   background: var(--gold);
   color: #1a1a1a;
 }
+/* ==========================================
+   TOAST NOTIFICATION
+   ========================================== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1a1a1a;
+  color: #f5f0e4;
+  padding: 14px 28px;
+  border-radius: 8px;
+  border: 1px solid #b8860b;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast.error { border-color: #dc3545; color: #ffcccc; }
+.toast.success { border-color: #28a745; color: #ccffcc; }
+.toast.warning { border-color: #ffc107; color: #fff3cd; }
+
+/* ==========================================
+   DOWNLOAD MODAL
+   ========================================== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+  background: #fdfbf5;
+  padding: 40px 35px;
+  border-radius: 8px;
+  border: 2px solid #b8860b;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 18px;
+  font-size: 2rem;
+  color: #8b6f47;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.3s;
+}
+.modal-close:hover { color: #1a1a1a; transform: rotate(90deg); }
+
+.modal-box h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.6rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.modal-box p {
+  font-family: 'EB Garamond', Georgia, serif;
+  color: #6a6a6a;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.modal-buttons .btn-primary,
+.modal-buttons .btn-secondary {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  flex: 1;
+  min-width: 130px;
+}
+
+/* ==========================================
+   PROGRESS CONTAINER
+   ========================================== */
+.progress-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #fdfbf5;
+  padding: 18px 24px;
+  border-radius: 8px;
+  border: 1px solid #b8860b;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 9998;
+  min-width: 260px;
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+@media (max-width: 600px) {
+  .progress-container { bottom: 15px; right: 15px; left: 15px; min-width: auto; }
+  .modal-box { padding: 30px 22px; }
+  .modal-buttons .btn-primary,
+  .modal-buttons .btn-secondary { padding: 10px 20px; font-size: 0.85rem; }
+}
