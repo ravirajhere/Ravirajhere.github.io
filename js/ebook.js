@@ -1,45 +1,42 @@
 /* ============================================================
    ebook.js — A Boy Who Never Thought
-   PDF Generator with English / Hinglish toggle
+   Fast PDF Generator (A4, batch rendering, scale 1.5)
+   Cover: assets/images/bookcover.jpg (with fallback)
    ============================================================ */
 
 /* ---------- CONFIG ---------- */
-const BOOK = {
-  title: 'A Boy Who Never Thought',
-  subtitle: 'Safar se safar tak — गुंजते सन्नाटे',
+const EBOOK_CONFIG = {
   author: 'Suraj Anand Singh',
   aka: 'Ravi Raj',
-  year: 2026,
-  location: 'Begusarai, Bihar',
+  title: 'A Boy Who Never Thought',
+  subtitle: 'Safar se safar tak — गुंजते सन्नाटे',
+  birthYear: 2006,
+  birthplace: 'Begusarai, Bihar',
   email: 'raviraj2k09@gmail.com',
   website: 'ravirajhere.github.io',
-  websiteUrl: 'https://ravirajhere.github.io'
+  websiteUrl: 'https://ravirajhere.github.io',
+  currentYear: new Date().getFullYear(),
+  coverImage: 'assets/images/bookcover.jpg',
+  qr: {
+    url: 'https://ravirajhere.github.io',
+    size: 120
+  },
+  pdf: {
+    scale: 1.5,
+    quality: 0.85,
+    format: 'a4',
+    margin: 15,
+    batchSize: 3
+  }
 };
 
-/* ---------- COMMON PAGES TEXT (English, dono PDFs mein same) ---------- */
+/* ---------- COMMON PAGES TEXT ---------- */
 const COMMON = {
-  title: 'AN AUTOBIOGRAPHY',
-  copyright: `© 2026 ${BOOK.author}. All rights reserved.<br><br>
-    No part of this publication may be reproduced, distributed, or transmitted
-    in any form or by any means without the prior written permission of the author.<br><br>
-    <em>First Edition — 2026</em><br>
-    Published independently by the author.<br>
-    ${BOOK.location}, India.`,
-
-  dedication: `To my parents, my siblings, and my friends —<br>
-    For shaping the person I am today.`,
-
-  epigraph: `"Safar se safar tak — गुंजते सन्नाटे"<br><br>
-    <em>— A journey within a journey, echoing silences.</em>`,
-
-  preface: `This book is a collection of memories from my early years — from my birth
-    in 2006 to the end of my fifth class in 2019. It is not merely a story; it is a
-    reflection of a childhood lived in a small town, in a family that struggled,
-    loved, and endured.<br><br>
-    I have written this as honestly as I remember. Some names may have faded, some
-    dates may blur, but the emotions remain as vivid as ever.<br><br>
-    <em>— ${BOOK.author}</em>`,
-
+  dedication: `To my parents, my siblings, and my friends —<br>For shaping the person I am today.`,
+  epigraph: `"Safar se safar tak — गुंजते सन्नाटे"<br><br><em>— A journey within a journey, echoing silences.</em>`,
+  preface: `This book is a collection of memories from my early years — from my birth in 2006 to the end of my fifth class in 2019. It is not merely a story; it is a reflection of a childhood lived in a small town, in a family that struggled, loved, and endured.<br><br>
+    I have written this as honestly as I remember. Some names may have faded, some dates may blur, but the emotions remain as vivid as ever.<br><br>
+    <em>— Suraj Anand Singh</em>`,
   acknowledgements: `I would like to express my deepest gratitude to:<br><br>
     <strong>My Mummy</strong> — for being my first teacher, my inspiration, and my strength.<br><br>
     <strong>Ujjwal Sir</strong> — for making Mathematics not just a subject, but a passion.<br><br>
@@ -47,848 +44,679 @@ const COMMON = {
     <strong>My teachers of GBGS</strong> — for believing in me when I was still learning to believe in myself.<br><br>
     <strong>My friends</strong> — for the laughter, the fights, and the memories.<br><br>
     And to everyone who, knowingly or unknowingly, became a part of this story.`,
-
-  conclusion: `As I close the first chapter of my life, I do so with gratitude and hope.
-    The road ahead is long, and the story far from over.<br><br>
+  conclusion: `As I close the first chapter of my life, I do so with gratitude and hope. The road ahead is long, and the story far from over.<br><br>
     But if there is one thing I have learned, it is this:<br><br>
     <strong>The best is yet to come.</strong>`,
-
   thankyou: `Thank you for reading.<br><br>
-    Your time, your attention, and your heart —<br>
-    I do not take them for granted.<br><br>
-    ❤️`,
-
+    Your time, your attention, and your heart —<br>I do not take them for granted.<br><br>❤️`,
   colophon: `This book was written, designed, and produced with love.<br><br>
-    Made with ❤️<br>
-    ${BOOK.location}<br>
-    ${BOOK.year}`,
-
-  aboutBio: `${BOOK.author}, known by his pen name ${BOOK.aka}, is a young writer and
-    self-taught web developer from ${BOOK.location}. Currently based in Patna, he is
-    a student of Senior Secondary (Class 12, CBSE) with a focus on Physics, Chemistry,
-    and Mathematics.<br><br>
-    With over two years of self-learning in web development, he has built several
-    projects — including this very autobiography website, which inspired the book you
-    now hold. He aspires to become an engineer, a dream planted in him by his mother,
-    and continues to explore full-stack development alongside his studies.<br><br>
-    <em>'A Boy Who Never Thought'</em> is his first autobiographical work, capturing
-    the innocence, struggles, and dreams of his early years.<br><br>
+    Made with ❤️<br>Begusarai, Bihar<br>${new Date().getFullYear()}`,
+  aboutBio: `Suraj Anand Singh, known by his pen name Ravi Raj, is a young writer and self-taught web developer from Begusarai, Bihar. Currently based in Patna, he is a student of Senior Secondary (Class 12, CBSE) with a focus on Physics, Chemistry, and Mathematics.<br><br>
+    With over two years of self-learning in web development, he has built several projects — including this very autobiography website, which inspired the book you now hold. He aspires to become an engineer, a dream planted in him by his mother, and continues to explore full-stack development alongside his studies.<br><br>
+    <em>'A Boy Who Never Thought'</em> is his first autobiographical work, capturing the innocence, struggles, and dreams of his early years.<br><br>
     He is open to freelance opportunities and collaborations.`
 };
 
-/* ---------- CHAPTER DATA (English + Hinglish) ---------- */
-/* Ye HTML se auto-extract hoga, par backup ke liye yahan bhi rakh sakte ho */
-/* Filhaal HTML se hi uthayenge */
+/* ============================================================
+   1. TOAST MANAGER
+   ============================================================ */
+class ToastManager {
+  constructor() {
+    this.toast = document.getElementById('toast');
+    this.timeout = null;
+    this.queue = [];
+    this.isShowing = false;
+  }
+  show(message, type = 'info', duration = 3000) {
+    this.queue.push({ message, type, duration });
+    if (!this.isShowing) this.processQueue();
+  }
+  processQueue() {
+    if (this.queue.length === 0) { this.isShowing = false; return; }
+    this.isShowing = true;
+    const { message, type, duration } = this.queue.shift();
+    if (!this.toast) return;
+    this.toast.textContent = message;
+    this.toast.className = 'toast';
+    if (type) this.toast.classList.add(type);
+    this.toast.classList.add('show');
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.toast.classList.remove('show');
+      setTimeout(() => this.processQueue(), 300);
+    }, duration);
+  }
+  error(msg) { this.show('❌ ' + msg, 'error', 4000); }
+  success(msg) { this.show('✅ ' + msg, 'success', 3000); }
+  info(msg) { this.show('ℹ️ ' + msg, 'info', 2500); }
+  warning(msg) { this.show('⚠️ ' + msg, 'warning', 3500); }
+}
+const toast = new ToastManager();
 
-/* ---------- HTML BUILDER ---------- */
-function buildPage(content, className = '') {
-  return `<div class="pdf-page ${className}">${content}</div>`;
+/* ============================================================
+   2. MODAL MANAGER
+   ============================================================ */
+class ModalManager {
+  constructor() {
+    this.modal = document.getElementById('downloadModal');
+    this.isOpen = false;
+  }
+  open() {
+    if (!this.modal) return;
+    this.modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    this.isOpen = true;
+  }
+  close() {
+    if (!this.modal) return;
+    this.modal.classList.remove('active');
+    document.body.style.overflow = '';
+    this.isOpen = false;
+  }
+}
+const modal = new ModalManager();
+
+/* ============================================================
+   3. LIBRARY LOADER
+   ============================================================ */
+class LibraryLoader {
+  static async loadScript(src, retries = 3) {
+    if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
+    if (src.includes('jspdf') && typeof window.jspdf !== 'undefined') return true;
+    if (src.includes('qrcode') && typeof QRCode !== 'undefined') return true;
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+        return true;
+      } catch (error) {
+        if (attempt === retries) throw new Error(`Failed to load ${src}`);
+        await new Promise(r => setTimeout(r, 1000 * attempt));
+      }
+    }
+    return false;
+  }
+  static async loadAll() {
+    const libraries = [
+      'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+    ];
+    for (const src of libraries) {
+      const isLoaded =
+        (src.includes('html2canvas') && typeof html2canvas !== 'undefined') ||
+        (src.includes('jspdf') && typeof window.jspdf !== 'undefined') ||
+        (src.includes('qrcode') && typeof QRCode !== 'undefined');
+      if (!isLoaded) await this.loadScript(src);
+    }
+    return true;
+  }
 }
 
-function buildCoverPage() {
-  return `
-    <div class="pdf-page pdf-cover">
-      <div class="pdf-cover-inner">
-        <p class="pdf-cover-label">${COMMON.title}</p>
-        <h1 class="pdf-cover-author">${BOOK.author}</h1>
-        <p class="pdf-cover-aka">~ ${BOOK.aka}</p>
-        <div class="pdf-cover-divider"></div>
-        <h2 class="pdf-cover-title">${BOOK.title}</h2>
-        <p class="pdf-cover-sub">${BOOK.subtitle}</p>
-        <p class="pdf-cover-year">${BOOK.year}</p>
-      </div>
-    </div>`;
+/* ============================================================
+   4. QR CODE GENERATOR
+   ============================================================ */
+class QRGenerator {
+  static async generate(data, size = 120) {
+    return new Promise((resolve) => {
+      try {
+        const container = document.createElement('div');
+        container.style.cssText = `width:${size}px;height:${size}px;position:absolute;left:-9999px;top:-9999px;`;
+        document.body.appendChild(container);
+        new QRCode(container, {
+          text: data, width: size, height: size,
+          colorDark: '#000000', colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        let attempts = 0;
+        const checkCanvas = setInterval(() => {
+          attempts++;
+          const canvas = container.querySelector('canvas');
+          if (canvas) {
+            clearInterval(checkCanvas);
+            const dataUrl = canvas.toDataURL('image/png');
+            document.body.removeChild(container);
+            resolve(dataUrl);
+          } else if (attempts >= 10) {
+            clearInterval(checkCanvas);
+            document.body.removeChild(container);
+            resolve(null);
+          }
+        }, 100);
+      } catch (error) {
+        resolve(null);
+      }
+    });
+  }
 }
 
-function buildTitlePage() {
-  return buildPage(`
-    <div class="pdf-center-page">
-      <p class="pdf-small-label">${COMMON.title}</p>
-      <h1 class="pdf-big-title">${BOOK.title}</h1>
-      <p class="pdf-sub">${BOOK.subtitle}</p>
-      <div class="pdf-divider"></div>
-      <p class="pdf-author-name">${BOOK.author}</p>
-      <p class="pdf-author-aka">~ ${BOOK.aka}</p>
-      <p class="pdf-year">${BOOK.year}</p>
-    </div>
-  `);
+/* ============================================================
+   5. IMAGE LOADER (with fallback)
+   ============================================================ */
+class ImageLoader {
+  static async load(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(src);
+      img.onerror = () => {
+        console.warn(`Image not found: ${src} — using fallback`);
+        resolve(null);
+      };
+      img.src = src;
+    });
+  }
 }
 
-function buildCopyrightPage() {
-  return buildPage(`
-    <div class="pdf-center-page pdf-copyright-page">
-      <p>${COMMON.copyright}</p>
-    </div>
-  `);
-}
-
-function buildDedicationPage() {
-  return buildPage(`
-    <div class="pdf-kalam-page">
-      <p>${COMMON.dedication}</p>
-    </div>
-  `);
-}
-
-function buildEpigraphPage() {
-  return buildPage(`
-    <div class="pdf-kalam-page">
-      <p>${COMMON.epigraph}</p>
-    </div>
-  `);
-}
-
-function buildPrefacePage() {
-  return buildPage(`
-    <div class="pdf-text-page">
-      <h2 class="pdf-section-title">Preface</h2>
-      <p>${COMMON.preface}</p>
-    </div>
-  `);
-}
-
-function buildAcknowledgementsPage() {
-  return buildPage(`
-    <div class="pdf-text-page">
-      <h2 class="pdf-section-title">Acknowledgements</h2>
-      <p>${COMMON.acknowledgements}</p>
-    </div>
-  `);
-}
-
-function buildTOCPage(chapters) {
-  const items = chapters.map((ch, i) =>
-    `<li><span>${i + 1}. ${ch.title}</span></li>`
-  ).join('');
-  return buildPage(`
-    <div class="pdf-text-page">
-      <h2 class="pdf-section-title">Contents</h2>
-      <ol class="pdf-toc">${items}</ol>
-    </div>
-  `);
-}
-
-function buildChapterPage(chapter, index) {
-  const paragraphs = chapter.paragraphs
-    .map(p => `<p>${p}</p>`)
-    .join('');
-  return buildPage(`
-    <div class="pdf-chapter-page">
-      <p class="pdf-chapter-num">CHAPTER ${numberToWord(index + 1).toUpperCase()}</p>
-      <h2 class="pdf-chapter-title">${chapter.title}</h2>
-      ${chapter.year ? `<p class="pdf-chapter-year">${chapter.year}</p>` : ''}
-      <div class="pdf-chapter-body">${paragraphs}</div>
-    </div>
-  `);
-}
-
-function buildEpiloguePage(epilogue) {
-  const paragraphs = epilogue.paragraphs.map(p => `<p>${p}</p>`).join('');
-  return buildPage(`
-    <div class="pdf-chapter-page">
-      <p class="pdf-chapter-num">EPILOGUE</p>
-      <h2 class="pdf-chapter-title">${epilogue.title}</h2>
-      <div class="pdf-chapter-body">${paragraphs}</div>
-    </div>
-  `);
-}
-
-function buildConclusionPage() {
-  return buildPage(`
-    <div class="pdf-text-page pdf-conclusion">
-      <h2 class="pdf-section-title">Conclusion</h2>
-      <p>${COMMON.conclusion}</p>
-    </div>
-  `);
-}
-
-function buildAboutPage() {
-  return buildPage(`
-    <div class="pdf-text-page">
-      <h2 class="pdf-section-title">About the Author</h2>
-      <div class="pdf-about-grid">
-        <div class="pdf-about-photo">
-          <div class="pdf-photo-placeholder">📷</div>
-        </div>
-        <div class="pdf-about-info">
-          <h3>${BOOK.author}</h3>
-          <p class="pdf-about-aka">~ ${BOOK.aka}</p>
-          <p>${COMMON.aboutBio}</p>
-          <ul class="pdf-about-details">
-            <li>📍 Patna, Bihar, India</li>
-            <li>✉️ ${BOOK.email}</li>
-            <li>🌐 ${BOOK.website}</li>
-            <li>🎓 Class 12 (CBSE) — PCM</li>
-            <li>💻 Web Developer | Writer</li>
-            <li>🗣️ Hindi (Native), English (Professional)</li>
-          </ul>
-          <div class="pdf-qr" id="pdfQR"></div>
-        </div>
-      </div>
-    </div>
-  `);
-}
-
-function buildThankYouPage() {
-  return buildPage(`
-    <div class="pdf-kalam-page pdf-thankyou">
-      <p>${COMMON.thankyou}</p>
-    </div>
-  `);
-}
-
-function buildColophonPage() {
-  return buildPage(`
-    <div class="pdf-center-page pdf-colophon">
-      <p>${COMMON.colophon}</p>
-    </div>
-  `);
-}
-
+/* ============================================================
+   6. NUMBER TO WORD
+   ============================================================ */
 function numberToWord(n) {
   const words = ['One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
   return words[n - 1] || n;
 }
 
 /* ============================================================
-   PART 2 — CSS, Language Filter, PDF Generator, Progress Bar
+   7. MAIN EBOOK GENERATOR
    ============================================================ */
-
-/* ---------- PDF STYLES (inject karenge) ---------- */
-const PDF_STYLES = `
-  .pdf-page {
-    width: 148mm;
-    min-height: 210mm;
-    padding: 18mm 15mm;
-    box-sizing: border-box;
-    background: #fdfaf3;
-    color: #1a1a1a;
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 12pt;
-    line-height: 1.75;
-    page-break-after: always;
-    position: relative;
-    overflow: hidden;
-  }
-  .pdf-cover {
-    background: #0d0d1a;
-    color: #d4af37;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 8px double #d4af37;
-    padding: 20mm;
-  }
-  .pdf-cover-inner { text-align: center; }
-  .pdf-cover-label {
-    font-family: 'EB Garamond', serif;
-    letter-spacing: 6px;
-    font-size: 10pt;
-    color: #d4af37;
-    margin-bottom: 20mm;
-  }
-  .pdf-cover-author {
-    font-family: 'EB Garamond', serif;
-    font-size: 26pt;
-    color: #d4af37;
-    margin: 0;
-    letter-spacing: 2px;
-  }
-  .pdf-cover-aka {
-    font-style: italic;
-    font-size: 12pt;
-    color: #b8942e;
-    margin: 4mm 0 12mm;
-  }
-  .pdf-cover-divider {
-    width: 60mm;
-    height: 1px;
-    background: #d4af37;
-    margin: 0 auto 12mm;
-  }
-  .pdf-cover-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 20pt;
-    color: #fdfaf3;
-    margin: 0 0 6mm;
-    font-weight: 600;
-  }
-  .pdf-cover-sub {
-    font-style: italic;
-    font-size: 11pt;
-    color: #c9b37e;
-    margin-bottom: 20mm;
-  }
-  .pdf-cover-year {
-    font-size: 10pt;
-    color: #d4af37;
-    letter-spacing: 3px;
+class EbookGenerator {
+  constructor() {
+    this.pdf = null;
+    this.pages = [];
+    this.currentPage = 0;
+    this.totalPages = 0;
+    this.isGenerating = false;
+    this.cancelled = false;
+    this.currentLang = 'en';
+    this.coverImageAvailable = false;
   }
 
-  .pdf-center-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    min-height: 174mm;
-  }
-  .pdf-small-label {
-    letter-spacing: 5px;
-    font-size: 10pt;
-    color: #8b7355;
-    margin-bottom: 10mm;
-  }
-  .pdf-big-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 28pt;
-    color: #1a1a1a;
-    margin: 0 0 6mm;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-  .pdf-sub {
-    font-style: italic;
-    font-size: 12pt;
-    color: #555;
-    margin-bottom: 15mm;
-  }
-  .pdf-divider {
-    width: 40mm;
-    height: 1px;
-    background: #d4af37;
-    margin: 0 auto 15mm;
-  }
-  .pdf-author-name {
-    font-size: 16pt;
-    font-weight: 600;
-    margin: 0;
-  }
-  .pdf-author-aka {
-    font-style: italic;
-    color: #777;
-    margin: 2mm 0 15mm;
-  }
-  .pdf-year {
-    font-size: 11pt;
-    color: #555;
-    letter-spacing: 3px;
-  }
-
-  .pdf-copyright-page {
-    font-size: 10pt;
-    color: #444;
-    line-height: 1.9;
-  }
-
-  .pdf-kalam-page {
-    font-family: 'Kalam', cursive;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 174mm;
-    font-size: 14pt;
-    line-height: 2;
-    color: #2c2c2c;
-    padding: 20mm 15mm;
-  }
-
-  .pdf-text-page {
-    padding-top: 5mm;
-  }
-  .pdf-section-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 22pt;
-    text-align: center;
-    margin: 0 0 12mm;
-    color: #1a1a1a;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-  .pdf-section-title::after {
-    content: '';
-    display: block;
-    width: 30mm;
-    height: 1px;
-    background: #d4af37;
-    margin: 6mm auto 0;
-  }
-  .pdf-text-page p {
-    text-align: justify;
-    text-indent: 0;
-    margin: 0 0 5mm;
-    orphans: 3;
-    widows: 3;
-  }
-
-  .pdf-toc {
-    list-style: none;
-    padding: 0;
-    font-size: 12pt;
-  }
-  .pdf-toc li {
-    padding: 4mm 0;
-    border-bottom: 1px dotted #c9b37e;
-    font-family: 'EB Garamond', serif;
-  }
-
-  .pdf-chapter-page {
-    padding-top: 10mm;
-  }
-  .pdf-chapter-num {
-    text-align: center;
-    letter-spacing: 5px;
-    font-size: 10pt;
-    color: #8b7355;
-    margin-bottom: 6mm;
-  }
-  .pdf-chapter-title {
-    font-family: 'EB Garamond', serif;
-    font-size: 24pt;
-    text-align: center;
-    margin: 0 0 4mm;
-    color: #1a1a1a;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-  .pdf-chapter-year {
-    text-align: center;
-    font-style: italic;
-    color: #777;
-    font-size: 11pt;
-    margin-bottom: 12mm;
-  }
-  .pdf-chapter-body p {
-    text-align: justify;
-    text-indent: 0;
-    margin: 0 0 5mm;
-    orphans: 3;
-    widows: 3;
-  }
-  .pdf-chapter-body p:first-of-type::first-letter {
-    font-family: 'EB Garamond', serif;
-    font-size: 3em;
-    float: left;
-    line-height: 0.9;
-    padding: 2mm 3mm 0 0;
-    color: #d4af37;
-    font-weight: 600;
-  }
-
-  .pdf-conclusion {
-    text-align: center;
-  }
-  .pdf-conclusion p {
-    text-align: center;
-    font-size: 13pt;
-    line-height: 2;
-  }
-
-  .pdf-about-grid {
-    display: flex;
-    gap: 8mm;
-    align-items: flex-start;
-  }
-  .pdf-about-photo {
-    flex-shrink: 0;
-  }
-  .pdf-photo-placeholder {
-    width: 40mm;
-    height: 50mm;
-    background: #e8dcc0;
-    border: 2px solid #d4af37;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30pt;
-    color: #8b7355;
-    border-radius: 2mm;
-  }
-  .pdf-about-info h3 {
-    font-family: 'EB Garamond', serif;
-    font-size: 16pt;
-    margin: 0 0 2mm;
-    color: #1a1a1a;
-  }
-  .pdf-about-aka {
-    font-style: italic;
-    color: #777;
-    margin: 0 0 5mm;
-    font-size: 11pt;
-  }
-  .pdf-about-info p {
-    font-size: 10.5pt;
-    line-height: 1.7;
-    text-align: justify;
-    margin-bottom: 4mm;
-  }
-  .pdf-about-details {
-    list-style: none;
-    padding: 0;
-    font-size: 10pt;
-    line-height: 1.9;
-    margin: 4mm 0;
-    color: #333;
-  }
-  .pdf-qr {
-    margin-top: 5mm;
-    display: flex;
-    justify-content: flex-start;
-  }
-  .pdf-qr img, .pdf-qr canvas {
-    width: 28mm !important;
-    height: 28mm !important;
-    border: 1px solid #d4af37;
-    padding: 2mm;
-    background: #fff;
-  }
-
-  .pdf-thankyou {
-    font-size: 16pt;
-  }
-
-  .pdf-colophon {
-    font-size: 11pt;
-    line-height: 2;
-    color: #555;
-    letter-spacing: 1px;
-  }
-`;
-
-/* ---------- LANGUAGE FILTER ---------- */
-function getChapterData(lang) {
-  const chapters = [];
-  const chapterSections = document.querySelectorAll('section.chapter:not(.epilogue)');
-
-  chapterSections.forEach((section, idx) => {
-    const titleEn = section.querySelector('.chapter-title')?.getAttribute('data-en')
-                 || section.querySelector('.chapter-title')?.textContent.trim();
-    const titleHi = section.querySelector('.chapter-title')?.getAttribute('data-hi')
-                 || titleEn;
-    const year = section.querySelector('.chapter-year')?.textContent.trim() || '';
-
-    const contentDiv = section.querySelector(`.chapter-content[data-lang-content="${lang}"]`)
-                    || section.querySelector('.chapter-content');
-    const paragraphs = contentDiv
-      ? Array.from(contentDiv.querySelectorAll('p')).map(p => p.innerHTML.trim())
-      : [];
-
-    chapters.push({
-      title: lang === 'hi' ? titleHi : titleEn,
-      year,
-      paragraphs
-    });
-  });
-
-  return chapters;
-}
-
-function getEpilogueData(lang) {
-  const ep = document.querySelector('section.epilogue');
-  if (!ep) return { title: 'To Be Continued...', paragraphs: [] };
-
-  const titleEn = ep.querySelector('.chapter-title')?.getAttribute('data-en') || 'To Be Continued...';
-  const titleHi = ep.querySelector('.chapter-title')?.getAttribute('data-hi') || titleEn;
-
-  const contentDiv = ep.querySelector(`.chapter-content[data-lang-content="${lang}"]`)
-                  || ep.querySelector('.chapter-content');
-  const paragraphs = contentDiv
-    ? Array.from(contentDiv.querySelectorAll('p')).map(p => p.innerHTML.trim())
-    : [];
-
-  return {
-    title: lang === 'hi' ? titleHi : titleEn,
-    paragraphs
-  };
-}
-
-/* ---------- FULL BOOK HTML BUILDER ---------- */
-function buildFullBookHTML(lang) {
-  const chapters = getChapterData(lang);
-  const epilogue = getEpilogueData(lang);
-
-  let html = '';
-  html += buildCoverPage();
-  html += buildTitlePage();
-  html += buildCopyrightPage();
-  html += buildDedicationPage();
-  html += buildEpigraphPage();
-  html += buildPrefacePage();
-  html += buildAcknowledgementsPage();
-  html += buildTOCPage(chapters);
-  chapters.forEach((ch, i) => { html += buildChapterPage(ch, i); });
-  html += buildEpiloguePage(epilogue);
-  html += buildConclusionPage();
-  html += buildAboutPage();
-  html += buildThankYouPage();
-  html += buildColophonPage();
-
-  return html;
-}
-
-/* ---------- RENDER HIDDEN CONTAINER ---------- */
-function createHiddenRenderContainer(html) {
-  const old = document.getElementById('pdfRenderContainer');
-  if (old) old.remove();
-
-  const container = document.createElement('div');
-  container.id = 'pdfRenderContainer';
-  container.style.position = 'fixed';
-  container.style.left = '-99999px';
-  container.style.top = '0';
-  container.style.width = '148mm';
-  container.style.background = '#fff';
-  container.innerHTML = `<style>${PDF_STYLES}</style>` + html;
-  document.body.appendChild(container);
-
-  return container;
-}
-
-/* ---------- PROGRESS BAR UI ---------- */
-function showProgress(current, total) {
-  let box = document.getElementById('pdfProgressBox');
-  if (!box) {
-    box = document.createElement('div');
-    box.id = 'pdfProgressBox';
-    box.innerHTML = `
-      <div class="pdf-progress-inner">
-        <p class="pdf-progress-title">📖 Generating your eBook...</p>
-        <div class="pdf-progress-bar-wrap">
-          <div class="pdf-progress-bar" id="pdfProgressBar"></div>
-        </div>
-        <p class="pdf-progress-text" id="pdfProgressText">Page ${current} / ${total}</p>
-      </div>
-    `;
-    document.body.appendChild(box);
-
-    if (!document.getElementById('pdfProgressStyles')) {
-      const st = document.createElement('style');
-      st.id = 'pdfProgressStyles';
-      st.textContent = `
-        #pdfProgressBox {
-          position: fixed;
-          inset: 0;
-          background: rgba(13,13,26,0.85);
-          z-index: 99999;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'EB Garamond', serif;
-        }
-        .pdf-progress-inner {
-          background: #fdfaf3;
-          padding: 30px 40px;
-          border-radius: 8px;
-          border: 2px solid #d4af37;
-          text-align: center;
-          min-width: 320px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        }
-        .pdf-progress-title {
-          color: #1a1a1a;
-          font-size: 16pt;
-          margin: 0 0 20px;
-        }
-        .pdf-progress-bar-wrap {
-          width: 100%;
-          height: 10px;
-          background: #e8dcc0;
-          border-radius: 5px;
-          overflow: hidden;
-          margin-bottom: 14px;
-        }
-        .pdf-progress-bar {
-          height: 100%;
-          width: 0%;
-          background: linear-gradient(90deg, #d4af37, #f4d97a);
-          transition: width 0.3s ease;
-        }
-        .pdf-progress-text {
-          color: #555;
-          font-size: 11pt;
-          margin: 0;
-          font-style: italic;
-        }
-      `;
-      document.head.appendChild(st);
-    }
-  }
-
-  const bar = document.getElementById('pdfProgressBar');
-  const txt = document.getElementById('pdfProgressText');
-  const pct = Math.round((current / total) * 100);
-  if (bar) bar.style.width = pct + '%';
-  if (txt) txt.textContent = `Page ${current} / ${total}`;
-}
-
-function hideProgress() {
-  const box = document.getElementById('pdfProgressBox');
-  if (box) box.remove();
-}
-
-/* ---------- TOAST ---------- */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-/* ---------- QR CODE GENERATION ---------- */
-function generateQRCode(container) {
-  const qrDiv = container.querySelector('#pdfQR');
-  if (!qrDiv) return;
-  qrDiv.innerHTML = '';
-  if (typeof QRCode !== 'undefined') {
-    new QRCode(qrDiv, {
-      text: BOOK.websiteUrl,
-      width: 110,
-      height: 110,
-      colorDark: '#0d0d1a',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H
-    });
-  } else {
-    qrDiv.textContent = BOOK.website;
-    qrDiv.style.fontSize = '8pt';
-  }
-}
-
-/* ---------- MAIN PDF GENERATOR ---------- */
-async function generatePDF(lang) {
-  const langLabel = lang === 'hi' ? 'Hinglish' : 'English';
-
-  try {
-    closeDownloadModal();
-
-    if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-      showToast('❌ PDF libraries load nahi hui. Page refresh karein.');
+  async generate(lang, langLabel) {
+    if (this.isGenerating) {
+      toast.warning('Already generating, please wait');
       return;
     }
+    this.isGenerating = true;
+    this.cancelled = false;
+    this.currentPage = 0;
+    this.currentLang = lang;
 
-    showProgress(1, 21);
+    try {
+      toast.info(`Preparing ${langLabel} eBook...`);
+      await LibraryLoader.loadAll();
 
-    const html = buildFullBookHTML(lang);
-    const container = createHiddenRenderContainer(html);
+      // Check if cover image exists
+      const coverSrc = await ImageLoader.load(EBOOK_CONFIG.coverImage);
+      this.coverImageAvailable = !!coverSrc;
 
-    await document.fonts.ready;
-    await new Promise(r => setTimeout(r, 400));
+      const content = this.extractContent(lang);
+      if (!content || content.chapters.length === 0) {
+        throw new Error('Content not found');
+      }
 
-    generateQRCode(container);
-    await new Promise(r => setTimeout(r, 300));
+      toast.info(`Building ${langLabel} eBook...`);
+      this.pages = await this.buildPages(content, lang);
+      this.totalPages = this.pages.length;
 
-    const pages = container.querySelectorAll('.pdf-page');
-    const total = pages.length;
+      toast.info(`Generating PDF (${this.totalPages} pages)...`);
+      await this.generatePDF(langLabel);
 
+      const filename = `Suraj-Anand-Autobiography-${langLabel}.pdf`;
+      this.pdf.save(filename);
+      toast.success(`${langLabel} eBook downloaded!`);
+    } catch (error) {
+      console.error('Ebook generation failed:', error);
+      toast.error(`Failed: ${error.message}`);
+    } finally {
+      this.isGenerating = false;
+      this.cleanup();
+    }
+  }
+
+  /* ---------- Extract chapters from HTML ---------- */
+  extractContent(lang) {
+    const chapters = [];
+    const sections = document.querySelectorAll('section.chapter');
+
+    sections.forEach(section => {
+      const titleEl = section.querySelector('.chapter-title');
+      const title = lang === 'hi'
+        ? (titleEl?.getAttribute('data-hi') || titleEl?.textContent.trim())
+        : (titleEl?.getAttribute('data-en') || titleEl?.textContent.trim());
+
+      const year = section.querySelector('.chapter-year')?.textContent.trim() || '';
+
+      const contentDiv = section.querySelector(`.chapter-content[data-lang-content="${lang}"]`)
+                       || section.querySelector('.chapter-content');
+
+      const paragraphs = contentDiv
+        ? Array.from(contentDiv.querySelectorAll('p')).map(p => p.innerHTML.trim())
+        : [];
+
+      const isEpilogue = section.classList.contains('epilogue');
+
+      chapters.push({ title, year, paragraphs, isEpilogue });
+    });
+
+    return { chapters };
+  }
+
+  /* ---------- Build all pages ---------- */
+  async buildPages(content, lang) {
+    const pages = [];
+    const chapters = content.chapters;
+    const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
+
+    const builders = [
+      () => this.createCoverPage(),
+      () => this.createTitlePage(),
+      () => this.createCopyrightPage(),
+      () => this.createDedicationPage(),
+      () => this.createEpigraphPage(),
+      () => this.createPrefacePage(),
+      () => this.createAcknowledgementsPage(),
+      () => this.createTOCPage(chapters),
+      ...chapters.map((ch, i) => () => this.createChapterPage(ch, i)),
+      () => this.createConclusionPage(),
+      () => this.createAboutPage(qrDataUrl),
+      () => this.createThankYouPage(),
+      () => this.createColophonPage()
+    ];
+
+    for (const builder of builders) {
+      if (this.cancelled) break;
+      const page = await builder();
+      if (page) {
+        pages.push(page);
+        this.currentPage++;
+        this.updateProgress();
+      }
+    }
+    return pages;
+  }
+
+  /* ---------- PAGE BUILDERS ---------- */
+
+  createPageWrap(inner, extraStyle = '') {
+    const div = document.createElement('div');
+    div.style.cssText = `
+      padding: 60px 50px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      ${extraStyle}
+    `;
+    div.innerHTML = inner;
+    return div;
+  }
+
+  /* ---------- COVER PAGE — IMAGE BASED ---------- */
+  createCoverPage() {
+    const div = document.createElement('div');
+    div.style.cssText = `
+      padding: 0;
+      margin: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      width: 100%;
+      overflow: hidden;
+    `;
+
+    if (this.coverImageAvailable) {
+      // Use uploaded cover image
+      div.innerHTML = `
+        <img 
+          src="${EBOOK_CONFIG.coverImage}" 
+          alt="A Boy Who Never Thought — Cover" 
+          crossorigin="anonymous"
+          style="width:100%;height:100%;object-fit:contain;display:block;"
+        >
+      `;
+    } else {
+      // Fallback — dark theme CSS cover
+      div.innerHTML = `
+        <div style="
+          width:100%;height:100%;
+          background:#0d0d1a;
+          padding:80px 60px;
+          display:flex;flex-direction:column;
+          align-items:center;justify-content:center;
+          text-align:center;
+          border:12px double #DAA520;
+          box-sizing:border-box;
+        ">
+          <p style="letter-spacing:8px;font-size:14px;color:#DAA520;font-family:'EB Garamond',serif;margin-bottom:60px;">AN AUTOBIOGRAPHY</p>
+          <h1 style="font-family:'EB Garamond',serif;font-size:52px;color:#DAA520;letter-spacing:3px;margin:0;">${EBOOK_CONFIG.author}</h1>
+          <p style="font-style:italic;font-size:18px;color:#b8942e;margin:18px 0 50px;">~ ${EBOOK_CONFIG.aka}</p>
+          <div style="width:120px;height:1px;background:#DAA520;margin-bottom:50px;"></div>
+          <h2 style="font-family:'EB Garamond',serif;font-size:32px;color:#fdfaf3;font-weight:600;margin:0 0 20px;line-height:1.3;">${EBOOK_CONFIG.title}</h2>
+          <p style="font-style:italic;font-size:16px;color:#c9b37e;margin-bottom:70px;">${EBOOK_CONFIG.subtitle}</p>
+          <p style="font-size:14px;color:#DAA520;letter-spacing:5px;">${EBOOK_CONFIG.currentYear}</p>
+        </div>
+      `;
+    }
+    return div;
+  }
+
+  createTitlePage() {
+    return this.createPageWrap(`
+      <div style="text-align:center;margin:auto 0;">
+        <p style="letter-spacing:6px;font-size:13px;color:#8b7355;margin-bottom:50px;">AN AUTOBIOGRAPHY</p>
+        <h1 style="font-family:'EB Garamond',serif;font-size:48px;color:#1a1a1a;font-weight:600;margin:0 0 20px;line-height:1.2;">${EBOOK_CONFIG.title}</h1>
+        <p style="font-style:italic;font-size:18px;color:#555;margin-bottom:60px;">${EBOOK_CONFIG.subtitle}</p>
+        <div style="width:80px;height:1px;background:#DAA520;margin:0 auto 60px;"></div>
+        <p style="font-size:24px;font-weight:600;color:#1a1a1a;margin:0;">${EBOOK_CONFIG.author}</p>
+        <p style="font-style:italic;color:#777;margin:10px 0 60px;">~ ${EBOOK_CONFIG.aka}</p>
+        <p style="font-size:14px;color:#555;letter-spacing:4px;">${EBOOK_CONFIG.currentYear}</p>
+      </div>
+    `, 'justify-content:center;text-align:center;');
+  }
+
+  createCopyrightPage() {
+    return this.createPageWrap(`
+      <div style="margin:auto 0;max-width:500px;">
+        <p style="font-size:12px;line-height:2;color:#333;font-family:'EB Garamond',serif;">
+          © ${EBOOK_CONFIG.currentYear} ${EBOOK_CONFIG.author}. All rights reserved.<br><br>
+          No part of this publication may be reproduced, distributed, or transmitted in any form or by any means without the prior written permission of the author.<br><br>
+          <em>First Edition — ${EBOOK_CONFIG.currentYear}</em><br>
+          Published independently by the author.<br>
+          ${EBOOK_CONFIG.birthplace}, India.
+        </p>
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  createDedicationPage() {
+    return this.createPageWrap(`
+      <div style="margin:auto 0;text-align:center;">
+        <p style="font-family:'Kalam',cursive;font-size:22px;line-height:2.2;color:#2c2c2c;">${COMMON.dedication}</p>
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  createEpigraphPage() {
+    return this.createPageWrap(`
+      <div style="margin:auto 0;text-align:center;">
+        <p style="font-family:'Kalam',cursive;font-size:20px;line-height:2;color:#2c2c2c;">${COMMON.epigraph}</p>
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  createPrefacePage() {
+    return this.createPageWrap(`
+      <div style="max-width:550px;margin:0 auto;width:100%;">
+        <h2 style="font-family:'EB Garamond',serif;font-size:32px;text-align:center;color:#1a1a1a;margin-bottom:40px;font-weight:600;">Preface</h2>
+        <p style="text-align:justify;font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'EB Garamond',serif;">${COMMON.preface}</p>
+      </div>
+    `);
+  }
+
+  createAcknowledgementsPage() {
+    return this.createPageWrap(`
+      <div style="max-width:550px;margin:0 auto;width:100%;">
+        <h2 style="font-family:'EB Garamond',serif;font-size:32px;text-align:center;color:#1a1a1a;margin-bottom:40px;font-weight:600;">Acknowledgements</h2>
+        <p style="text-align:justify;font-size:16px;line-height:1.9;color:#1a1a1a;font-family:'EB Garamond',serif;">${COMMON.acknowledgements}</p>
+      </div>
+    `);
+  }
+
+  createTOCPage(chapters) {
+    let items = '';
+    chapters.forEach((ch, i) => {
+      const num = ch.isEpilogue ? 'Epilogue' : `${i + 1}.`;
+      items += `
+        <li style="padding:8px 0;border-bottom:1px dotted #c9b37e;font-family:'EB Garamond',serif;font-size:17px;color:#1a1a1a;">
+          ${num} ${ch.title}
+        </li>`;
+    });
+    return this.createPageWrap(`
+      <div style="max-width:550px;margin:0 auto;width:100%;">
+        <h2 style="font-family:'EB Garamond',serif;font-size:32px;text-align:center;color:#1a1a1a;margin-bottom:40px;font-weight:600;">Contents</h2>
+        <ul style="list-style:none;padding:0;">${items}</ul>
+      </div>
+    `);
+  }
+
+  createChapterPage(chapter, index) {
+    const paras = chapter.paragraphs.map((p, i) => {
+      if (i === 0 && p.length > 0) {
+        const firstChar = p.replace(/<[^>]*>/g, '').charAt(0);
+        const rest = p.replace(/<[^>]*>/g, '').slice(1);
+        return `<p style="text-align:justify;font-size:17px;line-height:1.9;color:#1a1a1a;font-family:'EB Garamond',serif;margin-bottom:18px;">
+          <span style="font-family:'EB Garamond',serif;font-size:56px;font-weight:600;color:#DAA520;float:left;line-height:1;margin-right:8px;margin-top:4px;">${firstChar}</span>${rest}
+        </p>`;
+      }
+      return `<p style="text-align:justify;font-size:17px;line-height:1.9;color:#1a1a1a;font-family:'EB Garamond',serif;margin-bottom:18px;">${p}</p>`;
+    }).join('');
+
+    const chapterLabel = chapter.isEpilogue ? 'EPILOGUE' : `CHAPTER ${numberToWord(index + 1).toUpperCase()}`;
+
+    return this.createPageWrap(`
+      <div style="text-align:center;margin-bottom:50px;">
+        <p style="letter-spacing:6px;font-size:13px;color:#8b7355;margin-bottom:15px;">${chapterLabel}</p>
+        <h2 style="font-family:'EB Garamond',serif;font-size:34px;color:#1a1a1a;font-weight:600;margin:0 0 12px;line-height:1.3;">${chapter.title}</h2>
+        ${chapter.year ? `<p style="font-style:italic;color:#777;font-size:15px;">${chapter.year}</p>` : ''}
+        <div style="width:80px;height:1px;background:#DAA520;margin:25px auto 0;"></div>
+      </div>
+      <div>${paras}</div>
+    `, 'padding-top:50px;');
+  }
+
+  createConclusionPage() {
+    return this.createPageWrap(`
+      <div style="max-width:550px;margin:0 auto;width:100%;text-align:center;">
+        <h2 style="font-family:'EB Garamond',serif;font-size:32px;color:#1a1a1a;margin-bottom:40px;font-weight:600;">Conclusion</h2>
+        <p style="font-size:17px;line-height:2;color:#1a1a1a;font-family:'EB Garamond',serif;">${COMMON.conclusion}</p>
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  createAboutPage(qrDataUrl) {
+    const qrBlock = qrDataUrl
+      ? `<div style="margin-top:20px;text-align:center;">
+           <img src="${qrDataUrl}" alt="QR" style="width:120px;height:120px;border:2px solid #DAA520;padding:4px;background:#fff;">
+           <p style="font-size:11px;color:#999;margin-top:6px;">Scan to visit my portfolio</p>
+         </div>` : '';
+
+    return this.createPageWrap(`
+      <div style="max-width:550px;margin:0 auto;width:100%;">
+        <h2 style="font-family:'EB Garamond',serif;font-size:32px;text-align:center;color:#1a1a1a;margin-bottom:30px;font-weight:600;">About the Author</h2>
+        <h3 style="font-family:'EB Garamond',serif;font-size:22px;color:#1a1a1a;margin:0 0 4px;">${EBOOK_CONFIG.author}</h3>
+        <p style="font-style:italic;color:#777;font-size:15px;margin-bottom:18px;">~ ${EBOOK_CONFIG.aka}</p>
+        <p style="text-align:justify;font-size:15px;line-height:1.8;color:#1a1a1a;font-family:'EB Garamond',serif;margin-bottom:20px;">${COMMON.aboutBio}</p>
+        <ul style="list-style:none;padding:0;font-size:14px;line-height:2;color:#333;font-family:'EB Garamond',serif;">
+          <li>📍 Patna, Bihar, India</li>
+          <li>✉️ ${EBOOK_CONFIG.email}</li>
+          <li>🌐 ${EBOOK_CONFIG.website}</li>
+          <li>🎓 Class 12 (CBSE) — PCM</li>
+          <li>💻 Web Developer | Writer</li>
+        </ul>
+        ${qrBlock}
+      </div>
+    `);
+  }
+
+  createThankYouPage() {
+    return this.createPageWrap(`
+      <div style="margin:auto 0;text-align:center;">
+        <p style="font-family:'Kalam',cursive;font-size:24px;line-height:2.2;color:#2c2c2c;">${COMMON.thankyou}</p>
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  createColophonPage() {
+    return this.createPageWrap(`
+      <div style="margin:auto 0;text-align:center;color:#555;font-size:15px;line-height:2.2;font-family:'EB Garamond',serif;">
+        ${COMMON.colophon}
+      </div>
+    `, 'justify-content:center;');
+  }
+
+  /* ---------- PDF GENERATION (FAST) ---------- */
+  async generatePDF(langLabel) {
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: 'portrait',
+    const config = EBOOK_CONFIG.pdf;
+
+    this.pdf = new jsPDF({
       unit: 'mm',
-      format: 'a5',
+      format: config.format,
+      orientation: 'portrait',
       compress: true
     });
 
-    const pdfW = pdf.internal.pageSize.getWidth();
-    const pdfH = pdf.internal.pageSize.getHeight();
+    this.pdf.setProperties({
+      title: EBOOK_CONFIG.title,
+      author: EBOOK_CONFIG.author,
+      subject: 'Autobiography',
+      creator: `${EBOOK_CONFIG.author} Publishing`
+    });
 
-    for (let i = 0; i < pages.length; i++) {
-      showProgress(i + 1, total);
-      await new Promise(r => setTimeout(r, 30));
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = config.margin;
+    const contentWidth = pageWidth - (margin * 2);
+    const contentHeight = pageHeight - (margin * 2);
 
-      const canvas = await html2canvas(pages[i], {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#fdfaf3',
-        logging: false,
-        windowWidth: pages[i].scrollWidth,
-        windowHeight: pages[i].scrollHeight
-      });
+    let isFirstPage = true;
+    const batchSize = config.batchSize || 3;
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.92);
-      const imgW = pdfW;
-      const imgH = (canvas.height * imgW) / canvas.width;
+    for (let i = 0; i < this.pages.length; i += batchSize) {
+      if (this.cancelled) break;
+      const batch = this.pages.slice(i, i + batchSize);
 
-      if (i > 0) pdf.addPage();
+      const results = await Promise.all(
+        batch.map(page => this.renderPage(page, contentWidth, contentHeight))
+      );
 
-      let finalW = imgW;
-      let finalH = imgH;
-      if (imgH > pdfH) {
-        finalH = pdfH;
-        finalW = (canvas.width * finalH) / canvas.height;
+      for (const result of results) {
+        if (result) {
+          if (!isFirstPage) this.pdf.addPage();
+          isFirstPage = false;
+          this.pdf.addImage(result, 'JPEG', margin, margin, contentWidth, contentHeight, undefined, 'FAST');
+        }
       }
 
-      const x = (pdfW - finalW) / 2;
-      const y = 0;
-      pdf.addImage(imgData, 'JPEG', x, y, finalW, finalH, undefined, 'FAST');
+      const progress = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
+      this.updateProgress(progress);
+
+      await new Promise(r => setTimeout(r, 30));
     }
+  }
 
-    const filename = `Suraj-Anand-Autobiography-${langLabel}.pdf`;
-    pdf.save(filename);
+  async renderPage(element, width, height) {
+    try {
+      const container = document.createElement('div');
+      container.style.cssText = `position:absolute;left:-9999px;top:-9999px;width:${width}mm;background:#ffffff;padding:0;margin:0;`;
+      const clone = element.cloneNode(true);
+      clone.style.width = '100%';
+      clone.style.background = '#ffffff';
+      container.appendChild(clone);
+      document.body.appendChild(container);
 
-    container.remove();
-    hideProgress();
-    showToast(`✅ ${langLabel} PDF downloaded!`);
-  } catch (err) {
-    console.error('PDF Error:', err);
-    hideProgress();
-    showToast('❌ PDF banane mein error aaya. Console check karein.');
+      const canvas = await html2canvas(container, {
+        scale: EBOOK_CONFIG.pdf.scale,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: width * 3.78,
+        height: height * 3.78
+      });
+
+      document.body.removeChild(container);
+      if (canvas) return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
+      return null;
+    } catch (error) {
+      console.error('Page rendering failed:', error);
+      return null;
+    }
+  }
+
+  updateProgress(percent) {
+    const bar = document.querySelector('.progress-bar');
+    const text = document.querySelector('.progress-text');
+    const p = Math.min(100, percent || Math.round((this.currentPage / this.totalPages) * 100));
+    if (bar) bar.style.width = p + '%';
+    if (text) text.textContent = p + '%';
+  }
+
+  cleanup() {
+    document.querySelectorAll('div[style*="left: -9999px"]').forEach(el => el.remove());
+    this.pages = [];
+    this.pdf = null;
+  }
+
+  cancel() {
+    this.cancelled = true;
+    this.isGenerating = false;
+    toast.warning('Generation cancelled');
+    this.cleanup();
   }
 }
 
-/* ---------- MODAL CONTROL ---------- */
-function openDownloadModal() {
-  const m = document.getElementById('downloadModal');
-  if (m) m.classList.add('active');
-}
+/* ============================================================
+   8. EXPOSE FUNCTIONS
+   ============================================================ */
+const ebookGenerator = new EbookGenerator();
+window.downloadEnglishEbook = async () => await ebookGenerator.generate('en', 'English');
+window.downloadHinglishEbook = async () => await ebookGenerator.generate('hi', 'Hinglish');
+window.cancelEbookGeneration = () => ebookGenerator.cancel();
 
-function closeDownloadModal() {
-  const m = document.getElementById('downloadModal');
-  if (m) m.classList.remove('active');
-}
-
-/* ---------- EVENT LISTENERS ---------- */
+/* ============================================================
+   9. EVENT LISTENERS
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   const topBtn = document.getElementById('downloadBtn');
-  const botBtn = document.getElementById('downloadBtnBottom');
+  const bottomBtn = document.getElementById('downloadBtnBottom');
   const enBtn = document.getElementById('modalDownloadEn');
   const hiBtn = document.getElementById('modalDownloadHi');
   const overlay = document.getElementById('downloadModal');
 
-  if (topBtn) topBtn.addEventListener('click', openDownloadModal);
-  if (botBtn) botBtn.addEventListener('click', openDownloadModal);
-  if (enBtn) enBtn.addEventListener('click', () => generatePDF('en'));
-  if (hiBtn) hiBtn.addEventListener('click', () => generatePDF('hi'));
+  if (topBtn) topBtn.addEventListener('click', () => modal.open());
+  if (bottomBtn) bottomBtn.addEventListener('click', () => modal.open());
+  if (enBtn) enBtn.addEventListener('click', () => { modal.close(); ebookGenerator.generate('en', 'English'); });
+  if (hiBtn) hiBtn.addEventListener('click', () => { modal.close(); ebookGenerator.generate('hi', 'Hinglish'); });
+  if (overlay) overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) modal.close();
+  });
 
-  if (overlay) {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeDownloadModal();
-    });
+  const progressContainer = document.querySelector('.progress-container');
+  if (progressContainer) {
+    progressContainer.innerHTML = `
+      <div style="width:100%;background:#f0f0f0;border-radius:8px;overflow:hidden;height:8px;">
+        <div class="progress-bar" style="width:0%;height:100%;background:#DAA520;transition:width 0.3s ease;"></div>
+      </div>
+      <p class="progress-text" style="text-align:center;font-size:12px;color:#666;margin-top:6px;">0%</p>
+    `;
   }
 
-  window.openDownloadModal = openDownloadModal;
-  window.closeDownloadModal = closeDownloadModal;
-  window.generatePDF = generatePDF;
+  const origGenerate = ebookGenerator.generate.bind(ebookGenerator);
+  ebookGenerator.generate = async function(lang, label) {
+    if (progressContainer) progressContainer.style.display = 'block';
+    try {
+      await origGenerate(lang, label);
+    } finally {
+      setTimeout(() => { if (progressContainer) progressContainer.style.display = 'none'; }, 1500);
+    }
+  };
 });
 
-/* ---------- LIBRARY LOADER (agar HTML mein CDN nahi hai) ---------- */
-(function loadLibraries() {
-  const libs = [
-    { test: () => typeof html2canvas !== 'undefined',
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js' },
-    { test: () => typeof window.jspdf !== 'undefined',
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js' },
-    { test: () => typeof QRCode !== 'undefined',
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js' }
-  ];
+/* ============================================================
+   10. KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (modal.isOpen) modal.close();
+    if (ebookGenerator.isGenerating) ebookGenerator.cancel();
+  }
+});
 
-  libs.forEach(lib => {
-    if (!lib.test()) {
-      const s = document.createElement('script');
-      s.src = lib.src;
-      s.async = false;
-      document.head.appendChild(s);
-    }
-  });
-})();
+console.log('✅ ebook.js loaded — Cover uses assets/images/bookcover.jpg');
