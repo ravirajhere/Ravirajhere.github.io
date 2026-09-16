@@ -265,60 +265,6 @@ function downloadHinglishEbook() {
 window.downloadHinglishEbook = downloadHinglishEbook;
 
 /* ============================================================
-   11. THEME TOGGLE (Top floating + Nav)
-   ============================================================ */
-function initThemeToggle() {
-    // Apply saved theme on load
-    let savedTheme = 'light';
-    try {
-        savedTheme = localStorage.getItem('theme') || 'light';
-    } catch (e) {}
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    const label = document.getElementById('themeLabel');
-    if (label) label.textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
-
-    // Attach handlers to all theme switches (top, nav, sidebar)
-    const switches = [
-        document.getElementById('themeSwitch'),
-        document.getElementById('themeSwitchNav'),
-        document.getElementById('themeSwitchSidebar')
-    ];
-
-    switches.forEach(sw => {
-        if (!sw) return;
-        sw.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleTheme();
-        });
-        sw.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleTheme();
-            }
-        });
-    });
-}
-
-function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme') || 'light';
-    const next = current === 'light' ? 'dark' : 'light';
-
-    html.setAttribute('data-theme', next);
-
-    try {
-        localStorage.setItem('theme', next);
-    } catch (e) {}
-
-    const label = document.getElementById('themeLabel');
-    if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
-
-    showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
-}
-window.toggleTheme = toggleTheme;
-
-/* ============================================================
    12. INITIALISE ON LOAD
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
