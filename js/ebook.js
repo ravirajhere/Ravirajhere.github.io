@@ -304,9 +304,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // NOTE: Gold line under heading has been REMOVED.
-    // It is now handled inside createChapterPage().
-    
     // ---- STRONG TEXT ----
     clone.querySelectorAll('.chapter strong').forEach(el => {
         el.style.color = '#000000';
@@ -461,7 +458,7 @@ class EbookGenerator {
 
     async generate(lang, langLabel) {
         if (this.isGenerating) {
-            toast.warning('Already generating, please wait');
+            // Silent — no toast
             return;
         }
 
@@ -470,7 +467,7 @@ class EbookGenerator {
         this.currentPage = 0;
 
         try {
-            toast.info(`Preparing resources for ${langLabel}...`);
+            // ✅ Silent background processing — no toasts, no DOM changes
             this.resources = await ResourceValidator.validateAllImages();
             
             await LibraryLoader.loadAll();
@@ -480,11 +477,9 @@ class EbookGenerator {
                 throw new Error('Content not found');
             }
 
-            toast.info(`Building ${langLabel} ebook...`);
             this.pages = await this.buildPages(content, lang);
             this.totalPages = this.pages.length;
 
-            toast.info(`Generating PDF (${this.totalPages} pages)...`);
             await this.generatePDF(langLabel);
 
             const filename = `My_Autobiography_${EBOOK_CONFIG.author.replace(/\s/g, '_')}_${langLabel}.pdf`;
@@ -500,33 +495,43 @@ class EbookGenerator {
         }
     }
 
+    // ========================================================
+    // ✅ FIXED: getContent()
+    // - Doesn't touch actual DOM anymore
+    // - Only clones wrapper and prepares cloned chapters
+    // - Screen pe kuch bhi show nahi hoga
+    // ========================================================
     getContent(lang) {
         const wrapper = document.querySelector('.autobio-wrapper');
         if (!wrapper) return null;
 
-        const enContainer = document.getElementById('chaptersEn');
-        const hiContainer = document.getElementById('chaptersHi');
-        
-        if (lang === 'en') {
-            enContainer.style.display = 'block';
-            hiContainer.style.display = 'none';
-        } else {
-            enContainer.style.display = 'none';
-            hiContainer.style.display = 'block';
-        }
+        // Clone the wrapper — DO NOT modify actual DOM
+        const clonedWrapper = wrapper.cloneNode(true);
 
         const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
-        const container = document.getElementById(containerId);
-        const chapters = container.querySelectorAll('.chapter');
-        
-        chapters.forEach(ch => {
-            ch.style.display = 'block';
-            ch.classList.add('active');
-        });
+        const otherId = lang === 'en' ? 'chaptersHi' : 'chaptersEn';
+
+        // In the clone: hide the other language, show current language
+        const clonedCurrent = clonedWrapper.querySelector('#' + containerId);
+        const clonedOther = clonedWrapper.querySelector('#' + otherId);
+
+        if (clonedCurrent) clonedCurrent.style.display = 'block';
+        if (clonedOther) clonedOther.style.display = 'none';
+
+        // In the clone: make all chapters inside the current container "visible"
+        // so the PDF builder can access them one by one
+        let clonedChapters = [];
+        if (clonedCurrent) {
+            clonedChapters = clonedCurrent.querySelectorAll('.chapter');
+            clonedChapters.forEach(ch => {
+                ch.style.display = 'block';
+                ch.classList.add('active');
+            });
+        }
 
         return {
-            wrapper: wrapper.cloneNode(true),
-            chapters: chapters,
+            wrapper: clonedWrapper,
+            chapters: clonedChapters,
             containerId: containerId
         };
     }
@@ -538,17 +543,7 @@ class EbookGenerator {
 
         this.cleanClone(clone);
 
-        const cloneEn = clone.querySelector('#chaptersEn');
-        const cloneHi = clone.querySelector('#chaptersHi');
-        
-        if (lang === 'en') {
-            if (cloneHi) cloneHi.remove();
-            if (cloneEn) cloneEn.style.display = 'block';
-        } else {
-            if (cloneEn) cloneEn.remove();
-            if (cloneHi) cloneHi.style.display = 'block';
-        }
-
+        // Get chapters from the already-prepared clone
         const cloneContainer = clone.querySelector('#' + containerId);
         const cloneChapters = cloneContainer ? cloneContainer.querySelectorAll('.chapter') : [];
 
@@ -779,7 +774,6 @@ class EbookGenerator {
         chapters.forEach((ch, idx) => {
             const h3 = ch.querySelector('h3');
             let title = h3 ? h3.textContent.trim() : `Chapter ${idx+1}`;
-            // Remove emoji
             title = title.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
             title = title.replace(/[^\w\s\-\.:]/g, '').trim();
             tocHTML += `
@@ -833,13 +827,12 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // ✅ UPDATED: createChapterPage()
+    // createChapterPage() — formal book style
     // - Photo chhota (170x170, 1:1)
     // - Photo content ke neeche
-    // - Chapter number + name + year (formal book style)
+    // - Chapter number + name + year
     // - Page number bottom center
     // - No drop cap, no quotes, no section breaks, no footnotes
-    // - Compact font (12.5px) so content fits in one page
     // ========================================================
     createChapterPage(chapter, index) {
         const div = document.createElement('div');
@@ -856,29 +849,22 @@ class EbookGenerator {
 
         const clone = chapter.cloneNode(true);
 
-        // ===== Remove unwanted elements =====
         clone.querySelectorAll('.nav-buttons, .copy-link-btn, .upload-hint').forEach(el => el.remove());
 
-        // ===== Extract chapter title from h3 =====
         const h3 = clone.querySelector('h3');
         let fullTitle = h3 ? h3.textContent.trim() : `Chapter ${index + 1}`;
-
-        // Remove emoji from title
         fullTitle = fullTitle.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
 
-        // Split into "Chapter X", "Title", "Year"
         let chapterWord = '';
         let chapterName = fullTitle;
         let chapterYear = '';
 
-        // Extract year if in parentheses
         const yearMatch = fullTitle.match(/\((\d{4}(?:[–-]\d{4})?)\)/);
         if (yearMatch) {
             chapterYear = yearMatch[1];
             chapterName = chapterName.replace(yearMatch[0], '').trim();
         }
 
-        // Extract chapter number and name
         const chapterMatch = chapterName.match(/^Chapter\s+(\d+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|Thirteen)[:\s-]+(.*)$/i);
         if (chapterMatch) {
             const num = chapterMatch[1];
@@ -892,10 +878,8 @@ class EbookGenerator {
             chapterName = chapterName.trim();
         }
 
-        // Remove old h3
         if (h3) h3.remove();
 
-        // ===== Extract photo (if exists) =====
         const photoPlaceholder = clone.querySelector('.chapter-photo-placeholder');
         let photoHTML = '';
         if (photoPlaceholder) {
@@ -913,7 +897,6 @@ class EbookGenerator {
             photoPlaceholder.remove();
         }
 
-        // ===== Chapter header (formal book style) =====
         const headerHTML = `
             <div style="text-align:center;margin-bottom:20px;">
                 ${chapterWord ? `
@@ -956,10 +939,8 @@ class EbookGenerator {
             </div>
         `;
 
-        // ===== Body (content) =====
         const bodyDiv = document.createElement('div');
 
-        // Style paragraphs — compact & book-like
         clone.querySelectorAll('p').forEach(el => {
             el.style.color = '#1a1a1a';
             el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
@@ -973,19 +954,16 @@ class EbookGenerator {
             el.style.textIndent = '0';
         });
 
-        // Strong
         clone.querySelectorAll('strong').forEach(el => {
             el.style.color = '#000000';
             el.style.fontWeight = '700';
         });
 
-        // Em
         clone.querySelectorAll('em').forEach(el => {
             el.style.color = '#1a1a1a';
             el.style.fontStyle = 'italic';
         });
 
-        // Quote boxes — compact
         clone.querySelectorAll('.quote-box').forEach(el => {
             el.style.padding = '12px 18px';
             el.style.margin = '12px 0';
@@ -1006,7 +984,6 @@ class EbookGenerator {
             el.style.textAlign = 'right';
         });
 
-        // Friend memory — compact
         clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
             el.style.padding = '12px 14px';
             el.style.margin = '12px 0';
@@ -1017,16 +994,13 @@ class EbookGenerator {
 
         clone.querySelectorAll('.pdf-label').forEach(el => el.remove());
 
-        // Move all content into bodyDiv
         while (clone.firstChild) {
             bodyDiv.appendChild(clone.firstChild);
         }
 
-        // ===== Photo (neeche content ke) =====
         const photoDiv = document.createElement('div');
         photoDiv.innerHTML = photoHTML;
 
-        // ===== Page number (bottom center) =====
         const pageNum = document.createElement('div');
         pageNum.style.cssText = `
             position: absolute;
@@ -1041,11 +1015,10 @@ class EbookGenerator {
         `;
         pageNum.textContent = '— ' + (index + 1) + ' —';
 
-        // ===== Assemble =====
         div.innerHTML = headerHTML;
-        div.appendChild(bodyDiv);      // content
-        div.appendChild(photoDiv);      // photo neeche
-        div.appendChild(pageNum);       // page number
+        div.appendChild(bodyDiv);
+        div.appendChild(photoDiv);
+        div.appendChild(pageNum);
 
         return div;
     }
