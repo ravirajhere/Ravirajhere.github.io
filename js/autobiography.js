@@ -157,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ------------------------------------------
-   7. KEYBOARD SHORTCUT — Press "L" to toggle language
+   6. KEYBOARD SHORTCUT — Press "L" to toggle language
+   (NOTE: Download eBook button handled by ebook.js)
 ------------------------------------------ */
 document.addEventListener('keydown', (e) => {
   if ((e.key === 'l' || e.key === 'L') && !e.target.matches('input, textarea')) {
@@ -166,7 +167,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ------------------------------------------
-   8. PARALLAX EFFECT ON COVER (Subtle)
+   7. PARALLAX EFFECT ON COVER (Subtle)
 ------------------------------------------ */
 window.addEventListener('scroll', () => {
   const coverContent = document.querySelector('.cover-content');
@@ -180,7 +181,7 @@ window.addEventListener('scroll', () => {
 });
 
 /* ------------------------------------------
-   9. CONSOLE MESSAGE
+   8. CONSOLE MESSAGE
 ------------------------------------------ */
 console.log('%c📖 Suraj Anand', 'font-size: 22px; color: #b8860b; font-weight: bold; font-family: Georgia;');
 console.log('%cA Boy Who Never Thought', 'font-size: 14px; color: #b0a890; font-style: italic; font-family: Georgia;');
@@ -188,8 +189,9 @@ console.log('%cSafar se safar tak — गुंजते सन्नाटे',
 console.log('%c💡 Tip: Press "L" to toggle language!', 'font-size: 12px; color: #b8860b;');
 
 /* ------------------------------------------
-   10. INIT ON LOAD
+   9. INIT ON LOAD
 ------------------------------------------ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ autobiography.js loaded successfully!');
+  console.log('📥 Download eBook handled by ebook.js');
 });
