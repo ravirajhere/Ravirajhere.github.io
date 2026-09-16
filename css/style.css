@@ -1852,3 +1852,256 @@ button { font-family: inherit; }
     .thought-full { font-size: 14px; }
     .thought-quote { font-size: 14px; padding: 12px 16px; }
 }
+
+/* ============================================================
+   27. BLOG ARCHIVE — Toggle + Personal Note + Raw Diary
+   ============================================================ */
+
+/* --- Archive Toggle Button --- */
+.archive-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+.archive-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--line-3);
+    border-radius: 60px;
+    color: var(--gold);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: var(--t);
+}
+.archive-toggle-btn:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-gold);
+}
+.archive-btn-icon { font-size: 16px; }
+.archive-btn-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    background: var(--gold);
+    color: var(--bg);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.archive-btn-arrow {
+    font-size: 11px;
+    transition: transform var(--t);
+}
+.archive-toggle-btn.active .archive-btn-arrow {
+    transform: rotate(180deg);
+}
+
+/* --- Archive Container --- */
+.blog-archive {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition:
+        max-height 0.8s var(--ease),
+        opacity 0.5s var(--ease),
+        margin 0.5s var(--ease);
+}
+.blog-archive.open {
+    max-height: 6000px;
+    opacity: 1;
+    margin-top: 30px;
+}
+
+/* --- Personal Note --- */
+.archive-note {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    max-width: 780px;
+    margin: 0 auto 26px;
+    padding: 18px 22px;
+    background: var(--gold-soft);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.archive-note-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.archive-note-content { flex: 1; }
+.archive-note-content strong {
+    display: block;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--gold);
+    margin-bottom: 6px;
+}
+.archive-note-content p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text-2);
+    margin: 0;
+}
+
+/* --- Diary category chip --- */
+.thought-category.diary {
+    background: rgba(212, 163, 115, 0.12);
+    border-color: rgba(212, 163, 115, 0.35);
+    color: var(--gold);
+    letter-spacing: 1.5px;
+    font-style: italic;
+}
+
+/* --- Diary card top accent --- */
+.thought-diary::before {
+    background: linear-gradient(90deg, var(--gold), var(--gold-3));
+}
+
+/* ============================================
+   RAW DIARY VERSION — Toggle & Content
+   ============================================ */
+
+/* --- Toggle button (inside expanded card) --- */
+.raw-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 10px 18px;
+    background: transparent;
+    border: 1px dashed var(--line-3);
+    border-radius: 40px;
+    color: var(--gold);
+    font-family: var(--font);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: var(--t);
+}
+.raw-toggle:hover {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+    border-style: solid;
+}
+.raw-toggle.active {
+    background: var(--gold-soft);
+    border-color: var(--gold);
+    border-style: solid;
+}
+
+/* --- Raw content container (hidden by default) --- */
+.raw-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    padding: 0;
+    background: var(--bg-inset);
+    border-radius: var(--r-md);
+    border-left: 2px solid var(--gold);
+    transition:
+        max-height 0.5s var(--ease),
+        opacity 0.4s var(--ease),
+        margin 0.4s var(--ease),
+        padding 0.4s var(--ease);
+}
+.raw-content.open {
+    max-height: 1200px;
+    opacity: 1;
+    margin-top: 16px;
+    padding: 20px 22px;
+}
+
+/* --- Raw header (label + date) --- */
+.raw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line-3);
+}
+.raw-label {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.3px;
+}
+.raw-date {
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.5px;
+}
+
+/* --- Raw paragraphs (handwritten feel) --- */
+.raw-content p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--text-2);
+    margin-bottom: 12px;
+}
+.raw-content p:last-child { margin-bottom: 0; }
+.raw-content em {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 500;
+}
+.raw-content strong {
+    color: var(--text);
+    font-weight: 700;
+    font-style: normal;
+}
+.raw-close {
+    text-align: right;
+    color: var(--gold) !important;
+    font-size: 13px !important;
+    margin-top: 12px !important;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line-2);
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+    .archive-toggle-btn {
+        padding: 12px 22px;
+        font-size: 13px;
+        gap: 10px;
+    }
+    .archive-note {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 18px;
+    }
+    .archive-note-icon { font-size: 20px; }
+    .archive-note-content strong { font-size: 14px; }
+    .archive-note-content p { font-size: 13px; }
+
+    .raw-toggle {
+        font-size: 12px;
+        padding: 9px 16px;
+    }
+    .raw-content.open {
+        padding: 16px 18px;
+    }
+    .raw-content p { font-size: 14px; }
+}
