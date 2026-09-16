@@ -13,7 +13,7 @@ const EBOOK_CONFIG = {
     currentYear: new Date().getFullYear(),
     images: {
         cover: 'images/bookcover.jpg',
-        author: 'images/author.jpg',
+        author: 'images/formal.jpg',
         signature: 'images/signature.jpg'
     },
     qr: {
