@@ -97,12 +97,14 @@ function goToChapter(lang, chapterNum) {
     // Update progress dots
     updateProgressDots();
 
-    // Scroll to top of the wrapper (smooth)
-    const wrapper = document.querySelector('.autobio-wrapper');
-    if (wrapper) {
-        const yOffset = -80; // navbar offset
-        const y = wrapper.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+    // ✅ FIXED: Scroll to the active CHAPTER HEADING (not wrapper top)
+    const activeChapter = chapters[chapterNum - 1];
+    if (activeChapter) {
+        requestAnimationFrame(() => {
+            const yOffset = -90; // navbar + breathing space
+            const y = activeChapter.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        });
     }
 
     // Save progress
