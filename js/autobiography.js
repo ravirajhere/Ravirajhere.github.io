@@ -1,197 +1,353 @@
-/* ==========================================
-   SURAJ ANAND — "A Boy Who Never Thought"
-   Safar se safar tak — गुंजते सन्नाटे
-   JavaScript File — autobiography.js
-   ========================================== */
+/* ============================================================
+   AUTOBIOGRAPHY.JS — Full Logic
+   Ravi Raj / Suraj Anand — "A Boy Who Never Thought"
+   ============================================================ */
 
-/* ------------------------------------------
-   1. LANGUAGE TOGGLE (EN ⇄ HI)
------------------------------------------- */
-let currentLang = 'en'; // Default language
+/* ============================================================
+   GLOBAL STATE
+   ============================================================ */
+let currentLang = 'en';           // 'en' or 'hi'
+let currentChapter = 1;           // 1 to 10
+const TOTAL_CHAPTERS = 10;
 
-function setLang(lang) {
-  currentLang = lang;
+/* ============================================================
+   1. TOAST NOTIFICATION
+   ============================================================ */
+function showToast(message, duration = 2500) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, duration);
+}
+window.showToast = showToast;
 
-  // Update all elements with data-en / data-hi
-  const elements = document.querySelectorAll('[data-en][data-hi]');
-  elements.forEach(el => {
-    const text = el.getAttribute('data-' + lang);
-    if (text) {
-      el.textContent = text;
-    }
-  });
+/* ============================================================
+   2. LANGUAGE SWITCH (English ↔ Hinglish)
+   ============================================================ */
+function switchLang(lang) {
+    currentLang = lang;
 
-  // Update chapter contents (big blocks)
-  document.querySelectorAll('[data-lang-content]').forEach(block => {
-    if (block.getAttribute('data-lang-content') === lang) {
-      block.style.display = 'block';
+    // Toggle chapter containers
+    const enBox = document.getElementById('chaptersEn');
+    const hiBox = document.getElementById('chaptersHi');
+
+    if (lang === 'en') {
+        if (enBox) enBox.style.display = 'block';
+        if (hiBox) hiBox.style.display = 'none';
     } else {
-      block.style.display = 'none';
+        if (enBox) enBox.style.display = 'none';
+        if (hiBox) hiBox.style.display = 'block';
     }
-  });
 
-  // Update active button
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.getAttribute('data-lang') === lang) {
-      btn.classList.add('active');
-    }
-  });
+    // Toggle active class on lang buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(lang === 'en' ? 'btnEn' : 'btnHi');
+    if (activeBtn) activeBtn.classList.add('active');
 
-  // Save preference
-  localStorage.setItem('preferredLang', lang);
+    // Reset to chapter 1 of the selected language
+    goToChapter(lang, 1);
 
-  // Update HTML lang attribute
-  document.documentElement.lang = lang === 'hi' ? 'hi' : 'en';
+    // Show toast
+    showToast(lang === 'en' ? '🇬🇧 English Mode' : '🗣️ Hinglish Mode');
+
+    // Save preference
+    try {
+        localStorage.setItem('autobioLang', lang);
+    } catch (e) {}
+}
+window.switchLang = switchLang;
+
+/* ============================================================
+   3. CHAPTER NAVIGATION
+   ============================================================ */
+function getChaptersContainer(lang) {
+    return document.getElementById(lang === 'en' ? 'chaptersEn' : 'chaptersHi');
 }
 
-/* ------------------------------------------
-   2. AUTO-LOAD SAVED LANGUAGE
------------------------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const savedLang = localStorage.getItem('preferredLang');
-  if (savedLang && savedLang !== 'en') {
-    setLang(savedLang);
-  }
-});
-
-/* ------------------------------------------
-   3. SCROLL ANIMATION (Fade-in chapters)
------------------------------------------- */
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: '0px 0px -80px 0px'
-};
-
-const chapterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-      chapterObserver.unobserve(entry.target);
-    }
-  });
-}, observerOptions);
-
-// Set initial state and observe all chapters
-document.addEventListener('DOMContentLoaded', () => {
-  const chapters = document.querySelectorAll('.chapter, .special-card, .timeline-point');
-  chapters.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    chapterObserver.observe(el);
-  });
-});
-
-/* ------------------------------------------
-   4. GALLERY LIGHTBOX
------------------------------------------- */
-function createLightbox() {
-  const lightbox = document.createElement('div');
-  lightbox.className = 'lightbox';
-  lightbox.innerHTML = `
-    <div class="lightbox-content">
-      <span class="lightbox-close">&times;</span>
-      <img src="" alt="Enlarged" class="lightbox-img">
-      <p class="lightbox-caption"></p>
-    </div>
-  `;
-  document.body.appendChild(lightbox);
-
-  // Close on click outside / close button
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  });
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  });
-
-  return lightbox;
+function getChapterElements(lang) {
+    const container = getChaptersContainer(lang);
+    if (!container) return [];
+    return Array.from(container.querySelectorAll('.chapter'));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const lightbox = createLightbox();
-  const lightboxImg = lightbox.querySelector('.lightbox-img');
-  const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+function goToChapter(lang, chapterNum) {
+    if (chapterNum < 1 || chapterNum > TOTAL_CHAPTERS) return;
 
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const img = item.querySelector('img');
-      const caption = item.querySelector('.gallery-caption');
+    currentLang = lang;
+    currentChapter = chapterNum;
 
-      if (img) {
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-        lightboxCaption.textContent = caption ? caption.textContent : '';
-        lightbox.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
+    const chapters = getChapterElements(lang);
+
+    // Hide all, show only the target
+    chapters.forEach((ch, idx) => {
+        if (idx === chapterNum - 1) {
+            ch.classList.add('active');
+        } else {
+            ch.classList.remove('active');
+        }
     });
-  });
+
+    // Update progress info
+    updateProgressInfo();
+
+    // Update progress dots
+    updateProgressDots();
+
+    // Scroll to top of the wrapper (smooth)
+    const wrapper = document.querySelector('.autobio-wrapper');
+    if (wrapper) {
+        const yOffset = -80; // navbar offset
+        const y = wrapper.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
+    // Save progress
+    try {
+        localStorage.setItem('autobioChapter', chapterNum);
+        localStorage.setItem('autobioLang', lang);
+    } catch (e) {}
+}
+window.goToChapter = goToChapter;
+
+function nextChapter(lang) {
+    const targetLang = lang || currentLang;
+    if (currentChapter < TOTAL_CHAPTERS) {
+        goToChapter(targetLang, currentChapter + 1);
+    }
+}
+window.nextChapter = nextChapter;
+
+function prevChapter(lang) {
+    const targetLang = lang || currentLang;
+    if (currentChapter > 1) {
+        goToChapter(targetLang, currentChapter - 1);
+    }
+}
+window.prevChapter = prevChapter;
+
+/* ============================================================
+   4. PROGRESS INFO UPDATE
+   ============================================================ */
+function updateProgressInfo() {
+    const numDisplay = document.getElementById('chapterNumDisplay');
+    const percentDisplay = document.getElementById('chapterPercentDisplay');
+
+    if (numDisplay) {
+        numDisplay.textContent = `Chapter ${currentChapter} of ${TOTAL_CHAPTERS}`;
+    }
+
+    if (percentDisplay) {
+        const percent = Math.round(((currentChapter - 1) / (TOTAL_CHAPTERS - 1)) * 100);
+        percentDisplay.textContent = `${percent}% complete`;
+    }
+}
+
+/* ============================================================
+   5. PROGRESS DOTS UPDATE
+   ============================================================ */
+function updateProgressDots() {
+    const dots = document.querySelectorAll('#progressDots .dot');
+    dots.forEach((dot, idx) => {
+        if (idx === currentChapter - 1) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+/* ============================================================
+   6. PROGRESS DOTS CLICK HANDLER
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    const dots = document.querySelectorAll('#progressDots .dot');
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            goToChapter(currentLang, idx + 1);
+        });
+    });
 });
 
-/* ------------------------------------------
-   5. SMOOTH SCROLL FOR COVER SCROLL INDICATOR
------------------------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const scrollIndicator = document.querySelector('.cover-scroll');
-  if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-      const firstChapter = document.querySelector('#chapter-1');
-      if (firstChapter) {
-        firstChapter.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-    scrollIndicator.style.cursor = 'pointer';
-  }
-});
-
-/* ------------------------------------------
-   6. KEYBOARD SHORTCUT — Press "L" to toggle language
-   (NOTE: Download eBook button handled by ebook.js)
------------------------------------------- */
+/* ============================================================
+   7. KEYBOARD NAVIGATION (Arrow keys)
+   ============================================================ */
 document.addEventListener('keydown', (e) => {
-  if ((e.key === 'l' || e.key === 'L') && !e.target.matches('input, textarea')) {
-    setLang(currentLang === 'en' ? 'hi' : 'en');
-  }
-});
+    // Ignore if typing in input/textarea
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
 
-/* ------------------------------------------
-   7. PARALLAX EFFECT ON COVER (Subtle)
------------------------------------------- */
-window.addEventListener('scroll', () => {
-  const coverContent = document.querySelector('.cover-content');
-  if (coverContent) {
-    const scrolled = window.pageYOffset;
-    if (scrolled < window.innerHeight) {
-      coverContent.style.transform = `translateY(${scrolled * 0.2}px)`;
-      coverContent.style.opacity = 1 - (scrolled / window.innerHeight) * 0.7;
+    // Ignore if modal or sidebar open
+    const modal = document.getElementById('downloadModal');
+    const sidebar = document.getElementById('sidebar');
+    if (modal && modal.classList.contains('active')) return;
+    if (sidebar && sidebar.classList.contains('open')) return;
+
+    if (e.key === 'ArrowRight') {
+        nextChapter(currentLang);
+    } else if (e.key === 'ArrowLeft') {
+        prevChapter(currentLang);
     }
-  }
 });
 
-/* ------------------------------------------
-   8. CONSOLE MESSAGE
------------------------------------------- */
-console.log('%c📖 Suraj Anand', 'font-size: 22px; color: #b8860b; font-weight: bold; font-family: Georgia;');
-console.log('%cA Boy Who Never Thought', 'font-size: 14px; color: #b0a890; font-style: italic; font-family: Georgia;');
-console.log('%cSafar se safar tak — गुंजते सन्नाटे', 'font-size: 14px; color: #8b6f47; font-family: Georgia;');
-console.log('%c💡 Tip: Press "L" to toggle language!', 'font-size: 12px; color: #b8860b;');
+/* ============================================================
+   8. GOOGLE TRANSLATE OPENER
+   ============================================================ */
+function openGoogleTranslate() {
+    const url = `https://translate.google.com/?sl=auto&tl=en&op=translate`;
+    window.open(url, '_blank', 'noopener');
+}
+window.openGoogleTranslate = openGoogleTranslate;
 
-/* ------------------------------------------
-   9. INIT ON LOAD
------------------------------------------- */
+/* ============================================================
+   9. DOWNLOAD MODAL
+   ============================================================ */
+function openModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+window.openModal = openModal;
+
+function closeModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+window.closeModal = closeModal;
+
+// Close modal on overlay click
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('✅ autobiography.js loaded successfully!');
-  console.log('📥 Download eBook handled by ebook.js');
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const m = document.getElementById('downloadModal');
+            if (m && m.classList.contains('active')) closeModal();
+        }
+    });
 });
+
+/* ============================================================
+   10. DOWNLOAD EBOOK HANDLERS (placeholder — ebook.js handles actual)
+   ============================================================ */
+function downloadEnglishEbook() {
+    if (typeof window.downloadEbook === 'function') {
+        window.downloadEbook('en');
+    } else {
+        showToast('📥 English eBook download starting...');
+        setTimeout(() => closeModal(), 800);
+    }
+}
+window.downloadEnglishEbook = downloadEnglishEbook;
+
+function downloadHinglishEbook() {
+    if (typeof window.downloadEbook === 'function') {
+        window.downloadEbook('hi');
+    } else {
+        showToast('📥 Hinglish eBook download starting...');
+        setTimeout(() => closeModal(), 800);
+    }
+}
+window.downloadHinglishEbook = downloadHinglishEbook;
+
+/* ============================================================
+   11. THEME TOGGLE (Top floating + Nav)
+   ============================================================ */
+function initThemeToggle() {
+    // Apply saved theme on load
+    let savedTheme = 'light';
+    try {
+        savedTheme = localStorage.getItem('theme') || 'light';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
+
+    // Attach handlers to all theme switches (top, nav, sidebar)
+    const switches = [
+        document.getElementById('themeSwitch'),
+        document.getElementById('themeSwitchNav'),
+        document.getElementById('themeSwitchSidebar')
+    ];
+
+    switches.forEach(sw => {
+        if (!sw) return;
+        sw.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTheme();
+        });
+        sw.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+    });
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme') || 'light';
+    const next = current === 'light' ? 'dark' : 'light';
+
+    html.setAttribute('data-theme', next);
+
+    try {
+        localStorage.setItem('theme', next);
+    } catch (e) {}
+
+    const label = document.getElementById('themeLabel');
+    if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
+
+    showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+}
+window.toggleTheme = toggleTheme;
+
+/* ============================================================
+   12. INITIALISE ON LOAD
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme
+    initThemeToggle();
+
+    // Restore language preference
+    let savedLang = 'en';
+    let savedChapter = 1;
+    try {
+        savedLang = localStorage.getItem('autobioLang') || 'en';
+        savedChapter = parseInt(localStorage.getItem('autobioChapter')) || 1;
+    } catch (e) {}
+
+    // Validate
+    if (savedLang !== 'en' && savedLang !== 'hi') savedLang = 'en';
+    if (isNaN(savedChapter) || savedChapter < 1 || savedChapter > TOTAL_CHAPTERS) {
+        savedChapter = 1;
+    }
+
+    // Apply
+    switchLang(savedLang);
+    goToChapter(savedLang, savedChapter);
+
+    console.log('✅ Autobiography.js loaded successfully — Chapter', savedChapter, 'in', savedLang);
+});
+
+/* ============================================================
+   13. EXPOSE GLOBALS FOR INLINE HANDLERS
+   ============================================================ */
+window.currentLang = currentLang;
+window.TOTAL_CHAPTERS = TOTAL_CHAPTERS;
