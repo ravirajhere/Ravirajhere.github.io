@@ -588,30 +588,169 @@ class EbookGenerator {
         return pages;
     }
 
+    // ========================================================
+    // ✅ getPageBuilders — with 4 new pages integrated
+    // ========================================================
     getPageBuilders(chapters, qrDataUrl) {
         const builders = [];
         const images = this.resources;
 
+        // ---- FRONT MATTER ----
         builders.push(async () => this.createCoverPage(images.cover));
         builders.push(async () => this.createTitlePage());
         builders.push(async () => this.createCopyrightPage());
         builders.push(async () => this.createDedicationPage());
         builders.push(async () => this.createEpigraphPage());
         builders.push(async () => this.createPrefacePage());
+        builders.push(async () => this.createAuthorsNotePage());       // 🆕 #1
         builders.push(async () => this.createAcknowledgementsPage());
         builders.push(async () => this.createTOCPage(chapters));
+        builders.push(async () => this.createHowToReadPage());          // 🆕 #2 (Book Map)
         builders.push(async () => this.createOverviewPage());
 
+        // ---- MAIN CONTENT ----
         chapters.forEach((ch, index) => {
             builders.push(async () => this.createChapterPage(ch, index));
         });
 
+        // ---- BACK MATTER ----
         builders.push(async () => this.createConclusionPage());
+        builders.push(async () => this.createStoryBehindTheStoryPage()); // 🆕 #3
         builders.push(async () => this.createAboutPage(images.author, qrDataUrl));
         builders.push(async () => this.createEmotionalPage(images.signature));
         builders.push(async () => this.createColophonPage());
+        builders.push(async () => this.createBlankPage());              // 🆕 #4
 
         return builders;
+    }
+
+    // ========================================================
+    // 🆕 NEW PAGE: Author's Note
+    // ========================================================
+    createAuthorsNotePage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 60px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+        `;
+        div.innerHTML = `
+            <div style="max-width:550px;margin:0 auto;width:100%;">
+                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Author's Note</h2>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">This book is not a work of fiction. Every name, every date, every memory is real. I wrote this for my parents, my sisters, my brothers, and for the boy I used to be.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">Some memories are painful. Some are joyful. But all of them are mine.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I have tried to be honest. I have tried to be kind. And I have tried to remember everything exactly as it happened — though memory, like all things, fades with time.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">If you find yourself in these pages, know that you mattered. You still do.</p>
+                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+            </div>
+        `;
+        return div;
+    }
+
+    // ========================================================
+    // 🆕 NEW PAGE: How to Read This Book (Book Map)
+    // ========================================================
+    createHowToReadPage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 50px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+        `;
+        div.innerHTML = `
+            <div style="max-width:580px;margin:0 auto;width:100%;">
+                <h2 style="font-size:26px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:8px;letter-spacing:2px;">How to Read This Book</h2>
+                <div style="width:50px;height:2px;background:#DAA520;margin:0 auto 20px auto;"></div>
+
+                <p style="font-size:13.5px;line-height:1.7;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:22px;font-weight:450;letter-spacing:0.2px;">This is a memoir — a true story of a boy from Begusarai, Bihar. It is divided into ten short chapters, each covering a specific year or phase of his life.</p>
+
+                <div style="background:#f8f8f8;border-radius:8px;padding:14px 18px;margin-bottom:14px;">
+                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 8px 0;font-weight:600;">Front Matter</p>
+                    <p style="font-size:12.5px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia',serif;margin:0;">Title &amp; Copyright · Dedication &amp; Epigraph · Preface · Author's Note · Acknowledgements · Table of Contents · How to Read This Book · Overview</p>
+                </div>
+
+                <div style="background:#fafafa;border:1px solid #ececec;border-radius:8px;padding:14px 18px;margin-bottom:14px;">
+                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 10px 0;font-weight:600;">The Story · Chapters 1–10</p>
+                    <table style="width:100%;border-collapse:collapse;font-family:'Lora','Georgia',serif;font-size:12.5px;line-height:1.6;color:#1a1a1a;">
+                        <tr><td style="padding:2px 0;">1.</td><td style="padding:2px 0;">The Beginning</td><td style="padding:2px 0;text-align:right;color:#888;">2008</td></tr>
+                        <tr><td style="padding:2px 0;">2.</td><td style="padding:2px 0;">A Loss &amp; A New Start</td><td style="padding:2px 0;text-align:right;color:#888;">2009</td></tr>
+                        <tr><td style="padding:2px 0;">3.</td><td style="padding:2px 0;">A Changing Home</td><td style="padding:2px 0;text-align:right;color:#888;">2010–12</td></tr>
+                        <tr><td style="padding:2px 0;">4.</td><td style="padding:2px 0;">First Steps into School</td><td style="padding:2px 0;text-align:right;color:#888;">2013</td></tr>
+                        <tr><td style="padding:2px 0;">5.</td><td style="padding:2px 0;">A House Divided</td><td style="padding:2px 0;text-align:right;color:#888;">2014–16</td></tr>
+                        <tr><td style="padding:2px 0;">6.</td><td style="padding:2px 0;">A Boy Called 'Suraj Bhaiya'</td><td style="padding:2px 0;text-align:right;color:#888;">2017</td></tr>
+                        <tr><td style="padding:2px 0;">7.</td><td style="padding:2px 0;">The Desire to Rise</td><td style="padding:2px 0;text-align:right;color:#888;">2018</td></tr>
+                        <tr><td style="padding:2px 0;">8.</td><td style="padding:2px 0;">A Dream Takes Shape</td><td style="padding:2px 0;text-align:right;color:#888;">2018–19</td></tr>
+                        <tr><td style="padding:2px 0;">9.</td><td style="padding:2px 0;">A Tribute &amp; A Farewell</td><td style="padding:2px 0;text-align:right;color:#888;">2019</td></tr>
+                        <tr><td style="padding:2px 0;">10.</td><td style="padding:2px 0;">Epilogue — To Be Continued…</td><td style="padding:2px 0;text-align:right;color:#888;">—</td></tr>
+                    </table>
+                </div>
+
+                <div style="background:#f8f8f8;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
+                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 8px 0;font-weight:600;">Back Matter</p>
+                    <p style="font-size:12.5px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia',serif;margin:0;">Conclusion · The Story Behind the Story · About the Author · A Note of Gratitude · Colophon</p>
+                </div>
+
+                <div style="width:50px;height:1px;background:#d0d0d0;margin:0 auto 14px auto;"></div>
+
+                <p style="font-family:'Playfair Display','Georgia',serif;font-style:italic;font-size:13px;color:#DAA520;text-align:center;line-height:1.7;margin:0;">Begin anywhere. Read slowly.<br>This story belongs to you now.</p>
+            </div>
+        `;
+        return div;
+    }
+
+    // ========================================================
+    // 🆕 NEW PAGE: The Story Behind the Story
+    // ========================================================
+    createStoryBehindTheStoryPage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 60px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+        `;
+        div.innerHTML = `
+            <div style="max-width:550px;margin:0 auto;width:100%;">
+                <h2 style="font-size:26px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">The Story Behind the Story</h2>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I didn't plan to write a book. I just started writing — one memory at a time. One evening. One cup of chai.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">It began as a school assignment. Then it became a diary. Then it became a way to understand myself.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I wrote about my childhood because I wanted to remember it. I wrote about my struggles because I wanted to survive them. And I wrote about my dreams because I still believe in them.</p>
+                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">This book is not the end. It is just the beginning of a longer conversation — with myself, and with you.</p>
+                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
+                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
+            </div>
+        `;
+        return div;
+    }
+
+    // ========================================================
+    // 🆕 NEW PAGE: Blank Page
+    // ========================================================
+    createBlankPage() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 60px 40px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            text-align: center;
+        `;
+        div.innerHTML = `
+            <p style="font-family:'Lora','Georgia',serif;font-size:12px;color:#bbbbbb;font-style:italic;letter-spacing:1px;">This page intentionally left blank.</p>
+        `;
+        return div;
     }
 
     createCoverPage(coverImage) {
@@ -847,7 +986,7 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // ✅ createChapterPage() — Textbook Style
+    // createChapterPage() — Textbook Style
     // - Left: Number circle (72px)
     // - Right: Chapter name + year (~ 2013)
     // - Full-width divider below
@@ -937,6 +1076,8 @@ class EbookGenerator {
                         flex-shrink: 0;
                         width: 72px;
                         height: 72px;
+                        min-width: 72px;
+                        min-height: 72px;
                         border-radius: 50%;
                         background: #f0f0f0;
                         display: flex;
@@ -944,14 +1085,22 @@ class EbookGenerator {
                         justify-content: center;
                         border: 3px solid #ffffff;
                         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        box-sizing: border-box;
                     ">
                         <span style="
                             font-family: 'Playfair Display', 'Georgia', serif;
-                            font-size: 38px;
+                            font-size: 36px;
                             font-weight: 800;
                             color: #1a1a1a;
                             line-height: 1;
                             letter-spacing: -1px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+                            height: 100%;
+                            margin: 0;
+                            padding: 0;
                         ">${chapterNum}</span>
                     </div>
 
@@ -1163,7 +1312,7 @@ class EbookGenerator {
                 </div>
                 <p style="font-size:18px;color:#DAA520;margin:6px 0 12px 0;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:14px;color:#666;font-family:'Lora','Georgia','Times New Roman',serif;">With love & gratitude ❤️</p>
+                <p style="font-size:14px;color:#666;font-family:'Lora','Georgia','Times New Roman',serif;">With love &amp; gratitude ❤️</p>
                 <p style="font-size:13px;color:#999;margin-top:6px;font-family:'Lora','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.author} · ${EBOOK_CONFIG.currentYear}</p>
                 <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Lora','Georgia','Times New Roman',serif;">📖 From ${EBOOK_CONFIG.birthplace} to the World</p>
             </div>
