@@ -7,7 +7,7 @@
 // CONFIGURATION
 // ============================================================
 const EBOOK_CONFIG = {
-    author: 'Ravi Raj',
+    author: 'Ravi Raj Singh',
     title: 'My Autobiography',
     subtitle: 'A Boy Who Never Thought',
     birthYear: 2008,
@@ -44,6 +44,43 @@ function numberToWord(num) {
     };
     return map[String(num)] || num;
 }
+
+// ============================================================
+// PDF PROGRESS PILL HELPERS
+// ============================================================
+function showPdfProgress(percent, label) {
+    const pill = document.getElementById('pdfProgressPill');
+    const text = document.getElementById('pdfPillText');
+    const pct = document.getElementById('pdfPillPercent');
+    const fill = document.getElementById('pdfPillFill');
+    
+    if (!pill) return;
+    
+    pill.classList.add('active');
+    
+    const p = Math.max(0, Math.min(100, Math.round(percent)));
+    
+    if (text && label) text.textContent = label;
+    if (pct) pct.textContent = p + '%';
+    if (fill) fill.style.width = p + '%';
+}
+
+function hidePdfProgress() {
+    const pill = document.getElementById('pdfProgressPill');
+    if (pill) pill.classList.remove('active');
+    
+    setTimeout(() => {
+        const pct = document.getElementById('pdfPillPercent');
+        const fill = document.getElementById('pdfPillFill');
+        const text = document.getElementById('pdfPillText');
+        if (pct) pct.textContent = '0%';
+        if (fill) fill.style.width = '0%';
+        if (text) text.textContent = 'Generating PDF';
+    }, 400);
+}
+
+window.showPdfProgress = showPdfProgress;
+window.hidePdfProgress = hidePdfProgress;
 
 // ============================================================
 // 1. TOAST MANAGER
@@ -210,9 +247,7 @@ class LibraryLoader {
 
         const toLoad = libraries.filter((_, i) => !loaded[i]);
         
-        if (toLoad.length === 0) {
-            return true;
-        }
+        if (toLoad.length === 0) return true;
 
         for (const src of toLoad) {
             await this.loadScript(src);
@@ -276,31 +311,16 @@ class QRGenerator {
 // 6. APPLY PROFESSIONAL BOOK STYLES (PDF CLEAN VERSION)
 // ============================================================
 function applyProfessionalBookStyles(clone, isPdfMode = true) {
-    // ---- ALL PARAGRAPHS ----
+    // ---- ALL PARAGRAPHS (compact for PDF) ----
     clone.querySelectorAll('.chapter p').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '15px';
-        el.style.lineHeight = '1.7';
+        el.style.fontSize = '12.5px';
+        el.style.lineHeight = '1.6';
         el.style.textAlign = 'justify';
-        el.style.marginBottom = '14px';
+        el.style.marginBottom = '8px';
         el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.3px';
-        el.style.textShadow = '0 0 1px rgba(0,0,0,0.05)';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- CHAPTER HEADINGS ----
-    clone.querySelectorAll('.chapter h3').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '26px';
-        el.style.fontWeight = '700';
-        el.style.textAlign = 'center';
-        el.style.marginTop = '0';
-        el.style.marginBottom = '10px';
-        el.style.letterSpacing = '2px';
-        el.style.lineHeight = '1.3';
+        el.style.letterSpacing = '0.2px';
         if (isPdfMode) el.style.background = 'transparent';
     });
     
@@ -316,26 +336,27 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
     clone.querySelectorAll('.chapter ul li').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '15px';
-        el.style.lineHeight = '1.7';
-        el.style.marginBottom = '6px';
+        el.style.fontSize = '12.5px';
+        el.style.lineHeight = '1.6';
+        el.style.marginBottom = '5px';
         el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.3px';
+        el.style.letterSpacing = '0.2px';
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // ---- QUOTES ----
+    // ---- QUOTES (compact) ----
     clone.querySelectorAll('.quote-box').forEach(el => {
         el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '19px';
-        el.style.lineHeight = '1.6';
+        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
+        el.style.fontSize = '13px';
+        el.style.lineHeight = '1.5';
         el.style.fontStyle = 'italic';
-        el.style.borderLeft = '4px solid #DAA520';
-        el.style.padding = '18px 24px';
-        el.style.margin = '20px 0';
+        el.style.borderLeft = '3px solid #DAA520';
+        el.style.padding = '12px 18px';
+        el.style.margin = '12px 0';
         el.style.fontWeight = '400';
         el.style.letterSpacing = '0.3px';
+        el.style.textAlign = 'center';
         if (isPdfMode) el.style.background = 'transparent';
     });
     
@@ -344,7 +365,8 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontWeight = '600';
         el.style.fontStyle = 'normal';
         el.style.textAlign = 'right';
-        el.style.marginTop = '8px';
+        el.style.marginTop = '6px';
+        el.style.fontSize = '11px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.5px';
         if (isPdfMode) el.style.background = 'transparent';
@@ -361,7 +383,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
     
     clone.querySelectorAll('.family-item .label').forEach(el => {
         el.style.color = '#999999';
-        el.style.fontSize = '12px';
+        el.style.fontSize = '11px';
         el.style.textTransform = 'uppercase';
         el.style.letterSpacing = '0.8px';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
@@ -371,7 +393,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
     
     clone.querySelectorAll('.family-item .value').forEach(el => {
         el.style.color = '#000000';
-        el.style.fontSize = '15px';
+        el.style.fontSize = '12.5px';
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.3px';
@@ -391,12 +413,12 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
             el.style.borderRadius = '8px';
             el.style.padding = '20px 24px';
         }
-        el.style.margin = '18px 0';
+        el.style.margin = '14px 0';
     });
     
     clone.querySelectorAll('.teacher-tribute h4').forEach(el => {
         el.style.color = '#DAA520';
-        el.style.fontSize = '17px';
+        el.style.fontSize = '14px';
         el.style.fontWeight = '600';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
         el.style.letterSpacing = '0.5px';
@@ -405,8 +427,8 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
     
     clone.querySelectorAll('.teacher-tribute p').forEach(el => {
         el.style.color = '#1a1a1a';
-        el.style.fontSize = '15px';
-        el.style.lineHeight = '1.7';
+        el.style.fontSize = '12.5px';
+        el.style.lineHeight = '1.6';
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
@@ -419,7 +441,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
         el.style.fontWeight = '450';
         el.style.letterSpacing = '0.3px';
-        el.style.lineHeight = '1.7';
+        el.style.lineHeight = '1.6';
         if (isPdfMode) {
             el.style.background = 'transparent';
             el.style.border = 'none';
@@ -431,7 +453,7 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
             el.style.borderRadius = '8px';
             el.style.padding = '24px 28px';
         }
-        el.style.margin = '24px 0';
+        el.style.margin = '14px 0';
     });
     
     clone.querySelectorAll('.friend-memory-pdf strong').forEach(el => {
@@ -457,20 +479,20 @@ class EbookGenerator {
     }
 
     async generate(lang, langLabel) {
-        if (this.isGenerating) {
-            // Silent — no toast
-            return;
-        }
+        if (this.isGenerating) return;
 
         this.isGenerating = true;
         this.cancelled = false;
         this.currentPage = 0;
 
+        // ✅ Show progress pill
+        showPdfProgress(0, 'Preparing...');
+
         try {
-            // ✅ Silent background processing — no toasts, no DOM changes
             this.resources = await ResourceValidator.validateAllImages();
-            
             await LibraryLoader.loadAll();
+
+            showPdfProgress(5, 'Building pages...');
 
             const content = this.getContent(lang);
             if (!content) {
@@ -480,7 +502,11 @@ class EbookGenerator {
             this.pages = await this.buildPages(content, lang);
             this.totalPages = this.pages.length;
 
+            showPdfProgress(40, 'Rendering PDF...');
+
             await this.generatePDF(langLabel);
+
+            showPdfProgress(100, 'Saving...');
 
             const filename = `My_Autobiography_${EBOOK_CONFIG.author.replace(/\s/g, '_')}_${langLabel}.pdf`;
             this.pdf.save(filename);
@@ -491,15 +517,14 @@ class EbookGenerator {
             toast.error(`Failed: ${error.message}`);
         } finally {
             this.isGenerating = false;
+            // ✅ Hide progress pill (after short delay)
+            setTimeout(() => hidePdfProgress(), 800);
             this.cleanup();
         }
     }
 
     // ========================================================
-    // ✅ FIXED: getContent()
-    // - Doesn't touch actual DOM anymore
-    // - Only clones wrapper and prepares cloned chapters
-    // - Screen pe kuch bhi show nahi hoga
+    // ✅ getContent() — Silent, no DOM touch
     // ========================================================
     getContent(lang) {
         const wrapper = document.querySelector('.autobio-wrapper');
@@ -511,15 +536,12 @@ class EbookGenerator {
         const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
         const otherId = lang === 'en' ? 'chaptersHi' : 'chaptersEn';
 
-        // In the clone: hide the other language, show current language
         const clonedCurrent = clonedWrapper.querySelector('#' + containerId);
         const clonedOther = clonedWrapper.querySelector('#' + otherId);
 
         if (clonedCurrent) clonedCurrent.style.display = 'block';
         if (clonedOther) clonedOther.style.display = 'none';
 
-        // In the clone: make all chapters inside the current container "visible"
-        // so the PDF builder can access them one by one
         let clonedChapters = [];
         if (clonedCurrent) {
             clonedChapters = clonedCurrent.querySelectorAll('.chapter');
@@ -543,11 +565,9 @@ class EbookGenerator {
 
         this.cleanClone(clone);
 
-        // Get chapters from the already-prepared clone
         const cloneContainer = clone.querySelector('#' + containerId);
         const cloneChapters = cloneContainer ? cloneContainer.querySelectorAll('.chapter') : [];
 
-        // PDF Mode = true (background transparent)
         applyProfessionalBookStyles(clone, true);
 
         const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
@@ -827,12 +847,13 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // createChapterPage() — formal book style
-    // - Photo chhota (170x170, 1:1)
-    // - Photo content ke neeche
-    // - Chapter number + name + year
+    // ✅ createChapterPage() — Textbook Style
+    // - Left: Number circle (72px)
+    // - Right: Chapter name + year (~ 2013)
+    // - Full-width divider below
+    // - Content: 12.5px justify
+    // - Photo: content ke neeche (1:1, 170x170)
     // - Page number bottom center
-    // - No drop cap, no quotes, no section breaks, no footnotes
     // ========================================================
     createChapterPage(chapter, index) {
         const div = document.createElement('div');
@@ -855,31 +876,36 @@ class EbookGenerator {
         let fullTitle = h3 ? h3.textContent.trim() : `Chapter ${index + 1}`;
         fullTitle = fullTitle.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
 
-        let chapterWord = '';
+        let chapterNum = index + 1;
         let chapterName = fullTitle;
         let chapterYear = '';
 
+        // Extract year
         const yearMatch = fullTitle.match(/\((\d{4}(?:[–-]\d{4})?)\)/);
         if (yearMatch) {
             chapterYear = yearMatch[1];
             chapterName = chapterName.replace(yearMatch[0], '').trim();
         }
 
+        // Extract chapter number + name
         const chapterMatch = chapterName.match(/^Chapter\s+(\d+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|Thirteen)[:\s-]+(.*)$/i);
         if (chapterMatch) {
             const num = chapterMatch[1];
+            const numMap = {
+                'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+                'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+                'eleven': 11, 'twelve': 12, 'thirteen': 13
+            };
+            chapterNum = parseInt(num) || numMap[String(num).toLowerCase()] || (index + 1);
             chapterName = chapterMatch[2].trim();
-            chapterWord = 'Chapter ' + numberToWord(num);
         } else if (/^Epilogue/i.test(chapterName)) {
             chapterName = chapterName.replace(/^Epilogue[:\s-]*/i, '').trim() || 'To Be Continued...';
-            chapterWord = 'Epilogue';
-        } else {
-            chapterWord = '';
-            chapterName = chapterName.trim();
+            chapterNum = 'E';
         }
 
         if (h3) h3.remove();
 
+        // Extract photo
         const photoPlaceholder = clone.querySelector('.chapter-photo-placeholder');
         let photoHTML = '';
         if (photoPlaceholder) {
@@ -887,9 +913,9 @@ class EbookGenerator {
             if (img) {
                 const src = img.getAttribute('src');
                 photoHTML = `
-                    <div style="text-align:center;margin:22px auto 0 auto;">
+                    <div style="text-align:center;margin:24px auto 0 auto;">
                         <img src="${src}" 
-                             style="width:170px;height:170px;object-fit:cover;border-radius:6px;border:1px solid #e8e8e8;display:block;margin:0 auto;"
+                             style="width:170px;height:170px;object-fit:cover;border-radius:6px;border:1px solid #e0e0e0;display:block;margin:0 auto;"
                              crossorigin="anonymous">
                     </div>
                 `;
@@ -897,44 +923,67 @@ class EbookGenerator {
             photoPlaceholder.remove();
         }
 
+        // ===== Textbook-style header with ROW layout =====
         const headerHTML = `
-            <div style="text-align:center;margin-bottom:20px;">
-                ${chapterWord ? `
-                    <p style="
-                        font-family: 'Playfair Display', 'Georgia', serif;
-                        font-size: 11px;
-                        letter-spacing: 4px;
-                        color: #999999;
-                        text-transform: uppercase;
-                        margin: 0 0 10px 0;
-                        font-weight: 500;
-                    ">${chapterWord}</p>
-                ` : ''}
-                <h2 style="
-                    font-family: 'Playfair Display', 'Georgia', serif;
-                    font-size: 22px;
-                    font-weight: 700;
-                    color: #000000;
-                    margin: 0;
-                    letter-spacing: 1px;
-                    line-height: 1.3;
-                    text-transform: capitalize;
-                ">${chapterName}</h2>
-                ${chapterYear ? `
-                    <p style="
-                        font-family: 'Lora', 'Georgia', serif;
-                        font-size: 12px;
-                        color: #DAA520;
-                        font-style: italic;
-                        margin: 6px 0 0 0;
-                        letter-spacing: 1.5px;
-                    ">${chapterYear}</p>
-                ` : ''}
+            <div style="margin-bottom:24px;">
                 <div style="
-                    width: 45px;
-                    height: 1.5px;
-                    background: #DAA520;
-                    margin: 12px auto 0 auto;
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    margin-bottom: 16px;
+                ">
+                    <!-- Big number circle (left) -->
+                    <div style="
+                        flex-shrink: 0;
+                        width: 72px;
+                        height: 72px;
+                        border-radius: 50%;
+                        background: #f0f0f0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: 3px solid #ffffff;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    ">
+                        <span style="
+                            font-family: 'Playfair Display', 'Georgia', serif;
+                            font-size: 38px;
+                            font-weight: 800;
+                            color: #1a1a1a;
+                            line-height: 1;
+                            letter-spacing: -1px;
+                        ">${chapterNum}</span>
+                    </div>
+
+                    <!-- Title + year (right) -->
+                    <div style="flex: 1;">
+                        <h2 style="
+                            font-family: 'Playfair Display', 'Georgia', serif;
+                            font-size: 24px;
+                            font-weight: 700;
+                            color: #000000;
+                            margin: 0;
+                            letter-spacing: 0.5px;
+                            line-height: 1.25;
+                        ">${chapterName}</h2>
+                        ${chapterYear ? `
+                            <p style="
+                                font-family: 'Lora', 'Georgia', serif;
+                                font-size: 13px;
+                                color: #888888;
+                                font-style: italic;
+                                margin: 4px 0 0 0;
+                                letter-spacing: 1px;
+                            ">~ ${chapterYear}</p>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <!-- Full-width divider -->
+                <div style="
+                    width: 100%;
+                    height: 1px;
+                    background: #d0d0d0;
                 "></div>
             </div>
         `;
@@ -965,31 +1014,32 @@ class EbookGenerator {
         });
 
         clone.querySelectorAll('.quote-box').forEach(el => {
-            el.style.padding = '12px 18px';
+            el.style.padding = '10px 16px';
             el.style.margin = '12px 0';
             el.style.fontSize = '13px';
             el.style.fontStyle = 'italic';
-            el.style.borderLeft = '3px solid #DAA520';
-            el.style.background = 'transparent';
-            el.style.textAlign = 'center';
-            el.style.fontFamily = "'Playfair Display', 'Georgia', serif";
+            el.style.borderLeft = '3px solid #1a1a1a';
+            el.style.background = '#f8f8f8';
+            el.style.textAlign = 'left';
+            el.style.fontFamily = "'Lora', 'Georgia', serif";
             el.style.lineHeight = '1.5';
+            el.style.borderRadius = '4px';
         });
 
         clone.querySelectorAll('.quote-box .author').forEach(el => {
             el.style.fontSize = '11px';
             el.style.marginTop = '6px';
-            el.style.color = '#DAA520';
+            el.style.color = '#666';
             el.style.fontStyle = 'normal';
             el.style.textAlign = 'right';
         });
 
         clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
-            el.style.padding = '12px 14px';
+            el.style.padding = '10px 14px';
             el.style.margin = '12px 0';
-            el.style.background = 'transparent';
-            el.style.border = 'none';
-            el.style.borderRadius = '0';
+            el.style.background = '#f8f8f8';
+            el.style.border = '1px solid #e8e8e8';
+            el.style.borderRadius = '6px';
         });
 
         clone.querySelectorAll('.pdf-label').forEach(el => el.remove());
@@ -1075,7 +1125,7 @@ class EbookGenerator {
                 <p style="font-size:22px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:4px 0;">${EBOOK_CONFIG.author}</p>
                 <p style="font-size:15px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
                 <div style="max-width:500px;margin:0 auto;">
-                    <p style="font-size:15px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">${EBOOK_CONFIG.author} was born on 13 March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
+                    <p style="font-size:15px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">${EBOOK_CONFIG.author} was born in March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
                 </div>
                 <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
                 <p style="font-size:16px;font-style:italic;color:#6c5ce7;font-family:'Lora','Georgia','Times New Roman',serif;">"Somewhere Between I Want It & I Got It"</p>
@@ -1153,7 +1203,8 @@ class EbookGenerator {
         const removeSelectors = [
             '.lang-controls', '.download-actions', '.nav-buttons', 
             '.progress-dots', '.chapter-progress-info', '.copy-link-btn',
-            '.back-to-top', '.reading-mode-toggle', '.toast', '.modal-overlay'
+            '.back-to-top', '.reading-mode-toggle', '.toast', '.modal-overlay',
+            '.pdf-progress-pill', '.theme-toggle-wrapper'
         ];
         removeSelectors.forEach(selector => {
             clone.querySelectorAll(selector).forEach(el => el.remove());
@@ -1272,14 +1323,15 @@ class EbookGenerator {
         const progressBar = document.querySelector('.progress-bar');
         const progressText = document.querySelector('.progress-text');
         
-        if (progressBar) {
-            progressBar.style.width = Math.min(100, percent || 
-                Math.round((this.currentPage / this.totalPages) * 100)) + '%';
-        }
-        if (progressText) {
-            progressText.textContent = `${Math.min(100, percent || 
-                Math.round((this.currentPage / this.totalPages) * 100))}%`;
-        }
+        const p = Math.min(100, percent || 
+            Math.round((this.currentPage / this.totalPages) * 100));
+        
+        if (progressBar) progressBar.style.width = p + '%';
+        if (progressText) progressText.textContent = `${p}%`;
+
+        // ✅ Update floating pill (map 0-100 → 40-100)
+        const visualPercent = 40 + Math.round((p / 100) * 60);
+        showPdfProgress(visualPercent, 'Generating PDF');
     }
 
     cleanup() {
@@ -1296,6 +1348,7 @@ class EbookGenerator {
         this.cancelled = true;
         this.isGenerating = false;
         toast.warning('Generation cancelled');
+        hidePdfProgress();
         this.cleanup();
     }
 }
@@ -1330,12 +1383,8 @@ window.closeModal = function() {
 // ============================================================
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        if (modal.isOpen) {
-            modal.close();
-        }
-        if (ebookGenerator.isGenerating) {
-            ebookGenerator.cancel();
-        }
+        if (modal.isOpen) modal.close();
+        if (ebookGenerator.isGenerating) ebookGenerator.cancel();
     }
 });
 
