@@ -667,7 +667,35 @@
   </footer>
 
 
-  <!-- JS File -->
+  <!-- ============================================
+       TOAST NOTIFICATION (EBOOK)
+  ============================================= -->
+  <div id="toast" class="toast"></div>
+
+
+  <!-- ============================================
+       DOWNLOAD MODAL (EBOOK)
+  ============================================= -->
+  <div id="downloadModal" class="modal-overlay">
+    <div class="modal-box">
+      <span class="modal-close" onclick="closeDownloadModal()">&times;</span>
+      <h3 data-en="Download eBook" data-hi="eBook Download Karein">Download eBook</h3>
+      <p data-en="Choose your language:" data-hi="Apni bhasha chunein:">Choose your language:</p>
+      <div class="modal-buttons">
+        <button id="modalDownloadEn" class="btn-primary">📖 English</button>
+        <button id="modalDownloadHi" class="btn-secondary">📖 Hinglish</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================
+       PROGRESS CONTAINER (EBOOK)
+  ============================================= -->
+  <div class="progress-container" style="display:none;"></div>
+
+
+  <!-- JS Files -->
   <script src="js/autobiography.js"></script>
   <script src="js/ebook.js"></script>
 </body>
