@@ -2,6 +2,7 @@
 // SCRIPT.JS — Ravi Raj Portfolio
 // Handles: Loader · Theme · Sidebar · Cursor · Interests
 //          Stats · Typing · Active-link · Toast · Time · Top
+//          Thoughts (Expandable Blog Cards)
 // ============================================================
 
 (function () {
@@ -325,7 +326,7 @@
         })();
 
         // Hover state on interactive elements
-        const hoverTargets = 'a, button, .interest-card, .milestone-card, .switch, .project-card';
+        const hoverTargets = 'a, button, .interest-card, .milestone-card, .switch, .project-card, .thought-card, .thought-featured';
         $$(hoverTargets).forEach((el) => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -366,7 +367,7 @@
     // 16. FADE-IN ON SCROLL — Sections & Cards
     // ============================================================
     if ('IntersectionObserver' in window) {
-        const revealTargets = $$('.section-block, .stat-card, .project-card, .article-card, .milestone-card');
+        const revealTargets = $$('.section-block, .stat-card, .project-card, .article-card, .milestone-card, .thought-card, .thought-featured');
         revealTargets.forEach((el) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(24px)';
@@ -386,7 +387,50 @@
     }
 
     // ============================================================
-    // 17. EASTER EGG — Console Welcome
+    // 17. MY THOUGHTS — Expandable blog cards
+    //     Click anywhere on card to toggle. Accordion behavior.
+    // ============================================================
+    window.toggleThought = function (id) {
+        const content = document.getElementById(id);
+        if (!content) return;
+
+        const card = content.closest('.thought-featured, .thought-card');
+        if (!card) return;
+
+        const isOpen = card.classList.contains('expanded');
+
+        // Close all other expanded cards first (accordion)
+        $$('.thought-featured.expanded, .thought-card.expanded').forEach((other) => {
+            if (other === card) return;
+            other.classList.remove('expanded');
+            const otherToggle = $('.thought-toggle', other);
+            if (otherToggle && otherToggle.firstChild) {
+                otherToggle.firstChild.nodeValue = 'Read Full Thought ';
+            }
+        });
+
+        // Toggle current card
+        card.classList.toggle('expanded', !isOpen);
+
+        // Update toggle text (only the leading text node, keep the icon)
+        const toggle = $('.thought-toggle', card);
+        if (toggle && toggle.firstChild) {
+            toggle.firstChild.nodeValue = isOpen
+                ? 'Read Full Thought '
+                : 'Close Thought ';
+        }
+
+        // Smooth-scroll to card if it just opened
+        if (!isOpen) {
+            setTimeout(() => {
+                const top = card.getBoundingClientRect().top + window.scrollY - 90;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }, 280);
+        }
+    };
+
+    // ============================================================
+    // 18. EASTER EGG — Console Welcome
     // ============================================================
     const gold = 'color:#d4a373;font-weight:600;';
     const cream = 'color:#f5ede4;';
