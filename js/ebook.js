@@ -1,5 +1,6 @@
 // ============================================================
-// EBOOK.JS — UPDATED FOR SURAJ ANAND'S AUTOBIOGRAPHY
+// EBOOK.JS — FINAL FIXED VERSION
+// Mobile + Desktop Compatible
 // (A Boy Who Never Thought — Safar se safar tak — गुंजते सन्नाटे)
 // ============================================================
 
@@ -20,7 +21,7 @@ const EBOOK_CONFIG = {
         signature: 'images/signature.jpg'
     },
     qr: {
-        url: 'https://surajanand.github.io',
+        url: 'https://ravirajhere.github.io',
         size: 120
     },
     pdf: {
@@ -28,7 +29,7 @@ const EBOOK_CONFIG = {
         quality: 0.85,
         format: 'a4',
         margin: 15,
-        batchSize: 3
+        batchSize: 2
     }
 };
 
@@ -94,7 +95,6 @@ class ModalManager {
 
     open() {
         if (!this.modal) {
-            // Agar modal nahi hai, toh direct English PDF generate karo
             console.warn('Modal not found, generating English PDF directly...');
             window.downloadEbook('en');
             return;
@@ -128,23 +128,19 @@ class ResourceValidator {
                 canvas.height = 800;
                 const ctx = canvas.getContext('2d');
                 
-                // Cream background (book feel)
                 ctx.fillStyle = '#fdfbf5';
                 ctx.fillRect(0, 0, 600, 800);
                 
-                // Gold border
                 ctx.strokeStyle = '#b8860b';
                 ctx.lineWidth = 3;
                 ctx.strokeRect(30, 30, 540, 740);
                 
-                // Title
                 ctx.fillStyle = '#1a1a1a';
                 ctx.font = 'bold 32px Georgia, serif';
                 ctx.textAlign = 'center';
                 ctx.fillText('A BOY WHO', 300, 350);
                 ctx.fillText('NEVER THOUGHT', 300, 400);
                 
-                // Author
                 ctx.fillStyle = '#b8860b';
                 ctx.font = '24px Georgia, serif';
                 ctx.fillText('Suraj Anand', 300, 480);
@@ -253,7 +249,6 @@ class QRGenerator {
 // 6. APPLY PROFESSIONAL BOOK STYLES
 // ============================================================
 function applyProfessionalBookStyles(clone, isPdfMode = true) {
-    // Paragraphs
     clone.querySelectorAll('.chapter-content p, .chapter p').forEach(el => {
         el.style.color = '#1a1a1a';
         el.style.fontFamily = "'EB Garamond', 'Georgia', 'Times New Roman', serif";
@@ -266,7 +261,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Chapter Titles (h2)
     clone.querySelectorAll('.chapter-title, .chapter h2').forEach(el => {
         el.style.color = '#000000';
         el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
@@ -280,7 +274,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Chapter Number
     clone.querySelectorAll('.chapter-number').forEach(el => {
         el.style.color = '#8b6f47';
         el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
@@ -293,7 +286,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Chapter Year
     clone.querySelectorAll('.chapter-year').forEach(el => {
         el.style.color = '#6a6a6a';
         el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
@@ -305,7 +297,6 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Chapter Header
     clone.querySelectorAll('.chapter-header').forEach(el => {
         el.style.textAlign = 'center';
         el.style.marginBottom = '40px';
@@ -314,14 +305,12 @@ function applyProfessionalBookStyles(clone, isPdfMode = true) {
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Strong
     clone.querySelectorAll('.chapter-content strong, .chapter strong').forEach(el => {
         el.style.color = '#000000';
         el.style.fontWeight = '700';
         if (isPdfMode) el.style.background = 'transparent';
     });
     
-    // Em (quotes)
     clone.querySelectorAll('.chapter-content em, .chapter em').forEach(el => {
         el.style.color = '#5c4a2e';
         el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
@@ -377,10 +366,34 @@ class EbookGenerator {
             toast.info(`Generating PDF (${this.totalPages} pages)...`);
             await this.generatePDF(langLabel);
 
+            // ✅ MOBILE + DESKTOP FRIENDLY DOWNLOAD
             const filename = `A_Boy_Who_Never_Thought_Suraj_Anand_${langLabel}.pdf`;
-            this.pdf.save(filename);
-            
-            toast.success(`${langLabel} ebook downloaded successfully!`);
+            const pdfBlob = this.pdf.output('blob');
+            const blobUrl = URL.createObjectURL(pdfBlob);
+
+            // Method 1: Standard download
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+            try {
+                link.click();
+                toast.success(`${langLabel} ebook downloaded successfully!`);
+            } catch (e) {
+                console.warn('Download click failed, trying fallback...', e);
+                // Method 2: Fallback — new tab
+                window.open(blobUrl, '_blank');
+                toast.info('PDF opened in new tab. Save it from there.');
+            }
+
+            // Cleanup
+            setTimeout(() => {
+                if (link.parentNode) document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+            }, 5000);
+
         } catch (error) {
             console.error('Ebook generation failed:', error);
             toast.error(`Failed: ${error.message}`);
@@ -391,14 +404,12 @@ class EbookGenerator {
     }
 
     getContent(lang) {
-        // Aapke naye HTML mein: .book-body > .chapter
         const bookBody = document.querySelector('.book-body');
         if (!bookBody) {
             console.error('book-body not found');
             return null;
         }
 
-        // Saare chapters nikaalo (epilogue bhi include karo)
         const chapters = bookBody.querySelectorAll('.chapter');
         if (!chapters.length) {
             console.error('No chapters found');
@@ -418,7 +429,6 @@ class EbookGenerator {
 
         this.cleanClone(clone);
 
-        // Chapters ko filter karo language ke hisaab se
         const cloneChapters = [];
         const originalChapters = document.querySelectorAll('.book-body .chapter');
 
@@ -426,8 +436,6 @@ class EbookGenerator {
             const cloneCh = clone.querySelectorAll('.chapter')[idx];
             if (!cloneCh) return;
 
-            // Har chapter ke andar dono language blocks hain
-            // Sahi language wala dikhao, dusra hataao
             cloneCh.querySelectorAll('[data-lang-content]').forEach(block => {
                 if (block.getAttribute('data-lang-content') === lang) {
                     block.style.display = 'block';
@@ -439,16 +447,13 @@ class EbookGenerator {
             cloneChapters.push(cloneCh);
         });
 
-        // Apply PDF styles
         applyProfessionalBookStyles(clone, true);
 
         const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
         const images = this.resources;
 
-        // Page builders
         const pageBuilders = [];
 
-        // Front matter
         pageBuilders.push(async () => this.createCoverPage(images.cover));
         pageBuilders.push(async () => this.createTitlePage());
         pageBuilders.push(async () => this.createCopyrightPage());
@@ -458,18 +463,15 @@ class EbookGenerator {
         pageBuilders.push(async () => this.createAcknowledgementsPage());
         pageBuilders.push(async () => this.createTOCPage(cloneChapters));
 
-        // Chapters
         cloneChapters.forEach((ch, index) => {
             pageBuilders.push(async () => this.createChapterPage(ch, index, lang));
         });
 
-        // Back matter
         pageBuilders.push(async () => this.createConclusionPage());
         pageBuilders.push(async () => this.createAboutPage(images.author, qrDataUrl));
         pageBuilders.push(async () => this.createEmotionalPage(images.signature));
         pageBuilders.push(async () => this.createColophonPage());
 
-        // Build each page
         for (const builder of pageBuilders) {
             if (this.cancelled) break;
             const page = await builder();
@@ -623,7 +625,6 @@ class EbookGenerator {
         
         const clone = chapter.cloneNode(true);
         
-        // Drop Cap
         const firstP = clone.querySelector('.chapter-content p');
         if (firstP && firstP.textContent.trim().length > 0) {
             const text = firstP.textContent;
@@ -632,7 +633,6 @@ class EbookGenerator {
             firstP.innerHTML = `<span style="font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:600;color:#b8860b;float:left;line-height:1;margin-right:6px;margin-top:2px;">${firstChar}</span>${restText}`;
         }
         
-        // Chapter Opening Quote
         const heading = clone.querySelector('.chapter-title, h2');
         if (heading) {
             const quotes = [
@@ -659,7 +659,6 @@ class EbookGenerator {
             }
         }
         
-        // Section Break
         const paragraphs = clone.querySelectorAll('.chapter-content p');
         if (paragraphs.length > 4) {
             const midPoint = Math.floor(paragraphs.length / 2);
@@ -811,7 +810,7 @@ class EbookGenerator {
         const contentHeight = pageHeight - (margin * 2);
 
         let isFirstPage = true;
-        const batchSize = config.batchSize || 3;
+        const batchSize = config.batchSize || 2;
 
         for (let i = 0; i < this.pages.length; i += batchSize) {
             if (this.cancelled) break;
@@ -943,7 +942,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Modal buttons
     const modalEn = document.getElementById('modalDownloadEn');
     const modalHi = document.getElementById('modalDownloadHi');
     
