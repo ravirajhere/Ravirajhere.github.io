@@ -2,7 +2,7 @@
 // SCRIPT.JS — Ravi Raj Portfolio
 // Handles: Loader · Theme · Sidebar · Cursor · Interests
 //          Stats · Typing · Active-link · Toast · Time · Top
-//          Thoughts (Expandable Blog Cards)
+//          Thoughts · Blog Archive · Raw Diary Entries
 // ============================================================
 
 (function () {
@@ -20,7 +20,6 @@
     const loader = $('#loader');
     if (loader) {
         const hideLoader = () => {
-            // Small delay for perceived smoothness
             setTimeout(() => loader.classList.add('hidden'), 350);
         };
         if (document.readyState === 'complete') {
@@ -28,7 +27,6 @@
         } else {
             window.addEventListener('load', hideLoader);
         }
-        // Safety fallback (in case 'load' never fires)
         setTimeout(() => loader.classList.add('hidden'), 3000);
     }
 
@@ -39,14 +37,12 @@
     const THEME_KEY = 'raviraj-theme';
     const themeSwitch = $('#themeSwitchNav');
 
-    // Restore saved theme
     const savedTheme = (() => {
         try { return localStorage.getItem(THEME_KEY); } catch { return null; }
     })();
     if (savedTheme === 'light' || savedTheme === 'dark') {
         root.setAttribute('data-theme', savedTheme);
     } else {
-        // Default = dark
         root.setAttribute('data-theme', 'dark');
     }
 
@@ -62,7 +58,6 @@
 
     if (themeSwitch) {
         themeSwitch.addEventListener('click', toggleTheme);
-        // Keyboard accessibility
         themeSwitch.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -100,14 +95,12 @@
     sidebarOverlay?.addEventListener('click', closeSidebar);
     sidebarClose?.addEventListener('click', closeSidebar);
 
-    // ESC key closes sidebar
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && sidebar?.classList.contains('open')) {
             closeSidebar();
         }
     });
 
-    // Close sidebar when any menu link is clicked (for smooth scroll)
     $$('.sidebar-menu a').forEach((link) => {
         link.addEventListener('click', () => {
             setTimeout(closeSidebar, 250);
@@ -158,7 +151,6 @@
 
     // ============================================================
     // 6. INTEREST CARDS — Expand / Collapse
-    //    Uses .revealed class (matches new CSS transition)
     // ============================================================
     window.revealInterest = function (id) {
         const content = document.getElementById(id);
@@ -168,12 +160,10 @@
 
         const isOpen = card.classList.contains('revealed');
 
-        // Close all other cards first
         $$('.interest-card.revealed').forEach((other) => {
             if (other !== card) other.classList.remove('revealed');
         });
 
-        // Toggle current
         card.classList.toggle('revealed', !isOpen);
     };
 
@@ -201,11 +191,8 @@
         const el = $('.hero-subtitle');
         if (!el || el.dataset.typed === 'true') return;
 
-        // Preserve inner HTML structure by only typing text nodes
         const originalHTML = el.innerHTML;
-        // Skip if it contains tags like <span> — keep as-is for safety
         if (/<[a-z]/i.test(originalHTML)) {
-            // If subtitle has markup, animate opacities instead
             el.style.opacity = '0';
             el.style.transform = 'translateY(8px)';
             el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
@@ -249,11 +236,9 @@
 
     // ============================================================
     // 11. SKILL BARS — Animate on view
-    //    Uses .skill-item / .skill-fill (matches new CSS)
     // ============================================================
     const skillItems = $$('.skill-item');
     if (skillItems.length && 'IntersectionObserver' in window) {
-        // Cache target widths
         skillItems.forEach((item) => {
             const fill = $('.skill-fill', item);
             if (!fill) return;
@@ -267,7 +252,6 @@
                 if (!entry.isIntersecting) return;
                 const fill = $('.skill-fill', entry.target);
                 if (fill && fill.dataset.targetWidth) {
-                    // Small stagger for nice reveal
                     requestAnimationFrame(() => {
                         fill.style.width = fill.dataset.targetWidth;
                     });
@@ -317,7 +301,6 @@
             mouseY = e.clientY;
         });
 
-        // Smooth lerp animation
         (function animate() {
             curX += (mouseX - curX) * 0.22;
             curY += (mouseY - curY) * 0.22;
@@ -325,8 +308,8 @@
             requestAnimationFrame(animate);
         })();
 
-        // Hover state on interactive elements
-        const hoverTargets = 'a, button, .interest-card, .milestone-card, .switch, .project-card, .thought-card, .thought-featured';
+        // Hover state on interactive elements (includes raw-toggle & archive button)
+        const hoverTargets = 'a, button, .interest-card, .milestone-card, .switch, .project-card, .thought-card, .thought-featured, .raw-toggle, .archive-toggle-btn';
         $$(hoverTargets).forEach((el) => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -387,8 +370,24 @@
     }
 
     // ============================================================
-    // 17. MY THOUGHTS — Expandable blog cards
+    // 17. HELPER — Close raw-content inside a given card
+    // ============================================================
+    function closeRawInCard(card) {
+        if (!card) return;
+        card.querySelectorAll('.raw-content.open').forEach((raw) => {
+            raw.classList.remove('open');
+            const rawBtn = raw.previousElementSibling;
+            if (rawBtn && rawBtn.classList.contains('raw-toggle')) {
+                rawBtn.classList.remove('active');
+                rawBtn.innerHTML = '📓 Read Original Diary Entry';
+            }
+        });
+    }
+
+    // ============================================================
+    // 18. MY THOUGHTS — Expandable blog cards
     //     Click anywhere on card to toggle. Accordion behavior.
+    //     Closing a card also closes any open raw-content inside it.
     // ============================================================
     window.toggleThought = function (id) {
         const content = document.getElementById(id);
@@ -403,10 +402,15 @@
         $$('.thought-featured.expanded, .thought-card.expanded').forEach((other) => {
             if (other === card) return;
             other.classList.remove('expanded');
+
+            // Update toggle text of the other card
             const otherToggle = $('.thought-toggle', other);
             if (otherToggle && otherToggle.firstChild) {
                 otherToggle.firstChild.nodeValue = 'Read Full Thought ';
             }
+
+            // Close any open raw-content inside the other card
+            closeRawInCard(other);
         });
 
         // Toggle current card
@@ -420,6 +424,11 @@
                 : 'Close Thought ';
         }
 
+        // If closing this card, also close raw-content inside it
+        if (isOpen) {
+            closeRawInCard(card);
+        }
+
         // Smooth-scroll to card if it just opened
         if (!isOpen) {
             setTimeout(() => {
@@ -430,7 +439,89 @@
     };
 
     // ============================================================
-    // 18. EASTER EGG — Console Welcome
+    // 19. BLOG ARCHIVE — Toggle expand/collapse
+    // ============================================================
+    window.toggleArchive = function () {
+        const archive = document.getElementById('blogArchive');
+        const btn = document.getElementById('archiveToggleBtn');
+        if (!archive || !btn) return;
+
+        const isOpen = archive.classList.contains('open');
+
+        // Toggle
+        archive.classList.toggle('open', !isOpen);
+        btn.classList.toggle('active', !isOpen);
+
+        // Update button text
+        const btnText = $('.archive-btn-text', btn);
+        if (btnText) {
+            btnText.textContent = isOpen ? 'View Blog Archive' : 'Hide Blog Archive';
+        }
+
+        // If collapsing, close any open raw-content inside archive
+        if (isOpen) {
+            archive.querySelectorAll('.raw-content.open').forEach((raw) => {
+                raw.classList.remove('open');
+                const rawBtn = raw.previousElementSibling;
+                if (rawBtn && rawBtn.classList.contains('raw-toggle')) {
+                    rawBtn.classList.remove('active');
+                    rawBtn.innerHTML = '📓 Read Original Diary Entry';
+                }
+            });
+        }
+
+        // Smooth scroll to archive button if just opened
+        if (!isOpen) {
+            setTimeout(() => {
+                const top = btn.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }, 400);
+        }
+    };
+
+    // ============================================================
+    // 20. RAW DIARY — Toggle original diary entry
+    //     Opens inside an already-expanded thought card.
+    //     Uses stopPropagation on the button to prevent card collapse.
+    // ============================================================
+    window.toggleRaw = function (id) {
+        const raw = document.getElementById(id);
+        if (!raw) return;
+
+        const btn = raw.previousElementSibling;
+        if (!btn || !btn.classList.contains('raw-toggle')) return;
+
+        const isOpen = raw.classList.contains('open');
+
+        // Close any other open raw-content on the page
+        $$('.raw-content.open').forEach((other) => {
+            if (other === raw) return;
+            other.classList.remove('open');
+            const otherBtn = other.previousElementSibling;
+            if (otherBtn && otherBtn.classList.contains('raw-toggle')) {
+                otherBtn.classList.remove('active');
+                otherBtn.innerHTML = '📓 Read Original Diary Entry';
+            }
+        });
+
+        // Toggle current
+        raw.classList.toggle('open', !isOpen);
+        btn.classList.toggle('active', !isOpen);
+        btn.innerHTML = isOpen
+            ? '📓 Read Original Diary Entry'
+            : '✕ Hide Original Entry';
+
+        // Small smooth scroll to raw content
+        if (!isOpen) {
+            setTimeout(() => {
+                const top = raw.getBoundingClientRect().top + window.scrollY - 120;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }, 250);
+        }
+    };
+
+    // ============================================================
+    // 21. EASTER EGG — Console Welcome
     // ============================================================
     const gold = 'color:#d4a373;font-weight:600;';
     const cream = 'color:#f5ede4;';
