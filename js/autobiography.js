@@ -1,5 +1,6 @@
 /* ==========================================
    SURAJ ANAND — "A Boy Who Never Thought"
+   Safar se safar tak — गुंजते सन्नाटे
    JavaScript File — autobiography.js
    ========================================== */
 
@@ -17,6 +18,15 @@ function setLang(lang) {
     const text = el.getAttribute('data-' + lang);
     if (text) {
       el.textContent = text;
+    }
+  });
+
+  // Update chapter contents (big blocks)
+  document.querySelectorAll('[data-lang-content]').forEach(block => {
+    if (block.getAttribute('data-lang-content') === lang) {
+      block.style.display = 'block';
+    } else {
+      block.style.display = 'none';
     }
   });
 
@@ -46,35 +56,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ------------------------------------------
-   3. SCROLL ANIMATION (Fade-in entries)
+   3. SCROLL ANIMATION (Fade-in chapters)
 ------------------------------------------ */
 const observerOptions = {
-  threshold: 0.15,
-  rootMargin: '0px 0px -50px 0px'
+  threshold: 0.1,
+  rootMargin: '0px 0px -80px 0px'
 };
 
-const entryObserver = new IntersectionObserver((entries) => {
+const chapterObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      // Unobserve after animation (once visible, stays visible)
-      entryObserver.unobserve(entry.target);
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      chapterObserver.unobserve(entry.target);
     }
   });
 }, observerOptions);
 
-// Observe all timeline entries
+// Set initial state and observe all chapters
 document.addEventListener('DOMContentLoaded', () => {
-  const entries = document.querySelectorAll('.entry');
-  entries.forEach((entry, index) => {
-    // Stagger animation slightly
-    entry.style.transitionDelay = (index % 3) * 0.1 + 's';
-    entryObserver.observe(entry);
+  const chapters = document.querySelectorAll('.chapter, .special-card, .timeline-point');
+  chapters.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    chapterObserver.observe(el);
   });
 });
 
 /* ------------------------------------------
-   4. GALLERY LIGHTBOX (Click to enlarge)
+   4. GALLERY LIGHTBOX
 ------------------------------------------ */
 function createLightbox() {
   const lightbox = document.createElement('div');
@@ -88,7 +99,7 @@ function createLightbox() {
   `;
   document.body.appendChild(lightbox);
 
-  // Close on click
+  // Close on click outside / close button
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
       lightbox.classList.remove('active');
@@ -130,15 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ------------------------------------------
-   5. SMOOTH SCROLL FOR SCROLL INDICATOR
+   5. SMOOTH SCROLL FOR COVER SCROLL INDICATOR
 ------------------------------------------ */
 document.addEventListener('DOMContentLoaded', () => {
-  const scrollIndicator = document.querySelector('.scroll-indicator');
+  const scrollIndicator = document.querySelector('.cover-scroll');
   if (scrollIndicator) {
     scrollIndicator.addEventListener('click', () => {
-      const timeline = document.querySelector('.timeline');
-      if (timeline) {
-        timeline.scrollIntoView({ behavior: 'smooth' });
+      const firstChapter = document.querySelector('#chapter-1');
+      if (firstChapter) {
+        firstChapter.scrollIntoView({ behavior: 'smooth' });
       }
     });
     scrollIndicator.style.cursor = 'pointer';
@@ -146,46 +157,56 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ------------------------------------------
-   6. HERO PARALLAX EFFECT (Subtle)
+   6. DOWNLOAD EBOOK BUTTON
 ------------------------------------------ */
-window.addEventListener('scroll', () => {
-  const hero = document.querySelector('.hero-content');
-  if (hero) {
-    const scrolled = window.pageYOffset;
-    if (scrolled < window.innerHeight) {
-      hero.style.transform = `translateY(${scrolled * 0.3}px)`;
-      hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.8;
-    }
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  const downloadBtns = document.querySelectorAll('#downloadBtn, #downloadBtnBottom');
+
+  downloadBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Placeholder action — aap baad mein batayenge kya karna hai
+      alert(
+        currentLang === 'hi'
+          ? '📥 eBook download feature abhi ban raha hai. Jald hi aayega!'
+          : '📥 eBook download feature is coming soon. Stay tuned!'
+      );
+    });
+  });
 });
 
 /* ------------------------------------------
-   7. KEYBOARD NAVIGATION (Arrow keys)
+   7. KEYBOARD SHORTCUT — Press "L" to toggle language
 ------------------------------------------ */
 document.addEventListener('keydown', (e) => {
-  // Press "L" to toggle language
-  if (e.key === 'l' || e.key === 'L') {
-    if (!e.target.matches('input, textarea')) {
-      setLang(currentLang === 'en' ? 'hi' : 'en');
+  if ((e.key === 'l' || e.key === 'L') && !e.target.matches('input, textarea')) {
+    setLang(currentLang === 'en' ? 'hi' : 'en');
+  }
+});
+
+/* ------------------------------------------
+   8. PARALLAX EFFECT ON COVER (Subtle)
+------------------------------------------ */
+window.addEventListener('scroll', () => {
+  const coverContent = document.querySelector('.cover-content');
+  if (coverContent) {
+    const scrolled = window.pageYOffset;
+    if (scrolled < window.innerHeight) {
+      coverContent.style.transform = `translateY(${scrolled * 0.2}px)`;
+      coverContent.style.opacity = 1 - (scrolled / window.innerHeight) * 0.7;
     }
   }
 });
 
 /* ------------------------------------------
-   8. ACTIVE NAV HIGHLIGHT (If you add nav later)
+   9. CONSOLE MESSAGE
 ------------------------------------------ */
-// Placeholder for future navigation
+console.log('%c📖 Suraj Anand', 'font-size: 22px; color: #b8860b; font-weight: bold; font-family: Georgia;');
+console.log('%cA Boy Who Never Thought', 'font-size: 14px; color: #b0a890; font-style: italic; font-family: Georgia;');
+console.log('%cSafar se safar tak — गुंजते सन्नाटे', 'font-size: 14px; color: #8b6f47; font-family: Georgia;');
+console.log('%c💡 Tip: Press "L" to toggle language!', 'font-size: 12px; color: #b8860b;');
 
 /* ------------------------------------------
-   9. CONSOLE MESSAGE (Nice touch)
------------------------------------------- */
-console.log('%c🌞 Suraj Anand', 'font-size: 20px; color: #e6b800; font-weight: bold;');
-console.log('%cA Boy Who Never Thought', 'font-size: 14px; color: #a0a0b0; font-style: italic;');
-console.log('%cSafar se safar tak — गुंजते सन्नाटे', 'font-size: 14px; color: #ffb347;');
-console.log('%c💡 Tip: Press "L" to toggle language!', 'font-size: 12px; color: #e6b800;');
-
-/* ------------------------------------------
-   10. INITIALIZE ON LOAD
+   10. INIT ON LOAD
 ------------------------------------------ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ autobiography.js loaded successfully!');
