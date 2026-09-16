@@ -1,702 +1,1006 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Boy Who Never Thought — Suraj Anand</title>
-  <meta name="description" content="Safar se safar tak — गुंजते सन्नाटे. The autobiography of Suraj Anand.">
-  <meta name="author" content="Suraj Anand">
-
-  <!-- Google Fonts (Formal serif for book feel) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-
-  <!-- CSS File -->
-  <link rel="stylesheet" href="css/autobiography.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Autobiography — Ravi Raj</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- ====== FONTS & ICONS ====== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- ====== EXTERNAL CSS ====== -->
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/autobiography.css" />
 </head>
 <body>
 
-  <!-- ============================================
-       BOOK COVER / HERO
-  ============================================= -->
-  <header class="book-cover" id="top">
-    <div class="cover-content">
-      <p class="cover-label" data-en="AN AUTOBIOGRAPHY" data-hi="EK AUTOBIOGRAPHY">AN AUTOBIOGRAPHY</p>
-
-      <h1 class="cover-title">Suraj Anand Singh</h1>
-
-      <p class="cover-aka">~ Ravi Raj</p>
-
-      <div class="cover-divider"></div>
-
-      <h2 class="cover-subtitle">A Boy Who Never Thought</h2>
-
-      <p class="cover-hindi">Safar se safar tak — <span class="hindi-text">गुंजते सन्नाटे</span></p>
-
-      <!-- Language Toggle -->
-      <div class="lang-toggle">
-        <button class="lang-btn active" data-lang="en" onclick="setLang('en')">English</button>
-        <button class="lang-btn" data-lang="hi" onclick="setLang('hi')">Hinglish</button>
-      </div>
-
-      <div class="cover-actions">
-        <a href="#chapter-1" class="btn-primary" data-en="Begin Reading" data-hi="Padhna Shuru Karein">Begin Reading</a>
-        <button class="btn-secondary" id="downloadBtn" data-en="📥 Download eBook" data-hi="📥 eBook Download Karein">📥 Download eBook</button>
-      </div>
+    <!-- ===== THEME TOGGLE ===== -->
+    <div class="theme-toggle-wrapper">
+        <span id="themeLabel">Light</span>
+        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
+            <span class="switch-icon sun">☀️</span>
+            <span class="switch-icon moon">🌙</span>
+            <div class="slider"></div>
+        </div>
     </div>
 
-    <div class="cover-scroll">
-      <span>▼</span>
-    </div>
-  </header>
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
 
+    <!-- ============================================================
+    SIDEBAR OVERLAY
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- ============================================
-       MAIN CONTENT (Book Body)
-  ============================================= -->
-  <main class="book-body">
-
-    <!-- ============================================
-         CHAPTER 1
-    ============================================= -->
-    <section class="chapter" id="chapter-1">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER ONE" data-hi="ADHYAY EK">CHAPTER ONE</p>
-        <h2 class="chapter-title" data-en="The Beginning" data-hi="Shuruaat">The Beginning</h2>
-        <p class="chapter-year">2008</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>The story begins on March 2008, when I was born.</p>
-        <p>It was a Wednesday.</p>
-        <p>On 6th days, Mummy decided to name me with the letter 'R'.</p>
-        <p>Since Mummy's mindset wasn't clear yet, people around started suggesting names.</p>
-        <p>Like Nishant, Chinmay,  blah blah...</p>
-        <p>Days passed, and everyone used to call me 'Ghantee' 😏</p>
-        <p>Actually i am the child child after two sisters, but in Indian culture, if the 3rd child is a 'Son', he gets a different level of love.</p>
-        <p>Since childhood, I was fat, but due to my habits, I used to fall sick every month. Because of that, I started getting thin, and my face started looking real.</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>To baat suru hoti hai 2006 ke 26 March ko jab mera janm hua tha.</p>
-        <p>Day — Wednesday (Budhwar) 8:00 AM.</p>
-        <p>6thh day Mummy ne apne naam 'R' se naam rakhne ka socha.</p>
-        <p>Mummy ka mind set clear no hone ke chute, paas wale logon ne kuch kuch bolna suru kar diya.</p>
-        <p>Jaise Ahanti, Nishant, Chanmay, bla bla...</p>
-        <p>Din beete chala gaya, aur sabhi log mujhe 'Ghantee' bulaya karte the.</p>
-        <p>Wo waise meri 2 baadi behen thi, but Indian culture mein agar 3rsa bacha 'Beta' ho to pyar alag hi level ka milta hai.</p>
-        <p>Bachpan se hi mota tha mein, par apni aadaton ke chalte bimaar ho ja raha tha, every month, jiske karan ki mai patla hone laga, aur Chahra real hone laga.</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 2
-    ============================================= -->
-    <section class="chapter" id="chapter-2">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER TWO" data-hi="ADHYAY DO">CHAPTER TWO</p>
-        <h2 class="chapter-title" data-en="A Loss & A New Start" data-hi="Ek Khoj aur Nayi Shuruaat">A Loss & A New Start</h2>
-        <p class="chapter-year">2009</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>The first picture I have is from 2009, when my ration card was made. It was winter time, so Papa and Mummy set up a curtain in the background, and 5 family members got their photo clicked together.</p>
-        <p>I never used to make direct eye contact with anyone (as Mummy told me later).</p>
-        <p>In 2009 itself, on 12th January, my grandmother (Dadi ji) passed away due to a brain hemorrhage. I don't remember anything because I was only 11 months old.</p>
-        <p>But now I realize that I never got my grandmother's love...</p>
-        <p>Anyway, moving on from all this, life kept moving forward, and in 2009, my elder sister (the older one — Richa), got enrolled in a newly opened school called GABAS (Gautam Buddha Global School).</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>Sabse pehli tasveer jo mere paas hai, wo 2009 ki hai, jab mera ration card bana tha. Thand ka time tha, toh Papa aur Mummy ne parde se setting karke, 5 family members ki photo click karwayi hogi.</p>
-        <p>Main kisi se direct eye contact nahi karta tha (jaisa Mummy ne mujhe baad mein bataya).</p>
-        <p>2009 mein hi, 12 January ko, meri Dadi ji ka brain hemorrhage hone ke karan death ho gaya tha. Mujhe kuch yaad toh nahi hai kyunki main sirf 11 months ka tha.</p>
-        <p>Par ab realise hota hai ki Dadi ka pyar nahi mila mujhe...</p>
-        <p>Kheir, chalo in sab baaton ko, dil aage badhta gaya, aur 2009 mein hi shayad meri didi (badi wali — Richa), usne GABAS (Gautam Buddha Global School) mein enrolled ho gayi — jo naya khula school tha.</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 3
-    ============================================= -->
-    <section class="chapter" id="chapter-3">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER THREE" data-hi="ADHYAY TEEN">CHAPTER THREE</p>
-        <h2 class="chapter-title" data-en="A Changing Home" data-hi="Badalta Ghar">A Changing Home</h2>
-        <p class="chapter-year">2010 — 2012</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>Days kept passing, and in 2009, there were a lot of problems. First, Mummy's second issue, then Dadi's death.</p>
-        <p>Then 2010 — whether I say for myself or for my family members — must have been better.</p>
-        <p>That year, there was a wedding in the family, and my Bua ji's son was also born that year, I think.</p>
-        <p>After all this, 2011 must have been similar too. When you shift to a new house, you have to go to old festive people's place for pooja etc., so everyone used to call out my name from the road itself.</p>
-        <p>And I used to secretly watch those people.</p>
-        <p>This year, my Mundan (head-shaving ceremony) also happened on 4 May 2012, in which I obviously wasn't present (mentally/aware), because my dear ones had already left.</p>
-        <p>In 2012, my first birthday was probably celebrated on 26 March 2012, when I had perhaps turned 4 years old.</p>
-        <p>They say that when new hair grows, the mind also grows. So after my Mundan, I got attached to Anganwadi (which was Aunty's school). There, I used to count and eat soya beans.</p>
-        <p>I used to stay there till the end. And somehow, without even realizing it, I finished the Nursery syllabus.</p>
-        <p><em>"Swinging on the jhula has been a part of my childhood since the very beginning."</em></p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>Din beeta jaa raha tha, aur 2009 mein bahut saari problems hui thi. Pehle Mummy ka dusra issue, phir Dadi's death.</p>
-        <p>Fir 2010 — mere liye kahu ya mere parivaar walon ke liye — achha raha hoga.</p>
-        <p>Us saal, ghar mein shaadi thi, aur Bua ji ka ladka bhi hua tha us saal shayad.</p>
-        <p>In sab ke baad, 2011 bhi aisa hi kuch raha hoga. Naye ghar mein aane ke baad hota hai na — purane Utsav wale logon ke paas jaana, pooja wagerah mein — toh mujhe sab log road par se hi naam liya karte the.</p>
-        <p>Aur main chupke se un logon ko dekha karta tha.</p>
-        <p>Is saal mera Mundan bhi hua tha, 4 May 2012 ko, jisme main kuch toh obviously nahi hi honga, kyunki mere pyare baad chale gaye.</p>
-        <p>2012 mein hi shayad mera pehla birthday manaya gaya tha — 26 March 2012 ko, jaisa Mummy ne bataya, jab main perhaps 4 saal ka ho gaya tha.</p>
-        <p>Wo kehte hain na, naye baal aane se mind growth hota hai. Toh mere Mundan ke baad, main Anganwadi (jo ki Aunty ka school tha) mein ghar lag gaya tha. Wahan main soya bean count karke khata tha.</p>
-        <p>Akhar pe hi rehta tha. Aur 'ghaahu' jhoothe kab main Nursery ka syllabus kar gaya, mujhe pata hi nahi chala.</p>
-        <p><em>"Jhula jhoolne ke saath bachpan se hi."</em></p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 4
-    ============================================= -->
-    <section class="chapter" id="chapter-4">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER FOUR" data-hi="ADHYAY CHAR">CHAPTER FOUR</p>
-        <h2 class="chapter-title" data-en="First Steps into School" data-hi="School Ke Pehle Kadam">First Steps into School</h2>
-        <p class="chapter-year">2013</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>So, as I wrote, both my sisters were going to GBGS school, so the fees were 300 (for both together).</p>
-        <p>So, in February 2013, on Saraswati Puja, my admission happened directly into L.K.G (Lower Kindergarten) class.</p>
-        <p>Because I had already completed the nursery course just by swinging on the jhula.</p>
-        <p>LKG Begins...</p>
-        <p>Name — Suraj Anand<br>
-           School — Gautam Buddha Global School<br>
-           Sanskar Nagar, Bandwar, Begusarai<br>
-           Motto — "तमसो मा ज्योतिर्गमय"</p>
-        <p>So, in the beginning of LKG, I used to cry a lot. I used to tell my sisters to come to me during lunch break.</p>
-        <p>And in class, at the end, I used to ask the other kids to let me pass.</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>To jaisa maine likha ki meri dono behen GBGS school jaa rahi thi, toh fees ma 300 (dono milakar).</p>
-        <p>To, 2013 — February — Saraswati Puja ke din mera admission direct L.K.G (Lower Kindergarten) class mein ho gaya.</p>
-        <p>Kyunki maine nursery ka course jhula jhoolke hi kar liya tha.</p>
-        <p>LKG Aaraambh...</p>
-        <p>Naam — Suraj Anand<br>
-           School — Gautam Buddha Global School<br>
-           Sanskar Nagar, Bandwar, Begusarai<br>
-           Motto — "तमसो मा ज्योतिर्गमय"</p>
-        <p>To Starting LKG mein bahut rota tha, main apni behno ko bolta tha lunch break mein mere se milne aana.</p>
-        <p>Aur class mein end mein bachon se guzarne ke liye kehta tha.</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 5
-    ============================================= -->
-    <section class="chapter" id="chapter-5">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER FIVE" data-hi="ADHYAY PAANCH">CHAPTER FIVE</p>
-        <h2 class="chapter-title" data-en="A House Divided" data-hi="Ghar Ka Batwara">A House Divided</h2>
-        <p class="chapter-year">2014 — 2016</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>2014 — I moved to UKG.</p>
-        <p>In 2015, I was in 1st Class. Mummy used to teach at Don Bosco Academy. Due to financial constraints, I started going with her to the Don Bosco Academy (Cheria Bariyarpur, Begusarai) branch, because it was free for me there.</p>
-        <p>I went there for only 3 months, because the travel itself used to cause bone trouble, and we used to reach home only by evening.</p>
-        <p>At that time, there was a dispute in our house, and a property division happened — of land, belongings, everything.</p>
-        <p>Though our house was very big, and it was already a 2-sided house, so there was no problem.</p>
-        <p>Earlier, I used to live on the left side, then I started living on the new right side.</p>
-        <p>But even now, the financial condition kept getting worse.</p>
-        <p>In 2016, after 3 months, I continued again at GBGS.</p>
-        <p>In 2016, I did not appear for the Term-2 exam of 1st Class, because my health had deteriorated, and I was unhealthy.</p>
-        <p>'An 8-year-old boy'</p>
-        <p>Friends' names: Abhilash, Ayush, Harsh.</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>2014 — Main UKG mein chala gaya.</p>
-        <p>1st Class mein 2015 mein tha. Tab Mummy Don Bosco Academy mein padhane jaati thi. Financial constraints ke karan, main apni Mummy ke saath Don Bosco Academy (Cheria Bariyarpur, Begusarai) branch mein jaane laga — kyunki free tha mera wahan.</p>
-        <p>Main 3 month hi gaya wahan, kyunki safar mein hi bone trop lag jaati thi, aur ghar toh aane shaam mein hi lag jaate the.</p>
-        <p>Us time hamare ghar mein dispute hua, aur property division ho gaya — land, saman, sab ka.</p>
-        <p>Though hamara ghar bahut bada hai, aur pehle se hi 2-sided ghar tha, toh koi problem nahi hui.</p>
-        <p>Pehle main left side rehta tha, fir new right side rehne laga.</p>
-        <p>But abhi bhi financial condition bigadti jaa rahi thi.</p>
-        <p>2016 — Maine phir se 3 month baad, phir se GBGS mein continue kiya.</p>
-        <p>2016 mein 1st Class ke Term-2 exam maine nahi diya, kyunki mera tabiyat bigad gaya, aur main unhealthy tha.</p>
-        <p>'8 Saal ka ladka'</p>
-        <p>Doston ke naam: Abhilash, Ayush, Harsh.</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 6
-    ============================================= -->
-    <section class="chapter" id="chapter-6">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER SIX" data-hi="ADHYAY CHHE">CHAPTER SIX</p>
-        <h2 class="chapter-title" data-en="A Boy Called 'Suraj Bhaiya'" data-hi="'Suraj Bhaiya' Naam Ka Ladka">A Boy Called 'Suraj Bhaiya'</h2>
-        <p class="chapter-year">2017</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>In 1st Class, I had many friends: Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal), and many more, but...</p>
-        <p>By that time, these people left the school and went to another school, because this was a small school, and teachers were decreasing in the school.</p>
-        <p>Sandhya Miss, Puja Miss, Gunjan Sir, Jitender Sir, Chandan Sir.</p>
-        <p>The result hadn't come out yet, so my parents got me promoted from 1st Class, and since the school was my Chacha's, it happened easily.</p>
-        <p>I started a jump from 1st to 3rd initially, but in Don Bosco School, I had already studied ICSE books in 3 months, so I recovered within a few days.</p>
-        <p>In 3rd Class, 8 seniors became my friends, and from then on, they started calling me 'Suraj Bhaiya'.</p>
-        <p>So in 3rd Class, when I was going smoothly, then Nakib and Abhinav became my juniors, and then Rohit and Satyam also became juniors...</p>
-        <p>A fight broke out in our class — a random fight.</p>
-        <p>So the boys had no value in the class.</p>
-        <p>And, the teacher scolded me, and Shitanshu too, and my rank got spoiled, and Ganesh went to another school.</p>
-        <p>So from 3rd Class to 4th Class (State Board), because of Chandan Sir, everyone changed — and he made us memorize the names of state capitals.</p>
-        <p>I remember some things, so I'm writing this. Due to lack of teachers in school.</p>
-        <p>Science was taught by Veena Ma'am — about living things and all. Hindi by Sadhana Ma'am. English by Ekta Miss. Sanskrit too by Sadhana Ma'am. 3rd Class went smoothly.</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>1st Class mein mere bahut saare dost the: Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal), aur bhi bahut, but...</p>
-        <p>By the time, in logon ne school leave kar diya, aur dusre school chale gaye, kyunki ye chota school tha, aur teachers kam ho rahe the school mein.</p>
-        <p>Sandhya Miss, Puja Miss, Gunjan Sir, Jitender Sir, Chandan Sir.</p>
-        <p>Result toh new aaye nahi, so mere parents ne mera 1st Class promotion karwa diya, aur school toh Chacha ka hi tha, toh ho bhi gaya aaram se.</p>
-        <p>Main 1st → 3rd ka jump suru mein laga neko, but Don Bosco School mein 3 month mein ICSE ke books padh liya tha, toh recover ho gaya kuch din mein.</p>
-        <p>3rd Class mein mere 8 seniors mere dost banne lag gaye, aur ab se 'Suraj Bhaiya' keh ke bulate hain mujhe.</p>
-        <p>To 3rd Class mein, jab main smooth way jaa raha tha, tab Nakib, Abhinav aage se jab junior ho gaye, tab Rohit, Satyam bhi aage se jab ban gaye the...</p>
-        <p>Ladgayi hamare class mein, random ladai.</p>
-        <p>To ladko ke koi value hi nahi thi class mein.</p>
-        <p>And, Teacher ne mujhe dant lagayi, aur Shitanshu ne bhi, And rank kharab ho gayi, aur Ganesh School chala gaya.</p>
-        <p>To 3rd Class se 4th Class (State Board) ke naam pe Chandan Sir ki wajah se, sab log badal gaye — aur unhone state capitals ke naam yaad karwa diye the.</p>
-        <p>Yaad hai kuch kuch, toh yahi likh raha hoon. Due to lack of teachers in school.</p>
-        <p>Science us time padhati thi Veena Ma'am — living things wagerah ke baare mein. Hindi → Sadhana Ma'am. English → Ekta Miss. Sanskrit bhi → Sadhana Ma'am hi padha deti thi. 3rd Class smoothly gaya.</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 7
-    ============================================= -->
-    <section class="chapter" id="chapter-7">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER SEVEN" data-hi="ADHYAY SAAT">CHAPTER SEVEN</p>
-        <h2 class="chapter-title" data-en="The Desire to Rise" data-hi="Uthne Ki Chah">The Desire to Rise</h2>
-        <p class="chapter-year">2018</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>In 4th Class, I must have thought about why my ranks were coming, so I started studying — with Chanchal Sir.</p>
-        <p>Mummy got coaching arranged, but my crying superpower was very good. Whenever I didn't feel like doing any work, I used to start crying.</p>
-        <p>Teachers (2018):<br>
-           Gautam Sir — English<br>
-           Sunil Sir — Math<br>
-           Gautam Sir / Amrender Sir — SST<br>
-           Mohit Sir — English<br>
-           Bittu Sir — Computer<br>
-           Manish Sir — Processing</p>
-        <p>The 4th Class result came out, and at that time, my rank was 4th.</p>
-        <p>I had secured 4th, and literally, I felt bad that day.</p>
-        <p>I sat and thought that if I secured 1st in 5th Class, then in 5th my rank would be 1st.</p>
-        <p>1st: Swati<br>
-           2nd: Sanjana<br>
-           3rd: Asmita<br>
-           4th: Suraj Anand (A.K.A Raviraj)</p>
-        <p>Then I thought — I won't follow behind others anymore. I have to push myself so far ahead, that others stay behind me.</p>
-        <p>During Holi and all, there used to be fun. To sing, we used to go to the playground and sit in a corner and listen, but friends wouldn't let us sit...</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>4th Class mein maine socha hoga ki meri rank kyun aa rahe, tab padhayi start ki — Chanchal Sir se.</p>
-        <p>Coaching lagwayi Mummy ne, lekin mera rone ka superpower bahut accha tha. Jab bhi mujhe koi kaam karne ka mann nahi karta, toh main rone lagta tha.</p>
-        <p>Teachers (2018):<br>
-           Gautam Sir — English<br>
-           Sunil Sir — Math<br>
-           Gautam Sir / Amrender Sir — SST<br>
-           Mohit Sir — English<br>
-           Bittu Sir — Computer<br>
-           Manish Sir — Processing</p>
-        <p>4th Class ka result aa gaya, us time meri rank aayi 4th.</p>
-        <p>Maine 4th kiya tha, aur literally mujhe bura laga us din.</p>
-        <p>Maine baith ke soch raha tha ki agar 5th Class mein 1st kiya, toh 5th mein 1st rank aayegi.</p>
-        <p>1st: Swati<br>
-           2nd: Sanjana<br>
-           3rd: Asmita<br>
-           4th: Suraj Anand (A.K.A Raviraj)</p>
-        <p>Maine socha fir dusron ke peeche nahi karna hai, khud ko itna aage karna hai, dusre peeche ho jaye.</p>
-        <p>Holi wagerah mein maje aate the, gaane ke liye playground mein jaate to kone mein baith ke suna karte the, lekin dost baithne nahi dete the...</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 8
-    ============================================= -->
-    <section class="chapter" id="chapter-8">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER EIGHT" data-hi="ADHYAY AATH">CHAPTER EIGHT</p>
-        <h2 class="chapter-title" data-en="A Dream Takes Shape" data-hi="Sapna Sakar Hota Hai">A Dream Takes Shape</h2>
-        <p class="chapter-year">2018 — 2019</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>My Mummy joined GBGS in 2018 itself, and from then on, she used to teach Hindi in this school.</p>
-        <p>Time kept passing, and exams kept happening...</p>
-        <p>Our school had good "Sakhi" (friendship/activities), I mean, current affairs and all were very much there for everyone...</p>
-        <p>That school was only up to 8th, but the students could only reach up to 6th-7th, because after that they would leave the school — because there were no teachers.</p>
-        <p>So according to that, we (who were in 5th) became the seniors. So we 4 friends used to go to conduct the assembly.</p>
-        <p>And a girls' group + 4-5 more girls used to do the assembly.</p>
-        <p>So even in commanding, we used to have fights — "I'll do it, no I'll do it"... Bla Bla Bla.</p>
-        <p>I participated in the whole function for the first time, and that too in 5th Class...</p>
-        <p>And at that time, whatever was my dream of becoming an Engineer — that dream was going to come true anyway.</p>
-        <p>This was the first time when, on 15 August 2018, I participated in a dance and also gave a speech.</p>
-        <p>My uncle (Director Sir) gifted me a Pen, and in the assembly, he asked every child: "What will you become when you grow up?"</p>
-        <p>Someone said Doctor, someone said Police, Army, Astronaut, Scientist...</p>
-        <p>But I, Suraj Anand (Raviraj), went up and said "Engineer".</p>
-        <p>Then Sir asked: "Which one — Bridge Engineer or Computer Engineer?"</p>
-        <p>And I went silent, because I didn't even know what it takes to become an engineer!</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>Meri Mummy ne 2018 mein hi GBGS join kar liya tha, tab se wo is school mein Hindi padhaya karti thi.</p>
-        <p>Samay beeta ja raha tha aur exams hote rahe...</p>
-        <p>Hamare school mein "Sakhi" acchi thi, matlab current affairs wagerah sabke bahut the...</p>
-        <p>Wo school toh halaki 8th tak tha, lekin usne 6th-7th tak hi bachhe padh paate the, kyunki uske baad school chhod dete the — kyunki teachers nahi the.</p>
-        <p>To us hisaab se, hum log jo (5th mein) the, wo senior hue na. To hum 4 dost jaate the assembly karne.</p>
-        <p>Aur girls group + 4-5 aur girls karti thi assembly mein.</p>
-        <p>To commanding karne mein bhi hamari ladai ho jaati thi — "main karunga", "nahi main"... Bla Bla Bla.</p>
-        <p>Saare function mein bas pehli baar participate bhi 5th Class mein hi kiya maine...</p>
-        <p>Aur us time jo mera engineer banne ka sapna tha, mera wo sapna tha pura toh ho hi jayega.</p>
-        <p>Ye pehli baar tha jab maine 15 August 2018 ko dance mein participate kiya aur speech bhi diya.</p>
-        <p>Mere uncle (Director Sir) ne mujhe Pen gift kiya, aur assembly mein har ek bachhon se poocha: "Bade hoke kya banoge?"</p>
-        <p>Kisi ne Doctor kaha, toh kisi ne Police, Army, Astronaut, Scientist...</p>
-        <p>Par main Suraj Anand (Raviraj) yahan gaya aur kaha "Engineer" bola.</p>
-        <p>Toh Sir ne poocha: "Bridge wala ya Computer wala?"</p>
-        <p>To main chup reh gaya, kyunki mujhe pata nahi tha ki engineer hone ke liye kya karna hota hai!</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         CHAPTER 9
-    ============================================= -->
-    <section class="chapter" id="chapter-9">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="CHAPTER NINE" data-hi="ADHYAY NAU">CHAPTER NINE</p>
-        <h2 class="chapter-title" data-en="A Tribute & A Farewell" data-hi="Ek Shraddhanjali aur Alvida">A Tribute & A Farewell</h2>
-        <p class="chapter-year">2019</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>I just wanted to become an engineer because my Mummy ji was an engineer.</p>
-        <p>Anyway, in March 2019, my 5th Class exam happened. But just before that, on 10 Feb 2019 (Saraswati Puja), something special happened.</p>
-        <p>In between, in Nov 2018 itself, an EC Competition (Clean & Green School) exam happened on the 14th (at Don Bosco).</p>
-        <p>It was the first time I went from home with the school kids — with friends, I had fun.</p>
-        <p>When the result came out, I realized for the first time what a competition really was. My cutoff was (85/100).</p>
-        <p>Out of them, only 51 children were selected, and the highest marks were 96.</p>
-        <p>In the evening, the management called us and gave awards to everyone. Certificate, medal, and a GK Award.</p>
-        <p>I felt happy that for the first time I got a gift and so much respect. But I felt bad that the competition was of L.K.G. level — so how would I compete?</p>
-        <p>However, on 14 Feb 2019, the Pulwama attack also happened, and the prize distribution was on the same day.</p>
-        <p>So I paid tribute to the CRPF Indian Forces, and then came back.</p>
-        <p>The final exam of Class 5th was of ICSE pattern. The result was supposed to come in the last week of March, which was on 31/03/2019.</p>
-        <p>On the first day of the class, 85%+ and second position was held by Sushil, who was my competitor.</p>
-        <p>My mood had changed, and I became diligent (hardworking) too.</p>
-        <p>My Mummy always thought well about me, and when she found out that I passed 5th Class, her happiness knew no bounds.</p>
-        <p>Since I had shifted schools, I made friends with everyone. Those who scored more than 80% were very few.</p>
-        <p>When the talk of our 8 mates came up, everyone left the school, everyone got separated, everyone started handling themselves.</p>
-        <p>What had to happen, started happening...</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>Mujhe bas engineer banna tha kyunki mere Mummy ji engineer the.</p>
-        <p>To kheir, March 2019, mera 5th Class ka exam hua. Aam usse pehle hi 10 Feb 2019 (Saraswati Puja) ke din kuch khaas hua.</p>
-        <p>Uske beech mein Nov 2018 mein hi EC Competition (Clean & Green School) exam hua 14th ko (Don Bosco).</p>
-        <p>Tha toh pehli baar main ghar se school ke bachhon ke saath gaya — doston ke saath maza aaya.</p>
-        <p>Jab result aaya, toh pehli baar competition ka realisation hua. Mera Cutoff (85/100) aaye the.</p>
-        <p>Sirf 51 bachhe select hue, aur highest marks 96 tha.</p>
-        <p>Shaam ko management ne hume logon ko bulaya aur award diya sabko. Certificate, medal, aur GK Award.</p>
-        <p>Khushi is baat ki hui ki pehli baar gift aur itna respect mila. Aur bura is baat ka laga ki competition L.K.G. ke toh kaise karunga compete.</p>
-        <p>Halaki, 14 Feb 2019 ko Pulwama attack bhi hua tha, aur usi din prize distribution tha.</p>
-        <p>Toh tribute diya CRPF Indian Forces ko, aur wapas karke aa gaya main.</p>
-        <p>Class 5th ke final exam ICSE pattern ke the. Result aana tha last week of March, jo ki 31/03/2019 ko tha.</p>
-        <p>First day of the Class mein 85%+ second position Sushil ko tha, jo mera competitor thi.</p>
-        <p>Mere mood change ho gaya tha, Diligent (mehnati) bhi.</p>
-        <p>Meri Mummy ne hamesha mere baare mein achha socha, aur jab unko pata chala ki main 5th Class mein pass ho gaya, toh unki khushi ka koi thikana nahi tha.</p>
-        <p>Fir school shift kar chuke hu toh sab se ab dosti ho gayi. 80% se zyada marks laane wale bacche bahut kam the.</p>
-        <p>Jab humare 8 mates ki group ki baat chali, toh sabne school chhod diya, sab bichad gaye, sab log apne aap ko sambhalne lage.</p>
-        <p>Jo hone tha, wo hone laga...</p>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         EPILOGUE
-    ============================================= -->
-    <section class="chapter epilogue" id="epilogue">
-      <div class="chapter-header">
-        <p class="chapter-number" data-en="EPILOGUE" data-hi="UPASANHAR">EPILOGUE</p>
-        <h2 class="chapter-title" data-en="To Be Continued..." data-hi="Abhi Jaari Hai...">To Be Continued...</h2>
-      </div>
-
-      <div class="chapter-content" data-lang-content="en">
-        <p>This is where the first part of my story ends — at the end of 5th Class, in 2019.</p>
-        <p>But this is not the end. This is just the beginning.</p>
-        <p>The journey continues — 6th Class onwards. New friends, new struggles, new dreams.</p>
-        <p>Because a boy who never thought... still has a long way to go.</p>
-      </div>
-
-      <div class="chapter-content" data-lang-content="hi" style="display:none;">
-        <p>Yahan meri kahani ka pehla hissa khatam hota hai — 5th Class ke end pe, 2019 mein.</p>
-        <p>Par yeh ant nahi hai. Yeh toh sirf shuruaat hai.</p>
-        <p>Safar jaari hai — 6th Class se aage. Naye dost, nayi mushkilein, naye sapne.</p>
-        <p>Kyunki ek ladka jisne kabhi socha hi nahi tha... abhi bhi ek lamba raasta tay karna hai.</p>
-      </div>
-    </section>
-
-  </main>
-
-
-  <!-- ============================================
-       BEYOND THE STORY (Extra Sections)
-  ============================================= -->
-  <section class="beyond-story">
-    <div class="beyond-header">
-      <p class="beyond-label">BEYOND THE STORY</p>
-      <h2 class="beyond-title" data-en="Memories & Milestones" data-hi="Yaadein aur Padav">Memories & Milestones</h2>
-      <p class="beyond-subtitle" data-en="Some things are better felt than just read." data-hi="Kuch cheezein sirf padhne se zyada, mehsoos karne ki hoti hain.">Some things are better felt than just read.</p>
-    </div>
-
-
-    <!-- ============================================
-         PHOTO GALLERY
-    ============================================= -->
-    <section class="gallery-section" id="gallery">
-      <div class="section-title">
-        <h3 data-en="Photo Gallery" data-hi="Photo Gallery">Photo Gallery</h3>
-        <p data-en="Some memories are meant to be seen, not just read." data-hi="Kuch yaadein sirf padhne ke liye nahi, dekhne ke liye hoti hain.">Some memories are meant to be seen, not just read.</p>
-      </div>
-
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="assets/images/child.jpg" alt="Bachpan" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=Bachpan'">
-          <p class="gallery-caption" data-en="Bachpan" data-hi="Bachpan">Bachpan</p>
+    <!-- ============================================================
+    SIDEBAR / HAMBURGER MENU
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        
+        <div class="sidebar-profile">
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" />
+            <div class="sp-name">Ravi Raj</div>
+            <div class="sp-title">Student · Author · Developer</div>
         </div>
-        <div class="gallery-item">
-          <img src="images/gallery-2.jpg" alt="Mundan" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=Mundan'">
-          <p class="gallery-caption" data-en="Mundan (2012)" data-hi="Mundan (2012)">Mundan (2012)</p>
-        </div>
-        <div class="gallery-item">
-          <img src="images/gallery-3.jpg" alt="Birthday" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=Birthday'">
-          <p class="gallery-caption" data-en="First Birthday" data-hi="Pehla Birthday">First Birthday</p>
-        </div>
-        <div class="gallery-item">
-          <img src="images/gallery-4.jpg" alt="School" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=GBGS'">
-          <p class="gallery-caption" data-en="GBGS" data-hi="GBGS">GBGS</p>
-        </div>
-        <div class="gallery-item">
-          <img src="images/gallery-5.jpg" alt="Friends" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=Friends'">
-          <p class="gallery-caption" data-en="Friends" data-hi="Dost">Friends</p>
-        </div>
-        <div class="gallery-item">
-          <img src="images/gallery-6.jpg" alt="Family" onerror="this.src='https://via.placeholder.com/400x400/1a1a2e/eaeaea?text=Family'">
-          <p class="gallery-caption" data-en="Family" data-hi="Parivaar">Family</p>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         TIMELINE VIEW
-    ============================================= -->
-    <section class="timeline-section" id="timeline">
-      <div class="section-title">
-        <h3 data-en="Timeline" data-hi="Safar Ka Naksha">Timeline</h3>
-        <p data-en="A journey through the years." data-hi="Saal-dar-saal ka safar.">A journey through the years.</p>
-      </div>
-
-      <div class="timeline-track">
-        <div class="timeline-point">
-          <span class="tl-year">2006</span>
-          <p class="tl-event" data-en="Birth — 26 March" data-hi="Janm — 26 March">Birth — 26 March</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2009</span>
-          <p class="tl-event" data-en="Dadi Ji's passing, Richa's school" data-hi="Dadi Ji ka jaana, Richa ka school">Dadi Ji's passing, Richa's school</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2012</span>
-          <p class="tl-event" data-en="Mundan, First Birthday, Anganwadi" data-hi="Mundan, Pehla Birthday, Anganwadi">Mundan, First Birthday, Anganwadi</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2013</span>
-          <p class="tl-event" data-en="LKG Admission, GBGS begins" data-hi="LKG Admission, GBGS shuru">LKG Admission, GBGS begins</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2015</span>
-          <p class="tl-event" data-en="Don Bosco, Property Division" data-hi="Don Bosco, Property Division">Don Bosco, Property Division</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2016</span>
-          <p class="tl-event" data-en="GBGS continues, Term-2 missed" data-hi="GBGS continue, Term-2 miss">GBGS continues, Term-2 missed</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2017</span>
-          <p class="tl-event" data-en="'Suraj Bhaiya', 1st → 3rd jump" data-hi="'Suraj Bhaiya', 1st → 3rd jump">'Suraj Bhaiya', 1st → 3rd jump</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2018</span>
-          <p class="tl-event" data-en="Rank 4th, 'Engineer Banunga'" data-hi="Rank 4th, 'Engineer Banunga'">Rank 4th, 'Engineer Banunga'</p>
-        </div>
-        <div class="timeline-point">
-          <span class="tl-year">2019</span>
-          <p class="tl-event" data-en="Pulwama tribute, 5th Class ends" data-hi="Pulwama tribute, 5th Class khatam">Pulwama tribute, 5th Class ends</p>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- ============================================
-         SPECIAL SECTIONS
-    ============================================= -->
-    <section class="specials-section" id="specials">
-
-      <!-- Mummy -->
-      <div class="special-card mummy-card">
-        <h3 data-en="❤️ Meri Mummy — Meri Inspiration" data-hi="❤️ Meri Mummy — Meri Inspiration">❤️ Meri Mummy — Meri Inspiration</h3>
-        <p class="special-subtitle" data-en="Who is an engineer, and a teacher too." data-hi="Jo engineer bhi hain, teacher bhi.">Who is an engineer, and a teacher too.</p>
-        <ul class="special-list">
-          <li data-en="Engineer" data-hi="Engineer">Engineer</li>
-          <li data-en="Taught Hindi at GBGS" data-hi="GBGS mein Hindi padhati thi">Taught Hindi at GBGS</li>
-          <li data-en="Continued teaching to run the household" data-hi="Ghar chalane ke liye teaching continue rakhi">Continued teaching to run the household</li>
-          <li data-en="Taught me despite financial struggles" data-hi="Financial struggle ke bawajood mujhe padhaya">Taught me despite financial struggles</li>
-          <li data-en="That's why I wanted to become an engineer too" data-hi="Isliye main bhi engineer banna chahta tha">That's why I wanted to become an engineer too</li>
+        
+        <!-- QUICK LINKS -->
+        <div class="sidebar-section-label">🔹 Quick Links</div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="friends.html"><i class="fas fa-users"></i> Friends Gallery</a></li>
+            <li><a href="resume-pdf.html"><i class="fas fa-file-pdf"></i> Resume (PDF)</a></li>
         </ul>
-      </div>
-
-      <!-- Teachers -->
-      <div class="special-card teachers-card">
-        <h3 data-en="🌟 Mere Teachers" data-hi="🌟 Mere Teachers">🌟 Mere Teachers</h3>
-        <p class="special-subtitle" data-en="Who brought colour into my life." data-hi="Jinhone meri zindagi mein rang bhare.">Who brought colour into my life.</p>
-        <div class="teachers-grid">
-          <div class="teacher-highlight">
-            <h4>Ujjwal Sir</h4>
-            <p data-en="Math — 'Because of him, my Maths improved, and I started taking interest.'" data-hi="Math — 'Unki wajah se meri Maths acchi ho gayi, aur mujhe interest aane laga.'">Math — 'Because of him, my Maths improved...'</p>
-          </div>
-          <div class="teacher-item">Runi Ma'am <span>Hindi</span></div>
-          <div class="teacher-item">Veena Ma'am <span>Science</span></div>
-          <div class="teacher-item">Sadhana Ma'am <span>Hindi, Sanskrit</span></div>
-          <div class="teacher-item">Ekta Miss <span>English</span></div>
-          <div class="teacher-item">Chanchal Sir <span>Padhayi</span></div>
-          <div class="teacher-item">Gautam Sir <span>English</span></div>
-          <div class="teacher-item">Sunil Sir <span>Math</span></div>
-          <div class="teacher-item">Amrender Sir <span>SST</span></div>
-          <div class="teacher-item">Mohit Sir <span>English</span></div>
-          <div class="teacher-item">Bittu Sir <span>Computer</span></div>
-          <div class="teacher-item">Manish Sir <span>Processing</span></div>
-          <div class="teacher-item">Sandhya Miss <span>Teacher</span></div>
-          <div class="teacher-item">Puja Miss <span>Teacher</span></div>
-          <div class="teacher-item">Gunjan Sir <span>Teacher</span></div>
-          <div class="teacher-item">Jitender Sir <span>Teacher</span></div>
-          <div class="teacher-item">Chandan Sir <span>Teacher</span></div>
+        
+        <!-- CHAPTERS LIST -->
+        <div class="sidebar-section-label">📖 Chapters (10)</div>
+        <ul class="sidebar-menu" id="chapterSidebarMenu">
+            <li><a href="#" data-chapter="1"><span class="chapter-num">1.</span> The Beginning</a></li>
+            <li><a href="#" data-chapter="2"><span class="chapter-num">2.</span> A Loss &amp; A New Start</a></li>
+            <li><a href="#" data-chapter="3"><span class="chapter-num">3.</span> A Changing Home</a></li>
+            <li><a href="#" data-chapter="4"><span class="chapter-num">4.</span> First Steps into School</a></li>
+            <li><a href="#" data-chapter="5"><span class="chapter-num">5.</span> A House Divided</a></li>
+            <li><a href="#" data-chapter="6"><span class="chapter-num">6.</span> A Boy Called 'Suraj Bhaiya'</a></li>
+            <li><a href="#" data-chapter="7"><span class="chapter-num">7.</span> The Desire to Rise</a></li>
+            <li><a href="#" data-chapter="8"><span class="chapter-num">8.</span> A Dream Takes Shape</a></li>
+            <li><a href="#" data-chapter="9"><span class="chapter-num">9.</span> A Tribute &amp; A Farewell</a></li>
+            <li><a href="#" data-chapter="10"><span class="chapter-num">10.</span> Epilogue — To Be Continued...</a></li>
+        </ul>
+        
+        <!-- ACTION BUTTONS -->
+        <div class="sidebar-actions">
+            <button class="sidebar-action-btn primary" onclick="openModal()">
+                <i class="fas fa-download"></i> Download Full Ebook
+            </button>
+            <button class="sidebar-action-btn secondary" onclick="location.href='emailjs.html'">
+                <i class="fas fa-envelope"></i> Report Issue
+            </button>
         </div>
-      </div>
-
-      <!-- Friends -->
-      <div class="special-card friends-card">
-        <h3 data-en="👥 Mere Dost" data-hi="👥 Mere Dost">👥 Mere Dost</h3>
-        <p class="special-subtitle" data-en="Who will always be remembered." data-hi="Jo hamesha yaad rahenge.">Who will always be remembered.</p>
-        <div class="friends-list">
-          <p><strong data-en="5th Class Mates:" data-hi="5th Class Mates:">5th Class Mates:</strong> Shitanshu, Satyam, Rohit, Swati, Sakshi, Sanjana, Asmita</p>
-          <p><strong data-en="1st Class Friends:" data-hi="1st Class ke Dost:">1st Class Friends:</strong> Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal)</p>
-          <p><strong data-en="8 Seniors:" data-hi="8 Seniors:">8 Seniors:</strong> <span data-en="Who called me 'Suraj Bhaiya'" data-hi="Jo mujhe 'Suraj Bhaiya' bulate the">Who called me 'Suraj Bhaiya'</span></p>
-          <p><strong data-en="Others:" data-hi="Baaki:">Others:</strong> Abhilash, Ayush, Harsh</p>
+        
+        <!-- THEME TOGGLE INSIDE SIDEBAR -->
+        <div class="sidebar-footer">
+            <div class="sidebar-theme-toggle">
+                <span>🌙 Dark Mode</span>
+                <div class="switch" id="themeSwitchSidebar" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="switch-icon sun">☀️</span>
+                    <span class="switch-icon moon">🌙</span>
+                    <div class="slider"></div>
+                </div>
+            </div>
+            <p class="sf-motto">Made with <i>❤️</i> &amp; Curiosity</p>
         </div>
-      </div>
+    </aside>
 
-      <!-- Best Quotes -->
-      <div class="special-card quotes-card">
-        <h3 data-en="💬 Best Quotes" data-hi="💬 Best Quotes">💬 Best Quotes</h3>
-        <p class="special-subtitle" data-en="The most special lines from my diary." data-hi="Meri diary ki sabse khaas lines.">The most special lines from my diary.</p>
-        <div class="quotes-list">
-          <blockquote>
-            <p data-en="I won't follow behind others anymore. I have to push myself so far ahead, that others stay behind me." data-hi="Maine socha fir dusron ke peeche nahi karna hai, khud ko itna aage karna hai, dusre peeche ho jaye.">I won't follow behind others anymore...</p>
-          </blockquote>
-          <blockquote>
-            <p data-en="And at that time, whatever was my dream of becoming an Engineer — that dream was going to come true anyway." data-hi="Aur us time jo mera engineer banne ka sapna tha, mera wo sapna tha pura to ho hi jayega.">And at that time, whatever was my dream of becoming an Engineer...</p>
-          </blockquote>
-          <blockquote>
-            <p data-en="Sir asked: Bridge Engineer or Computer Engineer? And I went silent..." data-hi="Sir ne poocha: Bridge wala ya Computer wala? To main chup reh gaya...">Sir asked: Bridge Engineer or Computer Engineer? And I went silent...</p>
-          </blockquote>
-          <blockquote>
-            <p data-en="Everyone left the school, everyone got separated... What had to happen, started happening..." data-hi="Sabne school chhod diya, sab bichad gaye... Jo hone tha, wo hone laga...">Everyone left the school, everyone got separated...</p>
-          </blockquote>
-          <blockquote>
-            <p data-en="Swinging on the jhula has been a part of my childhood since the very beginning." data-hi="Jhula jhoolne ke saath bachpan se hi.">Swinging on the jhula has been a part of my childhood since the very beginning.</p>
-          </blockquote>
+    <!-- ============================================================
+    TOP NAVBAR WITH HAMBURGER
+    ============================================================ -->
+    <nav class="top-nav" id="topNav">
+        <div class="nav-left">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <div class="nav-brand">Ravi <span>Raj</span></div>
+                <span class="nav-brand-sub">✦ My Autobiography</span>
+            </div>
         </div>
-      </div>
+        <div class="nav-right">
+            <div class="theme-toggle-nav">
+                <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
+                    <span class="switch-icon sun">☀️</span>
+                    <span class="switch-icon moon">🌙</span>
+                    <div class="slider"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    </section>
-  </section>
-
-
-  <!-- ============================================
-       DOWNLOAD SECTION
-  ============================================= -->
-  <section class="download-section">
-    <h3 data-en="Read it again, anytime." data-hi="Ise dobara padhein, kabhi bhi.">Read it again, anytime.</h3>
-    <p data-en="Download the complete autobiography as an eBook." data-hi="Poori autobiography ko eBook ke roop mein download karein.">Download the complete autobiography as an eBook.</p>
-    <button class="btn-secondary btn-large" id="downloadBtnBottom" data-en="📥 Download eBook" data-hi="📥 eBook Download Karein">📥 Download eBook</button>
-  </section>
-
-
-  <!-- ============================================
-       FOOTER
-  ============================================= -->
-  <footer class="book-footer">
-    <div class="footer-content">
-      <p class="footer-title">Suraj Anand</p>
-      <p class="footer-subtitle" data-en="A Boy Who Never Thought" data-hi="A Boy Who Never Thought">A Boy Who Never Thought</p>
-      <p class="footer-hindi">Safar se safar tak — <span class="hindi-text">गुंजते सन्नाटे</span></p>
-      <p class="footer-copy">© 2024 — All rights reserved.</p>
+    <!-- ============================================================
+    DOWNLOAD MODAL
+    ============================================================ -->
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <h2>📥 Download Ebook</h2>
+            <p class="modal-desc">Choose your preferred language</p>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🇬🇧 English Ebook</span>
+                    <span class="opt-desc">All 10 chapters in English</span>
+                </div>
+                <button class="modal-btn" onclick="downloadEnglishEbook()">Download</button>
+            </div>
+            
+            <div class="modal-option">
+                <div class="opt-info">
+                    <span class="opt-title">🗣️ Hinglish Ebook</span>
+                    <span class="opt-desc">All 10 chapters in Hinglish</span>
+                </div>
+                <button class="modal-btn" onclick="downloadHinglishEbook()">Download</button>
+            </div>
+        </div>
     </div>
-  </footer>
 
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <div class="autobio-wrapper">
 
-  <!-- ============================================
-       TOAST NOTIFICATION (EBOOK)
-  ============================================= -->
-  <div id="toast" class="toast"></div>
+        <!-- ===== BACK LINK (TOP) ===== -->
+        <a href="index.html" class="back-link-top">← Back to Home</a>
 
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
 
-  <!-- ============================================
-       DOWNLOAD MODAL (EBOOK)
-  ============================================= -->
-  <div id="downloadModal" class="modal-overlay">
-    <div class="modal-box">
-      <span class="modal-close" onclick="closeDownloadModal()">&times;</span>
-      <h3 data-en="Download eBook" data-hi="eBook Download Karein">Download eBook</h3>
-      <p data-en="Choose your language:" data-hi="Apni bhasha chunein:">Choose your language:</p>
-      <div class="modal-buttons">
-        <button id="modalDownloadEn" class="btn-primary">📖 English</button>
-        <button id="modalDownloadHi" class="btn-secondary">📖 Hinglish</button>
-      </div>
+        <!-- ===== HERO ===== -->
+        <div class="autobio-header">
+            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="profile-photo" />
+            <h1>📖 My <span>Autobiography</span></h1>
+            <div class="intro-line">"A Boy Who Never Thought"</div>
+            <div class="sub-line">Safar Se Safar Tak — गुंजते सन्नाटे</div>
+            <div class="bio-line">March 2008 · Patna, India</div>
+        </div>
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
+        <!-- ===== STATS ===== -->
+        <div class="stats-grid">
+            <div class="stat-card"><span class="stat-number">3+</span><span class="stat-label">Years of Coding</span></div>
+            <div class="stat-card"><span class="stat-number">5+</span><span class="stat-label">Projects Built</span></div>
+            <div class="stat-card"><span class="stat-number">10K+</span><span class="stat-label">Lines of Code</span></div>
+            <div class="stat-card"><span class="stat-number">14</span><span class="stat-label">Friends</span></div>
+        </div>
+
+        <!-- ===== LANGUAGE CONTROLS ===== -->
+        <div class="lang-controls">
+            <button class="lang-btn active" id="btnEn" onclick="switchLang('en')">🇬🇧 English</button>
+            <button class="lang-btn" id="btnHi" onclick="switchLang('hi')">🗣️ Hinglish</button>
+            <button class="lang-btn translate-btn" onclick="openGoogleTranslate()">🌐 Translate</button>
+        </div>
+
+        <!-- ===== DOWNLOAD BUTTON ===== -->
+        <div class="download-actions">
+            <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
+        </div>
+
+        <!-- =============================================================
+        CHAPTERS — ENGLISH
+        ============================================================= -->
+        <div id="chaptersEn">
+
+            <!-- CHAPTER 1 -->
+            <div class="chapter active" data-chapter="1">
+                <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot has-image" id="photo-ch1-en">
+                        <img src="assets/images/child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: My childhood photo</span>
+                    </div>
+                </div>
+                
+                <p>The story begins on March 2008, when I was born.</p>
+                <p>It was a Wednesday.</p>
+                <p>On the 6th day, Mummy decided to name me with the letter 'R'.</p>
+                <p>Since Mummy's mindset wasn't clear yet, people around started suggesting names.</p>
+                <p>Like Nishant, Chinmay, blah blah...</p>
+                <p>Days passed, and everyone used to call me 'Ghantee' 😏</p>
+                <p>Actually, I am the third child after two sisters. But in Indian culture, if the 3rd child is a 'Son', he gets a different level of love.</p>
+                <p>Since childhood, I was fat, but due to my habits, I used to fall sick every month. Because of that, I started getting thin, and my face started looking real.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 2 -->
+            <div class="chapter" data-chapter="2">
+                <h3><span class="emoji-big">🕊️</span> Chapter 2: A Loss &amp; A New Start (2009)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>The first picture I have is from 2009, when my ration card was made. It was winter time, so Papa and Mummy set up a curtain in the background, and 5 family members got their photo clicked together.</p>
+                <p>I never used to make direct eye contact with anyone (as Mummy told me later).</p>
+                <p>In 2009 itself, on 12th January, my grandmother (Dadi ji) passed away due to a brain hemorrhage. I don't remember anything because I was only 11 months old.</p>
+                <p>But now I realize that I never got my grandmother's love...</p>
+                <p>Anyway, moving on from all this, life kept moving forward, and in 2009, my elder sister (the older one — Richa), got enrolled in a newly opened school called GABAS (Gautam Buddha Global School).</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 3 -->
+            <div class="chapter" data-chapter="3">
+                <h3><span class="emoji-big">🏠</span> Chapter 3: A Changing Home (2010–2012)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Days kept passing, and in 2009, there were a lot of problems. First, Mummy's second issue, then Dadi's death.</p>
+                <p>Then 2010 — whether I say for myself or for my family members — must have been better.</p>
+                <p>That year, there was a wedding in the family, and my Bua ji's son was also born that year, I think.</p>
+                <p>After all this, 2011 must have been similar too. When you shift to a new house, you have to go to old festive people's place for pooja etc., so everyone used to call out my name from the road itself.</p>
+                <p>And I used to secretly watch those people.</p>
+                <p>This year, my Mundan (head-shaving ceremony) also happened on 4 May 2012, in which I obviously wasn't present (mentally/aware), because my dear ones had already left.</p>
+                <p>In 2012, my first birthday was probably celebrated on 26 March 2012, when I had perhaps turned 4 years old.</p>
+                <p>They say that when new hair grows, the mind also grows. So after my Mundan, I got attached to Anganwadi (which was Aunty's school). There, I used to count and eat soya beans.</p>
+                <p>I used to stay there till the end. And somehow, without even realizing it, I finished the Nursery syllabus.</p>
+                <p><em>"Swinging on the jhula has been a part of my childhood since the very beginning."</em></p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 4 -->
+            <div class="chapter" data-chapter="4">
+                <h3><span class="emoji-big">🎒</span> Chapter 4: First Steps into School (2013)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>So, as I wrote, both my sisters were going to GBGS school, so the fees were 300 (for both together).</p>
+                <p>So, in February 2013, on Saraswati Puja, my admission happened directly into L.K.G (Lower Kindergarten) class.</p>
+                <p>Because I had already completed the nursery course just by swinging on the jhula.</p>
+                <p><strong>LKG Begins...</strong></p>
+                <p>Name — Suraj Anand<br>
+                   School — Gautam Buddha Global School<br>
+                   Sanskar Nagar, Bandwar, Begusarai<br>
+                   Motto — "तमसो मा ज्योतिर्गमय"</p>
+                <p>So, in the beginning of LKG, I used to cry a lot. I used to tell my sisters to come to me during lunch break.</p>
+                <p>And in class, at the end, I used to ask the other kids to let me pass.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 5 -->
+            <div class="chapter" data-chapter="5">
+                <h3><span class="emoji-big">🏚️</span> Chapter 5: A House Divided (2014–2016)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2014 — I moved to UKG.</p>
+                <p>In 2015, I was in 1st Class. Mummy used to teach at Don Bosco Academy. Due to financial constraints, I started going with her to the Don Bosco Academy (Cheria Bariyarpur, Begusarai) branch, because it was free for me there.</p>
+                <p>I went there for only 3 months, because the travel itself used to cause bone trouble, and we used to reach home only by evening.</p>
+                <p>At that time, there was a dispute in our house, and a property division happened — of land, belongings, everything.</p>
+                <p>Though our house was very big, and it was already a 2-sided house, so there was no problem.</p>
+                <p>Earlier, I used to live on the left side, then I started living on the new right side.</p>
+                <p>But even now, the financial condition kept getting worse.</p>
+                <p>In 2016, after 3 months, I continued again at GBGS.</p>
+                <p>In 2016, I did not appear for the Term-2 exam of 1st Class, because my health had deteriorated, and I was unhealthy.</p>
+                <p><em>'An 8-year-old boy'</em></p>
+                <p>Friends' names: Abhilash, Ayush, Harsh.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 6 -->
+            <div class="chapter" data-chapter="6">
+                <h3><span class="emoji-big">👦</span> Chapter 6: A Boy Called 'Suraj Bhaiya' (2017)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In 1st Class, I had many friends: Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal), and many more, but...</p>
+                <p>By that time, these people left the school and went to another school, because this was a small school, and teachers were decreasing in the school.</p>
+                <p>Sandhya Miss, Puja Miss, Gunjan Sir, Jitender Sir, Chandan Sir.</p>
+                <p>The result hadn't come out yet, so my parents got me promoted from 1st Class, and since the school was my Chacha's, it happened easily.</p>
+                <p>I started a jump from 1st to 3rd initially, but in Don Bosco School, I had already studied ICSE books in 3 months, so I recovered within a few days.</p>
+                <p>In 3rd Class, 8 seniors became my friends, and from then on, they started calling me 'Suraj Bhaiya'.</p>
+                <p>So in 3rd Class, when I was going smoothly, then Nakib and Abhinav became my juniors, and then Rohit and Satyam also became juniors...</p>
+                <p>A fight broke out in our class — a random fight.</p>
+                <p>So the boys had no value in the class.</p>
+                <p>And, the teacher scolded me, and Shitanshu too, and my rank got spoiled, and Ganesh went to another school.</p>
+                <p>So from 3rd Class to 4th Class (State Board), because of Chandan Sir, everyone changed — and he made us memorize the names of state capitals.</p>
+                <p>I remember some things, so I'm writing this. Due to lack of teachers in school.</p>
+                <p>Science was taught by Veena Ma'am — about living things and all. Hindi by Sadhana Ma'am. English by Ekta Miss. Sanskrit too by Sadhana Ma'am. 3rd Class went smoothly.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 7 -->
+            <div class="chapter" data-chapter="7">
+                <h3><span class="emoji-big">📈</span> Chapter 7: The Desire to Rise (2018)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>In 4th Class, I must have thought about why my ranks were coming, so I started studying — with Chanchal Sir.</p>
+                <p>Mummy got coaching arranged, but my crying superpower was very good. Whenever I didn't feel like doing any work, I used to start crying.</p>
+                <p><strong>Teachers (2018):</strong><br>
+                   Gautam Sir — English<br>
+                   Sunil Sir — Math<br>
+                   Gautam Sir / Amrender Sir — SST<br>
+                   Mohit Sir — English<br>
+                   Bittu Sir — Computer<br>
+                   Manish Sir — Processing</p>
+                <p>The 4th Class result came out, and at that time, my rank was 4th.</p>
+                <p>I had secured 4th, and literally, I felt bad that day.</p>
+                <p>I sat and thought that if I secured 1st in 5th Class, then in 5th my rank would be 1st.</p>
+                <p><strong>1st:</strong> Swati<br>
+                   <strong>2nd:</strong> Sanjana<br>
+                   <strong>3rd:</strong> Asmita<br>
+                   <strong>4th:</strong> Suraj Anand (A.K.A Raviraj)</p>
+                <p>Then I thought — I won't follow behind others anymore. I have to push myself so far ahead, that others stay behind me.</p>
+                <p>During Holi and all, there used to be fun. To sing, we used to go to the playground and sit in a corner and listen, but friends wouldn't let us sit...</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 8 -->
+            <div class="chapter" data-chapter="8">
+                <h3><span class="emoji-big">✨</span> Chapter 8: A Dream Takes Shape (2018–2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>My Mummy joined GBGS in 2018 itself, and from then on, she used to teach Hindi in this school.</p>
+                <p>Time kept passing, and exams kept happening...</p>
+                <p>Our school had good "Sakhi" (friendship/activities), I mean, current affairs and all were very much there for everyone...</p>
+                <p>That school was only up to 8th, but the students could only reach up to 6th-7th, because after that they would leave the school — because there were no teachers.</p>
+                <p>So according to that, we (who were in 5th) became the seniors. So we 4 friends used to go to conduct the assembly.</p>
+                <p>And a girls' group + 4-5 more girls used to do the assembly.</p>
+                <p>So even in commanding, we used to have fights — "I'll do it, no I'll do it"... Bla Bla Bla.</p>
+                <p>I participated in the whole function for the first time, and that too in 5th Class...</p>
+                <p>And at that time, whatever was my dream of becoming an Engineer — that dream was going to come true anyway.</p>
+                <p>This was the first time when, on 15 August 2018, I participated in a dance and also gave a speech.</p>
+                <p>My uncle (Director Sir) gifted me a Pen, and in the assembly, he asked every child: "What will you become when you grow up?"</p>
+                <p>Someone said Doctor, someone said Police, Army, Astronaut, Scientist...</p>
+                <p>But I, Suraj Anand (Raviraj), went up and said "Engineer".</p>
+                <p>Then Sir asked: "Which one — Bridge Engineer or Computer Engineer?"</p>
+                <p>And I went silent, because I didn't even know what it takes to become an engineer!</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 9 -->
+            <div class="chapter" data-chapter="9">
+                <h3><span class="emoji-big">🕯️</span> Chapter 9: A Tribute &amp; A Farewell (2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>I just wanted to become an engineer because my Mummy ji was an engineer.</p>
+                <p>Anyway, in March 2019, my 5th Class exam happened. But just before that, on 10 Feb 2019 (Saraswati Puja), something special happened.</p>
+                <p>In between, in Nov 2018 itself, an EC Competition (Clean &amp; Green School) exam happened on the 14th (at Don Bosco).</p>
+                <p>It was the first time I went from home with the school kids — with friends, I had fun.</p>
+                <p>When the result came out, I realized for the first time what a competition really was. My cutoff was (85/100).</p>
+                <p>Out of them, only 51 children were selected, and the highest marks were 96.</p>
+                <p>In the evening, the management called us and gave awards to everyone. Certificate, medal, and a GK Award.</p>
+                <p>I felt happy that for the first time I got a gift and so much respect. But I felt bad that the competition was of L.K.G. level — so how would I compete?</p>
+                <p>However, on 14 Feb 2019, the Pulwama attack also happened, and the prize distribution was on the same day.</p>
+                <p>So I paid tribute to the CRPF Indian Forces, and then came back.</p>
+                <p>The final exam of Class 5th was of ICSE pattern. The result was supposed to come in the last week of March, which was on 31/03/2019.</p>
+                <p>On the first day of the class, 85%+ and second position was held by Sushil, who was my competitor.</p>
+                <p>My mood had changed, and I became diligent (hardworking) too.</p>
+                <p>My Mummy always thought well about me, and when she found out that I passed 5th Class, her happiness knew no bounds.</p>
+                <p>Since I had shifted schools, I made friends with everyone. Those who scored more than 80% were very few.</p>
+                <p>When the talk of our 8 mates came up, everyone left the school, everyone got separated, everyone started handling themselves.</p>
+                <p>What had to happen, started happening...</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 10 — EPILOGUE -->
+            <div class="chapter" data-chapter="10">
+                <h3><span class="emoji-big">📖</span> Epilogue: To Be Continued...</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-en">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>This is where the first part of my story ends — at the end of 5th Class, in 2019.</p>
+                <p>But this is not the end. This is just the beginning.</p>
+                <p>The journey continues — 6th Class onwards. New friends, new struggles, new dreams.</p>
+                <p>Because a boy who never thought... still has a long way to go.</p>
+                
+                <div class="quote-box gold">
+                    "Safar se safar tak — गुंजते सन्नाटे"
+                    <span class="author">— Suraj Anand (Ravi Raj)</span>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =============================================================
+        CHAPTERS — HINGLISH
+        ============================================================= -->
+        <div id="chaptersHi" style="display:none;">
+
+            <!-- CHAPTER 1 -->
+            <div class="chapter active" data-chapter="1">
+                <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot has-image" id="photo-ch1-hi">
+                        <img src="assets/images/child.jpg" alt="Childhood Photo" />
+                        <span class="fig-caption">Fig. 1.1: Bachpan ki tasveer</span>
+                    </div>
+                </div>
+                
+                <p>To baat suru hoti hai 2008 ke March mahine se, jab mera janm hua tha.</p>
+                <p>Day — Wednesday (Budhwar).</p>
+                <p>6th day Mummy ne apne naam 'R' se naam rakhne ka socha.</p>
+                <p>Mummy ka mindset clear nahi hone ke chute, paas wale logon ne kuch kuch bolna suru kar diya.</p>
+                <p>Jaise Nishant, Chinmay, blah blah...</p>
+                <p>Din beete chala gaya, aur sabhi log mujhe 'Ghantee' bulaya karte the. 😏</p>
+                <p>Wo waise meri 2 badi behen thi, but Indian culture mein agar 3rd bacha 'Beta' ho to pyar alag hi level ka milta hai.</p>
+                <p>Bachpan se hi mota tha mein, par apni aadaton ke chalte bimaar ho ja raha tha, every month, jiske karan ki mai patla hone laga, aur chehra real hone laga.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 2 -->
+            <div class="chapter" data-chapter="2">
+                <h3><span class="emoji-big">🕊️</span> Chapter 2: Ek Khoj aur Nayi Shuruaat (2009)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch2-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 2.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Sabse pehli tasveer jo mere paas hai, wo 2009 ki hai, jab mera ration card bana tha. Thand ka time tha, toh Papa aur Mummy ne parde se setting karke, 5 family members ki photo click karwayi hogi.</p>
+                <p>Main kisi se direct eye contact nahi karta tha (jaisa Mummy ne mujhe baad mein bataya).</p>
+                <p>2009 mein hi, 12 January ko, meri Dadi ji ka brain hemorrhage hone ke karan death ho gaya tha. Mujhe kuch yaad toh nahi hai kyunki main sirf 11 months ka tha.</p>
+                <p>Par ab realise hota hai ki Dadi ka pyar nahi mila mujhe...</p>
+                <p>Kheir, chalo in sab baaton ko, dil aage badhta gaya, aur 2009 mein hi shayad meri didi (badi wali — Richa), usne GABAS (Gautam Buddha Global School) mein enrolled ho gayi — jo naya khula school tha.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 3 -->
+            <div class="chapter" data-chapter="3">
+                <h3><span class="emoji-big">🏠</span> Chapter 3: Badalta Ghar (2010–2012)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch3-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 3.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Din beeta jaa raha tha, aur 2009 mein bahut saari problems hui thi. Pehle Mummy ka dusra issue, phir Dadi's death.</p>
+                <p>Fir 2010 — mere liye kahu ya mere parivaar walon ke liye — achha raha hoga.</p>
+                <p>Us saal, ghar mein shaadi thi, aur Bua ji ka ladka bhi hua tha us saal shayad.</p>
+                <p>In sab ke baad, 2011 bhi aisa hi kuch raha hoga. Naye ghar mein aane ke baad hota hai na — purane Utsav wale logon ke paas jaana, pooja wagerah mein — toh mujhe sab log road par se hi naam liya karte the.</p>
+                <p>Aur main chupke se un logon ko dekha karta tha.</p>
+                <p>Is saal mera Mundan bhi hua tha, 4 May 2012 ko, jisme main kuch toh obviously nahi hi honga, kyunki mere pyare baad chale gaye.</p>
+                <p>2012 mein hi shayad mera pehla birthday manaya gaya tha — 26 March 2012 ko, jaisa Mummy ne bataya, jab main perhaps 4 saal ka ho gaya tha.</p>
+                <p>Wo kehte hain na, naye baal aane se mind growth hota hai. Toh mere Mundan ke baad, main Anganwadi (jo ki Aunty ka school tha) mein ghar lag gaya tha. Wahan main soya bean count karke khata tha.</p>
+                <p>Akhar pe hi rehta tha. Aur 'ghaahu' jhoothe kab main Nursery ka syllabus kar gaya, mujhe pata hi nahi chala.</p>
+                <p><em>"Jhula jhoolne ke saath bachpan se hi."</em></p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 4 -->
+            <div class="chapter" data-chapter="4">
+                <h3><span class="emoji-big">🎒</span> Chapter 4: School Ke Pehle Kadam (2013)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch4-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 4.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>To jaisa maine likha ki meri dono behen GBGS school jaa rahi thi, toh fees ma 300 (dono milakar).</p>
+                <p>To, 2013 — February — Saraswati Puja ke din mera admission direct L.K.G (Lower Kindergarten) class mein ho gaya.</p>
+                <p>Kyunki maine nursery ka course jhula jhoolke hi kar liya tha.</p>
+                <p><strong>LKG Aaraambh...</strong></p>
+                <p>Naam — Suraj Anand<br>
+                   School — Gautam Buddha Global School<br>
+                   Sanskar Nagar, Bandwar, Begusarai<br>
+                   Motto — "तमसो मा ज्योतिर्गमय"</p>
+                <p>To Starting LKG mein bahut rota tha, main apni behno ko bolta tha lunch break mein mere se milne aana.</p>
+                <p>Aur class mein end mein bachon se guzarne ke liye kehta tha.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 5 -->
+            <div class="chapter" data-chapter="5">
+                <h3><span class="emoji-big">🏚️</span> Chapter 5: Ghar Ka Batwara (2014–2016)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch5-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 5.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>2014 — Main UKG mein chala gaya.</p>
+                <p>1st Class mein 2015 mein tha. Tab Mummy Don Bosco Academy mein padhane jaati thi. Financial constraints ke karan, main apni Mummy ke saath Don Bosco Academy (Cheria Bariyarpur, Begusarai) branch mein jaane laga — kyunki free tha mera wahan.</p>
+                <p>Main 3 month hi gaya wahan, kyunki safar mein hi bone trop lag jaati thi, aur ghar toh aane shaam mein hi lag jaate the.</p>
+                <p>Us time hamare ghar mein dispute hua, aur property division ho gaya — land, saman, sab ka.</p>
+                <p>Though hamara ghar bahut bada hai, aur pehle se hi 2-sided ghar tha, toh koi problem nahi hui.</p>
+                <p>Pehle main left side rehta tha, fir new right side rehne laga.</p>
+                <p>But abhi bhi financial condition bigadti jaa rahi thi.</p>
+                <p>2016 — Maine phir se 3 month baad, phir se GBGS mein continue kiya.</p>
+                <p>2016 mein 1st Class ke Term-2 exam maine nahi diya, kyunki mera tabiyat bigad gaya, aur main unhealthy tha.</p>
+                <p><em>'8 Saal ka ladka'</em></p>
+                <p>Doston ke naam: Abhilash, Ayush, Harsh.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 6 -->
+            <div class="chapter" data-chapter="6">
+                <h3><span class="emoji-big">👦</span> Chapter 6: 'Suraj Bhaiya' Naam Ka Ladka (2017)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch6-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 6.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>1st Class mein mere bahut saare dost the: Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal), aur bhi bahut, but...</p>
+                <p>By the time, in logon ne school leave kar diya, aur dusre school chale gaye, kyunki ye chota school tha, aur teachers kam ho rahe the school mein.</p>
+                <p>Sandhya Miss, Puja Miss, Gunjan Sir, Jitender Sir, Chandan Sir.</p>
+                <p>Result toh new aaye nahi, so mere parents ne mera 1st Class promotion karwa diya, aur school toh Chacha ka hi tha, toh ho bhi gaya aaram se.</p>
+                <p>Main 1st → 3rd ka jump suru mein laga neko, but Don Bosco School mein 3 month mein ICSE ke books padh liya tha, toh recover ho gaya kuch din mein.</p>
+                <p>3rd Class mein mere 8 seniors mere dost banne lag gaye, aur ab se 'Suraj Bhaiya' keh ke bulate hain mujhe.</p>
+                <p>To 3rd Class mein, jab main smooth way jaa raha tha, tab Nakib, Abhinav aage se jab junior ho gaye, tab Rohit, Satyam bhi aage se jab ban gaye the...</p>
+                <p>Ladgayi hamare class mein, random ladai.</p>
+                <p>To ladko ke koi value hi nahi thi class mein.</p>
+                <p>And, Teacher ne mujhe dant lagayi, aur Shitanshu ne bhi, And rank kharab ho gayi, aur Ganesh School chala gaya.</p>
+                <p>To 3rd Class se 4th Class (State Board) ke naam pe Chandan Sir ki wajah se, sab log badal gaye — aur unhone state capitals ke naam yaad karwa diye the.</p>
+                <p>Yaad hai kuch kuch, toh yahi likh raha hoon. Due to lack of teachers in school.</p>
+                <p>Science us time padhati thi Veena Ma'am — living things wagerah ke baare mein. Hindi → Sadhana Ma'am. English → Ekta Miss. Sanskrit bhi → Sadhana Ma'am hi padha deti thi. 3rd Class smoothly gaya.</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 7 -->
+            <div class="chapter" data-chapter="7">
+                <h3><span class="emoji-big">📈</span> Chapter 7: Uthne Ki Chah (2018)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch7-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 7.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>4th Class mein maine socha hoga ki meri rank kyun aa rahe, tab padhayi start ki — Chanchal Sir se.</p>
+                <p>Coaching lagwayi Mummy ne, lekin mera rone ka superpower bahut accha tha. Jab bhi mujhe koi kaam karne ka mann nahi karta, toh main rone lagta tha.</p>
+                <p><strong>Teachers (2018):</strong><br>
+                   Gautam Sir — English<br>
+                   Sunil Sir — Math<br>
+                   Gautam Sir / Amrender Sir — SST<br>
+                   Mohit Sir — English<br>
+                   Bittu Sir — Computer<br>
+                   Manish Sir — Processing</p>
+                <p>4th Class ka result aa gaya, us time meri rank aayi 4th.</p>
+                <p>Maine 4th kiya tha, aur literally mujhe bura laga us din.</p>
+                <p>Maine baith ke soch raha tha ki agar 5th Class mein 1st kiya, toh 5th mein 1st rank aayegi.</p>
+                <p><strong>1st:</strong> Swati<br>
+                   <strong>2nd:</strong> Sanjana<br>
+                   <strong>3rd:</strong> Asmita<br>
+                   <strong>4th:</strong> Suraj Anand (A.K.A Raviraj)</p>
+                <p>Maine socha fir dusron ke peeche nahi karna hai, khud ko itna aage karna hai, dusre peeche ho jaye.</p>
+                <p>Holi wagerah mein maje aate the, gaane ke liye playground mein jaate to kone mein baith ke suna karte the, lekin dost baithne nahi dete the...</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 8 -->
+            <div class="chapter" data-chapter="8">
+                <h3><span class="emoji-big">✨</span> Chapter 8: Sapna Sakar Hota Hai (2018–2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch8-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 8.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Meri Mummy ne 2018 mein hi GBGS join kar liya tha, tab se wo is school mein Hindi padhaya karti thi.</p>
+                <p>Samay beeta ja raha tha aur exams hote rahe...</p>
+                <p>Hamare school mein "Sakhi" acchi thi, matlab current affairs wagerah sabke bahut the...</p>
+                <p>Wo school toh halaki 8th tak tha, lekin usne 6th-7th tak hi bachhe padh paate the, kyunki uske baad school chhod dete the — kyunki teachers nahi the.</p>
+                <p>To us hisaab se, hum log jo (5th mein) the, wo senior hue na. To hum 4 dost jaate the assembly karne.</p>
+                <p>Aur girls group + 4-5 aur girls karti thi assembly mein.</p>
+                <p>To commanding karne mein bhi hamari ladai ho jaati thi — "main karunga", "nahi main"... Bla Bla Bla.</p>
+                <p>Saare function mein bas pehli baar participate bhi 5th Class mein hi kiya maine...</p>
+                <p>Aur us time jo mera engineer banne ka sapna tha, mera wo sapna tha pura toh ho hi jayega.</p>
+                <p>Ye pehli baar tha jab maine 15 August 2018 ko dance mein participate kiya aur speech bhi diya.</p>
+                <p>Mere uncle (Director Sir) ne mujhe Pen gift kiya, aur assembly mein har ek bachhon se poocha: "Bade hoke kya banoge?"</p>
+                <p>Kisi ne Doctor kaha, toh kisi ne Police, Army, Astronaut, Scientist...</p>
+                <p>Par main Suraj Anand (Raviraj) yahan gaya aur kaha "Engineer" bola.</p>
+                <p>Toh Sir ne poocha: "Bridge wala ya Computer wala?"</p>
+                <p>To main chup reh gaya, kyunki mujhe pata nahi tha ki engineer hone ke liye kya karna hota hai!</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 9 -->
+            <div class="chapter" data-chapter="9">
+                <h3><span class="emoji-big">🕯️</span> Chapter 9: Ek Shraddhanjali aur Alvida (2019)</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch9-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 9.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Mujhe bas engineer banna tha kyunki mere Mummy ji engineer the.</p>
+                <p>To kheir, March 2019, mera 5th Class ka exam hua. Aam usse pehle hi 10 Feb 2019 (Saraswati Puja) ke din kuch khaas hua.</p>
+                <p>Uske beech mein Nov 2018 mein hi EC Competition (Clean &amp; Green School) exam hua 14th ko (Don Bosco).</p>
+                <p>Tha toh pehli baar main ghar se school ke bachhon ke saath gaya — doston ke saath maza aaya.</p>
+                <p>Jab result aaya, toh pehli baar competition ka realisation hua. Mera Cutoff (85/100) aaye the.</p>
+                <p>Sirf 51 bachhe select hue, aur highest marks 96 tha.</p>
+                <p>Shaam ko management ne hume logon ko bulaya aur award diya sabko. Certificate, medal, aur GK Award.</p>
+                <p>Khushi is baat ki hui ki pehli baar gift aur itna respect mila. Aur bura is baat ka laga ki competition L.K.G. ke toh kaise karunga compete.</p>
+                <p>Halaki, 14 Feb 2019 ko Pulwama attack bhi hua tha, aur usi din prize distribution tha.</p>
+                <p>Toh tribute diya CRPF Indian Forces ko, aur wapas karke aa gaya main.</p>
+                <p>Class 5th ke final exam ICSE pattern ke the. Result aana tha last week of March, jo ki 31/03/2019 ko tha.</p>
+                <p>First day of the Class mein 85%+ second position Sushil ko tha, jo mera competitor thi.</p>
+                <p>Mere mood change ho gaya tha, Diligent (mehnati) bhi.</p>
+                <p>Meri Mummy ne hamesha mere baare mein achha socha, aur jab unko pata chala ki main 5th Class mein pass ho gaya, toh unki khushi ka koi thikana nahi tha.</p>
+                <p>Fir school shift kar chuke hu toh sab se ab dosti ho gayi. 80% se zyada marks laane wale bacche bahut kam the.</p>
+                <p>Jab humare 8 mates ki group ki baat chali, toh sabne school chhod diya, sab bichad gaye, sab log apne aap ko sambhalne lage.</p>
+                <p>Jo hone tha, wo hone laga...</p>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
+                </div>
+            </div>
+
+            <!-- CHAPTER 10 — EPILOGUE -->
+            <div class="chapter" data-chapter="10">
+                <h3><span class="emoji-big">📖</span> Epilogue: Abhi Jaari Hai...</h3>
+                
+                <div class="chapter-photo-placeholder">
+                    <div class="photo-slot" id="photo-ch10-hi">
+                        <span class="upload-hint">📸 Upload Chapter Photo</span>
+                        <span class="fig-caption">Fig. 10.1: Add your photo description here</span>
+                    </div>
+                </div>
+                
+                <p>Yahan meri kahani ka pehla hissa khatam hota hai — 5th Class ke end pe, 2019 mein.</p>
+                <p>Par yeh ant nahi hai. Yeh toh sirf shuruaat hai.</p>
+                <p>Safar jaari hai — 6th Class se aage. Naye dost, nayi mushkilein, naye sapne.</p>
+                <p>Kyunki ek ladka jisne kabhi socha hi nahi tha... abhi bhi ek lamba raasta tay karna hai.</p>
+                
+                <div class="quote-box gold">
+                    "Safar se safar tak — गुंजते सन्नाटे"
+                    <span class="author">— Suraj Anand (Ravi Raj)</span>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
+                    <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =============================================================
+        EXTRA PANELS — ADDED CONTENT
+        ============================================================= -->
+        <div class="extra-panels">
+
+            <!-- PANEL 1: QUOTE OF THE DAY -->
+            <div class="panel-card" id="panelQuote">
+                <div class="panel-icon">💬</div>
+                <h4>Quote of the Day</h4>
+                <blockquote>
+                    "The best way to predict the future is to create it."
+                </blockquote>
+                <span class="panel-author">— Peter Drucker</span>
+            </div>
+
+            <!-- PANEL 2: FUN FACT / DID YOU KNOW? -->
+            <div class="panel-card" id="panelFact">
+                <div class="panel-icon">🧠</div>
+                <h4>Did You Know?</h4>
+                <p>
+                    Suraj (Ravi) was called 'Ghantee' as a child — and later, 
+                    his seniors started calling him <strong>'Suraj Bhaiya'</strong>.
+                </p>
+            </div>
+
+            <!-- PANEL 3: READING LIST -->
+            <div class="panel-card" id="panelBooks">
+                <div class="panel-icon">📚</div>
+                <h4>Books That Shaped Him</h4>
+                <ul>
+                    <li>📖 <em>Wings of Fire</em> — APJ Abdul Kalam</li>
+                    <li>📖 <em>Long Walk to Freedom</em> — Nelson Mandela</li>
+                    <li>📖 <em>Helen Keller's Autobiography</em></li>
+                </ul>
+            </div>
+
+            <!-- PANEL 4: MILESTONE TIMELINE (SNAPSHOT) -->
+            <div class="panel-card" id="panelMilestones">
+                <div class="panel-icon">⏳</div>
+                <h4>Milestones</h4>
+                <ul class="milestone-list">
+                    <li><span class="year">2008</span> Born — 26 March</li>
+                    <li><span class="year">2009</span> Dadi Ji's passing, Richa's school</li>
+                    <li><span class="year">2012</span> Mundan, First Birthday, Anganwadi</li>
+                    <li><span class="year">2013</span> LKG Admission, GBGS begins</li>
+                    <li><span class="year">2015</span> Don Bosco, Property Division</li>
+                    <li><span class="year">2017</span> 'Suraj Bhaiya', 1st → 3rd jump</li>
+                    <li><span class="year">2018</span> Rank 4th, 'Engineer Banunga'</li>
+                    <li><span class="year">2019</span> Pulwama tribute, 5th Class ends</li>
+                </ul>
+            </div>
+
+            <!-- PANEL 5: SKILLS SNAPSHOT -->
+            <div class="panel-card" id="panelSkills">
+                <div class="panel-icon">⚡</div>
+                <h4>Skills Snapshot</h4>
+                <div class="skill-tags">
+                    <span>HTML</span>
+                    <span>CSS</span>
+                    <span>JavaScript</span>
+                    <span>Git</span>
+                    <span>Problem Solving</span>
+                </div>
+            </div>
+
+            <!-- PANEL 6: MOTTO CARD -->
+            <div class="panel-card" id="panelMotto">
+                <div class="panel-icon">🌟</div>
+                <h4>Life Motto</h4>
+                <p class="motto-text">
+                    "Safar se safar tak — गुंजते सन्नाटे"
+                </p>
+            </div>
+
+        </div>
+        <!-- ===== END EXTRA PANELS ===== -->
+
+        <!-- ===== CHAPTER PROGRESS INFO ===== -->
+        <div class="chapter-progress-info">
+            <span class="chapter-num" id="chapterNumDisplay">Chapter 1 of 10</span>
+            <span class="chapter-percent" id="chapterPercentDisplay">0% complete</span>
+        </div>
+
+        <!-- ===== PROGRESS DOTS ===== -->
+        <div class="progress-dots" id="progressDots">
+            <span class="dot active" data-dot="1"></span>
+            <span class="dot" data-dot="2"></span>
+            <span class="dot" data-dot="3"></span>
+            <span class="dot" data-dot="4"></span>
+            <span class="dot" data-dot="5"></span>
+            <span class="dot" data-dot="6"></span>
+            <span class="dot" data-dot="7"></span>
+            <span class="dot" data-dot="8"></span>
+            <span class="dot" data-dot="9"></span>
+            <span class="dot" data-dot="10"></span>
+        </div>
+
+        <!-- ===== ORNAMENT ===== -->
+        <div class="ornament">✦ ✦ ✦ ✦ ✦</div>
+
     </div>
-  </div>
 
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script src="js/global.js"></script>
+    <script src="js/autobiography.js"></script>
+    <script src="js/ebook.js"></script>
+    
+    <!-- ============================================================
+    SIDEBAR LOGIC
+    ============================================================ -->
+    <script>
+        // ============================================
+        // HAMBURGER MENU TOGGLE
+        // ============================================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
 
-  <!-- ============================================
-       PROGRESS CONTAINER (EBOOK)
-  ============================================= -->
-  <div class="progress-container" style="display:none;"></div>
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
 
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-  <!-- JS Files -->
-  <script src="js/autobiography.js"></script>
-  <script src="js/ebook.js"></script>
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', toggleSidebar);
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeSidebar);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+
+        // ============================================
+        // CHAPTER NAVIGATION FROM SIDEBAR
+        // ============================================
+        document.querySelectorAll('#chapterSidebarMenu a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const chapterNum = parseInt(this.dataset.chapter);
+                if (chapterNum) {
+                    const lang = currentLang || 'en';
+                    goToChapter(lang, chapterNum);
+                    closeSidebar();
+                }
+            });
+        });
+
+        // ============================================
+        // THEME TOGGLE IN SIDEBAR
+        // ============================================
+        const themeSwitchSidebar = document.getElementById('themeSwitchSidebar');
+        if (themeSwitchSidebar) {
+            themeSwitchSidebar.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                const label = document.getElementById('themeLabel');
+                if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
+                if (window.showToast) {
+                    window.showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+                }
+            });
+        }
+
+        // ============================================
+        // CLOSE SIDEBAR ON MENU ITEM CLICK (Quick Links)
+        // ============================================
+        document.querySelectorAll('.sidebar-menu a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                setTimeout(closeSidebar, 300);
+            });
+        });
+
+        // ============================================
+        // SIDEBAR ACTION BUTTONS
+        // ============================================
+        document.querySelectorAll('.sidebar-action-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                setTimeout(closeSidebar, 400);
+            });
+        });
+
+        console.log('✅ Autobiography Sidebar Loaded Successfully!');
+    </script>
+
 </body>
 </html>
