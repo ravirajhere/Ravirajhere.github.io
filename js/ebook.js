@@ -1,1211 +1,894 @@
-// ============================================================
-// EBOOK.JS — FINAL VERSION
-// PDF Download + 7 Improvements (Meta AI Suggestions)
-// ============================================================
+/* ============================================================
+   ebook.js — A Boy Who Never Thought
+   PDF Generator with English / Hinglish toggle
+   ============================================================ */
 
-const EBOOK_CONFIG = {
-    author: 'Suraj Anand',
-    aka: 'Raviraj',
-    title: 'A Boy Who Never Thought',
-    subtitle: 'Safar se safar tak — गुंजते सन्नाटे',
-    birthYear: 2006,
-    birthplace: 'Begusarai, Bihar',
-    currentYear: new Date().getFullYear(),
-    images: {
-        cover: 'images/bookcover.jpg',
-        author: 'images/formal.jpg',
-        signature: 'images/signature.jpg'
-    },
-    qr: {
-        url: 'https://ravirajhere.github.io',
-        size: 120
-    },
-    pdf: {
-        scale: 1.5,
-        quality: 0.85,
-        format: 'a4',
-        margin: 20,          // ✅ Improvement 2: 15 → 20
-        batchSize: 2
-    }
+/* ---------- CONFIG ---------- */
+const BOOK = {
+  title: 'A Boy Who Never Thought',
+  subtitle: 'Safar se safar tak — गुंजते सन्नाटे',
+  author: 'Suraj Anand Singh',
+  aka: 'Ravi Raj',
+  year: 2026,
+  location: 'Begusarai, Bihar',
+  email: 'raviraj2k09@gmail.com',
+  website: 'ravirajhere.github.io',
+  websiteUrl: 'https://ravirajhere.github.io'
 };
 
-// ============================================================
-// 1. TOAST MANAGER
-// ============================================================
-class ToastManager {
-    constructor() {
-        this.toast = document.getElementById('toast');
-        this.timeout = null;
-        this.queue = [];
-        this.isShowing = false;
-    }
+/* ---------- COMMON PAGES TEXT (English, dono PDFs mein same) ---------- */
+const COMMON = {
+  title: 'AN AUTOBIOGRAPHY',
+  copyright: `© 2026 ${BOOK.author}. All rights reserved.<br><br>
+    No part of this publication may be reproduced, distributed, or transmitted
+    in any form or by any means without the prior written permission of the author.<br><br>
+    <em>First Edition — 2026</em><br>
+    Published independently by the author.<br>
+    ${BOOK.location}, India.`,
 
-    show(message, type = 'info', duration = 3000) {
-        this.queue.push({ message, type, duration });
-        if (!this.isShowing) this.processQueue();
-    }
+  dedication: `To my parents, my siblings, and my friends —<br>
+    For shaping the person I am today.`,
 
-    processQueue() {
-        if (this.queue.length === 0) {
-            this.isShowing = false;
-            return;
-        }
+  epigraph: `"Safar se safar tak — गुंजते सन्नाटे"<br><br>
+    <em>— A journey within a journey, echoing silences.</em>`,
 
-        this.isShowing = true;
-        const { message, type, duration } = this.queue.shift();
-        
-        if (!this.toast) {
-            console.warn('Toast:', message);
-            this.isShowing = false;
-            return;
-        }
-        
-        this.toast.textContent = message;
-        this.toast.className = 'toast';
-        if (type) this.toast.classList.add(type);
-        this.toast.classList.add('show');
-        
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-            this.toast.classList.remove('show');
-            setTimeout(() => this.processQueue(), 300);
-        }, duration);
-    }
+  preface: `This book is a collection of memories from my early years — from my birth
+    in 2006 to the end of my fifth class in 2019. It is not merely a story; it is a
+    reflection of a childhood lived in a small town, in a family that struggled,
+    loved, and endured.<br><br>
+    I have written this as honestly as I remember. Some names may have faded, some
+    dates may blur, but the emotions remain as vivid as ever.<br><br>
+    <em>— ${BOOK.author}</em>`,
 
-    error(message) { this.show('❌ ' + message, 'error', 4000); }
-    success(message) { this.show('✅ ' + message, 'success', 3000); }
-    info(message) { this.show('ℹ️ ' + message, 'info', 2500); }
-    warning(message) { this.show('⚠️ ' + message, 'warning', 3500); }
+  acknowledgements: `I would like to express my deepest gratitude to:<br><br>
+    <strong>My Mummy</strong> — for being my first teacher, my inspiration, and my strength.<br><br>
+    <strong>Ujjwal Sir</strong> — for making Mathematics not just a subject, but a passion.<br><br>
+    <strong>My sisters, Richa and my elder sister</strong> — for being my protectors and companions.<br><br>
+    <strong>My teachers of GBGS</strong> — for believing in me when I was still learning to believe in myself.<br><br>
+    <strong>My friends</strong> — for the laughter, the fights, and the memories.<br><br>
+    And to everyone who, knowingly or unknowingly, became a part of this story.`,
+
+  conclusion: `As I close the first chapter of my life, I do so with gratitude and hope.
+    The road ahead is long, and the story far from over.<br><br>
+    But if there is one thing I have learned, it is this:<br><br>
+    <strong>The best is yet to come.</strong>`,
+
+  thankyou: `Thank you for reading.<br><br>
+    Your time, your attention, and your heart —<br>
+    I do not take them for granted.<br><br>
+    ❤️`,
+
+  colophon: `This book was written, designed, and produced with love.<br><br>
+    Made with ❤️<br>
+    ${BOOK.location}<br>
+    ${BOOK.year}`,
+
+  aboutBio: `${BOOK.author}, known by his pen name ${BOOK.aka}, is a young writer and
+    self-taught web developer from ${BOOK.location}. Currently based in Patna, he is
+    a student of Senior Secondary (Class 12, CBSE) with a focus on Physics, Chemistry,
+    and Mathematics.<br><br>
+    With over two years of self-learning in web development, he has built several
+    projects — including this very autobiography website, which inspired the book you
+    now hold. He aspires to become an engineer, a dream planted in him by his mother,
+    and continues to explore full-stack development alongside his studies.<br><br>
+    <em>'A Boy Who Never Thought'</em> is his first autobiographical work, capturing
+    the innocence, struggles, and dreams of his early years.<br><br>
+    He is open to freelance opportunities and collaborations.`
+};
+
+/* ---------- CHAPTER DATA (English + Hinglish) ---------- */
+/* Ye HTML se auto-extract hoga, par backup ke liye yahan bhi rakh sakte ho */
+/* Filhaal HTML se hi uthayenge */
+
+/* ---------- HTML BUILDER ---------- */
+function buildPage(content, className = '') {
+  return `<div class="pdf-page ${className}">${content}</div>`;
 }
 
-const toast = new ToastManager();
-
-// ============================================================
-// 2. MODAL MANAGER
-// ============================================================
-class ModalManager {
-    constructor() {
-        this.modal = document.getElementById('downloadModal');
-        this.isOpen = false;
-    }
-
-    open() {
-        if (!this.modal) {
-            console.warn('Modal not found, generating English PDF...');
-            window.downloadEbook('en');
-            return;
-        }
-        this.modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        this.isOpen = true;
-    }
-
-    close() {
-        if (!this.modal) return;
-        this.modal.classList.remove('active');
-        document.body.style.overflow = '';
-        this.isOpen = false;
-    }
+function buildCoverPage() {
+  return `
+    <div class="pdf-page pdf-cover">
+      <div class="pdf-cover-inner">
+        <p class="pdf-cover-label">${COMMON.title}</p>
+        <h1 class="pdf-cover-author">${BOOK.author}</h1>
+        <p class="pdf-cover-aka">~ ${BOOK.aka}</p>
+        <div class="pdf-cover-divider"></div>
+        <h2 class="pdf-cover-title">${BOOK.title}</h2>
+        <p class="pdf-cover-sub">${BOOK.subtitle}</p>
+        <p class="pdf-cover-year">${BOOK.year}</p>
+      </div>
+    </div>`;
 }
 
-const modal = new ModalManager();
-
-// ============================================================
-// 3. RESOURCE VALIDATOR
-// ============================================================
-class ResourceValidator {
-    static async validateImage(src) {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve(src);
-            img.onerror = () => {
-                const canvas = document.createElement('canvas');
-                canvas.className = 'ebook-canvas';  // ✅ Improvement 3: Class for cleanup
-                canvas.width = 600;
-                canvas.height = 800;
-                const ctx = canvas.getContext('2d');
-                
-                ctx.fillStyle = '#fdfbf5';
-                ctx.fillRect(0, 0, 600, 800);
-                
-                ctx.strokeStyle = '#b8860b';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(30, 30, 540, 740);
-                
-                ctx.fillStyle = '#1a1a1a';
-                ctx.font = 'bold 32px Georgia, serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('A BOY WHO', 300, 350);
-                ctx.fillText('NEVER THOUGHT', 300, 400);
-                
-                ctx.fillStyle = '#b8860b';
-                ctx.font = '24px Georgia, serif';
-                ctx.fillText('Suraj Anand', 300, 480);
-                
-                resolve(canvas.toDataURL('image/jpeg', 0.9));
-            };
-            img.src = src;
-        });
-    }
-
-    static async validateAllImages() {
-        const results = {};
-        for (const [key, src] of Object.entries(EBOOK_CONFIG.images)) {
-            results[key] = await this.validateImage(src);
-        }
-        return results;
-    }
+function buildTitlePage() {
+  return buildPage(`
+    <div class="pdf-center-page">
+      <p class="pdf-small-label">${COMMON.title}</p>
+      <h1 class="pdf-big-title">${BOOK.title}</h1>
+      <p class="pdf-sub">${BOOK.subtitle}</p>
+      <div class="pdf-divider"></div>
+      <p class="pdf-author-name">${BOOK.author}</p>
+      <p class="pdf-author-aka">~ ${BOOK.aka}</p>
+      <p class="pdf-year">${BOOK.year}</p>
+    </div>
+  `);
 }
 
-// ============================================================
-// 4. LIBRARY LOADER
-// ============================================================
-class LibraryLoader {
-    static async loadScript(src, retries = 3) {
-        if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
-        if (src.includes('jspdf') && typeof jspdf !== 'undefined') return true;
-        if (src.includes('qrcode') && typeof QRCode !== 'undefined') return true;
-
-        for (let attempt = 1; attempt <= retries; attempt++) {
-            try {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-                return true;
-            } catch (error) {
-                if (attempt === retries) {
-                    // ✅ Improvement 6: CDN fail toast
-                    toast.error('Internet check karo — library load nahi hui');
-                    throw new Error(`Failed to load ${src}`);
-                }
-                await new Promise(r => setTimeout(r, 1000 * attempt));
-            }
-        }
-        return false;
-    }
-
-    static async loadAll() {
-        const libraries = [
-            'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
-        ];
-
-        for (const src of libraries) {
-            await this.loadScript(src);
-        }
-        return true;
-    }
+function buildCopyrightPage() {
+  return buildPage(`
+    <div class="pdf-center-page pdf-copyright-page">
+      <p>${COMMON.copyright}</p>
+    </div>
+  `);
 }
 
-// ============================================================
-// 5. QR CODE GENERATOR
-// ============================================================
-class QRGenerator {
-    static async generate(data, size = 120) {
-        return new Promise((resolve) => {
-            try {
-                if (typeof QRCode === 'undefined') { resolve(null); return; }
-                
-                const container = document.createElement('div');
-                container.style.cssText = `width:${size}px;height:${size}px;position:absolute;left:-9999px;top:-9999px;`;
-                document.body.appendChild(container);
-
-                new QRCode(container, {
-                    text: data,
-                    width: size,
-                    height: size,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-                let attempts = 0;
-                const checkCanvas = setInterval(() => {
-                    attempts++;
-                    const canvas = container.querySelector('canvas');
-                    if (canvas) {
-                        canvas.className = 'ebook-canvas';  // ✅ Improvement 3
-                        clearInterval(checkCanvas);
-                        const dataUrl = canvas.toDataURL('image/png');
-                        document.body.removeChild(container);
-                        resolve(dataUrl);
-                    } else if (attempts >= 10) {
-                        clearInterval(checkCanvas);
-                        document.body.removeChild(container);
-                        resolve(null);
-                    }
-                }, 100);
-            } catch (error) {
-                resolve(null);
-            }
-        });
-    }
+function buildDedicationPage() {
+  return buildPage(`
+    <div class="pdf-kalam-page">
+      <p>${COMMON.dedication}</p>
+    </div>
+  `);
 }
 
-// ============================================================
-// 6. APPLY PROFESSIONAL BOOK STYLES
-// ============================================================
-function applyProfessionalBookStyles(clone, isPdfMode = true) {
-    clone.querySelectorAll('.chapter-content p, .chapter p').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'EB Garamond', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '16px';
-        el.style.lineHeight = '1.75';
-        el.style.textAlign = 'justify';
-        el.style.marginBottom = '14px';
-        el.style.fontWeight = '400';
-        el.style.letterSpacing = '0.2px';
-        if (isPdfMode) el.style.background = 'transparent';
+function buildEpigraphPage() {
+  return buildPage(`
+    <div class="pdf-kalam-page">
+      <p>${COMMON.epigraph}</p>
+    </div>
+  `);
+}
+
+function buildPrefacePage() {
+  return buildPage(`
+    <div class="pdf-text-page">
+      <h2 class="pdf-section-title">Preface</h2>
+      <p>${COMMON.preface}</p>
+    </div>
+  `);
+}
+
+function buildAcknowledgementsPage() {
+  return buildPage(`
+    <div class="pdf-text-page">
+      <h2 class="pdf-section-title">Acknowledgements</h2>
+      <p>${COMMON.acknowledgements}</p>
+    </div>
+  `);
+}
+
+function buildTOCPage(chapters) {
+  const items = chapters.map((ch, i) =>
+    `<li><span>${i + 1}. ${ch.title}</span></li>`
+  ).join('');
+  return buildPage(`
+    <div class="pdf-text-page">
+      <h2 class="pdf-section-title">Contents</h2>
+      <ol class="pdf-toc">${items}</ol>
+    </div>
+  `);
+}
+
+function buildChapterPage(chapter, index) {
+  const paragraphs = chapter.paragraphs
+    .map(p => `<p>${p}</p>`)
+    .join('');
+  return buildPage(`
+    <div class="pdf-chapter-page">
+      <p class="pdf-chapter-num">CHAPTER ${numberToWord(index + 1).toUpperCase()}</p>
+      <h2 class="pdf-chapter-title">${chapter.title}</h2>
+      ${chapter.year ? `<p class="pdf-chapter-year">${chapter.year}</p>` : ''}
+      <div class="pdf-chapter-body">${paragraphs}</div>
+    </div>
+  `);
+}
+
+function buildEpiloguePage(epilogue) {
+  const paragraphs = epilogue.paragraphs.map(p => `<p>${p}</p>`).join('');
+  return buildPage(`
+    <div class="pdf-chapter-page">
+      <p class="pdf-chapter-num">EPILOGUE</p>
+      <h2 class="pdf-chapter-title">${epilogue.title}</h2>
+      <div class="pdf-chapter-body">${paragraphs}</div>
+    </div>
+  `);
+}
+
+function buildConclusionPage() {
+  return buildPage(`
+    <div class="pdf-text-page pdf-conclusion">
+      <h2 class="pdf-section-title">Conclusion</h2>
+      <p>${COMMON.conclusion}</p>
+    </div>
+  `);
+}
+
+function buildAboutPage() {
+  return buildPage(`
+    <div class="pdf-text-page">
+      <h2 class="pdf-section-title">About the Author</h2>
+      <div class="pdf-about-grid">
+        <div class="pdf-about-photo">
+          <div class="pdf-photo-placeholder">📷</div>
+        </div>
+        <div class="pdf-about-info">
+          <h3>${BOOK.author}</h3>
+          <p class="pdf-about-aka">~ ${BOOK.aka}</p>
+          <p>${COMMON.aboutBio}</p>
+          <ul class="pdf-about-details">
+            <li>📍 Patna, Bihar, India</li>
+            <li>✉️ ${BOOK.email}</li>
+            <li>🌐 ${BOOK.website}</li>
+            <li>🎓 Class 12 (CBSE) — PCM</li>
+            <li>💻 Web Developer | Writer</li>
+            <li>🗣️ Hindi (Native), English (Professional)</li>
+          </ul>
+          <div class="pdf-qr" id="pdfQR"></div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function buildThankYouPage() {
+  return buildPage(`
+    <div class="pdf-kalam-page pdf-thankyou">
+      <p>${COMMON.thankyou}</p>
+    </div>
+  `);
+}
+
+function buildColophonPage() {
+  return buildPage(`
+    <div class="pdf-center-page pdf-colophon">
+      <p>${COMMON.colophon}</p>
+    </div>
+  `);
+}
+
+function numberToWord(n) {
+  const words = ['One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+  return words[n - 1] || n;
+}
+
+/* ============================================================
+   PART 2 — CSS, Language Filter, PDF Generator, Progress Bar
+   ============================================================ */
+
+/* ---------- PDF STYLES (inject karenge) ---------- */
+const PDF_STYLES = `
+  .pdf-page {
+    width: 148mm;
+    min-height: 210mm;
+    padding: 18mm 15mm;
+    box-sizing: border-box;
+    background: #fdfaf3;
+    color: #1a1a1a;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 12pt;
+    line-height: 1.75;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .pdf-cover {
+    background: #0d0d1a;
+    color: #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 8px double #d4af37;
+    padding: 20mm;
+  }
+  .pdf-cover-inner { text-align: center; }
+  .pdf-cover-label {
+    font-family: 'EB Garamond', serif;
+    letter-spacing: 6px;
+    font-size: 10pt;
+    color: #d4af37;
+    margin-bottom: 20mm;
+  }
+  .pdf-cover-author {
+    font-family: 'EB Garamond', serif;
+    font-size: 26pt;
+    color: #d4af37;
+    margin: 0;
+    letter-spacing: 2px;
+  }
+  .pdf-cover-aka {
+    font-style: italic;
+    font-size: 12pt;
+    color: #b8942e;
+    margin: 4mm 0 12mm;
+  }
+  .pdf-cover-divider {
+    width: 60mm;
+    height: 1px;
+    background: #d4af37;
+    margin: 0 auto 12mm;
+  }
+  .pdf-cover-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 20pt;
+    color: #fdfaf3;
+    margin: 0 0 6mm;
+    font-weight: 600;
+  }
+  .pdf-cover-sub {
+    font-style: italic;
+    font-size: 11pt;
+    color: #c9b37e;
+    margin-bottom: 20mm;
+  }
+  .pdf-cover-year {
+    font-size: 10pt;
+    color: #d4af37;
+    letter-spacing: 3px;
+  }
+
+  .pdf-center-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 174mm;
+  }
+  .pdf-small-label {
+    letter-spacing: 5px;
+    font-size: 10pt;
+    color: #8b7355;
+    margin-bottom: 10mm;
+  }
+  .pdf-big-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 28pt;
+    color: #1a1a1a;
+    margin: 0 0 6mm;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .pdf-sub {
+    font-style: italic;
+    font-size: 12pt;
+    color: #555;
+    margin-bottom: 15mm;
+  }
+  .pdf-divider {
+    width: 40mm;
+    height: 1px;
+    background: #d4af37;
+    margin: 0 auto 15mm;
+  }
+  .pdf-author-name {
+    font-size: 16pt;
+    font-weight: 600;
+    margin: 0;
+  }
+  .pdf-author-aka {
+    font-style: italic;
+    color: #777;
+    margin: 2mm 0 15mm;
+  }
+  .pdf-year {
+    font-size: 11pt;
+    color: #555;
+    letter-spacing: 3px;
+  }
+
+  .pdf-copyright-page {
+    font-size: 10pt;
+    color: #444;
+    line-height: 1.9;
+  }
+
+  .pdf-kalam-page {
+    font-family: 'Kalam', cursive;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 174mm;
+    font-size: 14pt;
+    line-height: 2;
+    color: #2c2c2c;
+    padding: 20mm 15mm;
+  }
+
+  .pdf-text-page {
+    padding-top: 5mm;
+  }
+  .pdf-section-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 22pt;
+    text-align: center;
+    margin: 0 0 12mm;
+    color: #1a1a1a;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .pdf-section-title::after {
+    content: '';
+    display: block;
+    width: 30mm;
+    height: 1px;
+    background: #d4af37;
+    margin: 6mm auto 0;
+  }
+  .pdf-text-page p {
+    text-align: justify;
+    text-indent: 0;
+    margin: 0 0 5mm;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .pdf-toc {
+    list-style: none;
+    padding: 0;
+    font-size: 12pt;
+  }
+  .pdf-toc li {
+    padding: 4mm 0;
+    border-bottom: 1px dotted #c9b37e;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .pdf-chapter-page {
+    padding-top: 10mm;
+  }
+  .pdf-chapter-num {
+    text-align: center;
+    letter-spacing: 5px;
+    font-size: 10pt;
+    color: #8b7355;
+    margin-bottom: 6mm;
+  }
+  .pdf-chapter-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 24pt;
+    text-align: center;
+    margin: 0 0 4mm;
+    color: #1a1a1a;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .pdf-chapter-year {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    font-size: 11pt;
+    margin-bottom: 12mm;
+  }
+  .pdf-chapter-body p {
+    text-align: justify;
+    text-indent: 0;
+    margin: 0 0 5mm;
+    orphans: 3;
+    widows: 3;
+  }
+  .pdf-chapter-body p:first-of-type::first-letter {
+    font-family: 'EB Garamond', serif;
+    font-size: 3em;
+    float: left;
+    line-height: 0.9;
+    padding: 2mm 3mm 0 0;
+    color: #d4af37;
+    font-weight: 600;
+  }
+
+  .pdf-conclusion {
+    text-align: center;
+  }
+  .pdf-conclusion p {
+    text-align: center;
+    font-size: 13pt;
+    line-height: 2;
+  }
+
+  .pdf-about-grid {
+    display: flex;
+    gap: 8mm;
+    align-items: flex-start;
+  }
+  .pdf-about-photo {
+    flex-shrink: 0;
+  }
+  .pdf-photo-placeholder {
+    width: 40mm;
+    height: 50mm;
+    background: #e8dcc0;
+    border: 2px solid #d4af37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30pt;
+    color: #8b7355;
+    border-radius: 2mm;
+  }
+  .pdf-about-info h3 {
+    font-family: 'EB Garamond', serif;
+    font-size: 16pt;
+    margin: 0 0 2mm;
+    color: #1a1a1a;
+  }
+  .pdf-about-aka {
+    font-style: italic;
+    color: #777;
+    margin: 0 0 5mm;
+    font-size: 11pt;
+  }
+  .pdf-about-info p {
+    font-size: 10.5pt;
+    line-height: 1.7;
+    text-align: justify;
+    margin-bottom: 4mm;
+  }
+  .pdf-about-details {
+    list-style: none;
+    padding: 0;
+    font-size: 10pt;
+    line-height: 1.9;
+    margin: 4mm 0;
+    color: #333;
+  }
+  .pdf-qr {
+    margin-top: 5mm;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .pdf-qr img, .pdf-qr canvas {
+    width: 28mm !important;
+    height: 28mm !important;
+    border: 1px solid #d4af37;
+    padding: 2mm;
+    background: #fff;
+  }
+
+  .pdf-thankyou {
+    font-size: 16pt;
+  }
+
+  .pdf-colophon {
+    font-size: 11pt;
+    line-height: 2;
+    color: #555;
+    letter-spacing: 1px;
+  }
+`;
+
+/* ---------- LANGUAGE FILTER ---------- */
+function getChapterData(lang) {
+  const chapters = [];
+  const chapterSections = document.querySelectorAll('section.chapter:not(.epilogue)');
+
+  chapterSections.forEach((section, idx) => {
+    const titleEn = section.querySelector('.chapter-title')?.getAttribute('data-en')
+                 || section.querySelector('.chapter-title')?.textContent.trim();
+    const titleHi = section.querySelector('.chapter-title')?.getAttribute('data-hi')
+                 || titleEn;
+    const year = section.querySelector('.chapter-year')?.textContent.trim() || '';
+
+    const contentDiv = section.querySelector(`.chapter-content[data-lang-content="${lang}"]`)
+                    || section.querySelector('.chapter-content');
+    const paragraphs = contentDiv
+      ? Array.from(contentDiv.querySelectorAll('p')).map(p => p.innerHTML.trim())
+      : [];
+
+    chapters.push({
+      title: lang === 'hi' ? titleHi : titleEn,
+      year,
+      paragraphs
     });
-    
-    clone.querySelectorAll('.chapter-title, .chapter h2').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '28px';
-        el.style.fontWeight = '600';
-        el.style.textAlign = 'center';
-        el.style.marginTop = '0';
-        el.style.marginBottom = '8px';
-        el.style.letterSpacing = '1.5px';
-        el.style.lineHeight = '1.3';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.chapter-number').forEach(el => {
-        el.style.color = '#8b6f47';
-        el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
-        el.style.fontSize = '11px';
-        el.style.fontWeight = '500';
-        el.style.textAlign = 'center';
-        el.style.letterSpacing = '5px';
-        el.style.textTransform = 'uppercase';
-        el.style.marginBottom = '10px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.chapter-year').forEach(el => {
-        el.style.color = '#6a6a6a';
-        el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
-        el.style.fontSize = '13px';
-        el.style.fontStyle = 'italic';
-        el.style.textAlign = 'center';
-        el.style.letterSpacing = '3px';
-        el.style.marginBottom = '30px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.chapter-header').forEach(el => {
-        el.style.textAlign = 'center';
-        el.style.marginBottom = '40px';
-        el.style.paddingBottom = '20px';
-        el.style.borderBottom = '1px solid #d4c9b0';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.chapter-content strong, .chapter strong').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontWeight = '700';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.chapter-content em, .chapter em').forEach(el => {
-        el.style.color = '#5c4a2e';
-        el.style.fontFamily = "'EB Garamond', 'Georgia', serif";
-        el.style.fontSize = '17px';
-        el.style.fontStyle = 'italic';
-        el.style.textAlign = 'center';
-        el.style.display = 'block';
-        el.style.margin = '24px auto';
-        el.style.padding = '14px 24px';
-        el.style.borderTop = '1px solid #d4c9b0';
-        el.style.borderBottom = '1px solid #d4c9b0';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
+  });
+
+  return chapters;
 }
 
-// ============================================================
-// 7. AUDIO (TTS) MANAGER
-// ============================================================
-class AudioManager {
-    constructor() {
-        this.synth = window.speechSynthesis;
-        this.isPlaying = false;
-        this.currentUtterance = null;
-    }
+function getEpilogueData(lang) {
+  const ep = document.querySelector('section.epilogue');
+  if (!ep) return { title: 'To Be Continued...', paragraphs: [] };
 
-    readChapter(chapterElement, lang = 'en') {
-        if (!('speechSynthesis' in window)) {
-            toast.warning('Audio not supported in this browser');
-            return;
-        }
+  const titleEn = ep.querySelector('.chapter-title')?.getAttribute('data-en') || 'To Be Continued...';
+  const titleHi = ep.querySelector('.chapter-title')?.getAttribute('data-hi') || titleEn;
 
-        if (this.isPlaying) {
-            this.stop();
-            return;
-        }
+  const contentDiv = ep.querySelector(`.chapter-content[data-lang-content="${lang}"]`)
+                  || ep.querySelector('.chapter-content');
+  const paragraphs = contentDiv
+    ? Array.from(contentDiv.querySelectorAll('p')).map(p => p.innerHTML.trim())
+    : [];
 
-        const text = chapterElement.textContent.trim();
-        if (!text) return;
-
-        this.currentUtterance = new SpeechSynthesisUtterance(text);
-        this.currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-        this.currentUtterance.rate = 0.9;
-        this.currentUtterance.pitch = 1;
-        this.currentUtterance.volume = 1;
-
-        this.currentUtterance.onend = () => {
-            this.isPlaying = false;
-            toast.info('Audio finished');
-        };
-
-        this.currentUtterance.onerror = (e) => {
-            this.isPlaying = false;
-            console.error('TTS error:', e);
-        };
-
-        this.synth.speak(this.currentUtterance);
-        this.isPlaying = true;
-        toast.info('🔊 Reading aloud...');
-    }
-
-    stop() {
-        if (this.synth) {
-            this.synth.cancel();
-            this.isPlaying = false;
-            toast.info('Audio stopped');
-        }
-    }
+  return {
+    title: lang === 'hi' ? titleHi : titleEn,
+    paragraphs
+  };
 }
 
-const audioManager = new AudioManager();
+/* ---------- FULL BOOK HTML BUILDER ---------- */
+function buildFullBookHTML(lang) {
+  const chapters = getChapterData(lang);
+  const epilogue = getEpilogueData(lang);
 
-// ============================================================
-// 8. BOOKMARK MANAGER
-// ============================================================
-class BookmarkManager {
-    constructor() {
-        this.bookmarks = JSON.parse(localStorage.getItem('ebookBookmarks') || '[]');
-    }
+  let html = '';
+  html += buildCoverPage();
+  html += buildTitlePage();
+  html += buildCopyrightPage();
+  html += buildDedicationPage();
+  html += buildEpigraphPage();
+  html += buildPrefacePage();
+  html += buildAcknowledgementsPage();
+  html += buildTOCPage(chapters);
+  chapters.forEach((ch, i) => { html += buildChapterPage(ch, i); });
+  html += buildEpiloguePage(epilogue);
+  html += buildConclusionPage();
+  html += buildAboutPage();
+  html += buildThankYouPage();
+  html += buildColophonPage();
 
-    toggle(chapterId, chapterTitle) {
-        const idx = this.bookmarks.findIndex(b => b.id === chapterId);
-        
-        if (idx > -1) {
-            this.bookmarks.splice(idx, 1);
-            toast.info(`Removed bookmark: ${chapterTitle}`);
-        } else {
-            this.bookmarks.push({
-                id: chapterId,
-                title: chapterTitle,
-                date: new Date().toISOString()
-            });
-            toast.success(`Bookmarked: ${chapterTitle}`);
-        }
-        
-        localStorage.setItem('ebookBookmarks', JSON.stringify(this.bookmarks));
-        this.updateBookmarkIcons();
-    }
-
-    isBookmarked(chapterId) {
-        return this.bookmarks.some(b => b.id === chapterId);
-    }
-
-    updateBookmarkIcons() {
-        document.querySelectorAll('.bookmark-btn').forEach(btn => {
-            const chapterId = btn.getAttribute('data-chapter-id');
-            if (this.isBookmarked(chapterId)) {
-                btn.textContent = '🔖';
-                btn.classList.add('bookmarked');
-                btn.title = 'Remove bookmark';
-            } else {
-                btn.textContent = '☆';
-                btn.classList.remove('bookmarked');
-                btn.title = 'Bookmark this chapter';
-            }
-        });
-    }
-
-    injectButtons() {
-        document.querySelectorAll('.chapter').forEach((ch, idx) => {
-            const chapterId = ch.id || `chapter-${idx + 1}`;
-            const titleEl = ch.querySelector('.chapter-title');
-            const title = titleEl ? titleEl.textContent : `Chapter ${idx + 1}`;
-            
-            if (ch.querySelector('.bookmark-btn')) return;
-            
-            const btn = document.createElement('button');
-            btn.className = 'bookmark-btn';
-            btn.setAttribute('data-chapter-id', chapterId);
-            btn.setAttribute('data-chapter-title', title);
-            btn.textContent = '☆';
-            btn.title = 'Bookmark this chapter';
-            
-            btn.style.cssText = `
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                background: transparent;
-                border: 1px solid #d4c9b0;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-                cursor: pointer;
-                color: #b8860b;
-                transition: all 0.3s ease;
-                z-index: 10;
-            `;
-            
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.toggle(chapterId, title);
-            });
-            
-            const header = ch.querySelector('.chapter-header');
-            if (header) {
-                header.style.position = 'relative';
-                header.appendChild(btn);
-            }
-        });
-        
-        this.updateBookmarkIcons();
-    }
+  return html;
 }
 
-const bookmarkManager = new BookmarkManager();
+/* ---------- RENDER HIDDEN CONTAINER ---------- */
+function createHiddenRenderContainer(html) {
+  const old = document.getElementById('pdfRenderContainer');
+  if (old) old.remove();
 
-// ============================================================
-// 9. MAIN EBOOK GENERATOR
-// ============================================================
-class EbookGenerator {
-    constructor() {
-        this.pdf = null;
-        this.pages = [];
-        this.currentPage = 0;
-        this.totalPages = 0;
-        this.isGenerating = false;
-        this.cancelled = false;
-        this.resources = null;
-        this.renderContainer = null;  // ✅ Improvement 5: Reusable container
-    }
+  const container = document.createElement('div');
+  container.id = 'pdfRenderContainer';
+  container.style.position = 'fixed';
+  container.style.left = '-99999px';
+  container.style.top = '0';
+  container.style.width = '148mm';
+  container.style.background = '#fff';
+  container.innerHTML = `<style>${PDF_STYLES}</style>` + html;
+  document.body.appendChild(container);
 
-    // ✅ Improvement 5: Create reusable container once
-    getRenderContainer() {
-        if (!this.renderContainer) {
-            this.renderContainer = document.createElement('div');
-            this.renderContainer.className = 'ebook-render-container';
-            this.renderContainer.style.cssText = `
-                position: absolute;
-                left: -9999px;
-                top: -9999px;
-                background: #ffffff;
-                padding: 0;
-                margin: 0;
-                pointer-events: none;
-            `;
-            document.body.appendChild(this.renderContainer);
-        }
-        return this.renderContainer;
-    }
-
-    async generate(lang, langLabel) {
-        if (this.isGenerating) {
-            toast.warning('Already generating, please wait');
-            return;
-        }
-
-        this.isGenerating = true;
-        this.cancelled = false;
-        this.currentPage = 0;
-
-        try {
-            toast.info(`Preparing ${langLabel} ebook...`);
-            
-            this.resources = await ResourceValidator.validateAllImages();
-            await LibraryLoader.loadAll();
-
-            const content = this.getContent(lang);
-            if (!content) throw new Error('Content not found');
-
-            this.pages = await this.buildPages(content, lang);
-            this.totalPages = this.pages.length;
-
-            await this.generatePDF(langLabel);
-
-            // ✅ PURANA METHOD — DIRECT SAVE
-            const filename = `A_Boy_Who_Never_Thought_Suraj_Anand_${langLabel}.pdf`;
-            this.pdf.save(filename);
-            
-            toast.success(`${langLabel} ebook downloaded successfully!`);
-        } catch (error) {
-            console.error('Ebook generation failed:', error);
-            toast.error(`Failed: ${error.message}`);
-        } finally {
-            this.isGenerating = false;
-            this.cleanup();
-        }
-    }
-
-    getContent(lang) {
-        const bookBody = document.querySelector('.book-body');
-        if (!bookBody) {
-            console.error('book-body not found');
-            return null;
-        }
-
-        const chapters = bookBody.querySelectorAll('.chapter');
-        if (!chapters.length) {
-            console.error('No chapters found');
-            return null;
-        }
-
-        return {
-            wrapper: bookBody.cloneNode(true),
-            chapters: chapters,
-            lang: lang
-        };
-    }
-
-    async buildPages(content, lang) {
-        const pages = [];
-        const clone = content.wrapper;
-
-        this.cleanClone(clone);
-
-        const cloneChapters = [];
-        const originalChapters = document.querySelectorAll('.book-body .chapter');
-
-        originalChapters.forEach((origCh, idx) => {
-            const cloneCh = clone.querySelectorAll('.chapter')[idx];
-            if (!cloneCh) return;
-
-            cloneCh.querySelectorAll('[data-lang-content]').forEach(block => {
-                if (block.getAttribute('data-lang-content') === lang) {
-                    block.style.display = 'block';
-                } else {
-                    block.remove();
-                }
-            });
-
-            cloneChapters.push(cloneCh);
-        });
-
-        applyProfessionalBookStyles(clone, true);
-
-        const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
-        const images = this.resources;
-
-        const pageBuilders = [];
-
-        pageBuilders.push(async () => this.createCoverPage(images.cover));
-        pageBuilders.push(async () => this.createTitlePage());
-        pageBuilders.push(async () => this.createCopyrightPage());
-        pageBuilders.push(async () => this.createDedicationPage());
-        pageBuilders.push(async () => this.createEpigraphPage());
-        pageBuilders.push(async () => this.createPrefacePage());
-        pageBuilders.push(async () => this.createAcknowledgementsPage());
-        pageBuilders.push(async () => this.createTOCPage(cloneChapters));
-
-        cloneChapters.forEach((ch, index) => {
-            pageBuilders.push(async () => this.createChapterPage(ch, index, lang));
-        });
-
-        pageBuilders.push(async () => this.createConclusionPage());
-        pageBuilders.push(async () => this.createAboutPage(images.author, qrDataUrl));
-        pageBuilders.push(async () => this.createEmotionalPage(images.signature));
-        pageBuilders.push(async () => this.createColophonPage());
-
-        for (const builder of pageBuilders) {
-            if (this.cancelled) break;
-            const page = await builder();
-            if (page) {
-                pages.push(page);
-                this.currentPage++;
-                this.updateProgress();
-            }
-        }
-
-        return pages;
-    }
-
-    createCoverPage(coverImage) {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:0;margin:0;background:#ffffff;width:100%;height:100%;display:flex;align-items:center;justify-content:center;`;
-        div.innerHTML = `<img src="${coverImage}" alt="Book Cover" style="width:100%;height:100%;object-fit:contain;">`;
-        return div;
-    }
-
-    createTitlePage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <div style="width:80px;height:2px;background:#b8860b;margin:0 auto 30px auto;"></div>
-                <p style="font-size:12px;color:#8b6f47;font-family:'EB Garamond',Georgia,serif;letter-spacing:5px;margin-bottom:20px;">AN AUTOBIOGRAPHY</p>
-                <h1 style="font-size:38px;font-weight:600;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:8px;letter-spacing:1.5px;line-height:1.2;">${EBOOK_CONFIG.title}</h1>
-                <p style="font-size:16px;color:#8b6f47;font-family:'EB Garamond',Georgia,serif;margin:15px 0;font-style:italic;">${EBOOK_CONFIG.subtitle}</p>
-                <div style="width:80px;height:2px;background:#b8860b;margin:30px auto;"></div>
-                <p style="font-size:28px;color:#b8860b;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:10px 0;font-weight:500;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:13px;color:#6a6a6a;font-family:'EB Garamond',Georgia,serif;letter-spacing:3px;">A.K.A ${EBOOK_CONFIG.aka}</p>
-                <div style="width:80px;height:2px;background:#b8860b;margin:30px auto;"></div>
-                <p style="font-size:14px;color:#999;font-family:'EB Garamond',Georgia,serif;">${EBOOK_CONFIG.currentYear}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createCopyrightPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;`;
-        div.innerHTML = `
-            <div style="max-width:450px;margin:0 auto;width:100%;">
-                <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Playfair Display',Georgia,serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;">© ${EBOOK_CONFIG.currentYear} ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;"><strong>Published by</strong><br>${EBOOK_CONFIG.author.toUpperCase()} PUBLICATION<br>${EBOOK_CONFIG.birthplace}</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;">This book is not for sale.<br>For personal use only.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:8px;">ISBN: 2026-9102224871</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;">(India · Memoir · Autobiography)</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;margin-bottom:4px;">First Edition: ${EBOOK_CONFIG.currentYear}</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'EB Garamond',Georgia,serif;">Published on 26th March ${EBOOK_CONFIG.currentYear}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createDedicationPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <p style="font-size:19px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;font-style:italic;">To my parents, who gave me the courage to dream.</p>
-                <p style="font-size:19px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;font-style:italic;">To my siblings, who taught me patience and love.</p>
-                <p style="font-size:19px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;font-style:italic;">To my friends, who never let me feel alone.</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:30px auto;"></div>
-                <p style="font-size:17px;color:#b8860b;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createEpigraphPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <div style="width:60px;height:2px;background:#b8860b;margin:0 auto 30px auto;"></div>
-                <p style="font-size:19px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:1.8;font-style:italic;margin-bottom:16px;">"Safar se safar tak — गुंजते सन्नाटे"</p>
-                <p style="font-size:15px;color:#b8860b;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:30px auto 0 auto;"></div>
-            </div>
-        `;
-        return div;
-    }
-
-    createPrefacePage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;`;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:600;color:#000000;font-family:'Playfair Display',Georgia,serif;margin-bottom:20px;letter-spacing:1.5px;">Preface</h2>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world — and to inspire others to chase their dreams, no matter where they start.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#b8860b;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createAcknowledgementsPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;`;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:600;color:#000000;font-family:'Playfair Display',Georgia,serif;margin-bottom:20px;letter-spacing:1.5px;">Acknowledgements</h2>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">First and foremost, I would like to thank my parents — especially my Mummy, whose strength and sacrifice taught me what it means to never give up.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">I am also grateful to my teachers — especially Ujjwal Sir, who made me fall in love with Maths.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">A special thanks to my friends who stood by me through thick and thin.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;">And to everyone who believed in me when I didn't believe in myself.</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#b8860b;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createTOCPage(chapters) {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;`;
-        
-        let tocHTML = `<h2 style="font-size:26px;font-weight:600;color:#000000;text-align:center;font-family:'Playfair Display',Georgia,serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
-            <ul style="list-style:none;padding:0;font-family:'EB Garamond',Georgia,serif;font-size:16px;line-height:2.4;max-width:550px;margin:0 auto;width:100%;">`;
-        
-        let pageNum = 10;
-        chapters.forEach((ch, idx) => {
-            const h2 = ch.querySelector('.chapter-title, h2');
-            const chNum = ch.querySelector('.chapter-number');
-            let title = h2 ? h2.textContent.trim() : `Chapter ${idx+1}`;
-            let numLabel = chNum ? chNum.textContent.trim() : `CHAPTER ${idx+1}`;
-            if (idx === chapters.length - 1 && title.toLowerCase().includes('continued')) {
-                numLabel = 'EPILOGUE';
-            }
-            tocHTML += `
-                <li style="border-bottom:1px solid #f0f0f0;padding:6px 0;display:flex;justify-content:space-between;">
-                    <span style="color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;font-size:15px;">${numLabel}: ${title}</span>
-                    <span style="color:#999;font-family:'Playfair Display',Georgia,serif;font-size:14px;">${pageNum + idx}</span>
-                </li>
-            `;
-        });
-        tocHTML += `</ul>`;
-        div.innerHTML = tocHTML;
-        return div;
-    }
-
-    createChapterPage(chapter, index, lang) {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:50px 50px 40px 50px;background:#ffffff;display:flex;flex-direction:column;min-height:100%;position:relative;`;
-        
-        const clone = chapter.cloneNode(true);
-        
-        // Remove bookmark button from PDF
-        clone.querySelectorAll('.bookmark-btn').forEach(b => b.remove());
-        
-        const firstP = clone.querySelector('.chapter-content p');
-        if (firstP && firstP.textContent.trim().length > 0) {
-            const text = firstP.textContent;
-            const firstChar = text.charAt(0);
-            const restText = text.slice(1);
-            firstP.innerHTML = `<span style="font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:600;color:#b8860b;float:left;line-height:1;margin-right:6px;margin-top:2px;">${firstChar}</span>${restText}`;
-        }
-        
-        const heading = clone.querySelector('.chapter-title, h2');
-        if (heading) {
-            const quotes = [
-                '"Every ending is a new beginning." — Unknown',
-                '"Childhood is the most beautiful of all life\'s seasons." — Unknown',
-                '"The greatest glory in living lies not in never falling, but in rising every time we fall." — Nelson Mandela',
-                '"In the middle of difficulty lies opportunity." — Albert Einstein',
-                '"Success is not final, failure is not fatal: it is the courage to continue that counts." — Winston Churchill',
-                '"The only way to do great work is to love what you do." — Steve Jobs',
-                '"Life is what happens when you\'re busy making other plans." — John Lennon',
-                '"The future belongs to those who believe in the beauty of their dreams." — Eleanor Roosevelt',
-                '"Believe you can and you\'re halfway there." — Theodore Roosevelt',
-                '"To live is the rarest thing in the world. Most people exist, that is all." — Oscar Wilde'
-            ];
-            
-            const quote = quotes[index % quotes.length];
-            const quoteDiv = document.createElement('div');
-            quoteDiv.style.cssText = `font-family:'EB Garamond',Georgia,serif;font-size:14px;font-style:italic;color:#b8860b;text-align:center;margin:6px 0 24px 0;`;
-            quoteDiv.textContent = quote;
-            
-            const header = clone.querySelector('.chapter-header');
-            if (header) {
-                header.appendChild(quoteDiv);
-            }
-        }
-        
-        const paragraphs = clone.querySelectorAll('.chapter-content p');
-        if (paragraphs.length > 4) {
-            const midPoint = Math.floor(paragraphs.length / 2);
-            const targetP = paragraphs[midPoint];
-            if (targetP) {
-                const breakDiv = document.createElement('div');
-                breakDiv.style.cssText = `font-family:'Playfair Display',Georgia,serif;font-size:14px;color:#b8860b;text-align:center;letter-spacing:4px;margin:16px 0;`;
-                breakDiv.textContent = '✦ ✦ ✦';
-                targetP.parentNode.insertBefore(breakDiv, targetP);
-            }
-        }
-
-        // ✅ PAGE NUMBER
-        const pageNumDiv = document.createElement('div');
-        pageNumDiv.style.cssText = `position:absolute;bottom:20px;right:50px;font-family:'EB Garamond',Georgia,serif;font-size:12px;color:#999;letter-spacing:2px;`;
-        pageNumDiv.textContent = `${index + 10}`;
-        clone.appendChild(pageNumDiv);
-        
-        div.appendChild(clone);
-        return div;
-    }
-
-    createConclusionPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;`;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:600;color:#000000;font-family:'Playfair Display',Georgia,serif;margin-bottom:20px;letter-spacing:1.5px;">Conclusion</h2>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;margin-bottom:16px;">This is not the end of my story. It is just the beginning.</p>
-                <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;">The best is yet to come.</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#b8860b;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createAboutPage(authorImage, qrDataUrl) {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        
-        // ✅ Improvement 4: QR fail safe
-        const qrHTML = qrDataUrl ? `
-            <div style="margin:14px auto 0 auto;">
-                <img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #b8860b;border-radius:8px;padding:4px;">
-                <p style="font-size:10px;color:#999;font-family:'EB Garamond',Georgia,serif;margin-top:4px;">Scan to visit my website</p>
-            </div>
-        ` : '';
-        
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:600;color:#000000;font-family:'Playfair Display',Georgia,serif;margin-bottom:20px;letter-spacing:1.5px;">About the Author</h2>
-                <div style="width:130px;height:130px;border-radius:50%;border:3px solid #b8860b;margin:0 auto 16px;overflow:hidden;">
-                    <img src="${authorImage}" alt="${EBOOK_CONFIG.author}" style="width:100%;height:100%;object-fit:cover;">
-                </div>
-                <p style="font-size:24px;font-weight:600;color:#000000;font-family:'Playfair Display',Georgia,serif;margin:4px 0;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:13px;color:#8b6f47;font-family:'EB Garamond',Georgia,serif;margin-bottom:16px;letter-spacing:3px;">A.K.A ${EBOOK_CONFIG.aka}</p>
-                <div style="max-width:500px;margin:0 auto;">
-                    <p style="font-size:16px;line-height:1.75;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;text-align:justify;">${EBOOK_CONFIG.author} was born on 26 March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A young dreamer who discovered his voice through words, he wrote this autobiography to share his journey — from his earliest memories to his days in 5th Class. He dreams of becoming an engineer and continues to write his story, one page at a time.</p>
-                </div>
-                <div style="width:60px;height:2px;background:#b8860b;margin:16px auto;"></div>
-                <p style="font-size:16px;font-style:italic;color:#8b6f47;font-family:'EB Garamond',Georgia,serif;">"A Boy Who Never Thought"</p>
-                
-                <div style="width:60px;height:2px;background:#b8860b;margin:16px auto;"></div>
-                <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'EB Garamond',Georgia,serif;">📖 Writer</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'EB Garamond',Georgia,serif;">🎯 Dreamer</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'EB Garamond',Georgia,serif;">⚙️ Future Engineer</span>
-                </div>
-                
-                ${qrHTML}
-            </div>
-        `;
-        return div;
-    }
-
-    createEmotionalPage(signatureImage) {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#fdfbf5;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <div style="font-size:44px;margin-bottom:20px;">❤️</div>
-                <p style="font-size:19px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:1.8;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams."</p>
-                <div style="margin:24px auto 10px auto;max-width:200px;">
-                    <img src="${signatureImage}" alt="${EBOOK_CONFIG.author} Signature" style="width:100%;height:auto;display:block;" onerror="this.style.display='none'">
-                </div>
-                <p style="font-size:17px;color:#b8860b;margin:6px 0 12px 0;font-family:'Playfair Display',Georgia,serif;">— ${EBOOK_CONFIG.author}</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:16px auto;"></div>
-                <p style="font-size:14px;color:#666;font-family:'EB Garamond',Georgia,serif;">With love & gratitude ❤️</p>
-                <p style="font-size:13px;color:#999;margin-top:6px;font-family:'EB Garamond',Georgia,serif;">${EBOOK_CONFIG.author} · ${EBOOK_CONFIG.currentYear}</p>
-                <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'EB Garamond',Georgia,serif;">📖 From ${EBOOK_CONFIG.birthplace} to the World</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createColophonPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `padding:60px 40px;background:#ffffff;display:flex;flex-direction:column;justify-content:center;min-height:100%;text-align:center;`;
-        div.innerHTML = `
-            <div style="max-width:450px;margin:0 auto;width:100%;">
-                <div style="width:60px;height:2px;background:#b8860b;margin:0 auto 30px auto;"></div>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;margin-bottom:8px;">This book was written with love,</p>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;margin-bottom:8px;">Designed in Begusarai, Bihar,</p>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'EB Garamond',Georgia,serif;line-height:2;margin-bottom:20px;">Printed in India, ${EBOOK_CONFIG.currentYear}</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:0 auto 20px auto;"></div>
-                <p style="font-size:12px;color:#999;font-family:'EB Garamond',Georgia,serif;line-height:1.8;">Fonts: EB Garamond · Playfair Display</p>
-                <p style="font-size:12px;color:#999;font-family:'EB Garamond',Georgia,serif;line-height:1.8;">Paper: Premium Offset</p>
-                <p style="font-size:12px;color:#999;font-family:'EB Garamond',Georgia,serif;line-height:1.8;">Cover: Matte Finish</p>
-                <div style="width:60px;height:2px;background:#b8860b;margin:20px auto;"></div>
-                <p style="font-size:11px;color:#aaa;font-family:'EB Garamond',Georgia,serif;font-style:italic;">"A story from the heart"</p>
-                <p style="font-size:11px;color:#aaa;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-top:8px;">Safar se safar tak — गुंजते सन्नाटे</p>
-                <p style="font-size:11px;color:#aaa;font-family:'EB Garamond',Georgia,serif;font-style:italic;margin-top:12px;">Made with ❤️</p>
-            </div>
-        `;
-        return div;
-    }
-
-    cleanClone(clone) {
-        const removeSelectors = [
-            '.lang-toggle', '.cover-actions', '.cover-scroll',
-            '.toast', '.modal-overlay', '.lightbox',
-            '.gallery-section', '.timeline-section', '.specials-section',
-            '.download-section', '.book-footer', '.bookmark-btn',
-            '.audio-btn',
-            '.progress-bar-wrapper', '.progress-text'
-        ];
-        removeSelectors.forEach(selector => {
-            clone.querySelectorAll(selector).forEach(el => el.remove());
-        });
-    }
-
-    async generatePDF(langLabel) {
-        const { jsPDF } = window.jspdf;
-        const config = EBOOK_CONFIG.pdf;
-        
-        this.pdf = new jsPDF({
-            unit: 'mm',
-            format: config.format,
-            orientation: 'portrait',
-            compress: true
-        });
-
-        this.pdf.setProperties({
-            title: EBOOK_CONFIG.title,
-            author: EBOOK_CONFIG.author,
-            subject: 'Autobiography',
-            keywords: 'autobiography, memoir, Suraj Anand, A Boy Who Never Thought',
-            creator: `${EBOOK_CONFIG.author} Publishing`
-        });
-
-        const pageWidth = 210;
-        const pageHeight = 297;
-        const margin = config.margin;
-        const contentWidth = pageWidth - (margin * 2);
-        const contentHeight = pageHeight - (margin * 2);
-
-        let isFirstPage = true;
-        const batchSize = config.batchSize || 2;
-
-        for (let i = 0; i < this.pages.length; i += batchSize) {
-            if (this.cancelled) break;
-
-            const batch = this.pages.slice(i, i + batchSize);
-            const batchPromises = batch.map((page) => this.renderPage(page, contentWidth, contentHeight));
-            const results = await Promise.all(batchPromises);
-            
-            for (const result of results) {
-                if (result) {
-                    if (!isFirstPage) this.pdf.addPage();
-                    isFirstPage = false;
-                    this.pdf.addImage(result, 'JPEG', margin, margin, contentWidth, contentHeight, undefined, 'FAST');
-                }
-            }
-
-            const progress = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
-            this.updateProgress(progress);
-            await new Promise(r => setTimeout(r, 50));
-        }
-    }
-
-    // ✅ Improvement 5: Reusable container
-    async renderPage(element, width, height) {
-        try {
-            const container = this.getRenderContainer();
-            
-            // Clear previous content
-            container.innerHTML = '';
-            container.style.width = `${width}mm`;
-
-            const clone = element.cloneNode(true);
-            clone.style.width = '100%';
-            clone.style.height = '100%';
-            clone.style.background = '#ffffff';
-            container.appendChild(clone);
-
-            await new Promise(r => setTimeout(r, 50));
-
-            const canvas = await html2canvas(container, {
-                scale: EBOOK_CONFIG.pdf.scale,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                width: width * 3.78,
-                height: height * 3.78
-            });
-
-            if (canvas) {
-                canvas.className = 'ebook-canvas';  // ✅ Improvement 3
-                return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
-            }
-            return null;
-        } catch (error) {
-            console.error('Page rendering failed:', error);
-            return null;
-        }
-    }
-
-    updateProgress(percent) {
-        const progressBar = document.querySelector('.progress-bar');
-        const progressText = document.querySelector('.progress-text');
-        const progressContainer = document.querySelector('.progress-container');
-        
-        const val = Math.min(100, percent || Math.round((this.currentPage / this.totalPages) * 100));
-        
-        if (progressBar) {
-            progressBar.style.width = val + '%';
-        }
-        if (progressText) {
-            progressText.textContent = val + '%';
-        }
-        if (progressContainer && this.isGenerating) {
-            progressContainer.style.display = 'block';
-        } else if (progressContainer && !this.isGenerating) {
-            progressContainer.style.display = 'none';
-        }
-    }
-
-    // ✅ Improvement 1 + 3: window.gc() removed, only ebook-canvas removed
-    cleanup() {
-        // Remove reusable render container
-        if (this.renderContainer && this.renderContainer.parentNode) {
-            this.renderContainer.parentNode.removeChild(this.renderContainer);
-            this.renderContainer = null;
-        }
-        
-        // Remove only ebook-canvas (not all canvas)
-        document.querySelectorAll('.ebook-canvas').forEach(el => {
-            el.remove();
-        });
-        
-        this.pages = [];
-        this.pdf = null;
-    }
-
-    cancel() {
-        this.cancelled = true;
-        this.isGenerating = false;
-        toast.warning('Generation cancelled');
-        this.cleanup();
-    }
+  return container;
 }
 
-// ============================================================
-// 10. EXPOSE FUNCTIONS
-// ============================================================
-const ebookGenerator = new EbookGenerator();
+/* ---------- PROGRESS BAR UI ---------- */
+function showProgress(current, total) {
+  let box = document.getElementById('pdfProgressBox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'pdfProgressBox';
+    box.innerHTML = `
+      <div class="pdf-progress-inner">
+        <p class="pdf-progress-title">📖 Generating your eBook...</p>
+        <div class="pdf-progress-bar-wrap">
+          <div class="pdf-progress-bar" id="pdfProgressBar"></div>
+        </div>
+        <p class="pdf-progress-text" id="pdfProgressText">Page ${current} / ${total}</p>
+      </div>
+    `;
+    document.body.appendChild(box);
 
-window.downloadEbook = async function(lang) {
-    const label = lang === 'hi' ? 'Hinglish' : 'English';
-    await ebookGenerator.generate(lang, label);
-};
+    if (!document.getElementById('pdfProgressStyles')) {
+      const st = document.createElement('style');
+      st.id = 'pdfProgressStyles';
+      st.textContent = `
+        #pdfProgressBox {
+          position: fixed;
+          inset: 0;
+          background: rgba(13,13,26,0.85);
+          z-index: 99999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'EB Garamond', serif;
+        }
+        .pdf-progress-inner {
+          background: #fdfaf3;
+          padding: 30px 40px;
+          border-radius: 8px;
+          border: 2px solid #d4af37;
+          text-align: center;
+          min-width: 320px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        .pdf-progress-title {
+          color: #1a1a1a;
+          font-size: 16pt;
+          margin: 0 0 20px;
+        }
+        .pdf-progress-bar-wrap {
+          width: 100%;
+          height: 10px;
+          background: #e8dcc0;
+          border-radius: 5px;
+          overflow: hidden;
+          margin-bottom: 14px;
+        }
+        .pdf-progress-bar {
+          height: 100%;
+          width: 0%;
+          background: linear-gradient(90deg, #d4af37, #f4d97a);
+          transition: width 0.3s ease;
+        }
+        .pdf-progress-text {
+          color: #555;
+          font-size: 11pt;
+          margin: 0;
+          font-style: italic;
+        }
+      `;
+      document.head.appendChild(st);
+    }
+  }
 
-window.downloadEnglishEbook = async function() {
-    await ebookGenerator.generate('en', 'English');
-};
+  const bar = document.getElementById('pdfProgressBar');
+  const txt = document.getElementById('pdfProgressText');
+  const pct = Math.round((current / total) * 100);
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = `Page ${current} / ${total}`;
+}
 
-window.downloadHinglishEbook = async function() {
-    await ebookGenerator.generate('hi', 'Hinglish');
-};
+function hideProgress() {
+  const box = document.getElementById('pdfProgressBox');
+  if (box) box.remove();
+}
 
-window.cancelEbookGeneration = function() {
-    ebookGenerator.cancel();
-};
+/* ---------- TOAST ---------- */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 
-window.closeDownloadModal = function() {
-    modal.close();
-};
+/* ---------- QR CODE GENERATION ---------- */
+function generateQRCode(container) {
+  const qrDiv = container.querySelector('#pdfQR');
+  if (!qrDiv) return;
+  qrDiv.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    new QRCode(qrDiv, {
+      text: BOOK.websiteUrl,
+      width: 110,
+      height: 110,
+      colorDark: '#0d0d1a',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } else {
+    qrDiv.textContent = BOOK.website;
+    qrDiv.style.fontSize = '8pt';
+  }
+}
 
-window.readChapterAloud = function(chapterElement, lang) {
-    audioManager.readChapter(chapterElement, lang);
-};
+/* ---------- MAIN PDF GENERATOR ---------- */
+async function generatePDF(lang) {
+  const langLabel = lang === 'hi' ? 'Hinglish' : 'English';
 
-window.stopAudio = function() {
-    audioManager.stop();
-};
+  try {
+    closeDownloadModal();
 
-// ============================================================
-// 11. CONNECT DOWNLOAD BUTTONS
-// ============================================================
+    if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
+      showToast('❌ PDF libraries load nahi hui. Page refresh karein.');
+      return;
+    }
+
+    showProgress(1, 21);
+
+    const html = buildFullBookHTML(lang);
+    const container = createHiddenRenderContainer(html);
+
+    await document.fonts.ready;
+    await new Promise(r => setTimeout(r, 400));
+
+    generateQRCode(container);
+    await new Promise(r => setTimeout(r, 300));
+
+    const pages = container.querySelectorAll('.pdf-page');
+    const total = pages.length;
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a5',
+      compress: true
+    });
+
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+
+    for (let i = 0; i < pages.length; i++) {
+      showProgress(i + 1, total);
+      await new Promise(r => setTimeout(r, 30));
+
+      const canvas = await html2canvas(pages[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#fdfaf3',
+        logging: false,
+        windowWidth: pages[i].scrollWidth,
+        windowHeight: pages[i].scrollHeight
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const imgW = pdfW;
+      const imgH = (canvas.height * imgW) / canvas.width;
+
+      if (i > 0) pdf.addPage();
+
+      let finalW = imgW;
+      let finalH = imgH;
+      if (imgH > pdfH) {
+        finalH = pdfH;
+        finalW = (canvas.width * finalH) / canvas.height;
+      }
+
+      const x = (pdfW - finalW) / 2;
+      const y = 0;
+      pdf.addImage(imgData, 'JPEG', x, y, finalW, finalH, undefined, 'FAST');
+    }
+
+    const filename = `Suraj-Anand-Autobiography-${langLabel}.pdf`;
+    pdf.save(filename);
+
+    container.remove();
+    hideProgress();
+    showToast(`✅ ${langLabel} PDF downloaded!`);
+  } catch (err) {
+    console.error('PDF Error:', err);
+    hideProgress();
+    showToast('❌ PDF banane mein error aaya. Console check karein.');
+  }
+}
+
+/* ---------- MODAL CONTROL ---------- */
+function openDownloadModal() {
+  const m = document.getElementById('downloadModal');
+  if (m) m.classList.add('active');
+}
+
+function closeDownloadModal() {
+  const m = document.getElementById('downloadModal');
+  if (m) m.classList.remove('active');
+}
+
+/* ---------- EVENT LISTENERS ---------- */
 document.addEventListener('DOMContentLoaded', () => {
-    const downloadButtons = document.querySelectorAll('#downloadBtn, #downloadBtnBottom');
-    
-    downloadButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.open();
-        });
+  const topBtn = document.getElementById('downloadBtn');
+  const botBtn = document.getElementById('downloadBtnBottom');
+  const enBtn = document.getElementById('modalDownloadEn');
+  const hiBtn = document.getElementById('modalDownloadHi');
+  const overlay = document.getElementById('downloadModal');
+
+  if (topBtn) topBtn.addEventListener('click', openDownloadModal);
+  if (botBtn) botBtn.addEventListener('click', openDownloadModal);
+  if (enBtn) enBtn.addEventListener('click', () => generatePDF('en'));
+  if (hiBtn) hiBtn.addEventListener('click', () => generatePDF('hi'));
+
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeDownloadModal();
     });
+  }
 
-    const modalEn = document.getElementById('modalDownloadEn');
-    const modalHi = document.getElementById('modalDownloadHi');
-    
-    if (modalEn) {
-        modalEn.addEventListener('click', () => {
-            modal.close();
-            window.downloadEbook('en');
-        });
-    }
-    
-    if (modalHi) {
-        modalHi.addEventListener('click', () => {
-            modal.close();
-            window.downloadEbook('hi');
-        });
-    }
-
-    bookmarkManager.injectButtons();
-
-    document.querySelectorAll('.chapter').forEach((ch, idx) => {
-        const header = ch.querySelector('.chapter-header');
-        if (!header || header.querySelector('.audio-btn')) return;
-
-        const audioBtn = document.createElement('button');
-        audioBtn.className = 'audio-btn';
-        audioBtn.textContent = '🔊';
-        audioBtn.title = 'Read aloud';
-        
-        audioBtn.style.cssText = `
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: transparent;
-            border: 1px solid #d4c9b0;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
-            cursor: pointer;
-            color: #b8860b;
-            transition: all 0.3s ease;
-            z-index: 10;
-        `;
-
-        audioBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const lang = document.documentElement.lang === 'hi' ? 'hi' : 'en';
-            audioManager.readChapter(ch, lang);
-        });
-
-        header.style.position = 'relative';
-        header.appendChild(audioBtn);
-    });
+  window.openDownloadModal = openDownloadModal;
+  window.closeDownloadModal = closeDownloadModal;
+  window.generatePDF = generatePDF;
 });
 
-// ============================================================
-// 12. KEYBOARD SHORTCUTS
-// ============================================================
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (modal.isOpen) modal.close();
-        if (ebookGenerator.isGenerating) ebookGenerator.cancel();
-        if (audioManager.isPlaying) audioManager.stop();
-    }
-});
+/* ---------- LIBRARY LOADER (agar HTML mein CDN nahi hai) ---------- */
+(function loadLibraries() {
+  const libs = [
+    { test: () => typeof html2canvas !== 'undefined',
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js' },
+    { test: () => typeof window.jspdf !== 'undefined',
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js' },
+    { test: () => typeof QRCode !== 'undefined',
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js' }
+  ];
 
-// ============================================================
-// 13. PROGRESS INDICATOR SETUP
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-    const progressContainer = document.querySelector('.progress-container');
-    if (progressContainer) {
-        progressContainer.innerHTML = `
-            <div class="progress-bar-wrapper" style="width:100%;background:#f0f0f0;border-radius:8px;overflow:hidden;height:8px;">
-                <div class="progress-bar" style="width:0%;height:100%;background:#b8860b;transition:width 0.3s ease;"></div>
-            </div>
-            <p class="progress-text" style="text-align:center;font-size:14px;color:#666;margin-top:6px;">0%</p>
-        `;
-        progressContainer.style.display = 'none';
+  libs.forEach(lib => {
+    if (!lib.test()) {
+      const s = document.createElement('script');
+      s.src = lib.src;
+      s.async = false;
+      document.head.appendChild(s);
     }
-});
-
-// ============================================================
-// 14. INIT
-// ============================================================
-console.log('%c📖 Ebook Generator Loaded', 'font-size: 16px; color: #b8860b; font-weight: bold;');
-console.log('%cSuraj Anand — A Boy Who Never Thought', 'font-size: 13px; color: #8b6f47; font-style: italic;');
-console.log('💡 Features: Download, Bookmark, Read Aloud');
+  });
+})();
