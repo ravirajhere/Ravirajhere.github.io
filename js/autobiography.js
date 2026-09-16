@@ -157,24 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ------------------------------------------
-   6. DOWNLOAD EBOOK BUTTON
------------------------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const downloadBtns = document.querySelectorAll('#downloadBtn, #downloadBtnBottom');
-
-  downloadBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Placeholder action — aap baad mein batayenge kya karna hai
-      alert(
-        currentLang === 'hi'
-          ? '📥 eBook download feature abhi ban raha hai. Jald hi aayega!'
-          : '📥 eBook download feature is coming soon. Stay tuned!'
-      );
-    });
-  });
-});
-
-/* ------------------------------------------
    7. KEYBOARD SHORTCUT — Press "L" to toggle language
 ------------------------------------------ */
 document.addEventListener('keydown', (e) => {
