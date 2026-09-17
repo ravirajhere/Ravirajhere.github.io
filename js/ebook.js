@@ -1,6 +1,7 @@
 // ============================================================
 // EBOOK.JS — PAGE-SPECIFIC LOGIC FOR AUTOBIOGRAPHY.HTML
 // (Ebook Generator, PDF Creation, QR Code, Resource Validator)
+// + Reader Personalization (About the Reader page)
 // ============================================================
 
 // ============================================================
@@ -476,37 +477,46 @@ class EbookGenerator {
         this.isGenerating = false;
         this.cancelled = false;
         this.resources = null;
+        this.readerData = null; // ⭐ Set by wizard flow
     }
 
-    async generate(lang, langLabel) {
+    async generate(lang, langLabel, readerData = null, onProgress = null) {
         if (this.isGenerating) return;
 
         this.isGenerating = true;
         this.cancelled = false;
         this.currentPage = 0;
+        this.readerData = readerData; // ⭐ Store for getPageBuilders
 
-        // ✅ Show progress pill
-        showPdfProgress(0, 'Preparing...');
+        // Progress helper (works with both pill + wizard callback)
+        const reportProgress = (percent, message) => {
+            showPdfProgress(percent, message || 'Generating PDF');
+            if (typeof onProgress === 'function') {
+                try { onProgress(percent, message); } catch (e) {}
+            }
+        };
+
+        reportProgress(0, 'Preparing...');
 
         try {
             this.resources = await ResourceValidator.validateAllImages();
             await LibraryLoader.loadAll();
 
-            showPdfProgress(5, 'Building pages...');
+            reportProgress(10, 'Building pages...');
 
             const content = this.getContent(lang);
             if (!content) {
                 throw new Error('Content not found');
             }
 
-            this.pages = await this.buildPages(content, lang);
+            this.pages = await this.buildPages(content, lang, reportProgress);
             this.totalPages = this.pages.length;
 
-            showPdfProgress(40, 'Rendering PDF...');
+            reportProgress(45, 'Rendering PDF...');
 
-            await this.generatePDF(langLabel);
+            await this.generatePDF(langLabel, reportProgress);
 
-            showPdfProgress(100, 'Saving...');
+            reportProgress(100, 'Saving...');
 
             const filename = `My_Autobiography_${EBOOK_CONFIG.author.replace(/\s/g, '_')}_${langLabel}.pdf`;
             this.pdf.save(filename);
@@ -515,9 +525,10 @@ class EbookGenerator {
         } catch (error) {
             console.error('Ebook generation failed:', error);
             toast.error(`Failed: ${error.message}`);
+            throw error; // ⭐ Re-throw so wizard can catch
         } finally {
             this.isGenerating = false;
-            // ✅ Hide progress pill (after short delay)
+            this.readerData = null;
             setTimeout(() => hidePdfProgress(), 800);
             this.cleanup();
         }
@@ -558,7 +569,7 @@ class EbookGenerator {
         };
     }
 
-    async buildPages(content, lang) {
+    async buildPages(content, lang, reportProgress = null) {
         const pages = [];
         const clone = content.wrapper;
         const containerId = content.containerId;
@@ -581,7 +592,7 @@ class EbookGenerator {
             if (page) {
                 pages.push(page);
                 this.currentPage++;
-                this.updateProgress();
+                this.updateProgress(null, reportProgress);
             }
         }
 
@@ -589,11 +600,12 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // ✅ getPageBuilders — with 4 new pages integrated
+    // ✅ getPageBuilders — with reader page integrated
     // ========================================================
     getPageBuilders(chapters, qrDataUrl) {
         const builders = [];
         const images = this.resources;
+        const readerData = this.readerData; // ⭐
 
         // ---- FRONT MATTER ----
         builders.push(async () => this.createCoverPage(images.cover));
@@ -602,10 +614,10 @@ class EbookGenerator {
         builders.push(async () => this.createDedicationPage());
         builders.push(async () => this.createEpigraphPage());
         builders.push(async () => this.createPrefacePage());
-        builders.push(async () => this.createAuthorsNotePage());       // 🆕 #1
+        builders.push(async () => this.createAuthorsNotePage());
         builders.push(async () => this.createAcknowledgementsPage());
         builders.push(async () => this.createTOCPage(chapters));
-        builders.push(async () => this.createHowToReadPage());          // 🆕 #2 (Book Map)
+        builders.push(async () => this.createHowToReadPage());
         builders.push(async () => this.createOverviewPage());
 
         // ---- MAIN CONTENT ----
@@ -615,17 +627,145 @@ class EbookGenerator {
 
         // ---- BACK MATTER ----
         builders.push(async () => this.createConclusionPage());
-        builders.push(async () => this.createStoryBehindTheStoryPage()); // 🆕 #3
+        builders.push(async () => this.createStoryBehindTheStoryPage());
         builders.push(async () => this.createAboutPage(images.author, qrDataUrl));
         builders.push(async () => this.createEmotionalPage(images.signature));
         builders.push(async () => this.createColophonPage());
-        builders.push(async () => this.createBlankPage());              // 🆕 #4
+
+        // ⭐ READER PAGE — only if readerData provided (wizard flow)
+        if (readerData && readerData.name && readerData.photo) {
+            builders.push(async () => this.createAboutTheReaderPage(readerData));
+        }
+
+        builders.push(async () => this.createBlankPage());
 
         return builders;
     }
 
     // ========================================================
-    // 🆕 NEW PAGE: Author's Note
+    // 🆕 READER PAGE: About the Reader (personalized)
+    // ========================================================
+    createAboutTheReaderPage(readerData) {
+        if (!readerData || !readerData.name || !readerData.photo) {
+            return null;
+        }
+
+        const message = (typeof window.buildReaderMessage === 'function')
+            ? window.buildReaderMessage(readerData.name, readerData.gender)
+            : this.getFallbackMessage(readerData.name, readerData.gender);
+
+        const div = document.createElement('div');
+        div.style.cssText = `
+            padding: 50px 45px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
+            box-sizing: border-box;
+        `;
+
+        const paragraphs = message
+            .split('\n\n')
+            .map(p => p.trim())
+            .filter(p => p.length > 0)
+            .map(p => `
+                <p style="
+                    font-size: 12.5px;
+                    line-height: 1.75;
+                    color: #1a1a1a;
+                    font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
+                    text-align: justify;
+                    margin: 0 0 10px 0;
+                    font-weight: 450;
+                    letter-spacing: 0.2px;
+                ">${p}</p>
+            `)
+            .join('');
+
+        div.innerHTML = `
+            <div style="max-width: 520px; margin: 0 auto; width: 100%;">
+
+                <h2 style="
+                    font-size: 26px;
+                    font-weight: 700;
+                    color: #000000;
+                    font-family: 'Playfair Display', 'Georgia', serif;
+                    text-align: center;
+                    margin: 0 0 6px 0;
+                    letter-spacing: 2px;
+                ">About the Reader</h2>
+
+                <div style="
+                    width: 60px;
+                    height: 2px;
+                    background: #DAA520;
+                    margin: 0 auto 22px auto;
+                "></div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${readerData.photo}"
+                         style="
+                            width: 130px;
+                            height: 130px;
+                            object-fit: cover;
+                            border-radius: 50%;
+                            border: 3px solid #DAA520;
+                            display: inline-block;
+                            box-shadow: 0 4px 14px rgba(218,165,32,0.25);
+                         ">
+                </div>
+
+                <p style="
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #000000;
+                    font-family: 'Playfair Display', 'Georgia', serif;
+                    text-align: center;
+                    margin: 0 0 20px 0;
+                    letter-spacing: 0.5px;
+                ">${readerData.name}</p>
+
+                <div style="margin-bottom: 24px;">
+                    ${paragraphs}
+                </div>
+
+                <div style="width: 60px; height: 2px; background: #DAA520; margin: 20px auto 14px auto;"></div>
+                <p style="
+                    font-size: 15px;
+                    color: #DAA520;
+                    font-family: 'Playfair Display', 'Georgia', serif;
+                    text-align: right;
+                    margin: 0;
+                    font-style: italic;
+                ">— ${EBOOK_CONFIG.author}</p>
+
+            </div>
+        `;
+
+        return div;
+    }
+
+    // Fallback message builder (if window.buildReaderMessage is unavailable)
+    getFallbackMessage(name, gender) {
+        let pronoun, possessive, obj;
+        if (gender === 'male') { pronoun = 'he'; possessive = 'his'; obj = 'him'; }
+        else if (gender === 'female') { pronoun = 'she'; possessive = 'her'; obj = 'her'; }
+        else { pronoun = 'they'; possessive = 'their'; obj = 'them'; }
+
+        return `${name} is someone who is easy to write about, because there is no pretence at all.
+
+Less talk, more action — that's who ${pronoun} is. Even in a crowd, ${pronoun} stands out, not because of clothes or style, but because of ${possessive} nature.
+
+The best thing about ${name} is that ${pronoun} understands. Without being told, ${pronoun} knows when to be there and when to stay quiet. People like this are rare these days.
+
+Hardworking and determined — once ${pronoun} sets ${possessive} mind on something, ${pronoun} gets it done. ${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} has a pure heart, which is why it feels safe to be around ${obj}.
+
+Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
+    }
+
+    // ========================================================
+    // NEW PAGE: Author's Note
     // ========================================================
     createAuthorsNotePage() {
         const div = document.createElement('div');
@@ -652,7 +792,7 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // 🆕 NEW PAGE: How to Read This Book (Book Map)
+    // NEW PAGE: How to Read This Book (Book Map)
     // ========================================================
     createHowToReadPage() {
         const div = document.createElement('div');
@@ -706,7 +846,7 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // 🆕 NEW PAGE: The Story Behind the Story
+    // NEW PAGE: The Story Behind the Story
     // ========================================================
     createStoryBehindTheStoryPage() {
         const div = document.createElement('div');
@@ -733,7 +873,7 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // 🆕 NEW PAGE: Blank Page
+    // NEW PAGE: Blank Page
     // ========================================================
     createBlankPage() {
         const div = document.createElement('div');
@@ -987,12 +1127,6 @@ class EbookGenerator {
 
     // ========================================================
     // createChapterPage() — Textbook Style
-    // - Left: Number circle (72px)
-    // - Right: Chapter name + year (~ 2013)
-    // - Full-width divider below
-    // - Content: 12.5px justify
-    // - Photo: content ke neeche (1:1, 170x170)
-    // - Page number bottom center
     // ========================================================
     createChapterPage(chapter, index) {
         const div = document.createElement('div');
@@ -1019,14 +1153,12 @@ class EbookGenerator {
         let chapterName = fullTitle;
         let chapterYear = '';
 
-        // Extract year
         const yearMatch = fullTitle.match(/\((\d{4}(?:[–-]\d{4})?)\)/);
         if (yearMatch) {
             chapterYear = yearMatch[1];
             chapterName = chapterName.replace(yearMatch[0], '').trim();
         }
 
-        // Extract chapter number + name
         const chapterMatch = chapterName.match(/^Chapter\s+(\d+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|Thirteen)[:\s-]+(.*)$/i);
         if (chapterMatch) {
             const num = chapterMatch[1];
@@ -1044,7 +1176,6 @@ class EbookGenerator {
 
         if (h3) h3.remove();
 
-        // Extract photo
         const photoPlaceholder = clone.querySelector('.chapter-photo-placeholder');
         let photoHTML = '';
         if (photoPlaceholder) {
@@ -1062,7 +1193,6 @@ class EbookGenerator {
             photoPlaceholder.remove();
         }
 
-        // ===== Textbook-style header with ROW layout =====
         const headerHTML = `
             <div style="margin-bottom:24px;">
                 <div style="
@@ -1071,7 +1201,6 @@ class EbookGenerator {
                     gap: 20px;
                     margin-bottom: 16px;
                 ">
-                    <!-- Big number circle (left) -->
                     <div style="
                         flex-shrink: 0;
                         width: 72px;
@@ -1104,7 +1233,6 @@ class EbookGenerator {
                         ">${chapterNum}</span>
                     </div>
 
-                    <!-- Title + year (right) -->
                     <div style="flex: 1;">
                         <h2 style="
                             font-family: 'Playfair Display', 'Georgia', serif;
@@ -1128,7 +1256,6 @@ class EbookGenerator {
                     </div>
                 </div>
 
-                <!-- Full-width divider -->
                 <div style="
                     width: 100%;
                     height: 1px;
@@ -1360,7 +1487,7 @@ class EbookGenerator {
         });
     }
 
-    async generatePDF(langLabel) {
+    async generatePDF(langLabel, reportProgress = null) {
         const { jsPDF } = window.jspdf;
         const config = EBOOK_CONFIG.pdf;
         
@@ -1419,7 +1546,7 @@ class EbookGenerator {
             }
 
             const progress = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
-            this.updateProgress(progress);
+            this.updateProgress(progress, reportProgress);
             
             await new Promise(r => setTimeout(r, 50));
         }
@@ -1468,7 +1595,7 @@ class EbookGenerator {
         }
     }
 
-    updateProgress(percent) {
+    updateProgress(percent, reportProgress = null) {
         const progressBar = document.querySelector('.progress-bar');
         const progressText = document.querySelector('.progress-text');
         
@@ -1478,9 +1605,14 @@ class EbookGenerator {
         if (progressBar) progressBar.style.width = p + '%';
         if (progressText) progressText.textContent = `${p}%`;
 
-        // ✅ Update floating pill (map 0-100 → 40-100)
-        const visualPercent = 40 + Math.round((p / 100) * 60);
+        // Update floating pill (map 0-100 → 45-100, since 0-45 is prep)
+        const visualPercent = Math.max(45, 45 + Math.round((p / 100) * 55));
         showPdfProgress(visualPercent, 'Generating PDF');
+
+        // Notify wizard (if callback provided)
+        if (typeof reportProgress === 'function') {
+            try { reportProgress(visualPercent, 'Generating PDF'); } catch (e) {}
+        }
     }
 
     cleanup() {
@@ -1513,6 +1645,14 @@ window.downloadEnglishEbook = async function() {
 
 window.downloadHinglishEbook = async function() {
     await ebookGenerator.generate('hi', 'Hinglish');
+};
+
+// ⭐ NEW: Wizard flow — reader data ke saath ebook generate karo
+window.generateEbookWithReader = async function(readerData, onProgress) {
+    const lang = readerData.language || 'en';
+    const langLabel = lang === 'en' ? 'English' : 'Hinglish';
+    
+    await ebookGenerator.generate(lang, langLabel, readerData, onProgress);
 };
 
 window.cancelEbookGeneration = function() {
@@ -1554,3 +1694,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 console.log('✅ Ebook Generator loaded successfully!');
 console.log('📖 Use downloadEnglishEbook() or downloadHinglishEbook()');
+console.log('✨ Wizard flow: window.generateEbookWithReader(readerData, onProgress)');
