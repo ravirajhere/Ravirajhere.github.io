@@ -2,8 +2,8 @@
    autobiography.js
    My Autobiography — Ravi Raj
    Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
-            Reader Wizard (4-step ebook personalization),
-            Webcam Capture, Footnotes, Audio Narration
+            Reader Wizard, Webcam, Footnotes, Audio Narration,
+            Age-based Voice Journey
    ============================================================ */
 
 (function () {
@@ -20,6 +20,23 @@
         currentChapter: '1',
         currentLang: 'en',
         theme: 'light'
+    };
+
+    /* ============================================================
+       ⭐ VOICE JOURNEY CONFIG — Age-based pitch/rate per chapter
+       ============================================================ */
+    const VOICE_CONFIG = {
+        '1':  { pitch: 1.55, rate: 0.86 },   // Newborn (2008) — high pitch, slow
+        '2':  { pitch: 1.50, rate: 0.88 },   // 1 year (2009)
+        '3':  { pitch: 1.45, rate: 0.90 },   // 3-4 years (2010-12)
+        '4':  { pitch: 1.40, rate: 0.92 },   // 5 years (2013)
+        '5':  { pitch: 1.30, rate: 0.95 },   // 7-8 years (2014-16)
+        '6':  { pitch: 1.20, rate: 0.98 },   // 9 years (2017)
+        '7':  { pitch: 1.15, rate: 1.00 },   // 9 years (2017)
+        '8':  { pitch: 1.08, rate: 1.02 },   // 10 years (2018)
+        '9':  { pitch: 1.00, rate: 1.05 },   // 10-11 years (2018-19)
+        '10': { pitch: 0.95, rate: 1.08 },   // 11 years (2019)
+        '11': { pitch: 0.90, rate: 1.10 }    // Present (Epilogue) — mature, thoughtful
     };
 
     /* ============================================================
@@ -156,7 +173,6 @@
         chapterId = String(chapterId);
         state.currentChapter = chapterId;
 
-        // ⭐ Stop audio if playing
         stopAudioIfPlaying();
 
         const container = getActiveContainer();
@@ -716,7 +732,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.buildReaderMessage = buildReaderMessage;
 
     /* ============================================================
-       9D. FOOTNOTES — Hover (desktop) + Tap (mobile)
+       9D. FOOTNOTES
        ============================================================ */
 
     function initFootnotes() {
@@ -832,7 +848,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     }
 
     /* ============================================================
-       9E. AUDIO NARRATION — Web Speech API
+       9E. AUDIO NARRATION — with Age-based Voice Journey
        ============================================================ */
 
     let currentUtterance = null;
@@ -917,17 +933,24 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             return;
         }
 
+        // ⭐ Get chapter-wise voice config (age-based)
+        const chapterNum = chapterEl.dataset.chapter || '1';
+        const voiceCfg = VOICE_CONFIG[chapterNum] || { pitch: 1, rate: 1 };
+
         currentUtterance = new SpeechSynthesisUtterance(text);
         currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-        currentUtterance.rate = currentSpeed;
-        currentUtterance.pitch = 1;
+        // ⭐ Combine user speed with chapter rate
+        currentUtterance.rate = Math.max(0.1, Math.min(2, currentSpeed * voiceCfg.rate));
+        // ⭐ Chapter-wise pitch (age feel)
+        currentUtterance.pitch = Math.max(0, Math.min(2, voiceCfg.pitch));
         currentUtterance.volume = 1;
 
         const voice = getBestVoice(lang);
         if (voice) currentUtterance.voice = voice;
 
         const words = text.split(/\s+/).length;
-        const estimatedDuration = (words / 150) * 60 / currentSpeed;
+        // Adjust duration estimate by combined rate
+        const estimatedDuration = (words / 150) * 60 / (currentSpeed * voiceCfg.rate);
         const startTime = Date.now();
 
         btn.innerHTML = '⏸ Pause';
@@ -1040,8 +1063,8 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         initModal();
         initChapterClicks();
         initPhotoInputs();
-        initFootnotes();        // ⭐ Footnotes
-        initAudioControls();    // ⭐ Audio controls
+        initFootnotes();
+        initAudioControls();
 
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
@@ -1081,7 +1104,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.closeWebcam          = closeWebcam;
     window.capturePhoto         = capturePhoto;
 
-    // ⭐ Audio
+    // Audio
     window.toggleChapterAudio   = toggleChapterAudio;
 
     /* ============================================================
