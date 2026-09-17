@@ -120,22 +120,45 @@
     <main class="main-container">
 
         <!-- ============================================================
-        HERO SECTION
-        ============================================================ -->
-        <section id="home" class="hero-section">
-            <div class="hero-image-wrapper">
-                <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
-            </div>
-            <h1 class="hero-title">Hey, I'm <span>Ravi Raj</span> 👋</h1>
-            <p class="hero-subtitle">Student • <span class="highlight">Author</span> • Web_Developer</p>
-            <p class="hero-bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
-            
-            <!-- HERO ACTIONS -->
-            <div class="hero-actions">
-                <a href="resume-pdf.html" class="btn btn-primary">📃 Download Resume</a>
-                <a href="#projects" class="btn btn-outline">💻 See Projects</a>
-            </div>
-        </section>
+HERO SECTION (Updated with Optional Greeting)
+============================================================ -->
+<section id="home" class="hero-section">
+    <div class="hero-image-wrapper">
+        <img src="assets/images/formal.jpg" alt="Ravi Raj — Personal Photo" class="hero-image" />
+    </div>
+
+    <!-- ===== OPTIONAL GREETING INPUT (Soft Version) ===== -->
+    <div class="greeting-box" id="greetingBox">
+        <p class="greeting-prompt">✨ Want a personalized welcome?</p>
+        <div class="greeting-input-wrap">
+            <input 
+                type="text" 
+                id="userNameInput" 
+                placeholder="Enter your name (optional)" 
+                maxlength="30"
+                autocomplete="off"
+            />
+            <button onclick="greetUser()" aria-label="Set name">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        <p class="greeting-hint">Press Enter or click →</p>
+    </div>
+
+    <!-- ===== HERO TITLE (Dynamic) ===== -->
+    <h1 class="hero-title" id="heroTitle">
+        Hey, I'm <span>Ravi Raj</span> 👋
+    </h1>
+
+    <p class="hero-subtitle">Student • <span class="highlight">Author</span> • Web_Developer</p>
+    <p class="hero-bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
+
+    <!-- HERO ACTIONS -->
+    <div class="hero-actions">
+        <a href="resume-pdf.html" class="btn btn-primary">📃 Download Resume</a>
+        <a href="#projects" class="btn btn-outline">💻 See Projects</a>
+    </div>
+</section>
 
         <!-- ============================================================
         QUICK STATS
