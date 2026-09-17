@@ -48,7 +48,7 @@
         document.documentElement.setAttribute('data-theme', theme);
         document.body.classList.toggle('dark-mode', theme === 'dark');
 
-        // Update label (sidebar one)
+        // Update label (sidebar one, if exists)
         const label = $('#themeLabel');
         if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
 
@@ -99,7 +99,7 @@
         const sidebar = $('#sidebar');
         const overlay = $('#sidebarOverlay');
         if (sidebar) sidebar.classList.add('open');
-        if (overlay) overlay.classList.add('show');
+        if (overlay) overlay.classList.add('active');   // ✅ FIXED: was 'show'
         document.body.classList.add('sidebar-open');
     }
 
@@ -107,7 +107,7 @@
         const sidebar = $('#sidebar');
         const overlay = $('#sidebarOverlay');
         if (sidebar) sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('show');
+        if (overlay) overlay.classList.remove('active'); // ✅ FIXED: was 'show'
         document.body.classList.remove('sidebar-open');
     }
 
@@ -295,7 +295,7 @@
         document.addEventListener('keydown', (e) => {
             if (document.body.classList.contains('sidebar-open')) return;
             const modal = $('#downloadModal');
-            if (modal && modal.classList.contains('show')) return;
+            if (modal && modal.classList.contains('active')) return;  // ✅ FIXED: was 'show'
 
             if (e.key === 'ArrowLeft')  prevChapter();
             if (e.key === 'ArrowRight') nextChapter();
@@ -308,14 +308,14 @@
     function openModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
-        modal.classList.add('show');
+        modal.classList.add('active');   // ✅ FIXED: was 'show'
         document.body.classList.add('modal-open');
     }
 
     function closeModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
-        modal.classList.remove('show');
+        modal.classList.remove('active'); // ✅ FIXED: was 'show'
         document.body.classList.remove('modal-open');
     }
 
