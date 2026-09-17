@@ -520,6 +520,94 @@
         }
     };
 
+    /* ============================================================
+   OPTIONAL PERSONALIZED GREETING (Soft Version)
+   ============================================================ */
+(function initGreeting() {
+    'use strict';
+
+    const heroTitle = document.getElementById('heroTitle');
+    const greetingBox = document.getElementById('greetingBox');
+    const input = document.getElementById('userNameInput');
+
+    if (!heroTitle || !greetingBox || !input) return;
+
+    // Check saved name
+    const savedName = localStorage.getItem('visitorName');
+    const skipped = localStorage.getItem('greetingSkipped');
+
+    if (savedName) {
+        applyPersonalizedGreeting(savedName, false);
+        greetingBox.classList.add('hidden');
+        return;
+    }
+
+    if (skipped) {
+        greetingBox.classList.add('hidden');
+        return;
+    }
+
+    // Greet user
+    window.greetUser = function () {
+        const rawName = input.value.trim();
+
+        if (!rawName) {
+            input.focus();
+            input.style.animation = 'shake 0.4s';
+            setTimeout(() => { input.style.animation = ''; }, 400);
+            return;
+        }
+
+        const cleanName = rawName.replace(/[<>]/g, '').slice(0, 30);
+        localStorage.setItem('visitorName', cleanName);
+        applyPersonalizedGreeting(cleanName, true);
+        greetingBox.classList.add('hidden');
+    };
+
+    // Apply name to hero title
+    function applyPersonalizedGreeting(name, animate) {
+        heroTitle.innerHTML =
+            `Hey <span class="user-name-highlight">${escapeHTML(name)}</span>, ` +
+            `I'm <span>Ravi Raj</span> 👋`;
+
+        if (animate) {
+            heroTitle.classList.add('personalized');
+            setTimeout(() => heroTitle.classList.remove('personalized'), 700);
+        }
+    }
+
+    // Escape HTML (safety)
+    function escapeHTML(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Enter key support
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            window.greetUser();
+        }
+    });
+
+})();
+
+/* Shake animation for empty input */
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px); }
+        50% { transform: translateX(6px); }
+        75% { transform: translateX(-4px); }
+    }
+`;
+document.head.appendChild(shakeStyle);
+
     // ============================================================
     // 21. EASTER EGG — Console Welcome
     // ============================================================
