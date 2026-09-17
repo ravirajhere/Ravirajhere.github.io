@@ -104,8 +104,9 @@
     </nav>
 
 <!-- ═══════════════════════════════════════════════════════
-     DOWNLOAD MODAL — 4 Step Wizard
-     Step 1: Language | Step 2: Name & Gender | Step 3: Photo | Step 4: Progress
+     DOWNLOAD MODAL — 5 Step Wizard
+     Step 1: Language | Step 2: Name & Gender | Step 3: Photo
+     Step 3.5: Webcam Capture | Step 4: Progress
 ═══════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="downloadModal">
   <div class="modal-content">
@@ -186,7 +187,7 @@
         </div>
 
         <div class="photo-buttons">
-          <button class="modal-btn" onclick="triggerCamera()">
+          <button class="modal-btn" onclick="openWebcam()">
             📷 Take a Photo
           </button>
           <button class="modal-btn" onclick="triggerUpload()">
@@ -194,8 +195,7 @@
           </button>
         </div>
 
-        <!-- Hidden file inputs -->
-        <input type="file" id="cameraInput" accept="image/*" capture="user" hidden />
+        <!-- Hidden file input for gallery upload -->
         <input type="file" id="uploadInput" accept="image/*" hidden />
       </div>
 
@@ -204,6 +204,44 @@
         <button class="modal-btn-primary" id="generateBtn" onclick="startPDFGeneration()">
           Generate PDF →
         </button>
+      </div>
+    </div>
+
+    <!-- ════════ STEP 3.5: WEBCAM CAPTURE ════════ -->
+    <div class="modal-step" id="stepCamera">
+      <h2>📸 Take Your Photo</h2>
+      <p class="modal-desc">Position yourself and click Capture</p>
+
+      <div class="webcam-container">
+        <video id="webcamVideo" autoplay playsinline muted></video>
+        
+        <!-- Loading state (before camera starts) -->
+        <div class="webcam-loading" id="webcamLoading">
+          <div class="webcam-spinner"></div>
+          <p>Starting camera...</p>
+        </div>
+        
+        <!-- Error state (permission denied / no camera) -->
+        <div class="webcam-error" id="webcamError" style="display:none;">
+          <div class="webcam-error-icon">📷</div>
+          <p class="webcam-error-title">Camera not available</p>
+          <p class="webcam-error-msg" id="webcamErrorMsg">Please allow camera access or use Gallery instead.</p>
+        </div>
+      </div>
+
+      <div class="webcam-controls" id="webcamControls">
+        <button class="modal-btn-secondary" onclick="closeWebcam()">✕ Cancel</button>
+        <button class="modal-btn-primary" id="captureBtn" onclick="capturePhoto()" disabled>
+          📸 Capture
+        </button>
+      </div>
+
+      <!-- Fallback buttons (shown if error) -->
+      <div class="webcam-fallback" id="webcamFallback" style="display:none;">
+        <button class="modal-btn-primary" onclick="closeWebcam(); triggerUpload();">
+          🖼️ Choose from Gallery Instead
+        </button>
+        <button class="modal-btn-secondary" onclick="closeWebcam()">← Back</button>
       </div>
     </div>
 
@@ -222,6 +260,7 @@
 
   </div>
 </div>
+          
 
     <div class="autobio-wrapper">
 
