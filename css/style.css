@@ -2105,3 +2105,135 @@ button { font-family: inherit; }
     }
     .raw-content p { font-size: 14px; }
 }
+
+/* ============================================================
+   26. OPTIONAL PERSONALIZED GREETING (Soft Version)
+   ============================================================ */
+
+.greeting-box {
+    margin: 0 auto 1.5rem;
+    max-width: 420px;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeInUp 0.8s var(--ease) 0.3s both;
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    position: relative;
+}
+.greeting-box.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    display: none;
+}
+
+.greeting-prompt {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--text-2);
+    text-align: center;
+}
+
+.greeting-input-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.greeting-input-wrap input {
+    flex: 1;
+    padding: 11px 16px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+    background: var(--bg-inset);
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--font);
+    outline: none;
+    transition: var(--t);
+}
+.greeting-input-wrap input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-soft);
+    background: var(--bg-card-2);
+}
+.greeting-input-wrap input::placeholder {
+    color: var(--text-4);
+}
+
+.greeting-input-wrap button {
+    padding: 11px 16px;
+    border-radius: var(--r-sm);
+    border: none;
+    background: linear-gradient(135deg, var(--gold), var(--gold-2));
+    color: var(--bg);
+    cursor: pointer;
+    font-size: 14px;
+    transition: var(--t);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--sh-gold);
+}
+.greeting-input-wrap button:hover {
+    transform: translateX(3px);
+    box-shadow: 0 10px 30px rgba(212, 163, 115, 0.4);
+}
+.greeting-input-wrap button:active {
+    transform: scale(0.95);
+}
+
+.greeting-hint {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 8px;
+    color: var(--text-4);
+    letter-spacing: 0.3px;
+}
+
+/* --- Personalized title animation --- */
+.hero-title.personalized {
+    animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hero-title .user-name-highlight {
+    background: linear-gradient(135deg, var(--gold), var(--gold-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-style: italic;
+}
+
+@keyframes popIn {
+    0%   { transform: scale(0.92); opacity: 0; }
+    60%  { transform: scale(1.03); }
+    100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Mobile responsive --- */
+@media (max-width: 480px) {
+    .greeting-box {
+        margin: 0 1rem 1.25rem;
+        padding: 14px 16px;
+    }
+    .greeting-prompt { font-size: 13px; }
+    .greeting-input-wrap input {
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+    .greeting-input-wrap button {
+        padding: 10px 14px;
+    }
+    .greeting-hint { font-size: 10px; }
+}
