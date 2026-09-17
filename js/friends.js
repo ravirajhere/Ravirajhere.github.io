@@ -1,6 +1,6 @@
 // ============================================
-// FRIENDS.JS — ULTIMATE PREMIUM CERTIFICATE
-// (All Features: Holographic, Glassmorphism, QR, Awards, Badges, Dark Mode, Digital Verification)
+// FRIENDS.JS — CERTIFICATE OF FRIENDSHIP
+// (Design matched to sample - Ravi Raj + Friend connected)
 // ============================================
 
 'use strict';
@@ -217,7 +217,7 @@ const DOM = {
 // INITIALIZATION
 // ============================================
 function init() {
-    console.log('✅ Ultimate Friends Corner JS loaded!');
+    console.log('✅ Friends Corner JS loaded!');
     
     if (DOM.friendSearch) {
         DOM.friendSearch.addEventListener('keydown', function(e) {
@@ -309,7 +309,13 @@ function searchFriend() {
     } else {
         currentFriend = {
             firstName: input,
+            personalName: '',
+            connection: 'Friend',
+            experience: 'A new friendship begins!',
+            age: '-',
+            school: '-',
             sinceClass: 'new',
+            hobby: '-',
             tag: 'New Friend'
         };
         isDatabaseFriend = false;
@@ -421,14 +427,6 @@ function captureFriendPhoto() {
     
     ctx.drawImage(video, 0, 0);
     ctx.filter = 'none';
-    
-    ctx.font = 'bold 28px "Space Grotesk", sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-    ctx.shadowBlur = 8;
-    ctx.fillText('#friends', canvas.width / 2, canvas.height - 18);
-    ctx.shadowBlur = 0;
     
     capturedPhotoData = canvas.toDataURL('image/png');
     stopWebcam();
@@ -548,10 +546,10 @@ function proceedToDetails() {
 }
 
 // ============================================
-// GENERATE FRIEND CARD PDF (ULTIMATE PREMIUM)
+// GENERATE FRIEND CARD PDF
 // ============================================
 function generateFriendCardPDF(isDBFriend) {
-    console.log('📄 Generating ULTIMATE PREMIUM Friend Card PDF...');
+    console.log('📄 Generating Certificate PDF...');
     
     if (!capturedPhotoData) {
         alert('❌ No photo captured! Please capture photo first.');
@@ -573,568 +571,234 @@ function generateFriendCardPDF(isDBFriend) {
         return;
     }
     
-    const certHTML = createUltimateCertificateHTML(isDBFriend);
+    const certHTML = createCertificateHTML(isDBFriend);
     renderCertificateToPDF(certHTML, isDBFriend);
 }
 
 // ============================================
-// GET QUOTE BASED ON TAG
+// CREATE CERTIFICATE HTML (Sample ke jaisa)
 // ============================================
-function getQuoteForTag(tag) {
-    const quotes = {
-        'Best Friend': 'Friends since the beginning',
-        'Oldest Friend': 'The one who started it all',
-        'Day One Friend': 'Day one, still the one',
-        'Most Loyal': 'Loyalty is rare, but you have it',
-        'Tech Genius': 'The code master',
-        'Rockstar Friend': 'The music of my life',
-        'Sports Buddy': 'Game on, always',
-        'Gamer Friend': 'Level up together',
-        'Funniest Friend': 'Laughter is the best medicine',
-        'Positive Vibes': 'Sunshine in human form',
-        'Scholar Friend': 'Wisdom personified',
-        'Sweetest Friend': 'Sugar and spice and everything nice',
-        'Confident Friend': 'Bold and beautiful',
-        'Creative Friend': 'Art is life',
-        'Smartest Friend': 'Brain of the group',
-        'New Friend': 'A new chapter begins'
-    };
-    return quotes[tag] || 'Friendship forever';
-}
-
-// ============================================
-// GET FRIENDSHIP LEVEL
-// ============================================
-function getFriendshipLevel(years) {
-    if (years >= 10) return { level: 'Platinum', badge: '💎', stars: 5 };
-    if (years >= 7) return { level: 'Gold', badge: '🥇', stars: 4 };
-    if (years >= 4) return { level: 'Silver', badge: '🥈', stars: 3 };
-    if (years >= 2) return { level: 'Bronze', badge: '🥉', stars: 2 };
-    return { level: 'Friend', badge: '🤝', stars: 1 };
-}
-
-// ============================================
-// CREATE ULTIMATE PREMIUM CERTIFICATE HTML
-// ============================================
-function createUltimateCertificateHTML(isDBFriend) {
+function createCertificateHTML(isDBFriend) {
     const now = new Date();
-    const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-    const friendName = currentFriend.firstName || 'Friend';
-    const certNumber = 'FR-' + now.getFullYear() + '-' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+    const dateStr = now.toLocaleDateString('en-IN', { 
+        day: 'numeric', month: 'short', year: 'numeric' 
+    });
+    const friendName = (currentFriend.firstName || 'Friend').toUpperCase();
+    const tag = currentFriend.tag || 'New Friend';
     
-    // Calculate friendship years
-    let startYear = 2024;
-    if (currentFriend.sinceClass <= 5) startYear = 2013;
-    else if (currentFriend.sinceClass <= 10) startYear = 2019;
-    const friendshipYears = now.getFullYear() - startYear;
-    const level = getFriendshipLevel(friendshipYears);
-    const quote = getQuoteForTag(currentFriend.tag);
-    const hobbyIcons = {
-        'Cricket': '🏏',
-        'Coding': '💻',
-        'Music': '🎸',
-        'Gaming': '🎮',
-        'Tech': '🖥️',
-        'Reading': '📚',
-        'Art': '🎨',
-        'Dancing': '💃',
-        'Poetry': '📝',
-        'Chess': '♟️',
-        'Guitar': '🎸',
-        'Acting': '🎭',
-        'Cooking': '🍳'
-    };
+    // ✅ Teri photo ka path
+    const issuerPhoto = 'assets/images/casual.jpg';
     
-    const hobbyList = currentFriend.hobby.split(',').map(h => h.trim());
-    const hobbyHTML = hobbyList.map(h => {
-        const icon = hobbyIcons[h] || '⭐';
-        return `<span style="margin:0 4px;">${icon} ${h}</span>`;
-    }).join(' ');
-
-    // Awards based on level
-    let awardsHTML = '';
-    if (level.stars >= 4) {
-        awardsHTML = `
-            <div style="
-                font-size: 12px;
-                color: #DAA520;
-                font-weight: 600;
-                letter-spacing: 0.5px;
-                margin-top: 4px;
-            ">
-                🏆 Friendship Excellence Award &nbsp;|&nbsp; 🤝 Loyalty Badge &nbsp;|&nbsp; ⭐ Trusted Companion
-            </div>
-        `;
-    } else if (level.stars >= 3) {
-        awardsHTML = `
-            <div style="
-                font-size: 12px;
-                color: #C0C0C0;
-                font-weight: 600;
-                letter-spacing: 0.5px;
-                margin-top: 4px;
-            ">
-                🏆 Friendship Achievement Award &nbsp;|&nbsp; 🤝 Loyalty Badge
-            </div>
-        `;
-    } else {
-        awardsHTML = `
-            <div style="
-                font-size: 12px;
-                color: #CD7F32;
-                font-weight: 600;
-                letter-spacing: 0.5px;
-                margin-top: 4px;
-            ">
-                🏆 Rising Friend Award
-            </div>
-        `;
-    }
-
-    // Days in words
-    const days = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 
-                  'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 
-                  'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty First', 'Twenty Second', 'Twenty Third', 
-                  'Twenty Fourth', 'Twenty Fifth', 'Twenty Sixth', 'Twenty Seventh', 'Twenty Eighth', 
-                  'Twenty Ninth', 'Thirtieth', 'Thirty First'];
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 
-                    'September', 'October', 'November', 'December'];
-    const dayWord = days[now.getDate() - 1];
-    const monthWord = months[now.getMonth()];
-    const yearWord = now.getFullYear();
-    const dateInWords = dayWord + ' Day of ' + monthWord + ', Two Thousand ' + (yearWord % 1000 === 0 ? '' : 'and ' + (yearWord % 1000));
-
-    // Generate QR Code data (simplified)
-    const qrData = `FR-${certNumber}-${friendName}`;
-
     return `
         <div id="certificate-container" style="
-            width: 950px;
-            padding: 40px 45px;
-            background: linear-gradient(145deg, #fdf8f0, #f5ede4);
-            background-image: 
-                radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 60%);
-            border: 4px solid #DAA520;
-            border-radius: 20px;
-            text-align: center;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25mm 20mm;
+            background: #ffffff;
             font-family: 'Georgia', 'Times New Roman', serif;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            color: #1a1a1a;
+            box-sizing: border-box;
             position: relative;
-            overflow: hidden;
         ">
-            <!-- Holographic Shimmer Effect -->
-            <div style="
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: linear-gradient(
-                    45deg,
-                    transparent 0%,
-                    rgba(218, 165, 32, 0.02) 25%,
-                    rgba(218, 165, 32, 0.05) 50%,
-                    rgba(218, 165, 32, 0.02) 75%,
-                    transparent 100%
-                );
-                pointer-events: none;
-                animation: shimmer 8s ease-in-out infinite;
-            "></div>
             
-            <!-- Watermark -->
-            <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(-15deg);
-                font-size: 120px;
-                color: rgba(218, 165, 32, 0.03);
-                font-weight: 700;
-                letter-spacing: 15px;
-                pointer-events: none;
-                font-family: 'Georgia', serif;
-            ">FRIENDS</div>
-            
-            <!-- Inner Border (Double Border Effect) -->
-            <div style="
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                border: 1px solid rgba(218, 165, 32, 0.15);
-                border-radius: 14px;
-                pointer-events: none;
-            "></div>
-            
-            <!-- Corner Filigree Decor -->
-            <div style="position:absolute;top:25px;left:25px;font-size:20px;color:#DAA520;opacity:0.3;">✦</div>
-            <div style="position:absolute;top:25px;right:25px;font-size:20px;color:#DAA520;opacity:0.3;">✦</div>
-            <div style="position:absolute;bottom:25px;left:25px;font-size:20px;color:#DAA520;opacity:0.3;">✦</div>
-            <div style="position:absolute;bottom:25px;right:25px;font-size:20px;color:#DAA520;opacity:0.3;">✦</div>
-            
-            <!-- Ornamental Stars Top -->
-            <div style="
-                font-size: 16px;
-                color: #DAA520;
-                letter-spacing: 8px;
-                margin-bottom: 6px;
-                position: relative;
-                z-index: 1;
-            ">✦ ✦ ✦ ✦ ✦</div>
-            
-            <!-- Title with Embossed Effect -->
-            <div style="
-                display: inline-block;
-                padding: 6px 30px;
-                background: linear-gradient(180deg, #DAA520, #b8952e);
-                border-radius: 30px;
-                margin-bottom: 6px;
-                box-shadow: 0 4px 20px rgba(218, 165, 32, 0.2);
-                position: relative;
-                z-index: 1;
-            ">
-                <h1 style="
-                    font-size: 26px;
-                    font-weight: 700;
+            <!-- TOP: FRIENDS CORNER Badge -->
+            <div style="text-align:center; margin-bottom: 20px;">
+                <span style="
+                    display: inline-block;
+                    background: #DAA520;
                     color: #ffffff;
-                    letter-spacing: 4px;
-                    margin: 0;
-                    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                ">FRIENDSHIP CERTIFICATE</h1>
+                    padding: 6px 24px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 3px;
+                    font-family: 'Arial', sans-serif;
+                ">FRIENDS CORNER</span>
             </div>
             
+            <!-- TITLE -->
+            <h1 style="
+                text-align: center;
+                font-size: 26px;
+                letter-spacing: 3px;
+                color: #1a1a1a;
+                font-weight: 700;
+                margin: 0 0 8px 0;
+                font-family: 'Georgia', serif;
+            ">CERTIFICATE OF FRIENDSHIP</h1>
+            
+            <!-- Gold Underline -->
             <div style="
-                width: 150px;
+                width: 80px;
                 height: 2px;
-                background: linear-gradient(90deg, transparent, #DAA520, transparent);
-                margin: 8px auto 12px auto;
-                position: relative;
-                z-index: 1;
+                background: #DAA520;
+                margin: 0 auto 35px auto;
             "></div>
             
-            <!-- This is to Certify that -->
-            <p style="
-                font-size: 16px;
-                color: #555;
-                margin-bottom: 12px;
-                font-style: italic;
-                letter-spacing: 1px;
-                position: relative;
-                z-index: 1;
-            ">This is to Certify that</p>
-            
-            <!-- Friend Photo with Gold Ring -->
+            <!-- TWO PHOTOS + CONNECTED ICON -->
             <div style="
                 display: flex;
                 justify-content: center;
-                margin-bottom: 8px;
-                position: relative;
-                z-index: 1;
+                align-items: flex-start;
+                gap: 50px;
+                margin-bottom: 30px;
             ">
-                <div style="
-                    width: 110px;
-                    height: 110px;
-                    border-radius: 50%;
-                    border: 4px solid #DAA520;
-                    overflow: hidden;
-                    box-shadow: 0 0 40px rgba(218, 165, 32, 0.2), 0 0 80px rgba(218, 165, 32, 0.05);
-                    padding: 4px;
-                    background: linear-gradient(135deg, #DAA520, #b8952e);
-                ">
+                
+                <!-- LEFT: Ravi Raj (Issuer) -->
+                <div style="text-align:center;">
                     <div style="
-                        width: 100%;
-                        height: 100%;
+                        width: 100px;
+                        height: 100px;
                         border-radius: 50%;
+                        border: 3px solid #DAA520;
                         overflow: hidden;
-                        border: 2px solid #fdf8f0;
+                        margin: 0 auto 10px auto;
+                        background: #f5f5f5;
                     ">
-                        <img src="${capturedPhotoData}" alt="Friend" style="width:100%;height:100%;object-fit:cover;">
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Friend Name -->
-            <h2 style="
-                font-size: 28px;
-                font-weight: 700;
-                color: #1a1a1a;
-                margin-bottom: 2px;
-                letter-spacing: 3px;
-                position: relative;
-                z-index: 1;
-            ">${friendName.toUpperCase()}</h2>
-            
-            <!-- Verified Friend -->
-            <div style="
-                display: inline-block;
-                background: linear-gradient(135deg, #DAA520, #b8952e);
-                padding: 2px 20px;
-                border-radius: 20px;
-                margin: 4px 0 4px 0;
-                box-shadow: 0 2px 15px rgba(218, 165, 32, 0.15);
-                position: relative;
-                z-index: 1;
-            ">
-                <span style="
-                    font-size: 15px;
-                    font-weight: 700;
-                    color: #ffffff;
-                    letter-spacing: 2px;
-                ">✧ VERIFIED FRIEND ✧</span>
-            </div>
-            
-            <!-- of Ravi Raj -->
-            <p style="
-                font-size: 16px;
-                color: #555;
-                margin: 6px 0 10px 0;
-                position: relative;
-                z-index: 1;
-            ">of <strong style="color:#DAA520;">Ravi Raj</strong></p>
-            
-            <!-- Decorative Line -->
-            <div style="
-                font-size: 14px;
-                color: #DAA520;
-                letter-spacing: 4px;
-                margin: 4px 0 10px 0;
-                position: relative;
-                z-index: 1;
-            ">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
-            
-            <!-- FRIEND DETAILS BOX — Glassmorphism -->
-            <div style="
-                background: rgba(255, 255, 255, 0.55);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border: 1px solid rgba(218, 165, 32, 0.15);
-                border-radius: 14px;
-                padding: 14px 20px;
-                margin: 6px 0 10px 0;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 6px 12px;
-                position: relative;
-                z-index: 1;
-                box-shadow: 0 4px 30px rgba(0,0,0,0.02);
-            ">
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">TAG</div>
-                    <div style="font-size:15px;font-weight:700;color:#DAA520;">${currentFriend.tag}</div>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">SINCE</div>
-                    <div style="font-size:15px;font-weight:700;color:#1a1a1a;">${friendshipYears} Years</div>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">AGE</div>
-                    <div style="font-size:15px;font-weight:700;color:#1a1a1a;">${currentFriend.age} Years</div>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">SCHOOL</div>
-                    <div style="font-size:14px;font-weight:600;color:#1a1a1a;">${currentFriend.school}</div>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">HOBBIES</div>
-                    <div style="font-size:14px;font-weight:600;color:#1a1a1a;">${hobbyHTML}</div>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:11px;color:#999;letter-spacing:1px;">QUOTE</div>
-                    <div style="font-size:13px;font-weight:600;color:#7c3aed;font-style:italic;">"${quote}"</div>
-                </div>
-            </div>
-            
-            <!-- BADGES + AWARDS SECTION -->
-            <div style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 12px;
-                padding: 8px 16px;
-                margin: 4px 0 10px 0;
-                border: 1px solid rgba(218, 165, 32, 0.08);
-                position: relative;
-                z-index: 1;
-            ">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div style="
-                        font-size: 28px;
-                    ">${level.badge}</div>
-                    <div>
-                        <div style="font-size:13px;font-weight:700;color:#1a1a1a;">${level.level} FRIEND</div>
-                        <div style="font-size:14px;color:#DAA520;letter-spacing:2px;">${'⭐'.repeat(level.stars)}</div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    ${awardsHTML}
-                </div>
-            </div>
-            
-            <!-- DIGITAL VERIFICATION SECTION -->
-            <div style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 12px;
-                padding: 8px 16px;
-                margin: 4px 0 10px 0;
-                border: 1px solid rgba(218, 165, 32, 0.08);
-                position: relative;
-                z-index: 1;
-            ">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="
-                        width: 50px;
-                        height: 50px;
-                        background: #1a1a1a;
-                        border-radius: 8px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: #fff;
-                        font-size: 20px;
-                        font-weight: 700;
-                        font-family: 'Courier New', monospace;
-                        border: 2px solid #DAA520;
-                    ">QR</div>
-                    <div style="text-align:left;">
-                        <div style="font-size:11px;color:#999;letter-spacing:1px;">DIGITAL VERIFICATION</div>
-                        <div style="font-size:13px;font-weight:600;color:#1a1a1a;">✅ Blockchain Verified</div>
-                        <div style="font-size:11px;color:#666;">🔗 friendsgallery.com/verify/${certNumber}</div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-size:10px;color:#999;letter-spacing:0.5px;">TIMESTAMP</div>
-                    <div style="font-size:12px;font-weight:600;color:#1a1a1a;">${dateStr} · ${timeStr} IST</div>
-                </div>
-            </div>
-            
-            <!-- Date in Words -->
-            <p style="
-                font-size: 13px;
-                color: #666;
-                margin: 4px 0 8px 0;
-                line-height: 1.6;
-                font-style: italic;
-                position: relative;
-                z-index: 1;
-            ">
-                Given under my hand and seal this<br>
-                <strong style="color:#1a1a1a;font-size:14px;">${dateInWords}</strong>
-            </p>
-            
-            <!-- Signature Section -->
-            <div style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 6px 0 8px 0;
-                padding: 0 10px;
-                position: relative;
-                z-index: 1;
-            ">
-                <!-- Bottom Left -->
-                <div style="
-                    text-align: left;
-                    max-width: 280px;
-                    border-left: 3px solid #DAA520;
-                    padding-left: 12px;
-                ">
-                    <div style="
-                        font-size: 12px;
-                        font-weight: 700;
-                        color: #1a1a1a;
-                        line-height: 1.6;
-                    ">
-                        ✦ Digitally signed by
+                        <img src="${issuerPhoto}" alt="Ravi Raj" 
+                             style="width:100%;height:100%;object-fit:cover;"
+                             onerror="this.style.display='none'; this.parentNode.style.background='#DAA520'; this.parentNode.innerHTML='<div style=&quot;color:#fff;font-size:36px;line-height:100px;text-align:center;font-weight:bold;&quot;>R</div>';">
                     </div>
                     <div style="
                         font-size: 13px;
                         font-weight: 700;
                         color: #DAA520;
-                        line-height: 1.6;
-                    ">
-                        Raviraj
-                    </div>
+                        letter-spacing: 1.5px;
+                    ">RAVI RAJ</div>
                     <div style="
-                        font-size: 11px;
+                        font-size: 10px;
                         color: #888;
                         margin-top: 2px;
-                        line-height: 1.5;
-                    ">
-                        ✦ Issuance of Certificate
-                    </div>
+                    ">Certificate Issuer</div>
                 </div>
                 
-                <!-- Bottom Right -->
-                <div style="
-                    text-align: center;
-                ">
+                <!-- CENTER: CONNECTED Icon -->
+                <div style="text-align:center; padding-top: 20px;">
                     <div style="
-                        width: 110px;
-                        height: 40px;
-                        margin: 0 auto 2px auto;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        background: #DAA520;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 8px auto;
+                        font-size: 22px;
+                    ">🤝</div>
+                    <div style="
+                        font-size: 10px;
+                        font-weight: 700;
+                        color: #DAA520;
+                        letter-spacing: 2px;
+                    ">CONNECTED</div>
+                </div>
+                
+                <!-- RIGHT: Friend (Verified) -->
+                <div style="text-align:center;">
+                    <div style="
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 50%;
+                        border: 3px solid #7c3aed;
+                        overflow: hidden;
+                        margin: 0 auto 10px auto;
+                        background: #f5f5f5;
                     ">
-                        <img src="assets/images/signature.jpg" alt="Signature" style="width:100%;height:100%;object-fit:contain;">
+                        <img src="${capturedPhotoData}" alt="${friendName}" 
+                             style="width:100%;height:100%;object-fit:cover;">
                     </div>
                     <div style="
-                        font-size: 14px;
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #7c3aed;
+                        letter-spacing: 1.5px;
+                    ">${friendName}</div>
+                    <div style="
+                        font-size: 10px;
+                        color: #888;
+                        margin-top: 2px;
+                    ">Verified Friend</div>
+                </div>
+                
+            </div>
+            
+            <!-- MAIN TEXT -->
+            <p style="
+                text-align: center;
+                font-size: 15px;
+                color: #333;
+                line-height: 1.8;
+                margin: 40px auto 50px auto;
+                max-width: 500px;
+            ">
+                This is to certify that the above person is a verified friend of <strong>Ravi Raj</strong>.<br>
+                Their friendship has been officially recognized and recorded.
+            </p>
+            
+            <!-- BOTTOM SECTION -->
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-top: 60px;
+                padding: 0 10px;
+            ">
+                
+                <!-- Left: Details -->
+                <div style="
+                    font-size: 11px;
+                    color: #555;
+                    line-height: 1.8;
+                    font-family: 'Arial', sans-serif;
+                ">
+                    <div><strong>Issued on:</strong> ${dateStr}</div>
+                    <div><strong>Location:</strong> Begusarai, Bihar, India</div>
+                    <div><strong>Tag:</strong> ${tag}</div>
+                </div>
+                
+                <!-- Right: Signature -->
+                <div style="text-align:center;">
+                    <div style="
+                        width: 120px;
+                        height: 45px;
+                        margin: 0 auto 5px auto;
+                    ">
+                        <img src="assets/images/signature.jpg" alt="Signature" 
+                             style="width:100%;height:100%;object-fit:contain;"
+                             onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-family:cursive;font-size:26px;color:#1a1a1a;&quot;>Ravi Raj</div>';">
+                    </div>
+                    <div style="
+                        font-size: 13px;
                         font-weight: 700;
                         color: #1a1a1a;
                     ">Ravi Raj</div>
                     <div style="
-                        font-size: 11px;
+                        font-size: 10px;
                         color: #888;
-                    ">Founder, Friends Gallery</div>
+                    ">Founder, Friends Corner</div>
                 </div>
+                
             </div>
             
-            <!-- Footer -->
+            <!-- Gold Divider -->
             <div style="
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 2px solid #DAA520;
-                display: flex;
-                justify-content: space-between;
-                font-size: 11px;
+                width: 100%;
+                height: 1px;
+                background: #DAA520;
+                margin: 25px 0 15px 0;
+            "></div>
+            
+            <!-- FOOTER -->
+            <div style="
+                text-align: center;
+                font-size: 10px;
                 color: #999;
-                position: relative;
-                z-index: 1;
+                letter-spacing: 1px;
+                font-family: 'Arial', sans-serif;
             ">
-                <span>📋 Certificate No: <strong style="color:#1a1a1a;">${certNumber}</strong></span>
-                <span>📅 Issued on: <strong style="color:#1a1a1a;">${dateStr} · ${timeStr} IST</strong></span>
-                <span>🔒 <strong style="color:#4caf50;">Digitally Verified</strong></span>
+                © 2026 Ravi Raj · All Rights Reserved
             </div>
             
-            <!-- Ornamental Stars Bottom -->
-            <div style="
-                font-size: 16px;
-                color: #DAA520;
-                letter-spacing: 8px;
-                margin-top: 8px;
-                position: relative;
-                z-index: 1;
-            ">✦ ✦ ✦ ✦ ✦</div>
-            
-            <!-- Shimmer Animation Style -->
-            <style>
-                @keyframes shimmer {
-                    0% { transform: translateX(-100%) rotate(45deg); }
-                    100% { transform: translateX(100%) rotate(45deg); }
-                }
-                #certificate-container {
-                    animation: fadeIn 0.8s ease;
-                }
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: scale(0.95); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-            </style>
         </div>
     `;
 }
@@ -1143,56 +807,48 @@ function createUltimateCertificateHTML(isDBFriend) {
 // RENDER CERTIFICATE TO PDF
 // ============================================
 function renderCertificateToPDF(certHTML, isDBFriend) {
-    console.log('🖼️ Rendering ULTIMATE PREMIUM certificate to PDF...');
+    console.log('📄 Generating certificate PDF...');
     
     const container = document.createElement('div');
     container.innerHTML = certHTML;
     container.style.cssText = `
         position: fixed;
         left: -9999px;
-        top: -9999px;
-        width: 950px;
-        background: #fdf8f0;
+        top: 0;
+        width: 210mm;
+        background: #ffffff;
         padding: 0;
         margin: 0;
-        box-sizing: border-box;
     `;
     document.body.appendChild(container);
     
     setTimeout(function() {
         html2canvas(container, {
-            scale: 2.2,
+            scale: 2,
             useCORS: true,
-            backgroundColor: '#fdf8f0',
-            logging: false,
-            width: 950,
-            height: container.scrollHeight,
-            onclone: function(clonedDoc) {
-                // Ensure all images are loaded
-            }
+            backgroundColor: '#ffffff',
+            logging: false
         }).then(function(canvas) {
             document.body.removeChild(container);
             
             const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgData = canvas.toDataURL('image/jpeg', 0.98);
+            
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdfWidth = 210;
             const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
             
-            if (pdfHeight > 297) {
-                const ratio = 297 / pdfHeight;
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth * ratio, pdfHeight * ratio);
-            } else {
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            }
-            
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
             pdf.save('Friendship_Certificate_' + (currentFriend.firstName || 'Friend') + '.pdf');
-            console.log('✅ ULTIMATE PREMIUM PDF downloaded successfully!');
-            showToast('🎉 Ultimate Premium Certificate Downloaded!', 'success');
+            
+            console.log('✅ PDF downloaded!');
+            if (typeof showToast === 'function') {
+                showToast('🎉 Certificate Downloaded!', 'success');
+            }
         }).catch(function(error) {
-            console.error('❌ html2canvas error:', error);
+            console.error('❌ Error:', error);
             document.body.removeChild(container);
-            alert('❌ PDF generation failed: ' + error.message);
+            alert('PDF generation failed: ' + error.message);
         });
     }, 800);
 }
@@ -1267,4 +923,4 @@ window.generateFriendCardPDF = generateFriendCardPDF;
 window.downloadFriendCard = downloadFriendCard;
 window.downloadNewFriendCard = downloadNewFriendCard;
 
-console.log('✅ Ultimate Friends Corner JS Loaded Successfully!');
+console.log('✅ Friends Corner JS Loaded Successfully!');
