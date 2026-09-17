@@ -1,6 +1,7 @@
 /* ============================================================
    AUTOBIOGRAPHY.CSS — Full Stylesheet
    Ravi Raj / Suraj Anand — "A Boy Who Never Thought"
+   Theme: Professional Slate · Light Default · Recruiter-friendly
    ============================================================ */
 
 /* ============================================================
@@ -8,48 +9,48 @@
    ============================================================ */
 :root {
     /* Light theme (default) */
-    --bg: #fdfaf5;
-    --bg2: #ffffff;
-    --bg3: #f5f0e8;
-    --text: #1a1a1a;
-    --text2: #4a4a4a;
-    --text3: #8a8a8a;
-    --border: #e5ddd0;
-    --accent: #b8860b;
-    --accent2: #8b6914;
-    --gold: #c9a227;
-    --purple: #6b4c9a;
-    --shadow: rgba(0, 0, 0, 0.06);
-    --shadow2: rgba(0, 0, 0, 0.12);
-    --overlay: rgba(0, 0, 0, 0.5);
-    --nav-bg: rgba(253, 250, 245, 0.92);
+    --bg: #ffffff;
+    --bg2: #f8fafc;
+    --bg3: #f1f5f9;
+    --text: #0f172a;
+    --text2: #334155;
+    --text3: #64748b;
+    --border: #e2e8f0;
+    --accent: #1e40af;
+    --accent2: #1e3a8a;
+    --accent3: #3b82f6;
+    --accent-soft: #eff6ff;
+    --shadow: rgba(15, 23, 42, 0.06);
+    --shadow2: rgba(15, 23, 42, 0.12);
+    --overlay: rgba(15, 23, 42, 0.5);
+    --nav-bg: rgba(255, 255, 255, 0.92);
     --card-bg: #ffffff;
-    --code-bg: #f0ebe0;
-    --quote-gold-bg: #fdf6e3;
-    --quote-purple-bg: #f3eef9;
-    --transition: 0.3s ease;
+    --code-bg: #f1f5f9;
+    --quote-gold-bg: #eff6ff;
+    --quote-purple-bg: #f5f3ff;
+    --transition: 0.25s ease;
 }
 
 [data-theme="dark"] {
-    --bg: #0f0f14;
-    --bg2: #1a1a22;
-    --bg3: #22222c;
-    --text: #eaeaea;
-    --text2: #b8b8b8;
-    --text3: #7a7a7a;
-    --border: #2e2e3a;
-    --accent: #d4a017;
-    --accent2: #e8b923;
-    --gold: #d4a017;
-    --purple: #9b7bc4;
-    --shadow: rgba(0, 0, 0, 0.4);
-    --shadow2: rgba(0, 0, 0, 0.6);
-    --overlay: rgba(0, 0, 0, 0.75);
-    --nav-bg: rgba(15, 15, 20, 0.92);
-    --card-bg: #1a1a22;
-    --code-bg: #22222c;
-    --quote-gold-bg: #2a2418;
-    --quote-purple-bg: #241e2e;
+    --bg: #0f172a;
+    --bg2: #1e293b;
+    --bg3: #334155;
+    --text: #f1f5f9;
+    --text2: #cbd5e1;
+    --text3: #94a3b8;
+    --border: #334155;
+    --accent: #60a5fa;
+    --accent2: #93c5fd;
+    --accent3: #bfdbfe;
+    --accent-soft: rgba(96, 165, 250, 0.1);
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow2: rgba(0, 0, 0, 0.5);
+    --overlay: rgba(0, 0, 0, 0.7);
+    --nav-bg: rgba(15, 23, 42, 0.92);
+    --card-bg: #1e293b;
+    --code-bg: #334155;
+    --quote-gold-bg: rgba(96, 165, 250, 0.1);
+    --quote-purple-bg: rgba(139, 92, 246, 0.1);
 }
 
 /* ============================================================
@@ -158,19 +159,18 @@ a:hover {
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: var(--card-bg);
-    color: var(--text);
-    padding: 14px 24px;
-    border-radius: 30px;
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 30px var(--shadow2);
-    font-size: 14px;
+    background: var(--text);
+    color: var(--bg);
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 13.5px;
     font-weight: 500;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10000;
     white-space: nowrap;
+    box-shadow: 0 8px 30px var(--shadow2);
 }
 
 .toast.show {
@@ -208,11 +208,11 @@ a:hover {
     width: 320px;
     max-width: 88vw;
     height: 100vh;
-    background: var(--bg2);
+    background: var(--bg);
     border-right: 1px solid var(--border);
     box-shadow: 4px 0 30px var(--shadow2);
     transform: translateX(-105%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
     overflow-y: auto;
     padding: 24px 20px 30px;
@@ -243,7 +243,7 @@ a:hover {
     height: 34px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -254,6 +254,7 @@ a:hover {
     background: var(--accent);
     color: #fff;
     transform: rotate(90deg);
+    border-color: var(--accent);
 }
 
 /* ---- Sidebar Profile ---- */
@@ -265,24 +266,23 @@ a:hover {
 }
 
 .sp-avatar {
-    width: 84px;
-    height: 84px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 12px;
-    border: 3px solid var(--accent);
+    border: 2px solid var(--border);
     box-shadow: 0 6px 18px var(--shadow);
 }
 
 .sp-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--text);
 }
 
 .sp-title {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--text3);
     letter-spacing: 0.4px;
     margin-top: 4px;
@@ -290,7 +290,7 @@ a:hover {
 
 /* ---- Sidebar Section Labels ---- */
 .sidebar-section-label {
-    font-size: 12.5px;
+    font-size: 11.5px;
     font-weight: 700;
     color: var(--accent);
     letter-spacing: 0.8px;
@@ -312,31 +312,31 @@ a:hover {
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--text2);
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 500;
     transition: all var(--transition);
     line-height: 1.4;
 }
 
 .sidebar-menu a:hover {
-    background: var(--bg3);
+    background: var(--accent-soft);
     color: var(--accent);
-    transform: translateX(4px);
+    transform: translateX(3px);
 }
 
 .sidebar-menu a i {
     width: 18px;
     text-align: center;
     color: var(--accent);
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .chapter-num {
     color: var(--accent);
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12.5px;
     min-width: 22px;
 }
 
@@ -353,9 +353,9 @@ a:hover {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 13.5px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     border: none;
@@ -364,14 +364,15 @@ a:hover {
 }
 
 .sidebar-action-btn.primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
-    box-shadow: 0 4px 14px rgba(184, 134, 11, 0.3);
+    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.25);
 }
 
 .sidebar-action-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.45);
+    background: var(--accent2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
 }
 
 .sidebar-action-btn.secondary {
@@ -381,7 +382,7 @@ a:hover {
 }
 
 .sidebar-action-btn.secondary:hover {
-    background: var(--card-bg);
+    background: var(--accent-soft);
     color: var(--accent);
     border-color: var(--accent);
 }
@@ -398,21 +399,21 @@ a:hover {
     align-items: center;
     justify-content: space-between;
     padding: 10px 4px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text2);
 }
 
 .sf-motto {
     text-align: center;
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text3);
     margin-top: 12px;
-    font-style: italic;
 }
 
 .sf-motto i {
-    color: #e74c3c;
+    color: #dc2626;
+    font-style: normal;
 }
 
 /* ============================================================
@@ -442,12 +443,12 @@ a:hover {
 .hamburger {
     background: var(--bg3);
     border: 1px solid var(--border);
-    color: var(--text);
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    color: var(--text2);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 17px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -455,18 +456,17 @@ a:hover {
 }
 
 .hamburger:hover {
-    background: var(--accent);
-    color: #fff;
+    background: var(--accent-soft);
+    color: var(--accent);
     border-color: var(--accent);
-    transform: scale(1.05);
 }
 
 .nav-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--text);
     line-height: 1.2;
+    letter-spacing: -0.3px;
 }
 
 .nav-brand span {
@@ -474,7 +474,7 @@ a:hover {
 }
 
 .nav-brand-sub {
-    font-size: 11.5px;
+    font-size: 10px;
     color: var(--text3);
     letter-spacing: 0.5px;
     font-weight: 500;
@@ -527,13 +527,13 @@ a:hover {
 .modal-content {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 28px;
-    max-width: 440px;
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 420px;
     width: 100%;
     box-shadow: 0 20px 60px var(--shadow2);
     position: relative;
-    transform: scale(0.9);
+    transform: scale(0.95);
     transition: transform var(--transition);
 }
 
@@ -547,7 +547,7 @@ a:hover {
     right: 16px;
     background: transparent;
     border: none;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--text3);
     cursor: pointer;
     transition: all var(--transition);
@@ -562,20 +562,19 @@ a:hover {
 .modal-close:hover {
     background: var(--bg3);
     color: var(--text);
-    transform: rotate(90deg);
 }
 
 .modal-content h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: 700;
     margin-bottom: 6px;
     color: var(--text);
 }
 
 .modal-desc {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--text3);
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .modal-option {
@@ -583,18 +582,17 @@ a:hover {
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    padding: 16px;
+    padding: 14px 16px;
     background: var(--bg3);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    margin-bottom: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
     transition: all var(--transition);
 }
 
 .modal-option:hover {
     border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px var(--shadow);
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
 .opt-info {
@@ -604,23 +602,23 @@ a:hover {
 }
 
 .opt-title {
-    font-size: 14.5px;
+    font-size: 13.5px;
     font-weight: 700;
     color: var(--text);
 }
 
 .opt-desc {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text3);
 }
 
 .modal-btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
     border: none;
-    padding: 9px 18px;
-    border-radius: 10px;
-    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition);
@@ -629,12 +627,12 @@ a:hover {
 }
 
 .modal-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.4);
+    background: var(--accent2);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
 }
 
 /* ============================================================
-   9. AUTOBIO WRAPPER (Main container)
+   9. AUTOBIO WRAPPER
    ============================================================ */
 .autobio-wrapper {
     max-width: 860px;
@@ -647,20 +645,20 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text3);
     padding: 8px 14px;
     background: var(--bg3);
     border: 1px solid var(--border);
-    border-radius: 30px;
+    border-radius: 20px;
     transition: all var(--transition);
     margin-bottom: 26px;
 }
 
 .back-link-top:hover {
-    background: var(--accent);
-    color: #fff;
+    background: var(--accent-soft);
+    color: var(--accent);
     border-color: var(--accent);
     transform: translateX(-3px);
 }
@@ -669,10 +667,10 @@ a:hover {
 .ornament {
     text-align: center;
     color: var(--accent);
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 8px;
     margin: 32px 0;
-    opacity: 0.7;
+    opacity: 0.6;
 }
 
 /* ============================================================
@@ -689,39 +687,37 @@ a:hover {
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 22px;
-    border: 4px solid var(--accent);
-    box-shadow: 0 10px 40px var(--shadow2);
+    border: 3px solid var(--accent);
+    box-shadow: 0 10px 30px var(--shadow);
     transition: transform var(--transition);
 }
 
 .profile-photo:hover {
-    transform: scale(1.05) rotate(-2deg);
+    transform: scale(1.03);
 }
 
 .autobio-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 5vw, 42px);
-    font-weight: 700;
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 800;
     color: var(--text);
     margin-bottom: 12px;
     line-height: 1.2;
+    letter-spacing: -0.5px;
 }
 
 .autobio-header h1 span {
     color: var(--accent);
-    font-style: italic;
 }
 
 .intro-line {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: clamp(16px, 2.5vw, 20px);
+    font-size: clamp(15px, 2.5vw, 18px);
     color: var(--text2);
     margin-bottom: 8px;
+    font-weight: 500;
 }
 
 .sub-line {
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--accent);
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -729,7 +725,7 @@ a:hover {
 }
 
 .bio-line {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--text3);
     letter-spacing: 0.4px;
 }
@@ -740,38 +736,37 @@ a:hover {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    gap: 12px;
     margin: 20px 0 30px;
 }
 
 .stat-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px 10px;
+    border-radius: 12px;
+    padding: 18px 10px;
     text-align: center;
     transition: all var(--transition);
-    box-shadow: 0 2px 10px var(--shadow);
+    box-shadow: 0 1px 3px var(--shadow);
 }
 
 .stat-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     border-color: var(--accent);
-    box-shadow: 0 10px 26px var(--shadow2);
+    box-shadow: 0 6px 16px var(--shadow);
 }
 
 .stat-number {
     display: block;
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: var(--accent);
     line-height: 1.1;
     margin-bottom: 4px;
 }
 
 .stat-label {
-    font-size: 11.5px;
+    font-size: 11px;
     color: var(--text3);
     font-weight: 600;
     letter-spacing: 0.4px;
@@ -785,17 +780,17 @@ a:hover {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     margin: 24px 0 18px;
 }
 
 .lang-btn {
-    padding: 10px 22px;
-    border-radius: 30px;
+    padding: 9px 20px;
+    border-radius: 8px;
     border: 1.5px solid var(--border);
     background: var(--card-bg);
     color: var(--text2);
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition);
@@ -805,14 +800,14 @@ a:hover {
 .lang-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
-    transform: translateY(-2px);
+    background: var(--accent-soft);
 }
 
 .lang-btn.active {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
-    border-color: transparent;
-    box-shadow: 0 6px 18px rgba(184, 134, 11, 0.35);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
 }
 
 .translate-btn {
@@ -829,9 +824,9 @@ a:hover {
 }
 
 .download-btn {
-    padding: 13px 30px;
-    border-radius: 30px;
-    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 13.5px;
     font-weight: 700;
     cursor: pointer;
     border: none;
@@ -843,14 +838,15 @@ a:hover {
 }
 
 .download-btn.primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
-    box-shadow: 0 8px 24px rgba(184, 134, 11, 0.35);
+    box-shadow: 0 6px 18px rgba(30, 64, 175, 0.25);
 }
 
 .download-btn.primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(184, 134, 11, 0.5);
+    background: var(--accent2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(30, 64, 175, 0.35);
 }
 
 /* ============================================================
@@ -860,11 +856,11 @@ a:hover {
     display: none;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 34px 30px 28px;
-    margin-bottom: 26px;
-    box-shadow: 0 4px 22px var(--shadow);
-    animation: fadeInUp 0.5s ease;
+    border-radius: 16px;
+    padding: 32px 28px 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px var(--shadow);
+    animation: fadeInUp 0.4s ease;
 }
 
 .chapter.active {
@@ -874,7 +870,7 @@ a:hover {
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(16px);
+        transform: translateY(12px);
     }
     to {
         opacity: 1;
@@ -883,27 +879,27 @@ a:hover {
 }
 
 .chapter h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(20px, 3.2vw, 26px);
+    font-size: clamp(19px, 3.2vw, 24px);
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 22px;
-    padding-bottom: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
     border-bottom: 2px solid var(--border);
     display: flex;
     align-items: center;
     gap: 12px;
     line-height: 1.3;
+    letter-spacing: -0.3px;
 }
 
 .emoji-big {
-    font-size: 28px;
+    font-size: 26px;
     line-height: 1;
     flex-shrink: 0;
 }
 
 .chapter p {
-    font-size: 15.5px;
+    font-size: 15px;
     color: var(--text2);
     line-height: 1.85;
     margin-bottom: 14px;
@@ -922,10 +918,10 @@ a:hover {
 .chapter code {
     background: var(--code-bg);
     padding: 2px 7px;
-    border-radius: 6px;
-    font-family: 'Courier New', monospace;
-    font-size: 13.5px;
-    color: var(--accent2);
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--accent);
     border: 1px solid var(--border);
 }
 
@@ -941,7 +937,7 @@ a:hover {
     max-width: 380px;
     aspect-ratio: 4 / 3;
     border: 2px dashed var(--border);
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -956,7 +952,7 @@ a:hover {
 
 .photo-slot:hover {
     border-color: var(--accent);
-    background: var(--card-bg);
+    background: var(--accent-soft);
 }
 
 .photo-slot.has-image {
@@ -969,18 +965,18 @@ a:hover {
 .photo-slot.has-image img {
     width: 100%;
     height: auto;
-    border-radius: 14px;
+    border-radius: 10px;
     display: block;
 }
 
 .upload-hint {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--text3);
 }
 
 .fig-caption {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--text3);
     font-style: italic;
     text-align: center;
@@ -995,34 +991,33 @@ a:hover {
 
 /* ---- Quote Box ---- */
 .quote-box {
-    padding: 22px 24px;
-    border-radius: 16px;
-    margin: 22px 0;
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 17px;
-    line-height: 1.6;
+    padding: 20px 22px;
+    border-radius: 12px;
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.65;
     text-align: center;
     position: relative;
-    border-left: 5px solid;
+    border-left: 4px solid;
+    font-style: italic;
 }
 
 .quote-box.gold {
-    background: var(--quote-gold-bg);
-    border-left-color: var(--gold);
+    background: var(--accent-soft);
+    border-left-color: var(--accent);
     color: var(--text);
 }
 
 .quote-box.purple {
     background: var(--quote-purple-bg);
-    border-left-color: var(--purple);
+    border-left-color: #8b5cf6;
     color: var(--text);
 }
 
 .quote-box .author {
     display: block;
     margin-top: 10px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-style: normal;
     font-weight: 600;
     color: var(--text3);
@@ -1033,20 +1028,20 @@ a:hover {
 .friend-memory-pdf {
     background: var(--bg3);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 24px;
-    margin: 22px 0;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 20px 0;
     position: relative;
 }
 
 .pdf-label {
     display: inline-block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--accent);
     background: var(--card-bg);
-    padding: 5px 12px;
-    border-radius: 20px;
+    padding: 4px 10px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     margin-bottom: 14px;
     letter-spacing: 0.5px;
@@ -1054,7 +1049,7 @@ a:hover {
 }
 
 .friend-memory-pdf p {
-    font-size: 15px;
+    font-size: 14.5px;
     color: var(--text2);
     line-height: 1.8;
     margin-bottom: 10px;
@@ -1069,18 +1064,18 @@ a:hover {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 30px;
-    padding-top: 22px;
+    margin-top: 28px;
+    padding-top: 20px;
     border-top: 1px solid var(--border);
 }
 
 .nav-btn {
-    padding: 11px 24px;
-    border-radius: 30px;
+    padding: 10px 22px;
+    border-radius: 8px;
     border: 1.5px solid var(--border);
     background: var(--card-bg);
     color: var(--text2);
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition);
@@ -1088,11 +1083,11 @@ a:hover {
 }
 
 .nav-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
-    border-color: transparent;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(184, 134, 11, 0.35);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.25);
 }
 
 .nav-btn:disabled {
@@ -1106,55 +1101,53 @@ a:hover {
 .extra-panels {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 18px;
+    gap: 16px;
     margin: 40px 0 30px;
 }
 
 .panel-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 24px 22px;
+    border-radius: 14px;
+    padding: 22px 20px;
     transition: all var(--transition);
-    box-shadow: 0 3px 14px var(--shadow);
+    box-shadow: 0 1px 3px var(--shadow);
     position: relative;
     overflow: hidden;
 }
 
 .panel-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: var(--accent);
-    box-shadow: 0 12px 32px var(--shadow2);
+    box-shadow: 0 8px 22px var(--shadow2);
 }
 
 .panel-icon {
-    font-size: 28px;
+    font-size: 26px;
     margin-bottom: 10px;
     display: block;
 }
 
 .panel-card h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--text);
     margin-bottom: 12px;
-    letter-spacing: 0.2px;
+    letter-spacing: -0.2px;
 }
 
 .panel-card blockquote {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 15px;
+    font-size: 14.5px;
     color: var(--text2);
     line-height: 1.6;
     padding-left: 14px;
     border-left: 3px solid var(--accent);
     margin-bottom: 8px;
+    font-style: italic;
 }
 
 .panel-author {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--text3);
     font-weight: 600;
     letter-spacing: 0.3px;
@@ -1162,7 +1155,7 @@ a:hover {
 }
 
 .panel-card p {
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--text2);
     line-height: 1.7;
 }
@@ -1170,9 +1163,9 @@ a:hover {
 .panel-card p code {
     background: var(--code-bg);
     padding: 2px 6px;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 12.5px;
-    color: var(--accent2);
+    color: var(--accent);
 }
 
 .panel-card ul {
@@ -1183,7 +1176,7 @@ a:hover {
 }
 
 .panel-card ul li {
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--text2);
     line-height: 1.6;
     display: flex;
@@ -1223,7 +1216,7 @@ a:hover {
 .milestone-list .year {
     font-weight: 700;
     color: var(--accent);
-    font-size: 13.5px;
+    font-size: 13px;
     min-width: 46px;
     letter-spacing: 0.3px;
 }
@@ -1238,31 +1231,30 @@ a:hover {
 .skill-tags span {
     background: var(--bg3);
     color: var(--text2);
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
-    padding: 7px 14px;
-    border-radius: 20px;
+    padding: 6px 12px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     transition: all var(--transition);
 }
 
 .skill-tags span:hover {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     color: #fff;
-    border-color: transparent;
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    transform: translateY(-1px);
 }
 
 /* ---- Motto Text ---- */
 .motto-text {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--accent);
     text-align: center;
     font-weight: 600;
     line-height: 1.6;
     padding: 8px 0;
+    font-style: italic;
 }
 
 /* ============================================================
@@ -1275,7 +1267,7 @@ a:hover {
     max-width: 500px;
     margin: 30px auto 14px;
     padding: 0 8px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -1302,8 +1294,8 @@ a:hover {
 }
 
 .dot {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--border);
     cursor: pointer;
@@ -1312,14 +1304,14 @@ a:hover {
 }
 
 .dot:hover {
-    background: var(--accent2);
+    background: var(--accent3);
     transform: scale(1.3);
 }
 
 .dot.active {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    background: var(--accent);
     transform: scale(1.35);
-    box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.18);
+    box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 /* ============================================================
@@ -1336,26 +1328,26 @@ a:hover {
     }
 
     .chapter {
-        padding: 26px 20px 22px;
-        border-radius: 16px;
+        padding: 24px 20px 20px;
+        border-radius: 14px;
     }
 
     .chapter h3 {
-        font-size: 20px;
+        font-size: 19px;
         gap: 10px;
     }
 
     .emoji-big {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .chapter p {
-        font-size: 15px;
+        font-size: 14.5px;
     }
 
     .quote-box {
-        font-size: 15.5px;
-        padding: 18px 18px;
+        font-size: 15px;
+        padding: 16px 18px;
     }
 
     .extra-panels {
@@ -1374,13 +1366,13 @@ a:hover {
     }
 
     .nav-brand {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .hamburger {
         width: 38px;
         height: 38px;
-        font-size: 16px;
+        font-size: 14px;
     }
 }
 
@@ -1399,23 +1391,23 @@ a:hover {
     .profile-photo {
         width: 100px;
         height: 100px;
-        border-width: 3px;
+        border-width: 2px;
     }
 
     .autobio-header h1 {
-        font-size: 26px;
+        font-size: 24px;
     }
 
     .intro-line {
-        font-size: 15px;
+        font-size: 14.5px;
     }
 
     .sub-line {
-        font-size: 12.5px;
+        font-size: 12px;
     }
 
     .bio-line {
-        font-size: 12px;
+        font-size: 11.5px;
     }
 
     .stats-grid {
@@ -1424,144 +1416,144 @@ a:hover {
     }
 
     .stat-card {
-        padding: 16px 8px;
-        border-radius: 14px;
+        padding: 14px 8px;
+        border-radius: 10px;
     }
 
     .stat-number {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .stat-label {
-        font-size: 10.5px;
+        font-size: 10px;
     }
 
     .lang-controls {
-        gap: 8px;
+        gap: 6px;
     }
 
     .lang-btn {
-        padding: 9px 16px;
-        font-size: 12.5px;
+        padding: 8px 14px;
+        font-size: 12px;
     }
 
     .download-btn {
-        padding: 12px 24px;
-        font-size: 13px;
+        padding: 11px 22px;
+        font-size: 12.5px;
     }
 
     .chapter {
-        padding: 22px 16px 18px;
-        border-radius: 14px;
+        padding: 20px 16px 16px;
+        border-radius: 12px;
     }
 
     .chapter h3 {
-        font-size: 18px;
+        font-size: 17px;
         padding-bottom: 12px;
         margin-bottom: 16px;
         gap: 8px;
     }
 
     .emoji-big {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .chapter p {
-        font-size: 14.5px;
+        font-size: 14px;
         line-height: 1.8;
         margin-bottom: 12px;
     }
 
     .photo-slot {
         max-width: 100%;
-        border-radius: 12px;
+        border-radius: 10px;
     }
 
     .quote-box {
-        font-size: 14.5px;
-        padding: 16px 16px;
-        border-radius: 12px;
+        font-size: 14px;
+        padding: 14px 16px;
+        border-radius: 10px;
     }
 
     .quote-box .author {
-        font-size: 12px;
+        font-size: 11.5px;
     }
 
     .friend-memory-pdf {
-        padding: 18px 16px;
-        border-radius: 12px;
+        padding: 16px 14px;
+        border-radius: 10px;
     }
 
     .friend-memory-pdf p {
-        font-size: 14px;
+        font-size: 13.5px;
     }
 
     .nav-buttons {
         gap: 10px;
-        margin-top: 24px;
-        padding-top: 18px;
+        margin-top: 22px;
+        padding-top: 16px;
     }
 
     .nav-btn {
-        padding: 10px 18px;
-        font-size: 13px;
+        padding: 10px 16px;
+        font-size: 12.5px;
         flex: 1;
         text-align: center;
     }
 
     .panel-card {
-        padding: 20px 18px;
-        border-radius: 16px;
+        padding: 18px 16px;
+        border-radius: 12px;
     }
 
     .panel-icon {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .panel-card h4 {
-        font-size: 15.5px;
+        font-size: 15px;
     }
 
     .panel-card p,
     .panel-card ul li {
-        font-size: 13.5px;
+        font-size: 13px;
     }
 
     .panel-card blockquote {
-        font-size: 14px;
+        font-size: 13.5px;
     }
 
     .chapter-progress-info {
-        font-size: 12.5px;
+        font-size: 12px;
     }
 
     .dot {
-        width: 10px;
-        height: 10px;
+        width: 9px;
+        height: 9px;
     }
 
     .ornament {
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 6px;
         margin: 24px 0;
     }
 
     .modal-content {
-        padding: 24px 20px;
-        border-radius: 16px;
-    }
-
-    .modal-content h2 {
-        font-size: 20px;
-    }
-
-    .modal-option {
-        padding: 14px 12px;
+        padding: 22px 18px;
         border-radius: 12px;
     }
 
+    .modal-content h2 {
+        font-size: 18px;
+    }
+
+    .modal-option {
+        padding: 12px 12px;
+        border-radius: 10px;
+    }
+
     .opt-title {
-        font-size: 13.5px;
+        font-size: 13px;
     }
 
     .opt-desc {
@@ -1569,8 +1561,8 @@ a:hover {
     }
 
     .modal-btn {
-        padding: 8px 14px;
-        font-size: 12px;
+        padding: 8px 12px;
+        font-size: 11.5px;
     }
 
     .sidebar {
@@ -1579,16 +1571,16 @@ a:hover {
     }
 
     .sp-avatar {
-        width: 72px;
-        height: 72px;
+        width: 70px;
+        height: 70px;
     }
 
     .sp-name {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .sidebar-menu a {
-        font-size: 13.5px;
+        font-size: 13px;
         padding: 9px 10px;
     }
 }
@@ -1597,22 +1589,21 @@ a:hover {
    20. SCROLLBAR STYLING
    ============================================================ */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg);
+    background: var(--bg3);
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 10px;
-    border: 2px solid var(--bg);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent);
+    background: var(--text3);
 }
 
 /* ============================================================
@@ -1681,11 +1672,11 @@ a:focus-visible,
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     padding: 12px 16px 14px;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 28px var(--shadow2);
     min-width: 200px;
     max-width: 240px;
     z-index: 99998;
@@ -1717,7 +1708,7 @@ a:focus-visible,
 .pdf-pill-text {
     font-size: 12.5px;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text);
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -1727,14 +1718,14 @@ a:focus-visible,
 .pdf-pill-percent {
     font-size: 13px;
     font-weight: 700;
-    color: #DAA520;
+    color: var(--accent);
     font-variant-numeric: tabular-nums;
 }
 
 .pdf-pill-bar {
     width: 100%;
     height: 5px;
-    background: #f0f0f0;
+    background: var(--bg3);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -1742,22 +1733,9 @@ a:focus-visible,
 .pdf-pill-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #DAA520, #b8860b);
+    background: var(--accent);
     border-radius: 10px;
     transition: width 0.3s ease;
-}
-
-/* Dark mode */
-[data-theme="dark"] .pdf-progress-pill {
-    background: #1a1a22;
-    border-color: #2e2e3a;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
-}
-[data-theme="dark"] .pdf-pill-text {
-    color: #eaeaea;
-}
-[data-theme="dark"] .pdf-pill-bar {
-    background: #22222c;
 }
 
 /* Mobile */
