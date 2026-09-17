@@ -3,7 +3,7 @@
    My Autobiography — Ravi Raj
    Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
             Reader Wizard (4-step ebook personalization),
-            Webcam Capture
+            Webcam Capture, Footnotes, Audio Narration
    ============================================================ */
 
 (function () {
@@ -14,13 +14,12 @@
        ============================================================ */
     const TOTAL_CHAPTERS = 11;
 
-    // Chapter order (matches data-chapter attributes in HTML)
     const CHAPTER_ORDER = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
     const state = {
         currentChapter: '1',
-        currentLang: 'en',       // 'en' | 'hi'
-        theme: 'light'           // 'light' | 'dark'
+        currentLang: 'en',
+        theme: 'light'
     };
 
     /* ============================================================
@@ -43,7 +42,7 @@
     }
 
     /* ============================================================
-       4. THEME TOGGLE (Light / Dark)
+       4. THEME TOGGLE
        ============================================================ */
     function applyTheme(theme) {
         state.theme = theme;
@@ -90,7 +89,7 @@
     }
 
     /* ============================================================
-       5. SIDEBAR (open / close)
+       5. SIDEBAR
        ============================================================ */
     function openSidebar() {
         const sidebar = $('#sidebar');
@@ -156,6 +155,9 @@
     function showChapter(chapterId, scroll = true) {
         chapterId = String(chapterId);
         state.currentChapter = chapterId;
+
+        // ⭐ Stop audio if playing
+        stopAudioIfPlaying();
 
         const container = getActiveContainer();
         if (!container) return;
@@ -251,7 +253,6 @@
         });
     }
 
-    /* ---------- CLICK HANDLERS (single source of truth) ---------- */
     function initChapterClicks() {
         $$('.nav-btn, .prev-btn, .next-btn, #chapterSidebarMenu a, #progressDots .dot')
             .forEach(el => {
@@ -297,7 +298,7 @@
     }
 
     /* ============================================================
-       8. MODAL (Download Ebook) — with wizard integration
+       8. MODAL
        ============================================================ */
     function openModal() {
         const modal = $('#downloadModal');
@@ -305,7 +306,6 @@
         modal.classList.add('active');
         document.body.classList.add('modal-open');
 
-        // ⭐ Wizard: reset to Step 1 and clear any previous data
         resetWizard();
         goToStep(1);
     }
@@ -331,7 +331,7 @@
     }
 
     /* ============================================================
-       9. EBOOK DOWNLOAD HELPERS (legacy — kept for compatibility)
+       9. EBOOK DOWNLOAD HELPERS (legacy)
        ============================================================ */
     function downloadEnglishEbook() {
         if (typeof window.generateEbook === 'function') {
@@ -358,26 +358,22 @@
     }
 
     /* ============================================================
-       9B. READER WIZARD — Multi-Step Ebook Personalization Flow
+       9B. READER WIZARD
        ============================================================ */
 
-    // Wizard state
     const readerData = {
         name: '',
-        gender: 'neutral',    // 'male' | 'female' | 'neutral'
-        photo: null,          // base64 string
-        language: 'en'        // 'en' | 'hi'
+        gender: 'neutral',
+        photo: null,
+        language: 'en'
     };
 
-    // Webcam state
     let webcamStream = null;
     let webcamActive = false;
 
-    // ─── Step Navigation ───
     function goToStep(stepNum) {
         $$('.modal-step').forEach(step => step.classList.remove('active'));
 
-        // Support both numeric (1, 2, 3, 4) and named steps ('Camera')
         const targetId = 'step' + stepNum;
         const target = $('#' + targetId);
         if (target) target.classList.add('active');
@@ -418,9 +414,7 @@
         goToStep(3);
     }
 
-    // ─── Photo Handling ───
     function triggerCamera() {
-        // ⭐ Ab file input ke bajaye webcam open karo
         openWebcam();
     }
 
@@ -472,24 +466,18 @@
     }
 
     /* ============================================================
-       9C. WEBCAM — Live camera capture
+       9C. WEBCAM
        ============================================================ */
 
-    /**
-     * Open webcam — request permission and start live feed
-     */
     async function openWebcam() {
-        // Check browser support
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             showToast('Camera not supported on this browser');
             triggerUpload();
             return;
         }
 
-        // Move to camera step
         goToStep('Camera');
 
-        // Reset UI states
         const video = $('#webcamVideo');
         const loading = $('#webcamLoading');
         const error = $('#webcamError');
@@ -504,7 +492,6 @@
         if (captureBtn) captureBtn.disabled = true;
 
         try {
-            // Request camera — prefer front camera (selfie)
             webcamStream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: 'user',
@@ -516,11 +503,9 @@
 
             if (video) {
                 video.srcObject = webcamStream;
-
                 video.onloadedmetadata = () => {
                     video.play();
                     webcamActive = true;
-
                     if (loading) loading.style.display = 'none';
                     if (captureBtn) captureBtn.disabled = false;
                 };
@@ -532,9 +517,6 @@
         }
     }
 
-    /**
-     * Show error UI based on error type
-     */
     function showWebcamError(err) {
         const loading = $('#webcamLoading');
         const error = $('#webcamError');
@@ -562,9 +544,6 @@
         if (errorMsg) errorMsg.textContent = msg;
     }
 
-    /**
-     * Capture photo from webcam video
-     */
     function capturePhoto() {
         if (!webcamActive) return;
 
@@ -572,7 +551,6 @@
         const container = document.querySelector('.webcam-container');
         if (!video) return;
 
-        // Create canvas at video's native resolution
         const canvas = document.createElement('canvas');
         const videoWidth = video.videoWidth || 720;
         const videoHeight = video.videoHeight || 720;
@@ -581,32 +559,25 @@
         canvas.height = videoHeight;
 
         const ctx = canvas.getContext('2d');
-
-        // Mirror the capture (since video is mirror-flipped for display)
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Convert to JPEG base64 (compressed for smaller PDF size)
         const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
 
-        // Flash effect
         if (container) {
             container.classList.add('captured');
             setTimeout(() => container.classList.remove('captured'), 400);
         }
 
-        // Save photo to reader data
         readerData.photo = dataUrl;
 
-        // Update preview in Step 3
         const previewBox = $('#photoPreviewBox');
         if (previewBox) {
             previewBox.innerHTML = `<img src="${dataUrl}" alt="Reader photo" />`;
             previewBox.classList.add('has-photo');
         }
 
-        // Close webcam and return to Step 3
         setTimeout(() => {
             closeWebcam();
             goToStep(3);
@@ -614,11 +585,7 @@
         }, 300);
     }
 
-    /**
-     * Close webcam — stop stream and clean up
-     */
     function closeWebcam() {
-        // Stop all video tracks
         if (webcamStream) {
             webcamStream.getTracks().forEach(track => track.stop());
             webcamStream = null;
@@ -629,7 +596,6 @@
 
         webcamActive = false;
 
-        // Reset UI
         const loading = $('#webcamLoading');
         const error = $('#webcamError');
         const controls = $('#webcamControls');
@@ -642,13 +608,10 @@
         if (fallback) fallback.style.display = 'none';
         if (captureBtn) captureBtn.disabled = true;
 
-        // Go back to Step 3
         goToStep(3);
     }
 
-    // ─── Reset Wizard State ───
     function resetWizard() {
-        // ⭐ Stop webcam if active
         if (webcamStream) {
             webcamStream.getTracks().forEach(track => track.stop());
             webcamStream = null;
@@ -679,7 +642,6 @@
         if (uploadInput) uploadInput.value = '';
     }
 
-    // ─── Message Template (gender-aware) ───
     function buildReaderMessage(name, gender) {
         let pronoun, possessive, objectPronoun;
 
@@ -702,7 +664,6 @@ Hardworking and determined — once ${pronoun} sets ${possessive} mind on someth
 Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
     }
 
-    // ─── PDF Generation Trigger ───
     async function startPDFGeneration() {
         if (!readerData.name) {
             showToast('Name is missing. Please go back.');
@@ -752,8 +713,305 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         if (hint && message) hint.textContent = message;
     }
 
-    // ─── Public helper exposed for ebook.js to use ───
     window.buildReaderMessage = buildReaderMessage;
+
+    /* ============================================================
+       9D. FOOTNOTES — Hover (desktop) + Tap (mobile)
+       ============================================================ */
+
+    function initFootnotes() {
+        let tooltip = document.querySelector('.footnote-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'footnote-tooltip';
+            document.body.appendChild(tooltip);
+        }
+
+        let sheet = document.querySelector('.footnote-sheet');
+        let overlay = document.querySelector('.footnote-sheet-overlay');
+
+        if (!sheet) {
+            overlay = document.createElement('div');
+            overlay.className = 'footnote-sheet-overlay';
+            document.body.appendChild(overlay);
+
+            sheet = document.createElement('div');
+            sheet.className = 'footnote-sheet';
+            sheet.innerHTML = `
+                <div class="footnote-sheet-header">
+                    <div class="footnote-sheet-label" id="footnoteSheetLabel"></div>
+                    <button class="footnote-sheet-close" id="footnoteSheetClose" aria-label="Close">✕</button>
+                </div>
+                <div class="footnote-sheet-text" id="footnoteSheetText"></div>
+            `;
+            document.body.appendChild(sheet);
+
+            const closeSheet = () => {
+                sheet.classList.remove('active');
+                overlay.classList.remove('active');
+            };
+            overlay.addEventListener('click', closeSheet);
+            sheet.querySelector('#footnoteSheetClose').addEventListener('click', closeSheet);
+        }
+
+        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('.footnote');
+            if (!el || isMobile()) return;
+            const note = el.dataset.note;
+            if (!note) return;
+
+            tooltip.textContent = note;
+            tooltip.classList.add('visible');
+
+            const rect = el.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            let top = rect.top - tooltipRect.height - 10;
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipRect.width - 10;
+            }
+            if (top < 10) top = rect.bottom + 10;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const el = e.target.closest('.footnote');
+            if (!el || isMobile()) return;
+            tooltip.classList.remove('visible');
+        });
+
+        document.addEventListener('click', (e) => {
+            const el = e.target.closest('.footnote');
+            if (!el) return;
+            const note = el.dataset.note;
+            if (!note) return;
+            e.preventDefault();
+
+            if (isMobile()) {
+                const label = el.textContent.trim();
+                const labelEl = sheet.querySelector('#footnoteSheetLabel');
+                const textEl = sheet.querySelector('#footnoteSheetText');
+                if (labelEl) labelEl.textContent = label;
+                if (textEl) textEl.textContent = note;
+                sheet.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                tooltip.textContent = note;
+                tooltip.classList.add('visible');
+                const rect = el.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 10;
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+                if (top < 10) top = rect.bottom + 10;
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                clearTimeout(window._footnoteTimeout);
+                window._footnoteTimeout = setTimeout(() => tooltip.classList.remove('visible'), 4000);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const el = document.activeElement;
+            if (!el || !el.classList.contains('footnote')) return;
+            e.preventDefault();
+            el.click();
+        });
+
+        document.querySelectorAll('.footnote').forEach(el => {
+            if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+        });
+    }
+
+    /* ============================================================
+       9E. AUDIO NARRATION — Web Speech API
+       ============================================================ */
+
+    let currentUtterance = null;
+    let currentAudioBtn = null;
+    let currentChapterEl = null;
+    let currentSpeed = 1;
+
+    function getBestVoice(lang) {
+        if (!('speechSynthesis' in window)) return null;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices.length) return null;
+        if (lang === 'hi') {
+            return voices.find(v => v.lang === 'hi-IN')
+                || voices.find(v => v.lang.startsWith('hi'))
+                || voices.find(v => v.lang === 'en-IN')
+                || voices.find(v => v.lang.startsWith('en'))
+                || voices[0];
+        }
+        return voices.find(v => v.lang === 'en-IN')
+            || voices.find(v => v.lang.startsWith('en-IN'))
+            || voices.find(v => v.lang === 'en-GB')
+            || voices.find(v => v.lang.startsWith('en'))
+            || voices[0];
+    }
+
+    function extractChapterText(chapterEl) {
+        const paragraphs = chapterEl.querySelectorAll('p');
+        const texts = [];
+        paragraphs.forEach(p => {
+            const text = p.textContent.trim();
+            if (text.length > 5) texts.push(text);
+        });
+        return texts.join('. ');
+    }
+
+    function toggleChapterAudio(btn) {
+        if (!('speechSynthesis' in window)) {
+            showToast('Audio not supported on this browser');
+            return;
+        }
+        const chapterEl = btn.closest('.chapter');
+        if (!chapterEl) return;
+        const player = btn.closest('.audio-player');
+        if (!player) return;
+
+        const progressArea = player.querySelector('.audio-player-progress');
+        const progressFill = player.querySelector('.audio-progress-fill');
+        const statusEl = player.querySelector('.audio-status');
+        const lang = player.dataset.lang || 'en';
+
+        if (currentAudioBtn === btn && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+            window.speechSynthesis.pause();
+            btn.innerHTML = '▶ Resume';
+            btn.classList.remove('playing');
+            if (statusEl) statusEl.textContent = 'Paused';
+            return;
+        }
+
+        if (currentAudioBtn === btn && window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+            btn.innerHTML = '⏸ Pause';
+            btn.classList.add('playing');
+            if (statusEl) statusEl.textContent = 'Playing...';
+            return;
+        }
+
+        if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+
+        if (currentAudioBtn && currentAudioBtn !== btn) {
+            currentAudioBtn.innerHTML = '▶ Play';
+            currentAudioBtn.classList.remove('playing');
+            const prevPlayer = currentAudioBtn.closest('.audio-player');
+            if (prevPlayer) {
+                const prevProgress = prevPlayer.querySelector('.audio-player-progress');
+                if (prevProgress) prevProgress.style.display = 'none';
+            }
+        }
+
+        const text = extractChapterText(chapterEl);
+        if (!text) {
+            showToast('No text to read');
+            return;
+        }
+
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+        currentUtterance.rate = currentSpeed;
+        currentUtterance.pitch = 1;
+        currentUtterance.volume = 1;
+
+        const voice = getBestVoice(lang);
+        if (voice) currentUtterance.voice = voice;
+
+        const words = text.split(/\s+/).length;
+        const estimatedDuration = (words / 150) * 60 / currentSpeed;
+        const startTime = Date.now();
+
+        btn.innerHTML = '⏸ Pause';
+        btn.classList.add('playing');
+        if (progressArea) progressArea.style.display = 'block';
+        if (statusEl) statusEl.textContent = `Playing... (~${Math.ceil(estimatedDuration / 60)} min)`;
+        if (progressFill) progressFill.style.width = '0%';
+
+        currentAudioBtn = btn;
+        currentChapterEl = chapterEl;
+
+        const progressInterval = setInterval(() => {
+            if (!window.speechSynthesis.speaking || window.speechSynthesis.paused) return;
+            const elapsed = (Date.now() - startTime) / 1000;
+            const percent = Math.min((elapsed / estimatedDuration) * 100, 99);
+            if (progressFill) progressFill.style.width = percent + '%';
+        }, 500);
+
+        currentUtterance.onend = () => {
+            clearInterval(progressInterval);
+            btn.innerHTML = '▶ Play';
+            btn.classList.remove('playing');
+            if (progressFill) progressFill.style.width = '100%';
+            if (statusEl) statusEl.textContent = 'Finished';
+            setTimeout(() => {
+                if (progressArea) progressArea.style.display = 'none';
+                if (progressFill) progressFill.style.width = '0%';
+            }, 2000);
+            currentAudioBtn = null;
+            currentUtterance = null;
+        };
+
+        currentUtterance.onerror = (e) => {
+            clearInterval(progressInterval);
+            console.warn('Speech error:', e);
+            btn.innerHTML = '▶ Play';
+            btn.classList.remove('playing');
+            if (progressArea) progressArea.style.display = 'none';
+            if (statusEl) statusEl.textContent = 'Error';
+            currentAudioBtn = null;
+            currentUtterance = null;
+        };
+
+        window.speechSynthesis.speak(currentUtterance);
+    }
+
+    function initAudioControls() {
+        document.addEventListener('click', (e) => {
+            const speedBtn = e.target.closest('.audio-speed-btn');
+            if (!speedBtn) return;
+            const speed = parseFloat(speedBtn.dataset.speed);
+            if (!speed) return;
+            const controls = speedBtn.closest('.audio-speed-controls');
+            if (controls) {
+                controls.querySelectorAll('.audio-speed-btn').forEach(b => b.classList.remove('active'));
+                speedBtn.classList.add('active');
+            }
+            currentSpeed = speed;
+            if (window.speechSynthesis.speaking && currentChapterEl) {
+                const wasBtn = currentAudioBtn;
+                window.speechSynthesis.cancel();
+                if (wasBtn) {
+                    wasBtn.innerHTML = '▶ Play';
+                    wasBtn.classList.remove('playing');
+                }
+                setTimeout(() => { if (wasBtn) toggleChapterAudio(wasBtn); }, 100);
+            }
+            showToast(`Speed: ${speed}x`);
+        });
+    }
+
+    function stopAudioIfPlaying() {
+        if (window.speechSynthesis && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            if (currentAudioBtn) {
+                currentAudioBtn.innerHTML = '▶ Play';
+                currentAudioBtn.classList.remove('playing');
+                const progressArea = currentAudioBtn.closest('.audio-player')?.querySelector('.audio-player-progress');
+                if (progressArea) progressArea.style.display = 'none';
+            }
+            currentAudioBtn = null;
+            currentUtterance = null;
+        }
+    }
 
     /* ============================================================
        10. RESTORE STATE
@@ -782,6 +1040,8 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         initModal();
         initChapterClicks();
         initPhotoInputs();
+        initFootnotes();        // ⭐ Footnotes
+        initAudioControls();    // ⭐ Audio controls
 
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
@@ -808,7 +1068,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.toggleTheme          = toggleTheme;
     window.showToast            = showToast;
 
-    // ⭐ Wizard functions (needed for HTML onclick="")
+    // Wizard
     window.goToStep             = goToStep;
     window.selectLanguage       = selectLanguage;
     window.goToStep3            = goToStep3;
@@ -816,10 +1076,13 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.triggerUpload        = triggerUpload;
     window.startPDFGeneration   = startPDFGeneration;
 
-    // ⭐ Webcam functions
+    // Webcam
     window.openWebcam           = openWebcam;
     window.closeWebcam          = closeWebcam;
     window.capturePhoto         = capturePhoto;
+
+    // ⭐ Audio
+    window.toggleChapterAudio   = toggleChapterAudio;
 
     /* ============================================================
        13. BOOT
