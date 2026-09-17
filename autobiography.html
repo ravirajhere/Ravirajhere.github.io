@@ -34,7 +34,6 @@
     </div>
 
     <div class="toast" id="toast"></div>
-
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <aside class="sidebar" id="sidebar">
@@ -105,15 +104,12 @@
 
 <!-- ═══════════════════════════════════════════════════════
      DOWNLOAD MODAL — 5 Step Wizard
-     Step 1: Language | Step 2: Name & Gender | Step 3: Photo
-     Step 3.5: Webcam Capture | Step 4: Progress
 ═══════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="downloadModal">
   <div class="modal-content">
 
     <button class="modal-close" onclick="closeModal()">✕</button>
 
-    <!-- ════════ STEP 1: LANGUAGE ════════ -->
     <div class="modal-step active" id="step1">
       <h2>📥 Download Ebook</h2>
       <p class="modal-desc">Please select your preferred language</p>
@@ -135,20 +131,13 @@
       </div>
     </div>
 
-    <!-- ════════ STEP 2: NAME & GENDER ════════ -->
     <div class="modal-step" id="step2">
       <h2>✨ About You</h2>
       <p class="modal-desc">A special page will be created in the ebook, dedicated to you</p>
 
       <div class="form-group">
         <label for="readerName">Your name:</label>
-        <input 
-          type="text" 
-          id="readerName" 
-          placeholder="e.g. Priya Sharma" 
-          maxlength="40"
-          autocomplete="off"
-        />
+        <input type="text" id="readerName" placeholder="e.g. Priya Sharma" maxlength="40" autocomplete="off" />
       </div>
 
       <div class="form-group">
@@ -175,7 +164,6 @@
       </div>
     </div>
 
-    <!-- ════════ STEP 3: PHOTO ════════ -->
     <div class="modal-step" id="step3">
       <h2>📸 Your Photograph</h2>
       <p class="modal-desc">This photograph will appear on the "About the Reader" page of your ebook</p>
@@ -187,27 +175,19 @@
         </div>
 
         <div class="photo-buttons">
-          <button class="modal-btn" onclick="openWebcam()">
-            📷 Take a Photo
-          </button>
-          <button class="modal-btn" onclick="triggerUpload()">
-            🖼️ Upload from Gallery
-          </button>
+          <button class="modal-btn" onclick="openWebcam()">📷 Take a Photo</button>
+          <button class="modal-btn" onclick="triggerUpload()">🖼️ Upload from Gallery</button>
         </div>
 
-        <!-- Hidden file input for gallery upload -->
         <input type="file" id="uploadInput" accept="image/*" hidden />
       </div>
 
       <div class="modal-nav-buttons">
         <button class="modal-btn-secondary" onclick="goToStep(2)">← Back</button>
-        <button class="modal-btn-primary" id="generateBtn" onclick="startPDFGeneration()">
-          Generate PDF →
-        </button>
+        <button class="modal-btn-primary" id="generateBtn" onclick="startPDFGeneration()">Generate PDF →</button>
       </div>
     </div>
 
-    <!-- ════════ STEP 3.5: WEBCAM CAPTURE ════════ -->
     <div class="modal-step" id="stepCamera">
       <h2>📸 Take Your Photo</h2>
       <p class="modal-desc">Position yourself and click Capture</p>
@@ -215,13 +195,11 @@
       <div class="webcam-container">
         <video id="webcamVideo" autoplay playsinline muted></video>
         
-        <!-- Loading state (before camera starts) -->
         <div class="webcam-loading" id="webcamLoading">
           <div class="webcam-spinner"></div>
           <p>Starting camera...</p>
         </div>
         
-        <!-- Error state (permission denied / no camera) -->
         <div class="webcam-error" id="webcamError" style="display:none;">
           <div class="webcam-error-icon">📷</div>
           <p class="webcam-error-title">Camera not available</p>
@@ -231,21 +209,15 @@
 
       <div class="webcam-controls" id="webcamControls">
         <button class="modal-btn-secondary" onclick="closeWebcam()">✕ Cancel</button>
-        <button class="modal-btn-primary" id="captureBtn" onclick="capturePhoto()" disabled>
-          📸 Capture
-        </button>
+        <button class="modal-btn-primary" id="captureBtn" onclick="capturePhoto()" disabled>📸 Capture</button>
       </div>
 
-      <!-- Fallback buttons (shown if error) -->
       <div class="webcam-fallback" id="webcamFallback" style="display:none;">
-        <button class="modal-btn-primary" onclick="closeWebcam(); triggerUpload();">
-          🖼️ Choose from Gallery Instead
-        </button>
+        <button class="modal-btn-primary" onclick="closeWebcam(); triggerUpload();">🖼️ Choose from Gallery Instead</button>
         <button class="modal-btn-secondary" onclick="closeWebcam()">← Back</button>
       </div>
     </div>
 
-    <!-- ════════ STEP 4: PROGRESS ════════ -->
     <div class="modal-step" id="step4">
       <h2>📄 Generating Your PDF...</h2>
       <p class="modal-desc">Please wait a moment while your personalized ebook is being prepared</p>
@@ -260,7 +232,6 @@
 
   </div>
 </div>
-          
 
     <div class="autobio-wrapper">
 
@@ -291,12 +262,33 @@
             <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
         </div>
 
-        <!-- ENGLISH CHAPTERS -->
+        <!-- ═══════════ ENGLISH CHAPTERS ═══════════ -->
         <div id="chaptersEn">
 
             <!-- CHAPTER 1 -->
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch1-en">
@@ -314,6 +306,11 @@
                 <p>Actually, I am the third child — after two sisters. But in Indian culture, if the third child is a son, he gets a different level of love.</p>
                 <p>Since childhood, I was a chubby kid. But because of my habits, I would fall sick every month.</p>
                 <p>Because of that, I started getting thin — and my face started looking real.</p>
+
+                <div class="chapter-quote">
+                    "A story begins not with a date, but with a heartbeat."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
@@ -324,6 +321,27 @@
             <!-- CHAPTER 2 -->
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🕊️</span> Chapter 2: A Loss and a New Beginning (2009)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch2-en">
@@ -333,13 +351,18 @@
                 </div>
                 
                 <p>The first picture I have is from 2009 — the year my ration card was made.</p>
-                <p>It was winter. Papa and Mummy set up a curtain in the background, and all five of us — the whole family — got our photo clicked together.</p>
+                <p>It was winter. <span class="footnote" data-note="Father — Sri Rajanish Kumar">Papa</span> and Mummy set up a curtain in the background, and all five of us — the whole family — got our photo clicked together.</p>
                 <p>I never made direct eye contact with anyone. That's what Mummy told me later.</p>
-                <p>In 2009 itself, on 12th January, my <em>Dadi ji</em> passed away. Brain hemorrhage.</p>
+                <p>In 2009 itself, on 12th January, my <em><span class="footnote" data-note="Grandmother (paternal) — Lt. Smt. Chandralekha Devi · Died 2009">Dadi ji</span></em> passed away. Brain hemorrhage.</p>
                 <p>I don't remember anything — I was only 11 months old.</p>
                 <p>But now, when I look back, I realize something that stings: <strong>I never got my Dadi's love. Not even a single memory of it.</strong></p>
                 <p>Anyway. Life kept moving.</p>
-                <p>That same year, my elder sister — Richa di — got enrolled in a newly opened school called <strong>GBGS</strong> (Gautam Buddha Global School).</p>
+                <p>That same year, my elder sister — <span class="footnote" data-note="'Di' means elder sister — used with respect">Richa di</span> — got enrolled in a newly opened school called <strong><span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span></strong> (Gautam Buddha Global School).</p>
+
+                <div class="chapter-quote">
+                    "Loss teaches us what love truly means."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -350,26 +373,50 @@
             <!-- CHAPTER 3 -->
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">🏠</span> Chapter 3: A Changing Home (2010–2012)</h3>
-                
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch3-en">
                         <img src="assets/images/bday-12.jpg" alt="4th Birthday - 2012" loading="lazy" />
                         <span class="fig-caption">Fig. 3.1: 4th Birthday - 2012</span>
                     </div>
-                
                 </div>
                 
                 <p>Days kept passing. And 2009 brought a lot of problems.</p>
                 <p>First, Mummy's second issue. Then, Dadi's death.</p>
-                <p>2010 — for me, or for my family — must have been better. That year, there was a wedding in the family. And Bua ji's son was born too, I think.</p>
+                <p>2010 — for me, or for my family — must have been better. That year, there was a wedding in the family. And <span class="footnote" data-note="Father's sister (aunt)">Bua ji</span>'s son was born too, I think.</p>
                 <p>2011 was similar. When you shift to a new house, you have to visit old relatives for pooja and all. So everyone would call out my name from the road itself.</p>
                 <p>And I would secretly watch those people.</p>
-                <p>That year, my <em>Mundan</em> happened — 4 May 2012. I obviously wasn't happy about it. My dear hair was gone.</p>
+                <p>That year, my <em><span class="footnote" data-note="Hindu ritual of first head-shaving">Mundan</span></em> happened — 4 May 2012. I obviously wasn't happy about it. My dear hair was gone.</p>
                 <p>In 2012, my first birthday was probably celebrated on 26 March. I had perhaps turned 4.</p>
-                <p>They say when new hair grows, the mind grows too. So after my Mundan, I got attached to <em>Anganwadi</em> — Aunty's school. There, I would count and eat soya beans.</p>
+                <p>They say when new hair grows, the mind grows too. So after my Mundan, I got attached to <em><span class="footnote" data-note="Government-run rural pre-school in India">Anganwadi</span></em> — Aunty's school. There, I would count and eat soya beans.</p>
                 <p>I would stay there till the very end. And somehow, without even realizing it, I finished the Nursery syllabus.</p>
-                <p><em>"Swinging on the jhula has been a part of my childhood since the very beginning."</em></p>
+                <p><em>"Swinging on the <span class="footnote" data-note="Swing">jhula</span> has been a part of my childhood since the very beginning."</em></p>
+
+                <div class="chapter-quote">
+                    "Home is not a place — it's the people who wait for you."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -380,6 +427,27 @@
             <!-- CHAPTER 4 -->
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">🎒</span> Chapter 4: First Steps into School (2013)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-en">
@@ -388,18 +456,23 @@
                     </div>
                 </div>
                 
-                <p>Both my sisters were going to GBGS. So the fees were 300 — for both together.</p>
-                <p>So, in February 2013, on Saraswati Puja, my admission happened directly into <strong>L.K.G</strong> (Lower Kindergarten).</p>
+                <p>Both my sisters were going to <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span>. So the fees were 300 — for both together.</p>
+                <p>So, in February 2013, on <span class="footnote" data-note="Festival of Goddess Saraswati">Saraswati Puja</span>, my admission happened directly into <strong><span class="footnote" data-note="Lower Kindergarten">L.K.G</span></strong> (Lower Kindergarten).</p>
                 <p>Because I had already completed the Nursery course — just by swinging on the jhula.</p>
                 <p><strong>LKG Begins...</strong></p>
                 <p>
                     Name — Suraj Anand<br>
                     School — Gautam Buddha Global School<br>
-                    Sanskar Nagar, Bandwar, Begusarai<br>
+                    Sanskar Nagar, Bandwar, <span class="footnote" data-note="A city in Bihar, India">Begusarai</span><br>
                     Motto — "तमसो मा ज्योतिर्गमय"
                 </p>
                 <p>In the beginning of LKG, I would cry a lot. I would tell my sisters to come meet me during lunch break.</p>
                 <p>And in class, at the end, I would ask the other kids to let me pass.</p>
+
+                <div class="chapter-quote">
+                    "The first step is always the hardest — and the most important."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -410,6 +483,27 @@
             <!-- CHAPTER 5 -->
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🏚️</span> Chapter 5: A House Divided (2014–2016)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-en">
@@ -419,16 +513,21 @@
                 </div>
                 
                 <p>2014 — I moved to UKG.</p>
-                <p>In 2015, I was in 1st Class. Mummy taught at Don Bosco Academy. Due to financial constraints, I started going with her to the Don Bosco Academy branch — Cheria Bariyarpur, Begusarai. Because it was free for me there.</p>
+                <p>In 2015, I was in 1st Class. Mummy taught at <span class="footnote" data-note="A Catholic school in India">Don Bosco Academy</span>. Due to financial constraints, I started going with her to the <span class="footnote" data-note="A Catholic school in India">Don Bosco Academy</span> branch — Cheria Bariyarpur, <span class="footnote" data-note="A city in Bihar, India">Begusarai</span>. Because it was free for me there.</p>
                 <p>I went there for only 3 months. The travel itself used to cause bone trouble. And we would reach home only by evening.</p>
                 <p>At that time, there was a dispute in our house. A property division happened — of land, belongings, everything.</p>
                 <p>Though our house was very big, and it was already a 2-sided house, so there was no problem.</p>
                 <p>Earlier, I used to live on the left side. Then I started living on the new right side.</p>
                 <p>But the financial condition kept getting worse.</p>
-                <p>In 2016, after 3 months, I continued again at GBGS.</p>
+                <p>In 2016, after 3 months, I continued again at <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span>.</p>
                 <p>In 2016, I did not appear for the Term-2 exam of 1st Class. My health had deteriorated. I was unhealthy.</p>
                 <p><em>'An 8-year-old boy'</em></p>
                 <p>Friends' names: Abhilash, Ayush, Harsh.</p>
+
+                <div class="chapter-quote">
+                    "Sometimes a family breaks, but love never truly leaves."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -439,6 +538,27 @@
             <!-- CHAPTER 6 -->
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">📚</span> Chapter 6: An Unexpected Leap (2017)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-en">
@@ -450,11 +570,16 @@
                 <p>In 1st Class, I had many friends: Md. Nakib, Rajnish, Rupesh, Abhinav, Saurav (Komal), and many more. But...</p>
                 <p>By that time, these people left the school and went to another one. Because this was a small school, and teachers were decreasing.</p>
                 <p>Sandhya Miss. Puja Miss. Gunjan Sir. Jitender Sir. Chandan Sir.</p>
-                <p>The result hadn't come out yet. So my parents got me promoted from 1st Class. And since the school was my Chacha's, it happened easily.</p>
+                <p>The result hadn't come out yet. So my parents got me promoted from 1st Class. And since the school was my <span class="footnote" data-note="Father's brother (uncle) — Subhash uncle">Chacha</span>'s, it happened easily.</p>
                 <p>I jumped from 1st to 3rd. Initially, it was tough — that's what I felt. But in Don Bosco School, I had already studied ICSE books for 3 months. So I recovered within a few days.</p>
                 <p>So there I was — 3rd Class. Going smoothly.</p>
                 <p>Nakib and Abhinav became my juniors. Then Rohit and Satyam.</p>
                 <p>Science was taught by Veena Ma'am — living things and all. Hindi by Sadhana Ma'am. English by Ekta Miss. Sanskrit too by Sadhana Ma'am. 3rd Class went smoothly.</p>
+
+                <div class="chapter-quote">
+                    "Life jumps when you're not ready — that's how you grow."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -465,6 +590,27 @@
             <!-- CHAPTER 7 -->
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👦</span> Chapter 7: Earning a Name (2017)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-en">
@@ -479,6 +625,11 @@
                 <p>The teacher scolded me. And Shitanshu too. My rank got spoiled. And Ganesh — he went to another school.</p>
                 <p>So from 3rd to 4th Class (State Board) — because of Chandan Sir — everyone changed. He made us memorize the names of state capitals.</p>
                 <p>I remember some things. So I'm writing this.</p>
+
+                <div class="chapter-quote">
+                    "Respect is earned in silence, not announced in noise."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -489,6 +640,27 @@
             <!-- CHAPTER 8 -->
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">📈</span> Chapter 8: The Will to Rise (2018)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-en">
@@ -514,7 +686,12 @@
                    <strong>3rd:</strong> Asmita<br>
                    <strong>4th:</strong> Suraj Anand (A.K.A Ravi Raj)</p>
                 <p>Then I thought — no more following behind others. I have to push myself so far ahead, that others stay behind me.</p>
-                <p>During Holi and all, there was fun. To sing, we would go to the playground, sit in a corner and listen. But friends wouldn't let us sit...</p>
+                <p>During <span class="footnote" data-note="Festival of colors">Holi</span> and all, there was fun. To sing, we would go to the playground, sit in a corner and listen. But friends wouldn't let us sit...</p>
+
+                <div class="chapter-quote">
+                    "Rank is a number. The will to rise has no ceiling."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -525,6 +702,27 @@
             <!-- CHAPTER 9 -->
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">✨</span> Chapter 9: A Dream Takes Shape (2018–2019)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-en">
@@ -533,7 +731,7 @@
                     </div>
                 </div>
                 
-                <p>My Mummy joined GBGS in 2018 itself. From then on, she taught Hindi in this school.</p>
+                <p>My Mummy joined <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span> in 2018 itself. From then on, she taught Hindi in this school.</p>
                 <p>Time kept passing. And exams kept happening.</p>
                 <p>Our school had good "Sakhi" — current affairs and all. Everyone was very much into it.</p>
                 <p>That school was only up to 8th. But students could only reach up to 6th-7th. Because after that, they would leave. There were no teachers.</p>
@@ -549,6 +747,11 @@
                 <p>Then Sir asked: <em>"Which one — Bridge Engineer or Computer Engineer?"</em></p>
                 <p>And I went silent.</p>
                 <p>Because I didn't even know what it takes to become an engineer!</p>
+
+                <div class="chapter-quote">
+                    "Dreams don't shout — they quietly take shape."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -559,6 +762,27 @@
             <!-- CHAPTER 10 -->
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">🕯️</span> Chapter 10: A Tribute and a Farewell (2019)</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-en">
@@ -567,7 +791,7 @@
                     </div>
                 </div>
                 
-                <p>I just wanted to become an engineer because my Mummy ji was an engineer.</p>
+                <p>I just wanted to become an engineer because my <span class="footnote" data-note="'Ji' is a suffix of respect — Smt. Rajani Kumari">Mummy ji</span> was an engineer.</p>
                 <p>Anyway. In March 2019, my 5th Class exam happened. But just before that — on 10 Feb 2019, Saraswati Puja — something special happened.</p>
                 <p>In between, in Nov 2018 itself, an EC Competition (Clean &amp; Green School) exam happened on the 14th, at Don Bosco.</p>
                 <p>It was the first time I went from home with the school kids. With friends, I had fun.</p>
@@ -575,15 +799,20 @@
                 <p>Out of them, only 51 children were selected. And the highest marks were 96.</p>
                 <p>In the evening, the management called us and gave awards to everyone. Certificate, medal, and a GK Award.</p>
                 <p>I felt happy that for the first time I got a gift and so much respect. But I felt bad that the competition was of L.K.G. level — so how would I compete?</p>
-                <p>However, on 14 Feb 2019, the Pulwama attack also happened. And the prize distribution was on the same day.</p>
-                <p>So I paid tribute to the CRPF Indian Forces. And then came back.</p>
-                <p>The final exam of Class 5th was of ICSE pattern. The result was supposed to come in the last week of March — on 31/03/2019.</p>
+                <p>However, on 14 Feb 2019, the <span class="footnote" data-note="Feb 14, 2019 — Kashmir terror attack">Pulwama attack</span> also happened. And the prize distribution was on the same day.</p>
+                <p>So I paid tribute to the <span class="footnote" data-note="Central Reserve Police Force — India's largest paramilitary force">CRPF</span> Indian Forces. And then came back.</p>
+                <p>The final exam of Class 5th was of <span class="footnote" data-note="Indian Certificate of Secondary Education">ICSE</span> pattern. The result was supposed to come in the last week of March — on 31/03/2019.</p>
                 <p>On the first day of the class, 85%+ and second position was held by Sushil — who was my competitor.</p>
                 <p>My mood had changed. And I became diligent (hardworking) too.</p>
                 <p>My Mummy always thought well about me. And when she found out that I passed 5th Class, her happiness knew no bounds.</p>
                 <p>Since I had shifted schools, I made friends with everyone. Those who scored more than 80% were very few.</p>
                 <p>When the talk of our 8 mates came up — everyone left the school. Everyone got separated. Everyone started handling themselves.</p>
                 <p>What had to happen — started happening...</p>
+
+                <div class="chapter-quote">
+                    "Some farewells teach us how to say hello to a new self."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -591,9 +820,30 @@
                 </div>
             </div>
 
-            <!-- CHAPTER 11 — EPILOGUE -->
+            <!-- CHAPTER 11 -->
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">📖</span> Epilogue: The Journey Continues</h3>
+
+                <div class="audio-player" data-lang="en">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Listen to this chapter</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Playing...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-en">
@@ -611,6 +861,11 @@
                     <span class="author">— Suraj Anand (Ravi Raj)</span>
                 </div>
                 <p class="phase-teaser"><em>Phase 2: A Boy Who Started Thinking — coming soon.</em></p>
+
+                <div class="chapter-quote">
+                    "The journey continues — because stories never really end."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
@@ -620,14 +875,33 @@
 
         </div>
 
-        <!-- =============================================================
-        CHAPTERS — HINGLISH
-        ============================================================= -->
+                <!-- ═══════════ HINGLISH CHAPTERS ═══════════ -->
         <div id="chaptersHi" style="display:none;">
 
             <!-- CHAPTER 1 -->
             <div class="chapter active" data-chapter="1">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch1-hi">
@@ -637,18 +911,17 @@
                 </div>
                 
                 <p><em>Phase I - Birth &amp; Childhood</em></p>
-
                 <p>To baat shuru hoti hai 2008 ke March se, jab mera janm hua tha. Day tha Wednesday (Budhvaar).</p>
-
                 <p>6th day mein, pehle naam 'N' se socha tha, but mummy ne apne naam se 'R' se rakhne ka socha.</p>
-
                 <p>Mummy ka mindset clear na hone ke chalte, aas-paas ke logon ne apne-apne naam bolna shuru kar diya — jaise Nishant, Chinmay, bla bla...</p>
-
                 <p>Din beette gaye. Aur sabhi log mujhe 'Ghantee' bulaya karte the.</p>
-
                 <p>Waise meri 2 badi behen hai. But Indian culture me agar 3rd baccha beta ho toh pyaar alag hi level ka milta hai.</p>
-
                 <p>Bachpan se hi thoda mota tha main. Par apni aadaton ke chalte har month bimar hone laga. Jiske karan main patla hone laga — aur chahra real hone laga.</p>
+
+                <div class="chapter-quote">
+                    "Kahani shuru hoti hai jab pehli saans li jaati hai."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
@@ -659,6 +932,27 @@
             <!-- CHAPTER 2 -->
             <div class="chapter" data-chapter="2">
                 <h3><span class="emoji-big">🕊️</span> Chapter 2: Ek Khoj aur Nayi Shuruaat (2009)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch2-hi">
@@ -668,20 +962,18 @@
                 </div>
 
                 <p>Sabse pehli tasveer jo mere paas hai wo 2009 ki hai — jab us time ration card bana tha.</p>
-
-                <p>Thand ka time tha. Toh papa-mummy log parde se setting karke, 5 family ke logon ka photo click karwaye honge.</p>
-
+                <p>Thand ka time tha. Toh <span class="footnote" data-note="Father — Sri Rajanish Kumar">papa</span>-mummy log parde se setting karke, 5 family ke logon ka photo click karwaye honge.</p>
                 <p>Main kisi se direct eye contact nahi karta tha. (Jaisa mummy ne mujhe bataya.)</p>
-
-                <p>2009 mein hi 12 January ko meri dadi jee ka brain hemorrhage hone ke karan death ho gaya tha.</p>
-
+                <p>2009 mein hi 12 January ko meri <span class="footnote" data-note="Grandmother (paternal) — Lt. Smt. Chandralekha Devi · Died 2009">dadi jee</span> ka brain hemorrhage hone ke karan death ho gaya tha.</p>
                 <p>Mujhe kuch yaad toh nahi hai. Kyuki main 11 month ka tha.</p>
-
                 <p>Lekin ab realise hota hai — ki dadi ka pyaar mujhe nahi mila...</p>
-
                 <p>Khair, chhodo in sab baaton ko. Din aage badhta gaya.</p>
+                <p>Aur 2009 mein hi shayad meri <span class="footnote" data-note="'Di' means elder sister — used with respect">didi</span> (badi wali - Richa di), jiska us time naam Chetna tha, usne naye khule school <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span> (Gautam Buddha Global School) mein enrolled ho gayi...</p>
 
-                <p>Aur 2009 mein hi shayad meri didi (badi wali - Richa di), jiska us time naam Chetna tha, usne naye khule school GBGS (Gautam Buddha Global School) mein enrolled ho gayi...</p>
+                <div class="chapter-quote">
+                    "Jo khota hai, wo sikhata hai — ki jeena kya hai."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -692,6 +984,27 @@
             <!-- CHAPTER 3 -->
             <div class="chapter" data-chapter="3">
                 <h3><span class="emoji-big">🏠</span> Chapter 3: Badalta Ghar (2010–2012)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot has-image" id="photo-ch3-hi">
@@ -701,16 +1014,16 @@
                 </div>
 
                 <p>Din beeta jaa raha tha. Aur 2009 mein mummy ko bahut saari problems hui thi — dadi jee ki death ki wajah se.</p>
-
                 <p>Phir 2010. Mere liye kahun ya mere parivaar walo ke liye — accha raha hoga.</p>
-
-                <p>Us saal uncle ki shaadi thi. Ghar mein griha-pravesh tha. Aur bua jee ka ladka bhi hua tha us saal.</p>
-
+                <p>Us saal uncle ki shaadi thi. Ghar mein griha-pravesh tha. Aur <span class="footnote" data-note="Father's sister (aunt)">bua jee</span> ka ladka bhi hua tha us saal.</p>
                 <p>In sab ke baad 2011 bhi aisa hi raha hoga kuch. Naye ghar mein aane ke baad hota hai na — purane ghar wale logon ke paas jaana, puja wagera mein. Toh mujhe sab log road par se hi bula liya karte the.</p>
-
                 <p>Aur main chupke se un logon ko dekha karta tha.</p>
+                <p>Is saal mera <span class="footnote" data-note="Hindu ritual of first head-shaving">mundan</span> bhi hua tha — 4 May 2012 ko. Jisme main khush toh obviously nahi hi hounga. Kyuki mere pyaare baal chale gaye.</p>
 
-                <p>Is saal mera mundan bhi hua tha — 4 May 2012 ko. Jisme main khush toh obviously nahi hi hounga. Kyuki mere pyaare baal chale gaye.</p>
+                <div class="chapter-quote">
+                    "Ghar ek jagah nahi, ek yaad hai."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -721,6 +1034,27 @@
             <!-- CHAPTER 4 -->
             <div class="chapter" data-chapter="4">
                 <h3><span class="emoji-big">🎒</span> Chapter 4: School Ke Pehle Kadam (2013)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch4-hi">
@@ -730,14 +1064,15 @@
                 </div>
                 
                 <p>Mundan ke photos ko dekhkar aisa lagta hai ki main apne 'hair' se bahut pyaar karta honga. Aur abhi bhi karta hu.</p>
-
                 <p>Waise 2012 mein hi shayad mera pehla b'day manaya gaya tha — March 2012 mein. Jaisa mummy ne bataya, jab main perhaps 4 saal ka ho gaya tha.</p>
-
-                <p>Wo kehte hai na — naye baal aane se mind growth hota hai. Toh mere mundan ke baad main aanganwadi, jo ki aunty ka school tha, usme jaane lag gaya tha. Jisme main soya bean count karke khata tha.</p>
-
-                <p>Ghar pe hi rehte, 'jhoola' jhoolte — kab main Nursery ka syllabus kar le gaya, mujhe pata hi nahi.</p>
-
+                <p>Wo kehte hai na — naye baal aane se mind growth hota hai. Toh mere mundan ke baad main <span class="footnote" data-note="Government-run rural pre-school in India">aanganwadi</span>, jo ki aunty ka school tha, usme jaane lag gaya tha. Jisme main soya bean count karke khata tha.</p>
+                <p>Ghar pe hi rehte, '<span class="footnote" data-note="Swing">jhoola</span>' jhoolte — kab main Nursery ka syllabus kar le gaya, mujhe pata hi nahi.</p>
                 <p><em>"Jhula jhoolne ka shauk bachpan se hi."</em></p>
+
+                <div class="chapter-quote">
+                    "Pehla kadam sabse mushkil, par sabse zaroori."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -748,6 +1083,27 @@
             <!-- CHAPTER 5 -->
             <div class="chapter" data-chapter="5">
                 <h3><span class="emoji-big">🏚️</span> Chapter 5: Ghar Ka Batwara (2014–2016)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch5-hi">
@@ -756,17 +1112,19 @@
                     </div>
                 </div>
                 
-                <p>To jaisa maine kaha — meri dono behen GBGS school jaa rahi thi. Toh fees na kaafi kam (both together).</p>
-
-                <p>To, 2013 February — Saraswati Puja ke din mera admission direct L.K.G (Lower Kindergarten) class mein ho gaya. Kyuki mere nursery ka course maine jhula jhoolke hi kar liya tha.</p>
-
+                <p>To jaisa maine kaha — meri dono behen <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span> school jaa rahi thi. Toh fees na kaafi kam (both together).</p>
+                <p>To, 2013 February — <span class="footnote" data-note="Festival of Goddess Saraswati">Saraswati Puja</span> ke din mera admission direct <span class="footnote" data-note="Lower Kindergarten">L.K.G</span> (Lower Kindergarten) class mein ho gaya. Kyuki mere nursery ka course maine jhula jhoolke hi kar liya tha.</p>
                 <p><em>LKG.. Aarambh....</em><br>
                 Name - Suraj Anand<br>
                 School 1.0 : GAUTAM BUDDHA GLOBAL SCHOOL<br>
-                Sanskar Nagar Bandwar Begusarai<br>
+                Sanskar Nagar Bandwar <span class="footnote" data-note="A city in Bihar, India">Begusarai</span><br>
                 Motto :- "Tamaso Ma Jyotirgamaya"</p>
-
                 <p>To starting LKG mein bahut rota tha. Main apni behno ko bolta tha — lunch break mein mere se mil lene. Aur class ke end mein waha se gujarne.</p>
+
+                <div class="chapter-quote">
+                    "Rishton mein diwaar aa jaaye, toh pyaar phir bhi rehta hai."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -777,6 +1135,27 @@
             <!-- CHAPTER 6 -->
             <div class="chapter" data-chapter="6">
                 <h3><span class="emoji-big">📚</span> Chapter 6: Ek Anokha Kadam (2017)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch6-hi">
@@ -786,38 +1165,28 @@
                 </div>
                 
                 <p>Samay badhta gaya. Aur main bahut hi below avg student tha.</p>
-
                 <p>Top karta toh tha — but niche se. (Down se.)</p>
-
                 <p>Dost banne toh honge us time. But mujhe yaad nahi. Lekin jo bhi ho — bachpan badhiya raha mera.</p>
-
                 <p><em>Main:</em><br>
                 2014 - UKG<br>
                 2015 - 1st class</p>
-
-                <p>1st class mein 2015 mein tha. Tab mummy "Don Bosco Academy" mein padhane jaati thi. Subah se shaam lag jaate the.</p>
-
-                <p>Financial constraint ke karan main apni mummy ke saath 'Don Bosco Academy' (Cheria Bariyarpur, Begusarai) Branch mein jaane laga. Kyuki free tha mera waha.</p>
-
+                <p>1st class mein 2015 mein tha. Tab mummy "<span class="footnote" data-note="A Catholic school in India">Don Bosco Academy</span>" mein padhane jaati thi. Subah se shaam lag jaate the.</p>
+                <p>Financial constraint ke karan main apni mummy ke saath '<span class="footnote" data-note="A Catholic school in India">Don Bosco Academy</span>' (Cheria Bariyarpur, <span class="footnote" data-note="A city in Bihar, India">Begusarai</span>) Branch mein jaane laga. Kyuki free tha mera waha.</p>
                 <p>Main 3 month hi gaya waha. Kyuki safar mein bore ho jaati thi. Ghar toh aane jaane mein hi lag jaate the.</p>
-
                 <p>But in search of income (Ghar chalane ke liye), Mummy ne continue rakkha.</p>
-
                 <p>Us time hamare ghar mein dispute hue. Aur division ho gaya — land, saaman sab ka...</p>
-
                 <p>Though hamara ghar bahut bada hai. Aur pehle se hi 2 sided ghar thaa. Toh koi problem nahi hui.</p>
-
                 <p>Pehle main left side rehta tha. Fir main right side rehne laga.</p>
-
                 <p>But abhi bhi financial conditions bigadti jaa rahi thi.</p>
-
-                <p>2016 mein maine phir se, 3 month baad, phir se GBGS mein continue kiya.</p>
-
+                <p>2016 mein maine phir se, 3 month baad, phir se <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span> mein continue kiya.</p>
                 <p>2016 mein 1st Class ke term-2 exam maine nahi diya. Kyuki mera tabiyat bigad gaya tha. Aur main unhealthy tha.</p>
-
                 <p><em>'8 saal ka ladka'</em></p>
-
                 <p>Kaafi dost the us time: Abhilash, Ayush, Harsh Raj</p>
+
+                <div class="chapter-quote">
+                    "Zindagi jab mod deti hai, tab tum aage badhte ho."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -825,9 +1194,30 @@
                 </div>
             </div>
 
-            <!-- CHAPTER 7 — EK NAYI PEHCHAAN -->
+            <!-- CHAPTER 7 -->
             <div class="chapter" data-chapter="7">
                 <h3><span class="emoji-big">👦</span> Chapter 7: Ek Nayi Pehchaan (2017)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch7-hi">
@@ -837,20 +1227,18 @@
                 </div>
                 
                 <p>3rd Class mein mere 8 seniors mere dost banne lag gaye. Aur ab se 'Suraj Bhaiya' keh ke bulate hain mujhe.</p>
-
                 <p>To 3rd Class mein, jab main smooth way jaa raha tha — tab Nakib, Abhinav aage se jab junior ho gaye. Tab Rohit, Satyam bhi aage se jab ban gaye the...</p>
-
                 <p>Ladgayi hamare class mein. Random ladai.</p>
-
                 <p>To ladko ke koi value hi nahi thi class mein.</p>
-
                 <p>And, Teacher ne mujhe dant lagayi. Aur Shitanshu ne bhi. And rank kharab ho gayi. Aur Ganesh School chala gaya.</p>
-
                 <p>To 3rd Class se 4th Class (State Board) ke naam pe Chandan Sir ki wajah se, sab log badal gaye. Aur unhone state capitals ke naam yaad karwa diye the.</p>
-
                 <p>Yaad hai kuch kuch, toh yahi likh raha hoon. Due to lack of teachers in school.</p>
-
                 <p>Science us time padhati thi Veena Ma'am — living things wagerah ke baare mein. Hindi → Sadhana Ma'am. English → Ekta Miss. Sanskrit bhi → Sadhana Ma'am hi padha deti thi. 3rd Class smoothly gaya.</p>
+
+                <div class="chapter-quote">
+                    "Izzat chup chaap kamai jaati hai, bolke nahi milti."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -858,9 +1246,30 @@
                 </div>
             </div>
 
-            <!-- CHAPTER 8 — UTHNE KI CHAH -->
+            <!-- CHAPTER 8 -->
             <div class="chapter" data-chapter="8">
                 <h3><span class="emoji-big">📈</span> Chapter 8: Uthne Ki Chah (2018)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch8-hi">
@@ -870,9 +1279,7 @@
                 </div>
                 
                 <p>4th Class mein maine socha hoga — ki meri rank kyun aa rahe? Tab padhayi start ki — Chanchal Sir se.</p>
-
                 <p>Coaching lagwayi Mummy ne. Lekin mera rone ka superpower bahut accha tha. Jab bhi mujhe koi kaam karne ka mann nahi karta, toh main rone lagta tha.</p>
-
                 <p><strong>Teachers (2018):</strong><br>
                    Gautam Sir — English<br>
                    Sunil Sir — Math<br>
@@ -880,21 +1287,20 @@
                    Mohit Sir — English<br>
                    Bittu Sir — Computer<br>
                    Manish Sir — Processing</p>
-
                 <p>4th Class ka result aa gaya. Us time meri rank aayi 4th.</p>
-
                 <p>Maine 4th kiya tha. Aur literally mujhe bura laga us din.</p>
-
                 <p>Maine baith ke soch raha tha — ki agar 5th Class mein 1st kiya, toh 5th mein 1st rank aayegi.</p>
-
                 <p><strong>1st:</strong> Swati<br>
                    <strong>2nd:</strong> Sanjana<br>
                    <strong>3rd:</strong> Asmita<br>
                    <strong>4th:</strong> Suraj Anand (A.K.A Ravi Raj)</p>
-
                 <p>Maine socha — fir dusron ke peeche nahi karna hai. Khud ko itna aage karna hai, dusre peeche ho jaye.</p>
+                <p><span class="footnote" data-note="Festival of colors">Holi</span> wagerah mein maje aate the. Gaane ke liye playground mein jaate — to kone mein baith ke suna karte the. Lekin dost baithne nahi dete the...</p>
 
-                <p>Holi wagerah mein maje aate the. Gaane ke liye playground mein jaate — to kone mein baith ke suna karte the. Lekin dost baithne nahi dete the...</p>
+                <div class="chapter-quote">
+                    "Rank sirf number hai — uthne ki chah ki koi hadd nahi."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -905,6 +1311,27 @@
             <!-- CHAPTER 9 -->
             <div class="chapter" data-chapter="9">
                 <h3><span class="emoji-big">✨</span> Chapter 9: Sapna Sakar Hota Hai (2018–2019)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch9-hi">
@@ -913,35 +1340,26 @@
                     </div>
                 </div>
                 
-                <p>Meri Mummy ne 2018 mein hi GBGS join kar liya tha. Tab se wo is school mein Hindi padhaya karti thi.</p>
-
+                <p>Meri Mummy ne 2018 mein hi <span class="footnote" data-note="Gautam Buddha Global School, Begusarai — Kindergarten to Grade 5">GBGS</span> join kar liya tha. Tab se wo is school mein Hindi padhaya karti thi.</p>
                 <p>Samay beeta ja raha tha. Aur exams hote rahe...</p>
-
                 <p>Hamare school mein "Sakhi" acchi thi. Matlab current affairs wagerah sabke bahut the...</p>
-
                 <p>Wo school toh halaki 8th tak tha. Lekin usne 6th-7th tak hi bachhe padh paate the. Kyunki uske baad school chhod dete the — kyunki teachers nahi the.</p>
-
                 <p>To us hisaab se, hum log jo (5th mein) the — wo senior hue na. To hum 4 dost jaate the assembly karne.</p>
-
                 <p>Aur girls group + 4-5 aur girls karti thi assembly mein.</p>
-
                 <p>To commanding karne mein bhi hamari ladai ho jaati thi — "main karunga", "nahi main"... Bla Bla Bla.</p>
-
                 <p>Saare function mein bas pehli baar participate bhi 5th Class mein hi kiya maine...</p>
-
                 <p>Aur us time jo mera engineer banne ka sapna tha — mera wo sapna tha pura toh ho hi jayega.</p>
-
                 <p>Ye pehli baar tha jab maine 15 August 2018 ko dance mein participate kiya. Aur speech bhi diya.</p>
-
                 <p>Mere uncle (Director Sir) ne mujhe Pen gift kiya. Aur assembly mein har ek bachhon se poocha: "Bade hoke kya banoge?"</p>
-
                 <p>Kisi ne Doctor kaha. Toh kisi ne Police, Army, Astronaut, Scientist...</p>
-
                 <p>Par main — Suraj Anand (Ravi Raj) — yahan gaya aur kaha "Engineer" bola.</p>
-
                 <p>Toh Sir ne poocha: "Bridge wala ya Computer wala?"</p>
-
                 <p>To main chup reh gaya. Kyunki mujhe pata nahi tha ki engineer hone ke liye kya karna hota hai!</p>
+
+                <div class="chapter-quote">
+                    "Sapne chillate nahi — dheere se sakar hote hain."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -952,6 +1370,27 @@
             <!-- CHAPTER 10 -->
             <div class="chapter" data-chapter="10">
                 <h3><span class="emoji-big">🕯️</span> Chapter 10: Ek Shraddhanjali aur Alvida (2019)</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch10-hi">
@@ -960,39 +1399,28 @@
                     </div>
                 </div>
                 
-                <p>Mujhe bas engineer banna tha kyunki mere Mummy ji engineer the.</p>
-
-                <p>To khair, March 2019, mera 5th Class ka exam hua. Aam usse pehle hi 10 Feb 2019 (Saraswati Puja) ke din kuch khaas hua.</p>
-
+                <p>Mujhe bas engineer banna tha kyunki mere <span class="footnote" data-note="'Ji' is a suffix of respect — Smt. Rajani Kumari">Mummy ji</span> engineer the.</p>
+                <p>To khair, March 2019, mera 5th Class ka exam hua. Aam usse pehle hi 10 Feb 2019 (<span class="footnote" data-note="Festival of Goddess Saraswati">Saraswati Puja</span>) ke din kuch khaas hua.</p>
                 <p>Uske beech mein Nov 2018 mein hi EC Competition (Clean &amp; Green School) exam hua 14th ko (Don Bosco).</p>
-
                 <p>Tha toh pehli baar main ghar se school ke bachhon ke saath gaya — doston ke saath maza aaya.</p>
-
                 <p>Jab result aaya, toh pehli baar competition ka realisation hua. Mera cutoff (85/100) aaya tha.</p>
-
                 <p>Sirf 51 bachhe select hue. Aur highest marks 96 tha.</p>
-
                 <p>Shaam ko management ne hume logon ko bulaya aur award diya sabko. Certificate, medal, aur GK Award.</p>
-
                 <p>Khushi is baat ki hui ki pehli baar gift aur itna respect mila. Aur bura is baat ka laga ki competition L.K.G. ke toh kaise karunga compete.</p>
-
-                <p>Halaki, 14 Feb 2019 ko Pulwama attack bhi hua tha. Aur usi din prize distribution tha.</p>
-
-                <p>Toh tribute diya CRPF Indian Forces ko. Aur wapas karke aa gaya main.</p>
-
-                <p>Class 5th ke final exam ICSE pattern ke the. Result aana tha last week of March, jo ki 31/03/2019 ko tha.</p>
-
+                <p>Halaki, 14 Feb 2019 ko <span class="footnote" data-note="Feb 14, 2019 — Kashmir terror attack">Pulwama attack</span> bhi hua tha. Aur usi din prize distribution tha.</p>
+                <p>Toh tribute diya <span class="footnote" data-note="Central Reserve Police Force — India's largest paramilitary force">CRPF</span> Indian Forces ko. Aur wapas karke aa gaya main.</p>
+                <p>Class 5th ke final exam <span class="footnote" data-note="Indian Certificate of Secondary Education">ICSE</span> pattern ke the. Result aana tha last week of March, jo ki 31/03/2019 ko tha.</p>
                 <p>First day of the Class mein 85%+ second position Sushil ko tha. Jo mera competitor thi.</p>
-
                 <p>Mera mood change ho gaya tha. Aur main diligent (mehnati) bhi ban gaya.</p>
-
                 <p>Meri Mummy ne hamesha mere baare mein achha socha. Aur jab unko pata chala ki main 5th Class mein pass ho gaya, toh unki khushi ka koi thikana nahi tha.</p>
-
                 <p>Fir school shift kar chuka tha, toh sab se dosti ho gayi. 80% se zyada marks laane wale bacche bahut kam the.</p>
-
                 <p>Jab humare 8 mates ki group ki baat chali — toh sabne school chhod diya. Sab bichad gaye. Sab log apne aap ko sambhalne lage.</p>
-
                 <p>Jo hone tha, wo hone laga...</p>
+
+                <div class="chapter-quote">
+                    "Kuch alvidaayein naye shuruaat sikhati hain."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1000,9 +1428,30 @@
                 </div>
             </div>
 
-            <!-- CHAPTER 11 — EPILOGUE -->
+            <!-- CHAPTER 11 -->
             <div class="chapter" data-chapter="11">
                 <h3><span class="emoji-big">📖</span> Epilogue: Safar Jaari Hai...</h3>
+
+                <div class="audio-player" data-lang="hi">
+                    <div class="audio-player-header">
+                        <span class="audio-player-label">🔊 Is chapter ko sunein</span>
+                    </div>
+                    <div class="audio-player-controls">
+                        <button class="audio-btn audio-play-btn" onclick="toggleChapterAudio(this)">▶ Play</button>
+                        <button class="audio-btn audio-locked-btn" disabled title="Coming soon">🎤 Author's Voice 🔒</button>
+                    </div>
+                    <div class="audio-player-progress" style="display:none;">
+                        <div class="audio-progress-bar"><div class="audio-progress-fill"></div></div>
+                        <div class="audio-player-footer">
+                            <span class="audio-status">Sun rahe hain...</span>
+                            <div class="audio-speed-controls">
+                                <button class="audio-speed-btn active" data-speed="1">1x</button>
+                                <button class="audio-speed-btn" data-speed="1.25">1.25x</button>
+                                <button class="audio-speed-btn" data-speed="1.5">1.5x</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="chapter-photo-placeholder">
                     <div class="photo-slot" id="photo-ch11-hi">
@@ -1012,11 +1461,8 @@
                 </div>
                 
                 <p>Yahan meri kahani ka pehla hissa khatam hota hai — 5th Class ke end pe, 2019 mein.</p>
-
                 <p>Par yeh ant nahi hai. Yeh toh sirf shuruaat hai.</p>
-
                 <p>Safar jaari hai — 6th Class se aage. Naye dost, nayi mushkilein, naye sapne.</p>
-
                 <p>Kyunki ek ladka jisne kabhi socha hi nahi tha... abhi bhi ek lamba raasta tay karna hai.</p>
 
                 <div class="quote-box gold">
@@ -1024,6 +1470,11 @@
                     <span class="author">— Suraj Anand (Ravi Raj)</span>
                 </div>
                 <p class="phase-teaser"><em>Phase 2: Ek Ladka Jisne Sochna Shuru Kiya — jald aa raha hai.</em></p>
+
+                <div class="chapter-quote">
+                    "Safar jaari hai — kyunki kahaniyan kabhi khatam nahi hoti."
+                    <span class="author">— Ravi Raj</span>
+                </div>
                 
                 <div class="nav-buttons">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
@@ -1032,7 +1483,7 @@
             </div>
 
         </div>
-        <!-- END HINGLISH CHAPTERS -->
+        <!-- ═══════════ END HINGLISH CHAPTERS ═══════════ -->
 
 
         <!-- ===== CHAPTER PROGRESS INFO ===== -->
