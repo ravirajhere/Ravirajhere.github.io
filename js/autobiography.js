@@ -1,14 +1,30 @@
 /* ============================================================
-   AUTOBIOGRAPHY.JS — Full Logic
+   AUTOBIOGRAPHY.JS — Full Logic (11 Chapters - 6A/6B Support)
    Ravi Raj / Suraj Anand — "A Boy Who Never Thought"
+   Includes: Theme Toggle, Language Switch, Chapter Nav, Progress
    ============================================================ */
 
 /* ============================================================
    GLOBAL STATE
    ============================================================ */
 let currentLang = 'en';           // 'en' or 'hi'
-let currentChapter = 1;           // 1 to 10
-const TOTAL_CHAPTERS = 10;
+
+// Chapter IDs in order — 11 chapters (6A aur 6B alag hain)
+const CHAPTER_LIST = ['1', '2', '3', '4', '5', '6a', '6b', '7', '8', '9', '10'];
+const TOTAL_CHAPTERS = CHAPTER_LIST.length; // = 11
+
+let currentChapter = '1';         // chapter ID (string)
+
+/* ============================================================
+   HELPER — Chapter Index <-> ID
+   ============================================================ */
+function getChapterIndex(chapterId) {
+    return CHAPTER_LIST.indexOf(String(chapterId).toLowerCase());
+}
+
+function getChapterIdByIndex(index) {
+    return CHAPTER_LIST[index];
+}
 
 /* ============================================================
    1. TOAST NOTIFICATION
@@ -26,7 +42,79 @@ function showToast(message, duration = 2500) {
 window.showToast = showToast;
 
 /* ============================================================
-   2. LANGUAGE SWITCH (English ↔ Hinglish)
+   2. THEME TOGGLE (Dark / Light)
+   ============================================================ */
+function applyTheme(theme) {
+    // theme: 'light' or 'dark'
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+
+    // Update all theme labels (top-left + navbar)
+    const label = document.getElementById('themeLabel');
+    if (label) {
+        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+    }
+
+    // Save preference
+    try {
+        localStorage.setItem('autobioTheme', theme);
+    } catch (e) {}
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.contains('dark-mode');
+    const newTheme = isDark ? 'light' : 'dark';
+    applyTheme(newTheme);
+    showToast(newTheme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+}
+window.toggleTheme = toggleTheme;
+
+function initThemeToggle() {
+    // Restore saved theme, or fall back to system preference
+    let savedTheme = null;
+    try {
+        savedTheme = localStorage.getItem('autobioTheme');
+    } catch (e) {}
+
+    if (!savedTheme) {
+        // Detect system preference
+        const prefersDark = window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+        savedTheme = prefersDark ? 'dark' : 'light';
+    }
+
+    // Apply saved/system theme
+    applyTheme(savedTheme);
+
+    // Attach click handlers to BOTH switches (top-left + navbar)
+    const switch1 = document.getElementById('themeSwitch');
+    const switch2 = document.getElementById('themeSwitchNav');
+
+    [switch1, switch2].forEach((sw) => {
+        if (!sw) return;
+
+        // Click
+        sw.addEventListener('click', toggleTheme);
+
+        // Keyboard (Enter / Space) — accessibility
+        sw.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+    });
+
+    console.log('🎨 Theme initialised:', savedTheme);
+}
+
+/* ============================================================
+   3. LANGUAGE SWITCH (English ↔ Hinglish)
    ============================================================ */
 function switchLang(lang) {
     currentLang = lang;
@@ -49,7 +137,7 @@ function switchLang(lang) {
     if (activeBtn) activeBtn.classList.add('active');
 
     // Reset to chapter 1 of the selected language
-    goToChapter(lang, 1);
+    goToChapter(lang, '1');
 
     // Show toast
     showToast(lang === 'en' ? '🇬🇧 English Mode' : '🗣️ Hinglish Mode');
@@ -62,7 +150,7 @@ function switchLang(lang) {
 window.switchLang = switchLang;
 
 /* ============================================================
-   3. CHAPTER NAVIGATION
+   4. CHAPTER NAVIGATION
    ============================================================ */
 function getChaptersContainer(lang) {
     return document.getElementById(lang === 'en' ? 'chaptersEn' : 'chaptersHi');
@@ -74,17 +162,25 @@ function getChapterElements(lang) {
     return Array.from(container.querySelectorAll('.chapter'));
 }
 
-function goToChapter(lang, chapterNum) {
-    if (chapterNum < 1 || chapterNum > TOTAL_CHAPTERS) return;
+function goToChapter(lang, chapterId) {
+    // Convert to string and lowercase for safety
+    const targetId = String(chapterId).toLowerCase();
+
+    // Validate — chapter must exist in list
+    if (!CHAPTER_LIST.includes(targetId)) {
+        console.warn('⚠️ Invalid chapter:', chapterId);
+        return;
+    }
 
     currentLang = lang;
-    currentChapter = chapterNum;
+    currentChapter = targetId;
 
     const chapters = getChapterElements(lang);
 
-    // Hide all, show only the target
-    chapters.forEach((ch, idx) => {
-        if (idx === chapterNum - 1) {
+    // Hide all, show only the target (match by data-chapter attribute)
+    chapters.forEach((ch) => {
+        const chId = String(ch.dataset.chapter).toLowerCase();
+        if (chId === targetId) {
             ch.classList.add('active');
         } else {
             ch.classList.remove('active');
@@ -97,8 +193,10 @@ function goToChapter(lang, chapterNum) {
     // Update progress dots
     updateProgressDots();
 
-    // ✅ FIXED: Scroll to the active CHAPTER HEADING (not wrapper top)
-    const activeChapter = chapters[chapterNum - 1];
+    // Scroll to the active chapter
+    const activeChapter = chapters.find(
+        (ch) => String(ch.dataset.chapter).toLowerCase() === targetId
+    );
     if (activeChapter) {
         requestAnimationFrame(() => {
             const yOffset = -90; // navbar + breathing space
@@ -109,7 +207,7 @@ function goToChapter(lang, chapterNum) {
 
     // Save progress
     try {
-        localStorage.setItem('autobioChapter', chapterNum);
+        localStorage.setItem('autobioChapter', targetId);
         localStorage.setItem('autobioLang', lang);
     } catch (e) {}
 }
@@ -117,44 +215,52 @@ window.goToChapter = goToChapter;
 
 function nextChapter(lang) {
     const targetLang = lang || currentLang;
-    if (currentChapter < TOTAL_CHAPTERS) {
-        goToChapter(targetLang, currentChapter + 1);
+    const idx = getChapterIndex(currentChapter);
+    if (idx >= 0 && idx < TOTAL_CHAPTERS - 1) {
+        goToChapter(targetLang, CHAPTER_LIST[idx + 1]);
     }
 }
 window.nextChapter = nextChapter;
 
 function prevChapter(lang) {
     const targetLang = lang || currentLang;
-    if (currentChapter > 1) {
-        goToChapter(targetLang, currentChapter - 1);
+    const idx = getChapterIndex(currentChapter);
+    if (idx > 0) {
+        goToChapter(targetLang, CHAPTER_LIST[idx - 1]);
     }
 }
 window.prevChapter = prevChapter;
 
 /* ============================================================
-   4. PROGRESS INFO UPDATE
+   5. PROGRESS INFO UPDATE
    ============================================================ */
 function updateProgressInfo() {
     const numDisplay = document.getElementById('chapterNumDisplay');
     const percentDisplay = document.getElementById('chapterPercentDisplay');
 
+    const idx = getChapterIndex(currentChapter);
+    const humanNum = idx + 1; // 1-based
+
     if (numDisplay) {
-        numDisplay.textContent = `Chapter ${currentChapter} of ${TOTAL_CHAPTERS}`;
+        // 6A / 6B dikhane ke liye special label
+        let label = String(currentChapter).toUpperCase();
+        numDisplay.textContent = `Chapter ${label} of ${TOTAL_CHAPTERS}`;
     }
 
     if (percentDisplay) {
-        const percent = Math.round(((currentChapter - 1) / (TOTAL_CHAPTERS - 1)) * 100);
+        const percent = Math.round(((humanNum - 1) / (TOTAL_CHAPTERS - 1)) * 100);
         percentDisplay.textContent = `${percent}% complete`;
     }
 }
 
 /* ============================================================
-   5. PROGRESS DOTS UPDATE
+   6. PROGRESS DOTS UPDATE
    ============================================================ */
 function updateProgressDots() {
     const dots = document.querySelectorAll('#progressDots .dot');
-    dots.forEach((dot, idx) => {
-        if (idx === currentChapter - 1) {
+    dots.forEach((dot) => {
+        const dotId = String(dot.dataset.dot).toLowerCase();
+        if (dotId === currentChapter) {
             dot.classList.add('active');
         } else {
             dot.classList.remove('active');
@@ -163,19 +269,21 @@ function updateProgressDots() {
 }
 
 /* ============================================================
-   6. PROGRESS DOTS CLICK HANDLER
+   7. PROGRESS DOTS CLICK HANDLER
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     const dots = document.querySelectorAll('#progressDots .dot');
-    dots.forEach((dot, idx) => {
+    dots.forEach((dot) => {
+        dot.style.cursor = 'pointer';
         dot.addEventListener('click', () => {
-            goToChapter(currentLang, idx + 1);
+            const dotId = String(dot.dataset.dot).toLowerCase();
+            goToChapter(currentLang, dotId);
         });
     });
 });
 
 /* ============================================================
-   7. KEYBOARD NAVIGATION (Arrow keys)
+   8. KEYBOARD NAVIGATION (Arrow keys)
    ============================================================ */
 document.addEventListener('keydown', (e) => {
     // Ignore if typing in input/textarea
@@ -196,7 +304,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ============================================================
-   8. GOOGLE TRANSLATE OPENER
+   9. GOOGLE TRANSLATE OPENER
    ============================================================ */
 function openGoogleTranslate() {
     const url = `https://translate.google.com/?sl=auto&tl=en&op=translate`;
@@ -205,7 +313,7 @@ function openGoogleTranslate() {
 window.openGoogleTranslate = openGoogleTranslate;
 
 /* ============================================================
-   9. DOWNLOAD MODAL
+   10. DOWNLOAD MODAL
    ============================================================ */
 function openModal() {
     const modal = document.getElementById('downloadModal');
@@ -244,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ============================================================
-   10. DOWNLOAD EBOOK HANDLERS (placeholder — ebook.js handles actual)
+   11. DOWNLOAD EBOOK HANDLERS
    ============================================================ */
 function downloadEnglishEbook() {
     if (typeof window.downloadEbook === 'function') {
@@ -270,32 +378,40 @@ window.downloadHinglishEbook = downloadHinglishEbook;
    12. INITIALISE ON LOAD
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
-    // Theme
+    // 1. Theme toggle (dark/light)
     initThemeToggle();
 
-    // Restore language preference
+    // 2. Restore language + chapter preference
     let savedLang = 'en';
-    let savedChapter = 1;
+    let savedChapter = '1';
     try {
         savedLang = localStorage.getItem('autobioLang') || 'en';
-        savedChapter = parseInt(localStorage.getItem('autobioChapter')) || 1;
+        savedChapter = localStorage.getItem('autobioChapter') || '1';
     } catch (e) {}
 
     // Validate
     if (savedLang !== 'en' && savedLang !== 'hi') savedLang = 'en';
-    if (isNaN(savedChapter) || savedChapter < 1 || savedChapter > TOTAL_CHAPTERS) {
-        savedChapter = 1;
+    if (!CHAPTER_LIST.includes(String(savedChapter).toLowerCase())) {
+        savedChapter = '1';
     }
 
     // Apply
     switchLang(savedLang);
     goToChapter(savedLang, savedChapter);
 
-    console.log('✅ Autobiography.js loaded successfully — Chapter', savedChapter, 'in', savedLang);
+    console.log(
+        '✅ Autobiography.js loaded — Chapter',
+        savedChapter,
+        'in',
+        savedLang,
+        '| Total:',
+        TOTAL_CHAPTERS
+    );
 });
 
 /* ============================================================
-   13. EXPOSE GLOBALS FOR INLINE HANDLERS
+   13. EXPOSE GLOBALS
    ============================================================ */
 window.currentLang = currentLang;
 window.TOTAL_CHAPTERS = TOTAL_CHAPTERS;
+window.CHAPTER_LIST = CHAPTER_LIST;
