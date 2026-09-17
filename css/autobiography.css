@@ -1,56 +1,63 @@
 /* ============================================================
-   AUTOBIOGRAPHY.CSS — Full Stylesheet
+   AUTOBIOGRAPHY.CSS — Premium Book Edition
    Ravi Raj / Suraj Anand — "A Boy Who Never Thought"
-   Theme: Professional Slate · Light Default · Recruiter-friendly
+   Theme: Cream + Gold · Book Feel · Light Default
    ============================================================ */
 
 /* ============================================================
-   1. THEME VARIABLES
+   1. THEME VARIABLES — Premium Book Palette
    ============================================================ */
 :root {
-    /* Light theme (default) */
-    --bg: #ffffff;
-    --bg2: #f8fafc;
-    --bg3: #f1f5f9;
-    --text: #0f172a;
-    --text2: #334155;
-    --text3: #64748b;
-    --border: #e2e8f0;
-    --accent: #1e40af;
-    --accent2: #1e3a8a;
-    --accent3: #3b82f6;
-    --accent-soft: #eff6ff;
-    --shadow: rgba(15, 23, 42, 0.06);
-    --shadow2: rgba(15, 23, 42, 0.12);
-    --overlay: rgba(15, 23, 42, 0.5);
-    --nav-bg: rgba(255, 255, 255, 0.92);
-    --card-bg: #ffffff;
-    --code-bg: #f1f5f9;
-    --quote-gold-bg: #eff6ff;
-    --quote-purple-bg: #f5f3ff;
-    --transition: 0.25s ease;
+    /* Light theme (default) — Cream + Gold */
+    --bg: #faf7f0;
+    --bg2: #f5f0e3;
+    --bg3: #ede5d0;
+    --text: #1a1a1a;
+    --text2: #2b2b2b;
+    --text3: #7a6f5d;
+    --border: #e0d5b8;
+    --accent: #b8860b;           /* dark goldenrod */
+    --accent2: #8b6508;          /* darker gold */
+    --accent3: #daa520;          /* goldenrod */
+    --accent-soft: #f9f3e0;      /* soft cream */
+    --gold-light: #d4af37;
+    --gold-dark: #8b6508;
+    --paper: #fdfaf3;
+    --shadow: rgba(139, 101, 8, 0.08);
+    --shadow2: rgba(139, 101, 8, 0.18);
+    --overlay: rgba(26, 20, 5, 0.55);
+    --nav-bg: rgba(250, 247, 240, 0.92);
+    --card-bg: #fdfaf3;
+    --code-bg: #f5f0e3;
+    --quote-gold-bg: #f9f3e0;
+    --quote-purple-bg: #f5f0e3;
+    --transition: 0.28s ease;
 }
 
 [data-theme="dark"] {
-    --bg: #0f172a;
-    --bg2: #1e293b;
-    --bg3: #334155;
-    --text: #f1f5f9;
-    --text2: #cbd5e1;
-    --text3: #94a3b8;
-    --border: #334155;
-    --accent: #60a5fa;
-    --accent2: #93c5fd;
-    --accent3: #bfdbfe;
-    --accent-soft: rgba(96, 165, 250, 0.1);
-    --shadow: rgba(0, 0, 0, 0.3);
-    --shadow2: rgba(0, 0, 0, 0.5);
-    --overlay: rgba(0, 0, 0, 0.7);
-    --nav-bg: rgba(15, 23, 42, 0.92);
-    --card-bg: #1e293b;
-    --code-bg: #334155;
-    --quote-gold-bg: rgba(96, 165, 250, 0.1);
-    --quote-purple-bg: rgba(139, 92, 246, 0.1);
+    /* Dark theme — Dark Leather + Gold */
+    --bg: #14110b;
+    --bg2: #1c1812;
+    --bg3: #26221a;
+    --text: #f0e8d5;
+    --text2: #d8cfba;
+    --text3: #a89c80;
+    --border: #3a3222;
+    --accent: #d4af37;           /* gold */
+    --accent2: #e8c766;
+    --accent3: #f0d78c;
+    --accent-soft: rgba(212, 175, 55, 0.1);
+    --gold-light: #e8c766;
+    --gold-dark: #8b6508;
+    --paper: #1c1812;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --shadow2: rgba(0, 0, 0, 0.6);
+    --overlay: rgba(0, 0, 0, 0.75);
+    --nav-bg: rgba(20, 17, 11, 0.94);
+    --card-bg: #1c1812;
+    --code-bg: #26221a;
+    --quote-gold-bg: rgba(212, 175, 55, 0.08);
+    --quote-purple-bg: rgba(212, 175, 55, 0.06);
 }
 
 /* ============================================================
@@ -160,7 +167,7 @@ a:hover {
     left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: var(--text);
-    color: var(--bg);
+    color: var(--paper);
     padding: 12px 22px;
     border-radius: 8px;
     font-size: 13.5px;
@@ -271,12 +278,13 @@ a:hover {
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 12px;
-    border: 2px solid var(--border);
+    border: 2px solid var(--accent);
     box-shadow: 0 6px 18px var(--shadow);
 }
 
 .sp-name {
-    font-size: 20px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 21px;
     font-weight: 700;
     color: var(--text);
 }
@@ -366,13 +374,13 @@ a:hover {
 .sidebar-action-btn.primary {
     background: var(--accent);
     color: #fff;
-    box-shadow: 0 4px 14px rgba(30, 64, 175, 0.25);
+    box-shadow: 0 4px 14px rgba(184, 134, 11, 0.3);
 }
 
 .sidebar-action-btn.primary:hover {
     background: var(--accent2);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.35);
+    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
 }
 
 .sidebar-action-btn.secondary {
@@ -462,11 +470,12 @@ a:hover {
 }
 
 .nav-brand {
-    font-size: 18px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
     font-weight: 700;
     color: var(--text);
     line-height: 1.2;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
 }
 
 .nav-brand span {
@@ -565,7 +574,8 @@ a:hover {
 }
 
 .modal-content h2 {
-    font-size: 20px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
     font-weight: 700;
     margin-bottom: 6px;
     color: var(--text);
@@ -628,7 +638,7 @@ a:hover {
 
 .modal-btn:hover {
     background: var(--accent2);
-    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.35);
 }
 
 /* ============================================================
@@ -667,18 +677,18 @@ a:hover {
 .ornament {
     text-align: center;
     color: var(--accent);
-    font-size: 12px;
-    letter-spacing: 8px;
+    font-size: 14px;
+    letter-spacing: 10px;
     margin: 32px 0;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
 /* ============================================================
-   10. HERO HEADER
+   10. HERO HEADER — Book Title Page
    ============================================================ */
 .autobio-header {
     text-align: center;
-    padding: 20px 0 30px;
+    padding: 20px 0 40px;
 }
 
 .profile-photo {
@@ -697,12 +707,13 @@ a:hover {
 }
 
 .autobio-header h1 {
-    font-size: clamp(26px, 5vw, 38px);
-    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 5.5vw, 44px);
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     line-height: 1.2;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
 }
 
 .autobio-header h1 span {
@@ -710,24 +721,29 @@ a:hover {
 }
 
 .intro-line {
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
     font-size: clamp(15px, 2.5vw, 18px);
     color: var(--text2);
     margin-bottom: 8px;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .sub-line {
-    font-size: 13.5px;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
     color: var(--accent);
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.5px;
     margin-bottom: 6px;
 }
 
 .bio-line {
-    font-size: 12.5px;
+    font-size: 12px;
     color: var(--text3);
-    letter-spacing: 0.4px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-top: 8px;
 }
 
 /* ============================================================
@@ -758,18 +774,19 @@ a:hover {
 
 .stat-number {
     display: block;
-    font-size: 22px;
-    font-weight: 800;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    font-weight: 700;
     color: var(--accent);
     line-height: 1.1;
     margin-bottom: 4px;
 }
 
 .stat-label {
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text3);
     font-weight: 600;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
 }
 
@@ -807,7 +824,7 @@ a:hover {
     background: var(--accent);
     color: #fff;
     border-color: var(--accent);
-    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
 }
 
 .translate-btn {
@@ -840,27 +857,43 @@ a:hover {
 .download-btn.primary {
     background: var(--accent);
     color: #fff;
-    box-shadow: 0 6px 18px rgba(30, 64, 175, 0.25);
+    box-shadow: 0 6px 18px rgba(184, 134, 11, 0.3);
 }
 
 .download-btn.primary:hover {
     background: var(--accent2);
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(30, 64, 175, 0.35);
+    box-shadow: 0 10px 26px rgba(184, 134, 11, 0.4);
 }
 
 /* ============================================================
-   14. CHAPTERS
+   14. CHAPTERS — ⭐ PREMIUM BOOK STYLE ⭐
    ============================================================ */
 .chapter {
     display: none;
-    background: var(--card-bg);
+    background: var(--paper);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px 28px 26px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 10px var(--shadow);
-    animation: fadeInUp 0.4s ease;
+    border-radius: 6px;
+    padding: 48px 44px 40px;
+    margin-bottom: 32px;
+    box-shadow: 
+        0 2px 12px var(--shadow),
+        0 0 0 1px rgba(184, 134, 11, 0.05) inset;
+    animation: fadeInUp 0.5s ease;
+    position: relative;
+}
+
+/* Gold top accent line */
+.chapter::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 0 0 3px 3px;
 }
 
 .chapter.active {
@@ -878,31 +911,85 @@ a:hover {
     }
 }
 
+/* ⭐ Chapter Heading — Book Style ⭐ */
 .chapter h3 {
-    font-size: clamp(19px, 3.2vw, 24px);
+    font-family: 'Playfair Display', Georgia, serif;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    margin: 0 0 40px;
+    padding: 0;
+    border: none;
+    text-align: center;
+    display: block;
     line-height: 1.3;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
 }
 
-.emoji-big {
-    font-size: 26px;
-    line-height: 1;
-    flex-shrink: 0;
-}
-
-.chapter p {
-    font-size: 15px;
-    color: var(--text2);
-    line-height: 1.85;
+/* "CHAPTER ONE" label */
+.chapter-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 6px;
+    text-transform: uppercase;
     margin-bottom: 14px;
+}
+
+/* "The Beginning" title */
+.chapter-title {
+    display: block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 4.5vw, 36px);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    margin-bottom: 10px;
+}
+
+/* "2008" year */
+.chapter-year {
+    display: block;
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 4px;
+    margin-top: 8px;
+}
+
+/* Emoji in title */
+.chapter h3 .emoji-big {
+    display: block;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+/* ⭐ Chapter Body — Book Serif ⭐ */
+.chapter p {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16.5px;
+    color: var(--text2);
+    line-height: 1.95;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* First paragraph — drop-cap effect */
+.chapter p:first-of-type::first-letter {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 3.6em;
+    font-weight: 700;
+    color: var(--accent);
+    float: left;
+    line-height: 0.85;
+    margin: 6px 12px 0 0;
+    padding: 0;
 }
 
 .chapter p strong {
@@ -927,7 +1014,7 @@ a:hover {
 
 /* ---- Chapter Photo Placeholder ---- */
 .chapter-photo-placeholder {
-    margin: 0 0 24px;
+    margin: 0 0 32px;
     display: flex;
     justify-content: center;
 }
@@ -937,7 +1024,7 @@ a:hover {
     max-width: 380px;
     aspect-ratio: 4 / 3;
     border: 2px dashed var(--border);
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -960,12 +1047,13 @@ a:hover {
     border-color: var(--border);
     background: transparent;
     aspect-ratio: auto;
+    box-shadow: 0 6px 20px var(--shadow);
 }
 
 .photo-slot.has-image img {
     width: 100%;
     height: auto;
-    border-radius: 10px;
+    border-radius: 6px;
     display: block;
 }
 
@@ -976,82 +1064,98 @@ a:hover {
 }
 
 .fig-caption {
-    font-size: 12px;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 12.5px;
     color: var(--text3);
     font-style: italic;
     text-align: center;
-    padding: 8px 12px 0;
+    padding: 10px 12px 0;
     letter-spacing: 0.3px;
 }
 
 .photo-slot.has-image .fig-caption {
     display: block;
-    padding: 10px 12px 12px;
+    padding: 12px 14px 14px;
 }
 
 /* ---- Quote Box ---- */
 .quote-box {
-    padding: 20px 22px;
-    border-radius: 12px;
-    margin: 20px 0;
-    font-size: 16px;
+    font-family: 'Playfair Display', Georgia, serif;
+    padding: 26px 28px;
+    border-radius: 8px;
+    margin: 28px 0;
+    font-size: 18px;
     line-height: 1.65;
     text-align: center;
     position: relative;
-    border-left: 4px solid;
+    border-left: 4px solid var(--accent);
     font-style: italic;
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
+.quote-box::before {
+    content: """;
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    color: var(--accent);
+    opacity: 0.35;
+    line-height: 1;
 }
 
 .quote-box.gold {
     background: var(--accent-soft);
     border-left-color: var(--accent);
-    color: var(--text);
 }
 
 .quote-box.purple {
     background: var(--quote-purple-bg);
-    border-left-color: #8b5cf6;
-    color: var(--text);
+    border-left-color: var(--accent);
 }
 
 .quote-box .author {
     display: block;
-    margin-top: 10px;
-    font-size: 13px;
+    margin-top: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
     font-style: normal;
     font-weight: 600;
     color: var(--text3);
-    letter-spacing: 0.4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* ---- Friend Memory PDF box ---- */
 .friend-memory-pdf {
     background: var(--bg3);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 22px;
-    margin: 20px 0;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin: 24px 0;
     position: relative;
 }
 
 .pdf-label {
     display: inline-block;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     color: var(--accent);
-    background: var(--card-bg);
+    background: var(--paper);
     padding: 4px 10px;
     border-radius: 6px;
     border: 1px solid var(--border);
     margin-bottom: 14px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
 }
 
 .friend-memory-pdf p {
-    font-size: 14.5px;
+    font-size: 15px;
     color: var(--text2);
-    line-height: 1.8;
+    line-height: 1.85;
     margin-bottom: 10px;
 }
 
@@ -1064,22 +1168,22 @@ a:hover {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 28px;
-    padding-top: 20px;
+    margin-top: 40px;
+    padding-top: 24px;
     border-top: 1px solid var(--border);
 }
 
 .nav-btn {
-    padding: 10px 22px;
-    border-radius: 8px;
+    padding: 11px 24px;
+    border-radius: 6px;
     border: 1.5px solid var(--border);
-    background: var(--card-bg);
+    background: var(--paper);
     color: var(--text2);
+    font-family: 'Inter', sans-serif;
     font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition);
-    font-family: inherit;
 }
 
 .nav-btn:hover:not(:disabled) {
@@ -1087,11 +1191,11 @@ a:hover {
     color: #fff;
     border-color: var(--accent);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.25);
+    box-shadow: 0 6px 16px rgba(184, 134, 11, 0.35);
 }
 
 .nav-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: not-allowed;
 }
 
@@ -1108,7 +1212,7 @@ a:hover {
 .panel-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 10px;
     padding: 22px 20px;
     transition: all var(--transition);
     box-shadow: 0 1px 3px var(--shadow);
@@ -1129,7 +1233,8 @@ a:hover {
 }
 
 .panel-card h4 {
-    font-size: 16px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px;
     font-weight: 700;
     color: var(--text);
     margin-bottom: 12px;
@@ -1137,9 +1242,10 @@ a:hover {
 }
 
 .panel-card blockquote {
-    font-size: 14.5px;
+    font-family: 'Lora', Georgia, serif;
+    font-size: 15px;
     color: var(--text2);
-    line-height: 1.6;
+    line-height: 1.65;
     padding-left: 14px;
     border-left: 3px solid var(--accent);
     margin-bottom: 8px;
@@ -1248,13 +1354,14 @@ a:hover {
 
 /* ---- Motto Text ---- */
 .motto-text {
-    font-size: 15px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 16px;
     color: var(--accent);
     text-align: center;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.6;
     padding: 8px 0;
-    font-style: italic;
 }
 
 /* ============================================================
@@ -1328,26 +1435,21 @@ a:hover {
     }
 
     .chapter {
-        padding: 24px 20px 20px;
-        border-radius: 14px;
+        padding: 36px 26px 30px;
+        border-radius: 6px;
     }
 
-    .chapter h3 {
-        font-size: 19px;
-        gap: 10px;
-    }
-
-    .emoji-big {
-        font-size: 22px;
+    .chapter-title {
+        font-size: 28px;
     }
 
     .chapter p {
-        font-size: 14.5px;
+        font-size: 16px;
     }
 
     .quote-box {
-        font-size: 15px;
-        padding: 16px 18px;
+        font-size: 16px;
+        padding: 22px 24px;
     }
 
     .extra-panels {
@@ -1366,7 +1468,7 @@ a:hover {
     }
 
     .nav-brand {
-        font-size: 16px;
+        font-size: 17px;
     }
 
     .hamburger {
@@ -1395,19 +1497,19 @@ a:hover {
     }
 
     .autobio-header h1 {
-        font-size: 24px;
+        font-size: 26px;
     }
 
     .intro-line {
-        font-size: 14.5px;
+        font-size: 15px;
     }
 
     .sub-line {
-        font-size: 12px;
+        font-size: 12.5px;
     }
 
     .bio-line {
-        font-size: 11.5px;
+        font-size: 10.5px;
     }
 
     .stats-grid {
@@ -1425,7 +1527,7 @@ a:hover {
     }
 
     .stat-label {
-        font-size: 10px;
+        font-size: 9.5px;
     }
 
     .lang-controls {
@@ -1443,55 +1545,81 @@ a:hover {
     }
 
     .chapter {
-        padding: 20px 16px 16px;
-        border-radius: 12px;
+        padding: 30px 20px 26px;
+        border-radius: 6px;
+        margin-bottom: 24px;
+    }
+
+    .chapter-label {
+        font-size: 10.5px;
+        letter-spacing: 4px;
+        margin-bottom: 10px;
+    }
+
+    .chapter-title {
+        font-size: 22px;
+        margin-bottom: 8px;
+    }
+
+    .chapter-year {
+        font-size: 13px;
+        letter-spacing: 3px;
+    }
+
+    .chapter h3 .emoji-big {
+        font-size: 26px;
+        margin-bottom: 10px;
     }
 
     .chapter h3 {
-        font-size: 17px;
-        padding-bottom: 12px;
-        margin-bottom: 16px;
-        gap: 8px;
-    }
-
-    .emoji-big {
-        font-size: 20px;
+        margin-bottom: 28px;
     }
 
     .chapter p {
-        font-size: 14px;
-        line-height: 1.8;
-        margin-bottom: 12px;
+        font-size: 15.5px;
+        line-height: 1.85;
+        margin-bottom: 16px;
+    }
+
+    .chapter p:first-of-type::first-letter {
+        font-size: 3em;
+        margin: 4px 10px 0 0;
     }
 
     .photo-slot {
         max-width: 100%;
-        border-radius: 10px;
+        border-radius: 6px;
     }
 
     .quote-box {
-        font-size: 14px;
-        padding: 14px 16px;
-        border-radius: 10px;
+        font-size: 15px;
+        padding: 20px 20px;
+        border-radius: 6px;
+        margin: 22px 0;
+    }
+
+    .quote-box::before {
+        font-size: 44px;
+        left: 12px;
     }
 
     .quote-box .author {
-        font-size: 11.5px;
+        font-size: 11px;
     }
 
     .friend-memory-pdf {
-        padding: 16px 14px;
-        border-radius: 10px;
+        padding: 18px 16px;
+        border-radius: 6px;
     }
 
     .friend-memory-pdf p {
-        font-size: 13.5px;
+        font-size: 14.5px;
     }
 
     .nav-buttons {
         gap: 10px;
-        margin-top: 22px;
-        padding-top: 16px;
+        margin-top: 30px;
+        padding-top: 20px;
     }
 
     .nav-btn {
@@ -1503,7 +1631,7 @@ a:hover {
 
     .panel-card {
         padding: 18px 16px;
-        border-radius: 12px;
+        border-radius: 10px;
     }
 
     .panel-icon {
@@ -1511,7 +1639,7 @@ a:hover {
     }
 
     .panel-card h4 {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .panel-card p,
@@ -1520,7 +1648,7 @@ a:hover {
     }
 
     .panel-card blockquote {
-        font-size: 13.5px;
+        font-size: 14px;
     }
 
     .chapter-progress-info {
@@ -1533,7 +1661,7 @@ a:hover {
     }
 
     .ornament {
-        font-size: 11px;
+        font-size: 12px;
         letter-spacing: 6px;
         margin: 24px 0;
     }
@@ -1544,7 +1672,7 @@ a:hover {
     }
 
     .modal-content h2 {
-        font-size: 18px;
+        font-size: 19px;
     }
 
     .modal-option {
@@ -1598,12 +1726,13 @@ a:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: var(--accent);
     border-radius: 10px;
+    opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--text3);
+    background: var(--accent2);
 }
 
 /* ============================================================
@@ -1657,6 +1786,11 @@ a:focus-visible,
         border: none;
         page-break-inside: avoid;
         padding: 0 0 20px;
+        background: #fff;
+    }
+
+    .chapter p:first-of-type::first-letter {
+        color: #000;
     }
 
     body {
