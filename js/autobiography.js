@@ -26,19 +26,18 @@
        ⭐ VOICE JOURNEY CONFIG — Age-based pitch/rate per chapter
        ============================================================ */
     const VOICE_CONFIG = {
-        '1':  { pitch: 1.55, rate: 0.86 },   // Newborn (2008) — high pitch, slow
-        '2':  { pitch: 1.50, rate: 0.88 },   // 1 year (2009)
-        '3':  { pitch: 1.45, rate: 0.90 },   // 3-4 years (2010-12)
-        '4':  { pitch: 1.40, rate: 0.92 },   // 5 years (2013)
-        '5':  { pitch: 1.30, rate: 0.95 },   // 7-8 years (2014-16)
-        '6':  { pitch: 1.20, rate: 0.98 },   // 9 years (2017)
-        '7':  { pitch: 1.15, rate: 1.00 },   // 9 years (2017)
-        '8':  { pitch: 1.08, rate: 1.02 },   // 10 years (2018)
-        '9':  { pitch: 1.00, rate: 1.05 },   // 10-11 years (2018-19)
-        '10': { pitch: 0.95, rate: 1.08 },   // 11 years (2019)
-        '11': { pitch: 0.90, rate: 1.10 }    // Present (Epilogue) — mature, thoughtful
-    };
-
+    '1':  { pitch: 1.15, rate: 0.92 },
+    '2':  { pitch: 1.13, rate: 0.94 },
+    '3':  { pitch: 1.11, rate: 0.95 },
+    '4':  { pitch: 1.09, rate: 0.96 },
+    '5':  { pitch: 1.06, rate: 0.98 },
+    '6':  { pitch: 1.04, rate: 0.99 },
+    '7':  { pitch: 1.02, rate: 1.00 },
+    '8':  { pitch: 1.00, rate: 1.02 },
+    '9':  { pitch: 0.98, rate: 1.04 },
+    '10': { pitch: 0.96, rate: 1.06 },
+    '11': { pitch: 0.94, rate: 1.08 }
+};
     /* ============================================================
        2. DOM HELPERS
        ============================================================ */
