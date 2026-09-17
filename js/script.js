@@ -2,14 +2,14 @@
 // SCRIPT.JS — Ravi Raj Portfolio
 // Handles: Loader · Theme · Sidebar · Cursor · Interests
 //          Stats · Typing · Active-link · Toast · Time · Top
-//          Thoughts · Blog Archive · Raw Diary Entries
+//          Thoughts · Blog Archive · Raw Diary · Greeting
 // ============================================================
 
 (function () {
     'use strict';
 
     // ============================================================
-    // 0. HELPER — Safe querySelector
+    // 0. HELPERS
     // ============================================================
     const $  = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
@@ -27,11 +27,12 @@
         } else {
             window.addEventListener('load', hideLoader);
         }
-        setTimeout(() => loader.classList.add('hidden'), 3000);
+        // Fallback: force hide after 1.2s (recruiter-friendly, fast)
+        setTimeout(() => loader.classList.add('hidden'), 1200);
     }
 
     // ============================================================
-    // 2. THEME TOGGLE (Dark default → [data-theme] on <html>)
+    // 2. THEME TOGGLE (Light default → [data-theme] on <html>)
     // ============================================================
     const root = document.documentElement;
     const THEME_KEY = 'raviraj-theme';
@@ -40,10 +41,11 @@
     const savedTheme = (() => {
         try { return localStorage.getItem(THEME_KEY); } catch { return null; }
     })();
+
     if (savedTheme === 'light' || savedTheme === 'dark') {
         root.setAttribute('data-theme', savedTheme);
     } else {
-        root.setAttribute('data-theme', 'dark');
+        root.setAttribute('data-theme', 'light');   // ← Default = LIGHT
     }
 
     function setTheme(theme) {
@@ -52,8 +54,8 @@
     }
 
     function toggleTheme() {
-        const current = root.getAttribute('data-theme') || 'dark';
-        setTheme(current === 'dark' ? 'light' : 'dark');
+        const current = root.getAttribute('data-theme') || 'light';
+        setTheme(current === 'light' ? 'dark' : 'light');
     }
 
     if (themeSwitch) {
@@ -287,34 +289,12 @@
     }
 
     // ============================================================
-    // 13. CUSTOM CURSOR — Smooth follow + hover state
+    // 13. CUSTOM CURSOR — Disabled in formal theme
+    //     (CSS has #custom-cursor { display: none !important; })
+    //     JS still runs safely, no errors.
     // ============================================================
     const cursor = $('#custom-cursor');
-    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-    if (cursor && canHover) {
-        let mouseX = 0, mouseY = 0;
-        let curX = 0, curY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        (function animate() {
-            curX += (mouseX - curX) * 0.22;
-            curY += (mouseY - curY) * 0.22;
-            cursor.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
-            requestAnimationFrame(animate);
-        })();
-
-        // Hover state on interactive elements (includes raw-toggle & archive button)
-        const hoverTargets = 'a, button, .interest-card, .milestone-card, .switch, .project-card, .thought-card, .thought-featured, .raw-toggle, .archive-toggle-btn';
-        $$(hoverTargets).forEach((el) => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-        });
-    } else if (cursor) {
+    if (cursor) {
         cursor.style.display = 'none';
     }
 
@@ -386,8 +366,6 @@
 
     // ============================================================
     // 18. MY THOUGHTS — Expandable blog cards
-    //     Click anywhere on card to toggle. Accordion behavior.
-    //     Closing a card also closes any open raw-content inside it.
     // ============================================================
     window.toggleThought = function (id) {
         const content = document.getElementById(id);
@@ -398,25 +376,20 @@
 
         const isOpen = card.classList.contains('expanded');
 
-        // Close all other expanded cards first (accordion)
         $$('.thought-featured.expanded, .thought-card.expanded').forEach((other) => {
             if (other === card) return;
             other.classList.remove('expanded');
 
-            // Update toggle text of the other card
             const otherToggle = $('.thought-toggle', other);
             if (otherToggle && otherToggle.firstChild) {
                 otherToggle.firstChild.nodeValue = 'Read Full Thought ';
             }
 
-            // Close any open raw-content inside the other card
             closeRawInCard(other);
         });
 
-        // Toggle current card
         card.classList.toggle('expanded', !isOpen);
 
-        // Update toggle text (only the leading text node, keep the icon)
         const toggle = $('.thought-toggle', card);
         if (toggle && toggle.firstChild) {
             toggle.firstChild.nodeValue = isOpen
@@ -424,12 +397,10 @@
                 : 'Close Thought ';
         }
 
-        // If closing this card, also close raw-content inside it
         if (isOpen) {
             closeRawInCard(card);
         }
 
-        // Smooth-scroll to card if it just opened
         if (!isOpen) {
             setTimeout(() => {
                 const top = card.getBoundingClientRect().top + window.scrollY - 90;
@@ -448,17 +419,14 @@
 
         const isOpen = archive.classList.contains('open');
 
-        // Toggle
         archive.classList.toggle('open', !isOpen);
         btn.classList.toggle('active', !isOpen);
 
-        // Update button text
         const btnText = $('.archive-btn-text', btn);
         if (btnText) {
             btnText.textContent = isOpen ? 'View Blog Archive' : 'Hide Blog Archive';
         }
 
-        // If collapsing, close any open raw-content inside archive
         if (isOpen) {
             archive.querySelectorAll('.raw-content.open').forEach((raw) => {
                 raw.classList.remove('open');
@@ -470,7 +438,6 @@
             });
         }
 
-        // Smooth scroll to archive button if just opened
         if (!isOpen) {
             setTimeout(() => {
                 const top = btn.getBoundingClientRect().top + window.scrollY - 100;
@@ -481,8 +448,6 @@
 
     // ============================================================
     // 20. RAW DIARY — Toggle original diary entry
-    //     Opens inside an already-expanded thought card.
-    //     Uses stopPropagation on the button to prevent card collapse.
     // ============================================================
     window.toggleRaw = function (id) {
         const raw = document.getElementById(id);
@@ -493,7 +458,6 @@
 
         const isOpen = raw.classList.contains('open');
 
-        // Close any other open raw-content on the page
         $$('.raw-content.open').forEach((other) => {
             if (other === raw) return;
             other.classList.remove('open');
@@ -504,14 +468,12 @@
             }
         });
 
-        // Toggle current
         raw.classList.toggle('open', !isOpen);
         btn.classList.toggle('active', !isOpen);
         btn.innerHTML = isOpen
             ? '📓 Read Original Diary Entry'
             : '✕ Hide Original Entry';
 
-        // Small smooth scroll to raw content
         if (!isOpen) {
             setTimeout(() => {
                 const top = raw.getBoundingClientRect().top + window.scrollY - 120;
@@ -520,102 +482,95 @@
         }
     };
 
-    /* ============================================================
-   OPTIONAL PERSONALIZED GREETING (Soft Version)
-   ============================================================ */
-(function initGreeting() {
-    'use strict';
+    // ============================================================
+    // 21. OPTIONAL PERSONALIZED GREETING (Sidebar Version)
+    // ============================================================
+    (function initGreeting() {
+        const heroTitle = document.getElementById('heroTitle');
+        const greetingBox = document.getElementById('greetingBox');
+        const input = document.getElementById('userNameInput');
 
-    const heroTitle = document.getElementById('heroTitle');
-    const greetingBox = document.getElementById('greetingBox');
-    const input = document.getElementById('userNameInput');
+        if (!heroTitle || !greetingBox || !input) return;
 
-    if (!heroTitle || !greetingBox || !input) return;
+        const savedName = localStorage.getItem('visitorName');
+        const skipped = localStorage.getItem('greetingSkipped');
 
-    // Check saved name
-    const savedName = localStorage.getItem('visitorName');
-    const skipped = localStorage.getItem('greetingSkipped');
-
-    if (savedName) {
-        applyPersonalizedGreeting(savedName, false);
-        greetingBox.classList.add('hidden');
-        return;
-    }
-
-    if (skipped) {
-        greetingBox.classList.add('hidden');
-        return;
-    }
-
-    // Greet user
-    window.greetUser = function () {
-        const rawName = input.value.trim();
-
-        if (!rawName) {
-            input.focus();
-            input.style.animation = 'shake 0.4s';
-            setTimeout(() => { input.style.animation = ''; }, 400);
+        if (savedName) {
+            applyPersonalizedGreeting(savedName, false);
+            greetingBox.classList.add('hidden');
             return;
         }
 
-        const cleanName = rawName.replace(/[<>]/g, '').slice(0, 30);
-        localStorage.setItem('visitorName', cleanName);
-        applyPersonalizedGreeting(cleanName, true);
-        greetingBox.classList.add('hidden');
-    };
-
-    // Apply name to hero title
-    function applyPersonalizedGreeting(name, animate) {
-        heroTitle.innerHTML =
-            `Hey <span class="user-name-highlight">${escapeHTML(name)}</span>, ` +
-            `I'm <span>Ravi Raj</span> 👋`;
-
-        if (animate) {
-            heroTitle.classList.add('personalized');
-            setTimeout(() => heroTitle.classList.remove('personalized'), 700);
+        if (skipped) {
+            greetingBox.classList.add('hidden');
+            return;
         }
-    }
 
-    // Escape HTML (safety)
-    function escapeHTML(str) {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
+        window.greetUser = function () {
+            const rawName = input.value.trim();
 
-    // Enter key support
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            window.greetUser();
+            if (!rawName) {
+                input.focus();
+                input.style.animation = 'shake 0.4s';
+                setTimeout(() => { input.style.animation = ''; }, 400);
+                return;
+            }
+
+            const cleanName = rawName.replace(/[<>]/g, '').slice(0, 30);
+            localStorage.setItem('visitorName', cleanName);
+            applyPersonalizedGreeting(cleanName, true);
+            greetingBox.classList.add('hidden');
+        };
+
+        function applyPersonalizedGreeting(name, animate) {
+            heroTitle.innerHTML =
+                `Hey <span class="user-name-highlight">${escapeHTML(name)}</span>, ` +
+                `I'm <span>Ravi Raj</span> 👋`;
+
+            if (animate) {
+                heroTitle.classList.add('personalized');
+                setTimeout(() => heroTitle.classList.remove('personalized'), 500);
+            }
         }
-    });
 
-})();
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
-/* Shake animation for empty input */
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-6px); }
-        50% { transform: translateX(6px); }
-        75% { transform: translateX(-4px); }
-    }
-`;
-document.head.appendChild(shakeStyle);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                window.greetUser();
+            }
+        });
+
+    })();
+
+    // Shake animation (injected once)
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+    `;
+    document.head.appendChild(shakeStyle);
 
     // ============================================================
-    // 21. EASTER EGG — Console Welcome
+    // 22. EASTER EGG — Console Welcome (Navy theme colors)
     // ============================================================
-    const gold = 'color:#d4a373;font-weight:600;';
-    const cream = 'color:#f5ede4;';
-    console.log('%c 👋 Hey there, fellow developer!', `font-size:18px;font-weight:700;${gold}`);
-    console.log('%c Thanks for peeking under the hood. Built with ❤️ by Ravi Raj', `font-size:13px;${cream}`);
-    console.log('%c 📖 https://github.com/ravirajhere', `font-size:13px;${gold}`);
-    console.log('%c ✅ Portfolio loaded successfully.', `font-size:12px;${cream}`);
+    const navy = 'color:#1e40af;font-weight:600;';
+    const slate = 'color:#334155;';
+    console.log('%c 👋 Hey there, fellow developer!', `font-size:18px;font-weight:700;${navy}`);
+    console.log('%c Thanks for peeking under the hood. Built with ❤️ by Ravi Raj', `font-size:13px;${slate}`);
+    console.log('%c 📖 https://github.com/ravirajhere', `font-size:13px;${navy}`);
+    console.log('%c ✅ Portfolio loaded successfully.', `font-size:12px;${slate}`);
 
 })();
