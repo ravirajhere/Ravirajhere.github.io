@@ -1,8 +1,12 @@
 /* ============================================================
-   autobiography.js
+   autobiography.js  —  v2 (Conflict-Free with ebook.js)
    My Autobiography — Ravi Raj
-   Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
-            Reader Wizard, Webcam, Footnotes, Audio Narration
+   Handles: Theme, Sidebar, Language, Chapters, Reader Wizard,
+            Webcam, Footnotes, Audio Narration, Progress Bar,
+            TOC, Back-to-Top, Font Controls, Reading Time
+   NOTE: Does NOT override ebook.js globals
+         (closeModal, showToast, downloadEnglishEbook,
+          downloadHinglishEbook, cancelEbookGeneration)
    ============================================================ */
 
 (function () {
@@ -12,13 +16,13 @@
        1. CONFIG & STATE
        ============================================================ */
     const TOTAL_CHAPTERS = 11;
-
-    const CHAPTER_ORDER = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+    const CHAPTER_ORDER = ['1','2','3','4','5','6','7','8','9','10','11'];
 
     const state = {
         currentChapter: '1',
         currentLang: 'en',
-        theme: 'light'
+        theme: 'light',
+        fontSize: 100 // percentage
     };
 
     /* ============================================================
@@ -28,10 +32,10 @@
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
     /* ============================================================
-       3. TOAST
+       3. TOAST — internal, safe (does NOT override window.showToast)
        ============================================================ */
     let toastTimer = null;
-    function showToast(message, duration = 2500) {
+    function localToast(message, duration = 2500) {
         const toast = $('#toast');
         if (!toast) return;
         toast.textContent = message;
@@ -40,8 +44,16 @@
         toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
     }
 
+    // Safe public shim — only defines if ebook.js hasn't already
+    function publicToast(message, type) {
+        if (typeof window.showToast === 'function' && window.showToast !== publicToast) {
+            try { window.showToast(message, type); return; } catch (e) {}
+        }
+        localToast(message);
+    }
+
     /* ============================================================
-       4. THEME TOGGLE
+       4. THEME
        ============================================================ */
     function applyTheme(theme) {
         state.theme = theme;
@@ -66,7 +78,6 @@
     function initTheme() {
         let saved = null;
         try { saved = localStorage.getItem('autobio-theme'); } catch (e) {}
-
         if (!saved) {
             const prefersDark = window.matchMedia &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -91,30 +102,22 @@
        5. SIDEBAR
        ============================================================ */
     function openSidebar() {
-        const sidebar = $('#sidebar');
-        const overlay = $('#sidebarOverlay');
-        if (sidebar) sidebar.classList.add('open');
-        if (overlay) overlay.classList.add('active');
+        const s = $('#sidebar'), o = $('#sidebarOverlay');
+        if (s) s.classList.add('open');
+        if (o) o.classList.add('active');
         document.body.classList.add('sidebar-open');
     }
-
     function closeSidebar() {
-        const sidebar = $('#sidebar');
-        const overlay = $('#sidebarOverlay');
-        if (sidebar) sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('active');
+        const s = $('#sidebar'), o = $('#sidebarOverlay');
+        if (s) s.classList.remove('open');
+        if (o) o.classList.remove('active');
         document.body.classList.remove('sidebar-open');
     }
-
     function initSidebar() {
-        const hamburger = $('#hamburgerBtn');
-        const closeBtn  = $('#sidebarClose');
-        const overlay   = $('#sidebarOverlay');
-
-        if (hamburger) hamburger.addEventListener('click', openSidebar);
-        if (closeBtn)  closeBtn.addEventListener('click', closeSidebar);
-        if (overlay)   overlay.addEventListener('click', closeSidebar);
-
+        const h = $('#hamburgerBtn'), c = $('#sidebarClose'), o = $('#sidebarOverlay');
+        if (h) h.addEventListener('click', openSidebar);
+        if (c) c.addEventListener('click', closeSidebar);
+        if (o) o.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeSidebar();
         });
@@ -127,13 +130,11 @@
         if (lang !== 'en' && lang !== 'hi') return;
         state.currentLang = lang;
 
-        const btnEn = $('#btnEn');
-        const btnHi = $('#btnHi');
-        if (btnEn) btnEn.classList.toggle('active', lang === 'en');
-        if (btnHi) btnHi.classList.toggle('active', lang === 'hi');
+        const btnEn = $('#btnEn'), btnHi = $('#btnHi');
+        if (btnEn) { btnEn.classList.toggle('active', lang === 'en'); btnEn.setAttribute('aria-pressed', lang === 'en'); }
+        if (btnHi) { btnHi.classList.toggle('active', lang === 'hi'); btnHi.setAttribute('aria-pressed', lang === 'hi'); }
 
-        const enBox = $('#chaptersEn');
-        const hiBox = $('#chaptersHi');
+        const enBox = $('#chaptersEn'), hiBox = $('#chaptersHi');
         if (enBox) enBox.style.display = lang === 'en' ? '' : 'none';
         if (hiBox) hiBox.style.display = lang === 'hi' ? '' : 'none';
 
@@ -141,7 +142,7 @@
 
         try { localStorage.setItem('autobio-lang', lang); } catch (e) {}
 
-        showToast(lang === 'en' ? '🇬🇧 English' : '🗣️ Hinglish');
+        localToast(lang === 'en' ? '🇬🇧 English' : '🗣️ Hinglish');
     }
 
     /* ============================================================
@@ -166,9 +167,7 @@
             ch.style.display = match ? '' : 'none';
         });
 
-        const otherContainer = state.currentLang === 'en'
-            ? $('#chaptersHi')
-            : $('#chaptersEn');
+        const otherContainer = state.currentLang === 'en' ? $('#chaptersHi') : $('#chaptersEn');
         if (otherContainer) {
             $$('.chapter', otherContainer).forEach(ch => {
                 ch.classList.remove('active');
@@ -184,14 +183,10 @@
             const activeCh = $('.chapter.active', container);
             if (activeCh) {
                 requestAnimationFrame(() => {
-                    const topNavHeight = 70;
-                    const extraGap = 12;
+                    const topNavHeight = 70, extraGap = 12;
                     const rect = activeCh.getBoundingClientRect();
                     const absoluteTop = rect.top + window.pageYOffset;
-                    window.scrollTo({
-                        top: absoluteTop - topNavHeight - extraGap,
-                        behavior: 'smooth'
-                    });
+                    window.scrollTo({ top: absoluteTop - topNavHeight - extraGap, behavior: 'smooth' });
                 });
             }
         }
@@ -202,14 +197,11 @@
     function updateNavButtons(chapterId) {
         const container = getActiveContainer();
         if (!container) return;
-
         const idx = CHAPTER_ORDER.indexOf(chapterId);
         const activeCh = $('.chapter.active', container);
         if (!activeCh) return;
-
         const prevBtn = $('.prev-btn', activeCh);
         const nextBtn = $('.next-btn', activeCh);
-
         if (prevBtn) prevBtn.disabled = idx <= 0;
         if (nextBtn) nextBtn.disabled = idx >= CHAPTER_ORDER.length - 1;
     }
@@ -218,7 +210,6 @@
         const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
         if (idx > 0) showChapter(CHAPTER_ORDER[idx - 1]);
     }
-
     function nextChapter() {
         const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
         if (idx < CHAPTER_ORDER.length - 1) showChapter(CHAPTER_ORDER[idx + 1]);
@@ -229,9 +220,7 @@
         const numDisplay = $('#chapterNumDisplay');
         const pctDisplay = $('#chapterPercentDisplay');
 
-        if (numDisplay) {
-            numDisplay.textContent = `Chapter ${idx + 1} of ${TOTAL_CHAPTERS}`;
-        }
+        if (numDisplay) numDisplay.textContent = `Chapter ${idx + 1} of ${TOTAL_CHAPTERS}`;
         if (pctDisplay) {
             const pct = Math.round(((idx + 1) / TOTAL_CHAPTERS) * 100);
             pctDisplay.textContent = `${pct}% complete`;
@@ -252,23 +241,21 @@
     }
 
     function initChapterClicks() {
-        $$('.nav-btn, .prev-btn, .next-btn, #chapterSidebarMenu a, #progressDots .dot')
-            .forEach(el => {
-                el.removeAttribute('onclick');
-                el.onclick = null;
-            });
+        // Remove inline onclick handlers from HTML to avoid double-firing
+        $$('.nav-btn').forEach(el => {
+            el.removeAttribute('onclick');
+        });
 
+        // Sidebar chapter links
         $$('#chapterSidebarMenu a').forEach(a => {
             a.addEventListener('click', (e) => {
                 e.preventDefault();
                 const ch = a.dataset.chapter;
-                if (ch) {
-                    showChapter(ch);
-                    closeSidebar();
-                }
+                if (ch) { showChapter(ch); closeSidebar(); }
             });
         });
 
+        // Progress dots
         $$('#progressDots .dot').forEach(dot => {
             dot.addEventListener('click', () => {
                 const ch = dot.dataset.dot;
@@ -276,19 +263,21 @@
             });
         });
 
+        // Nav buttons (prev / next) — event delegation
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.nav-btn');
             if (!btn) return;
-            if (btn.hasAttribute('onclick')) return;
-
             if (btn.classList.contains('prev-btn')) prevChapter();
             else if (btn.classList.contains('next-btn')) nextChapter();
         });
 
+        // Keyboard arrows
         document.addEventListener('keydown', (e) => {
             if (document.body.classList.contains('sidebar-open')) return;
             const modal = $('#downloadModal');
             if (modal && modal.classList.contains('active')) return;
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
             if (e.key === 'ArrowLeft')  prevChapter();
             if (e.key === 'ArrowRight') nextChapter();
@@ -296,23 +285,26 @@
     }
 
     /* ============================================================
-       8. MODAL
+       8. MODAL OPEN/CLOSE (Wizard)
        ============================================================ */
     function openModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
         modal.classList.add('active');
         document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
 
         resetWizard();
         goToStep(1);
     }
 
-    function closeModal() {
+    // 🚨 DO NOT expose as window.closeModal — ebook.js owns it
+    function closeModalInternal() {
         const modal = $('#downloadModal');
         if (!modal) return;
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
     }
 
     function initModal() {
@@ -320,45 +312,21 @@
         if (!modal) return;
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
+            if (e.target === modal) closeModalInternal();
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') closeModalInternal();
         });
+
+        // Modal close X button (uses onclick="closeModal()" in HTML)
+        // ebook.js exposes window.closeModal — we just make sure
+        // that one also closes internal state via its own ModalManager.
     }
 
     /* ============================================================
-       9. EBOOK DOWNLOAD HELPERS (legacy)
+       9. READER WIZARD
        ============================================================ */
-    function downloadEnglishEbook() {
-        if (typeof window.generateEbook === 'function') {
-            window.generateEbook('en');
-        } else if (typeof window.generateEbookEn === 'function') {
-            window.generateEbookEn();
-        } else {
-            showToast('📄 Opening print dialog...');
-            setTimeout(() => window.print(), 400);
-        }
-        closeModal();
-    }
-
-    function downloadHinglishEbook() {
-        if (typeof window.generateEbook === 'function') {
-            window.generateEbook('hi');
-        } else if (typeof window.generateEbookHi === 'function') {
-            window.generateEbookHi();
-        } else {
-            showToast('📄 Opening print dialog...');
-            setTimeout(() => window.print(), 400);
-        }
-        closeModal();
-    }
-
-    /* ============================================================
-       9B. READER WIZARD
-       ============================================================ */
-
     const readerData = {
         name: '',
         gender: 'neutral',
@@ -371,7 +339,6 @@
 
     function goToStep(stepNum) {
         $$('.modal-step').forEach(step => step.classList.remove('active'));
-
         const targetId = 'step' + stepNum;
         const target = $('#' + targetId);
         if (target) target.classList.add('active');
@@ -394,26 +361,21 @@
         const name = nameInput ? nameInput.value.trim() : '';
 
         if (!name) {
-            showToast('Please enter your name');
+            publicToast('Please enter your name');
             if (nameInput) nameInput.focus();
             return;
         }
         if (name.length < 2) {
-            showToast('Name must be at least 2 characters');
+            publicToast('Name must be at least 2 characters');
             if (nameInput) nameInput.focus();
             return;
         }
 
         readerData.name = name;
-
         const genderRadio = document.querySelector('input[name="gender"]:checked');
         readerData.gender = genderRadio ? genderRadio.value : 'neutral';
 
         goToStep(3);
-    }
-
-    function triggerCamera() {
-        openWebcam();
     }
 
     function triggerUpload() {
@@ -426,26 +388,25 @@
         if (!file) return;
 
         if (!file.type.startsWith('image/')) {
-            showToast('Please select an image file');
+            publicToast('Please select an image file');
             return;
         }
         if (file.size > 5 * 1024 * 1024) {
-            showToast('Image too large. Please select under 5MB');
+            publicToast('Image too large. Please select under 5MB');
             return;
         }
 
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
             const base64 = e.target.result;
             readerData.photo = base64;
-
             const previewBox = $('#photoPreviewBox');
             if (previewBox) {
                 previewBox.innerHTML = `<img src="${base64}" alt="Reader photo" />`;
                 previewBox.classList.add('has-photo');
             }
         };
-        fileReader.readAsDataURL(file);
+        reader.readAsDataURL(file);
     }
 
     function initPhotoInputs() {
@@ -464,12 +425,11 @@
     }
 
     /* ============================================================
-       9C. WEBCAM
+       10. WEBCAM
        ============================================================ */
-
     async function openWebcam() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            showToast('Camera not supported on this browser');
+            publicToast('Camera not supported on this browser');
             triggerUpload();
             return;
         }
@@ -491,11 +451,7 @@
 
         try {
             webcamStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'user',
-                    width: { ideal: 720 },
-                    height: { ideal: 720 }
-                },
+                video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 720 } },
                 audio: false
             });
 
@@ -508,7 +464,6 @@
                     if (captureBtn) captureBtn.disabled = false;
                 };
             }
-
         } catch (err) {
             console.warn('Webcam error:', err);
             showWebcamError(err);
@@ -528,33 +483,26 @@
         if (fallback) fallback.style.display = 'flex';
 
         let msg = 'Please allow camera access or use Gallery instead.';
-
-        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-            msg = 'Camera permission was denied. Please allow access in your browser settings.';
-        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
+            msg = 'Camera permission was denied. Please allow access in browser settings.';
+        else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError')
             msg = 'No camera found on this device. Please use Gallery instead.';
-        } else if (err.name === 'NotReadableError') {
+        else if (err.name === 'NotReadableError')
             msg = 'Camera is in use by another app. Close it and try again.';
-        } else if (err.name === 'OverconstrainedError') {
+        else if (err.name === 'OverconstrainedError')
             msg = 'Camera does not meet requirements. Please use Gallery instead.';
-        }
 
         if (errorMsg) errorMsg.textContent = msg;
     }
 
     function capturePhoto() {
         if (!webcamActive) return;
-
         const video = $('#webcamVideo');
-        const container = document.querySelector('.webcam-container');
         if (!video) return;
 
         const canvas = document.createElement('canvas');
-        const videoWidth = video.videoWidth || 720;
-        const videoHeight = video.videoHeight || 720;
-
-        canvas.width = videoWidth;
-        canvas.height = videoHeight;
+        canvas.width = video.videoWidth || 720;
+        canvas.height = video.videoHeight || 720;
 
         const ctx = canvas.getContext('2d');
         ctx.translate(canvas.width, 0);
@@ -562,12 +510,6 @@
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-
-        if (container) {
-            container.classList.add('captured');
-            setTimeout(() => container.classList.remove('captured'), 400);
-        }
-
         readerData.photo = dataUrl;
 
         const previewBox = $('#photoPreviewBox');
@@ -579,19 +521,17 @@
         setTimeout(() => {
             closeWebcam();
             goToStep(3);
-            showToast('📸 Photo captured!');
+            publicToast('📸 Photo captured!');
         }, 300);
     }
 
     function closeWebcam() {
         if (webcamStream) {
-            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream.getTracks().forEach(t => t.stop());
             webcamStream = null;
         }
-
         const video = $('#webcamVideo');
         if (video) video.srcObject = null;
-
         webcamActive = false;
 
         const loading = $('#webcamLoading');
@@ -611,7 +551,7 @@
 
     function resetWizard() {
         if (webcamStream) {
-            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream.getTracks().forEach(t => t.stop());
             webcamStream = null;
         }
         webcamActive = false;
@@ -640,16 +580,14 @@
         if (uploadInput) uploadInput.value = '';
     }
 
+    /* ============================================================
+       11. READER MESSAGE (exposed for ebook.js to use)
+       ============================================================ */
     function buildReaderMessage(name, gender) {
         let pronoun, possessive, objectPronoun;
-
-        if (gender === 'male') {
-            pronoun = 'he'; possessive = 'his'; objectPronoun = 'him';
-        } else if (gender === 'female') {
-            pronoun = 'she'; possessive = 'her'; objectPronoun = 'her';
-        } else {
-            pronoun = 'they'; possessive = 'their'; objectPronoun = 'them';
-        }
+        if (gender === 'male')       { pronoun = 'he';   possessive = 'his';   objectPronoun = 'him'; }
+        else if (gender === 'female'){ pronoun = 'she';  possessive = 'her';   objectPronoun = 'her'; }
+        else                         { pronoun = 'they'; possessive = 'their'; objectPronoun = 'them'; }
 
         return `${name} is someone who is easy to write about, because there is no pretence at all.
 
@@ -662,14 +600,24 @@ Hardworking and determined — once ${pronoun} sets ${possessive} mind on someth
 Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
     }
 
+    /* ============================================================
+       12. PDF GENERATION — delegates to ebook.js
+       ============================================================ */
     async function startPDFGeneration() {
         if (!readerData.name) {
-            showToast('Name is missing. Please go back.');
+            publicToast('Name is missing. Please go back.');
             goToStep(2);
             return;
         }
         if (!readerData.photo) {
-            showToast('Please select a photo first');
+            publicToast('Please select a photo first');
+            return;
+        }
+
+        // Check ebook.js is ready
+        if (typeof window.generateEbookWithReader !== 'function') {
+            publicToast('❌ Ebook generator not ready. Please refresh the page.');
+            console.error('window.generateEbookWithReader is not defined — ebook.js may have failed to load.');
             return;
         }
 
@@ -677,10 +625,6 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         updateModalProgress(0, 'Preparing ebook...');
 
         try {
-            if (typeof window.generateEbookWithReader !== 'function') {
-                throw new Error('Ebook generator not ready');
-            }
-
             await window.generateEbookWithReader(readerData, (percent, message) => {
                 updateModalProgress(percent, message);
             });
@@ -688,15 +632,14 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             updateModalProgress(100, '✅ Your ebook is ready!');
 
             setTimeout(() => {
-                closeModal();
-                showToast('Ebook downloaded successfully! 🎉');
+                closeModalInternal();
+                publicToast('Ebook downloaded successfully! 🎉');
             }, 1200);
 
         } catch (error) {
             console.error('PDF generation failed:', error);
             updateModalProgress(0, '❌ Something went wrong');
-            showToast('PDF generation failed. Please try again.');
-
+            publicToast('PDF generation failed. Please try again.');
             setTimeout(() => goToStep(3), 2000);
         }
     }
@@ -711,12 +654,9 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         if (hint && message) hint.textContent = message;
     }
 
-    window.buildReaderMessage = buildReaderMessage;
-
     /* ============================================================
-       9D. FOOTNOTES
+       13. FOOTNOTES
        ============================================================ */
-
     function initFootnotes() {
         let tooltip = document.querySelector('.footnote-tooltip');
         if (!tooltip) {
@@ -754,26 +694,27 @@ Some people come into life and leave, some become a memory. ${name} is one of th
 
         const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
-        document.addEventListener('mouseover', (e) => {
-            const el = e.target.closest('.footnote');
-            if (!el || isMobile()) return;
+        const showTooltipAt = (el) => {
             const note = el.dataset.note;
             if (!note) return;
-
             tooltip.textContent = note;
             tooltip.classList.add('visible');
-
             const rect = el.getBoundingClientRect();
             const tooltipRect = tooltip.getBoundingClientRect();
             let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
             let top = rect.top - tooltipRect.height - 10;
             if (left < 10) left = 10;
-            if (left + tooltipRect.width > window.innerWidth - 10) {
+            if (left + tooltipRect.width > window.innerWidth - 10)
                 left = window.innerWidth - tooltipRect.width - 10;
-            }
             if (top < 10) top = rect.bottom + 10;
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
+        };
+
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('.footnote');
+            if (!el || isMobile()) return;
+            showTooltipAt(el);
         });
 
         document.addEventListener('mouseout', (e) => {
@@ -798,19 +739,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
                 sheet.classList.add('active');
                 overlay.classList.add('active');
             } else {
-                tooltip.textContent = note;
-                tooltip.classList.add('visible');
-                const rect = el.getBoundingClientRect();
-                const tooltipRect = tooltip.getBoundingClientRect();
-                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-                let top = rect.top - tooltipRect.height - 10;
-                if (left < 10) left = 10;
-                if (left + tooltipRect.width > window.innerWidth - 10) {
-                    left = window.innerWidth - tooltipRect.width - 10;
-                }
-                if (top < 10) top = rect.bottom + 10;
-                tooltip.style.left = left + 'px';
-                tooltip.style.top = top + 'px';
+                showTooltipAt(el);
                 clearTimeout(window._footnoteTimeout);
                 window._footnoteTimeout = setTimeout(() => tooltip.classList.remove('visible'), 4000);
             }
@@ -830,9 +759,8 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     }
 
     /* ============================================================
-       9E. AUDIO NARRATION — Constant voice (no age journey)
+       14. AUDIO NARRATION (SpeechSynthesis)
        ============================================================ */
-
     let currentUtterance = null;
     let currentAudioBtn = null;
     let currentChapterEl = null;
@@ -860,15 +788,15 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         const paragraphs = chapterEl.querySelectorAll('p');
         const texts = [];
         paragraphs.forEach(p => {
-            const text = p.textContent.trim();
-            if (text.length > 5) texts.push(text);
+            const t = p.textContent.trim();
+            if (t.length > 5) texts.push(t);
         });
         return texts.join('. ');
     }
 
     function toggleChapterAudio(btn) {
         if (!('speechSynthesis' in window)) {
-            showToast('Audio not supported on this browser');
+            publicToast('Audio not supported on this browser');
             return;
         }
         const chapterEl = btn.closest('.chapter');
@@ -881,6 +809,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         const statusEl = player.querySelector('.audio-status');
         const lang = player.dataset.lang || 'en';
 
+        // Pause
         if (currentAudioBtn === btn && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
             window.speechSynthesis.pause();
             btn.innerHTML = '▶ Resume';
@@ -888,7 +817,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             if (statusEl) statusEl.textContent = 'Paused';
             return;
         }
-
+        // Resume
         if (currentAudioBtn === btn && window.speechSynthesis.paused) {
             window.speechSynthesis.resume();
             btn.innerHTML = '⏸ Pause';
@@ -910,10 +839,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         }
 
         const text = extractChapterText(chapterEl);
-        if (!text) {
-            showToast('No text to read');
-            return;
-        }
+        if (!text) { publicToast('No text to read'); return; }
 
         currentUtterance = new SpeechSynthesisUtterance(text);
         currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
@@ -973,6 +899,12 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     }
 
     function initAudioControls() {
+        // Preload voices (Chrome quirk)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
         document.addEventListener('click', (e) => {
             const speedBtn = e.target.closest('.audio-speed-btn');
             if (!speedBtn) return;
@@ -993,7 +925,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
                 }
                 setTimeout(() => { if (wasBtn) toggleChapterAudio(wasBtn); }, 100);
             }
-            showToast(`Speed: ${speed}x`);
+            publicToast(`Speed: ${speed}x`);
         });
     }
 
@@ -1003,7 +935,8 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             if (currentAudioBtn) {
                 currentAudioBtn.innerHTML = '▶ Play';
                 currentAudioBtn.classList.remove('playing');
-                const progressArea = currentAudioBtn.closest('.audio-player')?.querySelector('.audio-player-progress');
+                const player = currentAudioBtn.closest('.audio-player');
+                const progressArea = player ? player.querySelector('.audio-player-progress') : null;
                 if (progressArea) progressArea.style.display = 'none';
             }
             currentAudioBtn = null;
@@ -1012,76 +945,205 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     }
 
     /* ============================================================
-       10. RESTORE STATE
+       15. READING PROGRESS BAR (top of page)
+       ============================================================ */
+    function initReadingProgressBar() {
+        const bar = $('#readingProgressBar');
+        const fill = $('#readingProgressFill');
+        if (!bar || !fill) return;
+
+        const update = () => {
+            const doc = document.documentElement;
+            const scrollTop = window.pageYOffset || doc.scrollTop;
+            const scrollHeight = doc.scrollHeight - window.innerHeight;
+            const pct = scrollHeight > 0 ? Math.min(100, (scrollTop / scrollHeight) * 100) : 0;
+            fill.style.width = pct + '%';
+            bar.setAttribute('aria-valuenow', Math.round(pct));
+        };
+
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+    }
+
+    /* ============================================================
+       16. BACK TO TOP
+       ============================================================ */
+    function initBackToTop() {
+        const btn = $('#backToTop');
+        if (!btn) return;
+
+        const toggle = () => {
+            btn.classList.toggle('visible', window.pageYOffset > 400);
+        };
+        window.addEventListener('scroll', toggle, { passive: true });
+        toggle();
+
+        btn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    /* ============================================================
+       17. TOC CLICKS
+       ============================================================ */
+    function initTOC() {
+        const tocList = $('#tocList');
+        if (!tocList) return;
+        tocList.addEventListener('click', (e) => {
+            const a = e.target.closest('a[data-toc]');
+            if (!a) return;
+            e.preventDefault();
+            const ch = a.dataset.toc;
+            if (ch) showChapter(ch);
+        });
+    }
+
+    /* ============================================================
+       18. FONT SIZE CONTROLS
+       ============================================================ */
+    function applyFontSize(pct) {
+        state.fontSize = Math.max(80, Math.min(140, pct));
+        const wrapper = $('.autobio-wrapper');
+        if (wrapper) wrapper.style.fontSize = state.fontSize + '%';
+        try { localStorage.setItem('autobio-fontsize', String(state.fontSize)); } catch (e) {}
+    }
+
+    function initFontControls() {
+        let saved = 100;
+        try {
+            const s = localStorage.getItem('autobio-fontsize');
+            if (s) saved = parseInt(s, 10) || 100;
+        } catch (e) {}
+
+        applyFontSize(saved);
+
+        const dec = $('#fontDecrease');
+        const res = $('#fontReset');
+        const inc = $('#fontIncrease');
+
+        if (dec) dec.addEventListener('click', () => applyFontSize(state.fontSize - 10));
+        if (res) res.addEventListener('click', () => applyFontSize(100));
+        if (inc) inc.addEventListener('click', () => applyFontSize(state.fontSize + 10));
+    }
+
+    /* ============================================================
+       19. READING TIME ESTIMATE
+       ============================================================ */
+    function initReadingTime() {
+        const el = $('#readingTimeEstimate');
+        if (!el) return;
+
+        const container = getActiveContainer();
+        if (!container) return;
+
+        let words = 0;
+        $$('.chapter p', container).forEach(p => {
+            words += p.textContent.trim().split(/\s+/).length;
+        });
+
+        const minutes = Math.max(1, Math.round(words / 200));
+        el.textContent = `~${minutes} min read`;
+    }
+
+    /* ============================================================
+       20. RESTORE STATE
        ============================================================ */
     function restoreState() {
-        let savedLang = null;
-        try { savedLang = localStorage.getItem('autobio-lang'); } catch (e) {}
-        if (savedLang === 'hi' || savedLang === 'en') {
-            state.currentLang = savedLang;
-        }
+        try {
+            const savedLang = localStorage.getItem('autobio-lang');
+            if (savedLang === 'hi' || savedLang === 'en') state.currentLang = savedLang;
+        } catch (e) {}
 
-        let savedCh = null;
-        try { savedCh = localStorage.getItem('autobio-chapter'); } catch (e) {}
-        if (savedCh && CHAPTER_ORDER.includes(String(savedCh))) {
-            state.currentChapter = String(savedCh);
-        }
+        try {
+            const savedCh = localStorage.getItem('autobio-chapter');
+            if (savedCh && CHAPTER_ORDER.includes(String(savedCh))) {
+                state.currentChapter = String(savedCh);
+            }
+        } catch (e) {}
     }
 
     /* ============================================================
-       11. INIT
-       ============================================================ */
-    function init() {
-        restoreState();
-        initTheme();
-        initSidebar();
-        initModal();
-        initChapterClicks();
-        initPhotoInputs();
-        initFootnotes();
-        initAudioControls();
-
-        switchLang(state.currentLang);
-        showChapter(state.currentChapter, false);
-
-        const btnEn = $('#btnEn');
-        const btnHi = $('#btnHi');
-        if (btnEn) btnEn.onclick = () => switchLang('en');
-        if (btnHi) btnHi.onclick = () => switchLang('hi');
-
-        document.body.classList.add('js-ready');
-    }
-
-    /* ============================================================
-       12. EXPOSE GLOBALS
+       21. EXPOSE GLOBALS — ONLY WHAT HTML NEEDS
+       ============================================================
+       NOTE: We do NOT touch:
+         window.closeModal
+         window.showToast
+         window.downloadEnglishEbook
+         window.downloadHinglishEbook
+         window.cancelEbookGeneration
+       Those belong to ebook.js.
        ============================================================ */
     window.openModal            = openModal;
-    window.closeModal           = closeModal;
     window.switchLang           = switchLang;
     window.showChapter          = showChapter;
     window.prevChapter          = prevChapter;
     window.nextChapter          = nextChapter;
-    window.downloadEnglishEbook = downloadEnglishEbook;
-    window.downloadHinglishEbook= downloadHinglishEbook;
+    window.toggleChapterAudio   = toggleChapterAudio;
     window.toggleTheme          = toggleTheme;
-    window.showToast            = showToast;
 
+    // Wizard steps (used by HTML onclick)
     window.goToStep             = goToStep;
     window.selectLanguage       = selectLanguage;
     window.goToStep3            = goToStep3;
-    window.triggerCamera        = triggerCamera;
     window.triggerUpload        = triggerUpload;
-    window.startPDFGeneration   = startPDFGeneration;
 
+    // Webcam (used by HTML onclick)
     window.openWebcam           = openWebcam;
     window.closeWebcam          = closeWebcam;
     window.capturePhoto         = capturePhoto;
 
-    window.toggleChapterAudio   = toggleChapterAudio;
+    // PDF trigger (used by HTML onclick)
+    window.startPDFGeneration   = startPDFGeneration;
+
+    // Reader message builder (used by ebook.js)
+    window.buildReaderMessage   = buildReaderMessage;
+
+    // Safe fallback toast for internal use
+    if (typeof window.showToast !== 'function') {
+        window.showToast = publicToast;
+    }
+    // Safe fallback closeModal for HTML's onclick="closeModal()"
+    // ebook.js will override this with its own — that's fine.
+    if (typeof window.closeModal !== 'function') {
+        window.closeModal = closeModalInternal;
+    }
 
     /* ============================================================
-       13. BOOT
+       22. INIT — each module wrapped in try/catch
        ============================================================ */
+    function init() {
+        const safe = (name, fn) => {
+            try { fn(); }
+            catch (e) { console.warn('[autobiography.js] ' + name + ' failed:', e); }
+        };
+
+        safe('restoreState',      restoreState);
+        safe('initTheme',         initTheme);
+        safe('initSidebar',       initSidebar);
+        safe('initModal',         initModal);
+        safe('initChapterClicks', initChapterClicks);
+        safe('initPhotoInputs',   initPhotoInputs);
+        safe('initFootnotes',     initFootnotes);
+        safe('initAudioControls', initAudioControls);
+        safe('initReadingProgressBar', initReadingProgressBar);
+        safe('initBackToTop',     initBackToTop);
+        safe('initTOC',           initTOC);
+        safe('initFontControls',  initFontControls);
+
+        safe('switchLang',        () => switchLang(state.currentLang));
+        safe('showChapter',       () => showChapter(state.currentChapter, false));
+        safe('initReadingTime',   initReadingTime);
+
+        // Re-bind language buttons (in case switchLang didn't get to them)
+        const btnEn = $('#btnEn'), btnHi = $('#btnHi');
+        if (btnEn) btnEn.onclick = () => switchLang('en');
+        if (btnHi) btnHi.onclick = () => switchLang('hi');
+
+        document.body.classList.add('js-ready');
+        console.log('✅ autobiography.js v2 loaded — conflict-free');
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
