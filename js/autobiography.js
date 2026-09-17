@@ -2,8 +2,7 @@
    autobiography.js
    My Autobiography — Ravi Raj
    Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
-            Reader Wizard, Webcam, Footnotes, Audio Narration,
-            Age-based Voice Journey
+            Reader Wizard, Webcam, Footnotes, Audio Narration
    ============================================================ */
 
 (function () {
@@ -22,22 +21,6 @@
         theme: 'light'
     };
 
-    /* ============================================================
-       ⭐ VOICE JOURNEY CONFIG — Age-based pitch/rate per chapter
-       ============================================================ */
-    const VOICE_CONFIG = {
-    '1':  { pitch: 1.15, rate: 0.92 },
-    '2':  { pitch: 1.13, rate: 0.94 },
-    '3':  { pitch: 1.11, rate: 0.95 },
-    '4':  { pitch: 1.09, rate: 0.96 },
-    '5':  { pitch: 1.06, rate: 0.98 },
-    '6':  { pitch: 1.04, rate: 0.99 },
-    '7':  { pitch: 1.02, rate: 1.00 },
-    '8':  { pitch: 1.00, rate: 1.02 },
-    '9':  { pitch: 0.98, rate: 1.04 },
-    '10': { pitch: 0.96, rate: 1.06 },
-    '11': { pitch: 0.94, rate: 1.08 }
-};
     /* ============================================================
        2. DOM HELPERS
        ============================================================ */
@@ -847,7 +830,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     }
 
     /* ============================================================
-       9E. AUDIO NARRATION — with Age-based Voice Journey
+       9E. AUDIO NARRATION — Constant voice (no age journey)
        ============================================================ */
 
     let currentUtterance = null;
@@ -932,24 +915,17 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             return;
         }
 
-        // ⭐ Get chapter-wise voice config (age-based)
-        const chapterNum = chapterEl.dataset.chapter || '1';
-        const voiceCfg = VOICE_CONFIG[chapterNum] || { pitch: 1, rate: 1 };
-
         currentUtterance = new SpeechSynthesisUtterance(text);
         currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-        // ⭐ Combine user speed with chapter rate
-        currentUtterance.rate = Math.max(0.1, Math.min(2, currentSpeed * voiceCfg.rate));
-        // ⭐ Chapter-wise pitch (age feel)
-        currentUtterance.pitch = Math.max(0, Math.min(2, voiceCfg.pitch));
+        currentUtterance.rate = currentSpeed;
+        currentUtterance.pitch = 1;
         currentUtterance.volume = 1;
 
         const voice = getBestVoice(lang);
         if (voice) currentUtterance.voice = voice;
 
         const words = text.split(/\s+/).length;
-        // Adjust duration estimate by combined rate
-        const estimatedDuration = (words / 150) * 60 / (currentSpeed * voiceCfg.rate);
+        const estimatedDuration = (words / 150) * 60 / currentSpeed;
         const startTime = Date.now();
 
         btn.innerHTML = '⏸ Pause';
@@ -1090,7 +1066,6 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.toggleTheme          = toggleTheme;
     window.showToast            = showToast;
 
-    // Wizard
     window.goToStep             = goToStep;
     window.selectLanguage       = selectLanguage;
     window.goToStep3            = goToStep3;
@@ -1098,12 +1073,10 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.triggerUpload        = triggerUpload;
     window.startPDFGeneration   = startPDFGeneration;
 
-    // Webcam
     window.openWebcam           = openWebcam;
     window.closeWebcam          = closeWebcam;
     window.capturePhoto         = capturePhoto;
 
-    // Audio
     window.toggleChapterAudio   = toggleChapterAudio;
 
     /* ============================================================
