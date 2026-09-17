@@ -866,25 +866,7 @@
             });
         });
 
-        // ============================================
-        // THEME TOGGLE IN SIDEBAR
-        // ============================================
-        const themeSwitchSidebar = document.getElementById('themeSwitchSidebar');
-        if (themeSwitchSidebar) {
-            themeSwitchSidebar.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const html = document.documentElement;
-                const current = html.getAttribute('data-theme');
-                const next = current === 'light' ? 'dark' : 'light';
-                html.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-                const label = document.getElementById('themeLabel');
-                if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
-                if (window.showToast) {
-                    window.showToast(next === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
-                }
-            });
-        }
+        
 
         // ============================================
         // CLOSE SIDEBAR ON MENU ITEM CLICK (Quick Links)
