@@ -24,6 +24,14 @@
 </head>
 <body>
 
+    <!-- Skip to content link (accessibility) -->
+    <a href="#mainContent" class="skip-to-content">Skip to main content</a>
+
+    <!-- Reading progress bar (top of page) -->
+    <div class="reading-progress-bar" id="readingProgressBar" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+
     <div class="theme-toggle-wrapper">
         <span id="themeLabel">Light</span>
         <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
@@ -33,11 +41,11 @@
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <aside class="sidebar" id="sidebar">
-        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
         
         <div class="sidebar-profile">
             <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" loading="lazy" />
@@ -81,9 +89,9 @@
         </div>
     </aside>
 
-    <nav class="top-nav" id="topNav">
+    <nav class="top-nav" id="topNav" aria-label="Main navigation">
         <div class="nav-left">
-            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
             <div>
@@ -92,6 +100,12 @@
             </div>
         </div>
         <div class="nav-right">
+            <!-- Reader mode / font size controls -->
+            <div class="reader-controls" aria-label="Reader settings">
+                <button class="reader-btn" id="fontDecrease" aria-label="Decrease font size" title="Decrease font size">A−</button>
+                <button class="reader-btn" id="fontReset" aria-label="Reset font size" title="Reset font size">A</button>
+                <button class="reader-btn" id="fontIncrease" aria-label="Increase font size" title="Increase font size">A+</button>
+            </div>
             <div class="theme-toggle-nav">
                 <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
                     <span class="switch-icon sun">☀️</span>
@@ -108,7 +122,7 @@
 <div class="modal-overlay" id="downloadModal">
   <div class="modal-content">
 
-    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal">✕</button>
 
     <div class="modal-step active" id="step1">
       <h2>📥 Download Ebook</h2>
@@ -233,40 +247,75 @@
   </div>
 </div>
 
-    <div class="autobio-wrapper">
+    <main class="autobio-wrapper" id="mainContent" role="main">
 
-        <a href="index.html" class="back-link-top">← Back to Home</a>
+        <a href="index.html" class="back-link-top" aria-label="Back to home page">← Back to Home</a>
 
-        <div class="autobio-header">
+        <!-- ═══════════ HERO HEADER ═══════════ -->
+        <header class="autobio-header" role="banner">
             <img src="assets/images/casual.jpg" alt="Ravi Raj" class="profile-photo" loading="lazy" />
             <div class="phase-label">Presenting</div>
             <h1>"A Boy Who Never Thought"</h1>
             <div class="intro-line">Safar Se Safar Tak</div>
             <div class="sub-line"> — गुंजते सन्नाटे</div>
             <div class="bio-line">2026 · Patna, India</div>
-        </div>
+            
+            <!-- Reading time estimate -->
+            <div class="reading-meta" aria-label="Reading information">
+                <span class="meta-chip">📖 <span id="readingTimeEstimate">~18 min read</span></span>
+                <span class="meta-chip">✍️ 11 Chapters</span>
+                <span class="meta-chip">🌐 English &amp; Hinglish</span>
+            </div>
+        </header>
 
-        <div class="stats-grid">
+        <!-- ═══════════ STATS GRID ═══════════ -->
+        <section class="stats-grid" aria-label="Author statistics">
             <div class="stat-card"><span class="stat-number">3+</span><span class="stat-label">Years of Coding</span></div>
             <div class="stat-card"><span class="stat-number">5+</span><span class="stat-label">Projects Built</span></div>
             <div class="stat-card"><span class="stat-number">10K+</span><span class="stat-label">Lines of Code</span></div>
             <div class="stat-card"><span class="stat-number">12th</span><span class="stat-label">Education</span></div>
+        </section>
+
+        <!-- ═══════════ LANGUAGE & DOWNLOAD CONTROLS ═══════════ -->
+        <div class="controls-sticky-wrapper">
+            <div class="lang-controls" role="group" aria-label="Language selection">
+                <button class="lang-btn active" id="btnEn" onclick="switchLang('en')" aria-pressed="true">🇬🇧 English</button>
+                <button class="lang-btn" id="btnHi" onclick="switchLang('hi')" aria-pressed="false">🗣️ Hinglish</button>
+            </div>
+
+            <div class="download-actions">
+                <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
+                <button class="download-btn secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            </div>
         </div>
 
-        <div class="lang-controls">
-            <button class="lang-btn active" id="btnEn" onclick="switchLang('en')">🇬🇧 English</button>
-            <button class="lang-btn" id="btnHi" onclick="switchLang('hi')">🗣️ Hinglish</button>
-        </div>
-
-        <div class="download-actions">
-            <button class="download-btn primary" onclick="openModal()">📥 Download Ebook</button>
-        </div>
+        <!-- ═══════════ TABLE OF CONTENTS (auto-generated) ═══════════ -->
+        <details class="toc-panel" id="tocPanel" open>
+            <summary class="toc-summary">
+                <span>📑 Table of Contents</span>
+                <span class="toc-toggle-hint">click to expand / collapse</span>
+            </summary>
+            <ol class="toc-list" id="tocList">
+                <!-- JS will populate, but fallback static list for no-JS -->
+                <li><a href="#" data-toc="1">Chapter 1 — The Beginning (2008)</a></li>
+                <li><a href="#" data-toc="2">Chapter 2 — A Loss and a New Beginning (2009)</a></li>
+                <li><a href="#" data-toc="3">Chapter 3 — A Changing Home (2010–2012)</a></li>
+                <li><a href="#" data-toc="4">Chapter 4 — First Steps into School (2013)</a></li>
+                <li><a href="#" data-toc="5">Chapter 5 — A House Divided (2014–2016)</a></li>
+                <li><a href="#" data-toc="6">Chapter 6 — An Unexpected Leap (2017)</a></li>
+                <li><a href="#" data-toc="7">Chapter 7 — Earning a Name (2017)</a></li>
+                <li><a href="#" data-toc="8">Chapter 8 — The Will to Rise (2018)</a></li>
+                <li><a href="#" data-toc="9">Chapter 9 — A Dream Takes Shape (2018–2019)</a></li>
+                <li><a href="#" data-toc="10">Chapter 10 — A Tribute and a Farewell (2019)</a></li>
+                <li><a href="#" data-toc="11">Epilogue — The Journey Continues</a></li>
+            </ol>
+        </details>
 
         <!-- ═══════════ ENGLISH CHAPTERS ═══════════ -->
-        <div id="chaptersEn">
+        <div id="chaptersEn" lang="en">
 
             <!-- CHAPTER 1 -->
-            <div class="chapter active" data-chapter="1">
+            <article class="chapter active" data-chapter="1" id="chapter-1-en">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: The Beginning (2008)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -312,14 +361,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')" disabled>← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 2 -->
-            <div class="chapter" data-chapter="2">
+            <article class="chapter" data-chapter="2" id="chapter-2-en">
                 <h3><span class="emoji-big">🕊️</span> Chapter 2: A Loss and a New Beginning (2009)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -364,14 +413,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 3 -->
-            <div class="chapter" data-chapter="3">
+            <article class="chapter" data-chapter="3" id="chapter-3-en">
                 <h3><span class="emoji-big">🏠</span> Chapter 3: A Changing Home (2010–2012)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -418,14 +467,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 4 -->
-            <div class="chapter" data-chapter="4">
+            <article class="chapter" data-chapter="4" id="chapter-4-en">
                 <h3><span class="emoji-big">🎒</span> Chapter 4: First Steps into School (2013)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -474,14 +523,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 5 -->
-            <div class="chapter" data-chapter="5">
+            <article class="chapter" data-chapter="5" id="chapter-5-en">
                 <h3><span class="emoji-big">🏚️</span> Chapter 5: A House Divided (2014–2016)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -529,14 +578,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 6 -->
-            <div class="chapter" data-chapter="6">
+            <article class="chapter" data-chapter="6" id="chapter-6-en">
                 <h3><span class="emoji-big">📚</span> Chapter 6: An Unexpected Leap (2017)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -581,14 +630,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 7 -->
-            <div class="chapter" data-chapter="7">
+            <article class="chapter" data-chapter="7" id="chapter-7-en">
                 <h3><span class="emoji-big">👦</span> Chapter 7: Earning a Name (2017)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -631,14 +680,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 8 -->
-            <div class="chapter" data-chapter="8">
+            <article class="chapter" data-chapter="8" id="chapter-8-en">
                 <h3><span class="emoji-big">📈</span> Chapter 8: The Will to Rise (2018)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -693,14 +742,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 9 -->
-            <div class="chapter" data-chapter="9">
+            <article class="chapter" data-chapter="9" id="chapter-9-en">
                 <h3><span class="emoji-big">✨</span> Chapter 9: A Dream Takes Shape (2018–2019)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -753,14 +802,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 10 -->
-            <div class="chapter" data-chapter="10">
+            <article class="chapter" data-chapter="10" id="chapter-10-en">
                 <h3><span class="emoji-big">🕯️</span> Chapter 10: A Tribute and a Farewell (2019)</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -814,14 +863,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 11 -->
-            <div class="chapter" data-chapter="11">
+            <article class="chapter" data-chapter="11" id="chapter-11-en">
                 <h3><span class="emoji-big">📖</span> Epilogue: The Journey Continues</h3>
 
                 <div class="audio-player" data-lang="en">
@@ -867,19 +916,19 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('en')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('en')" disabled>Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
         </div>
 
-                <!-- ═══════════ HINGLISH CHAPTERS ═══════════ -->
-        <div id="chaptersHi" style="display:none;">
+        <!-- ═══════════ HINGLISH CHAPTERS ═══════════ -->
+        <div id="chaptersHi" style="display:none;" lang="hi">
 
             <!-- CHAPTER 1 -->
-            <div class="chapter active" data-chapter="1">
+            <article class="chapter active" data-chapter="1" id="chapter-1-hi">
                 <h3><span class="emoji-big">🌅</span> Chapter 1: Shuruaat (2008)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -923,14 +972,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')" disabled>← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 2 -->
-            <div class="chapter" data-chapter="2">
+            <article class="chapter" data-chapter="2" id="chapter-2-hi">
                 <h3><span class="emoji-big">🕊️</span> Chapter 2: Ek Khoj aur Nayi Shuruaat (2009)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -975,14 +1024,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 3 -->
-            <div class="chapter" data-chapter="3">
+            <article class="chapter" data-chapter="3" id="chapter-3-hi">
                 <h3><span class="emoji-big">🏠</span> Chapter 3: Badalta Ghar (2010–2012)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1025,14 +1074,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 4 -->
-            <div class="chapter" data-chapter="4">
+            <article class="chapter" data-chapter="4" id="chapter-4-hi">
                 <h3><span class="emoji-big">🎒</span> Chapter 4: School Ke Pehle Kadam (2013)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1074,14 +1123,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 5 -->
-            <div class="chapter" data-chapter="5">
+            <article class="chapter" data-chapter="5" id="chapter-5-hi">
                 <h3><span class="emoji-big">🏚️</span> Chapter 5: Ghar Ka Batwara (2014–2016)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1126,14 +1175,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 6 -->
-            <div class="chapter" data-chapter="6">
+            <article class="chapter" data-chapter="6" id="chapter-6-hi">
                 <h3><span class="emoji-big">📚</span> Chapter 6: Ek Anokha Kadam (2017)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1188,14 +1237,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 7 -->
-            <div class="chapter" data-chapter="7">
+            <article class="chapter" data-chapter="7" id="chapter-7-hi">
                 <h3><span class="emoji-big">👦</span> Chapter 7: Ek Nayi Pehchaan (2017)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1240,14 +1289,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 8 -->
-            <div class="chapter" data-chapter="8">
+            <article class="chapter" data-chapter="8" id="chapter-8-hi">
                 <h3><span class="emoji-big">📈</span> Chapter 8: Uthne Ki Chah (2018)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1302,14 +1351,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 9 -->
-            <div class="chapter" data-chapter="9">
+            <article class="chapter" data-chapter="9" id="chapter-9-hi">
                 <h3><span class="emoji-big">✨</span> Chapter 9: Sapna Sakar Hota Hai (2018–2019)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1361,14 +1410,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 10 -->
-            <div class="chapter" data-chapter="10">
+            <article class="chapter" data-chapter="10" id="chapter-10-hi">
                 <h3><span class="emoji-big">🕯️</span> Chapter 10: Ek Shraddhanjali aur Alvida (2019)</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1422,14 +1471,14 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')">Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
             <!-- CHAPTER 11 -->
-            <div class="chapter" data-chapter="11">
+            <article class="chapter" data-chapter="11" id="chapter-11-hi">
                 <h3><span class="emoji-big">📖</span> Epilogue: Safar Jaari Hai...</h3>
 
                 <div class="audio-player" data-lang="hi">
@@ -1476,38 +1525,40 @@
                     <span class="author">— Ravi Raj</span>
                 </div>
                 
-                <div class="nav-buttons">
+                <nav class="nav-buttons" aria-label="Chapter navigation">
                     <button class="nav-btn prev-btn" onclick="prevChapter('hi')">← Previous</button>
                     <button class="nav-btn next-btn" onclick="nextChapter('hi')" disabled>Next →</button>
-                </div>
-            </div>
+                </nav>
+            </article>
 
         </div>
         <!-- ═══════════ END HINGLISH CHAPTERS ═══════════ -->
 
-
         <!-- ===== CHAPTER PROGRESS INFO ===== -->
-        <div class="chapter-progress-info">
+        <div class="chapter-progress-info" role="status" aria-live="polite">
             <span class="chapter-num" id="chapterNumDisplay">Chapter 1 of 11</span>
             <span class="chapter-percent" id="chapterPercentDisplay">0% complete</span>
         </div>
 
         <!-- ===== PROGRESS DOTS (11 dots) ===== -->
-        <div class="progress-dots" id="progressDots">
-            <span class="dot active" data-dot="1"></span>
-            <span class="dot" data-dot="2"></span>
-            <span class="dot" data-dot="3"></span>
-            <span class="dot" data-dot="4"></span>
-            <span class="dot" data-dot="5"></span>
-            <span class="dot" data-dot="6"></span>
-            <span class="dot" data-dot="7"></span>
-            <span class="dot" data-dot="8"></span>
-            <span class="dot" data-dot="9"></span>
-            <span class="dot" data-dot="10"></span>
-            <span class="dot" data-dot="11"></span>
+        <div class="progress-dots" id="progressDots" role="navigation" aria-label="Chapter progress">
+            <button class="dot active" data-dot="1" aria-label="Go to chapter 1"></button>
+            <button class="dot" data-dot="2" aria-label="Go to chapter 2"></button>
+            <button class="dot" data-dot="3" aria-label="Go to chapter 3"></button>
+            <button class="dot" data-dot="4" aria-label="Go to chapter 4"></button>
+            <button class="dot" data-dot="5" aria-label="Go to chapter 5"></button>
+            <button class="dot" data-dot="6" aria-label="Go to chapter 6"></button>
+            <button class="dot" data-dot="7" aria-label="Go to chapter 7"></button>
+            <button class="dot" data-dot="8" aria-label="Go to chapter 8"></button>
+            <button class="dot" data-dot="9" aria-label="Go to chapter 9"></button>
+            <button class="dot" data-dot="10" aria-label="Go to chapter 10"></button>
+            <button class="dot" data-dot="11" aria-label="Go to chapter 11"></button>
         </div>
 
-    </div>
+        <!-- ═══════════ BACK TO TOP BUTTON ═══════════ -->
+        <button class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
+
+    </main>
     <!-- END autobio-wrapper -->
 
     <script src="js/autobiography.js" defer></script>
@@ -1524,6 +1575,12 @@
             <div class="pdf-pill-fill" id="pdfPillFill"></div>
         </div>
     </div>
-    
+
+    <!-- Toast & loading screen (for JS enhancements) -->
+    <div class="loading-screen" id="loadingScreen" style="display:none;" aria-hidden="true">
+        <div class="loading-spinner"></div>
+        <p>Loading your story...</p>
+    </div>
+
 </body>
 </html>
