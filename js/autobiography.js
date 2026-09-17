@@ -71,7 +71,6 @@
         try { saved = localStorage.getItem('autobio-theme'); } catch (e) {}
 
         if (!saved) {
-            // Fallback to system preference
             const prefersDark = window.matchMedia &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches;
             saved = prefersDark ? 'dark' : 'light';
@@ -99,7 +98,7 @@
         const sidebar = $('#sidebar');
         const overlay = $('#sidebarOverlay');
         if (sidebar) sidebar.classList.add('open');
-        if (overlay) overlay.classList.add('active');   // ✅ FIXED: was 'show'
+        if (overlay) overlay.classList.add('active');
         document.body.classList.add('sidebar-open');
     }
 
@@ -107,7 +106,7 @@
         const sidebar = $('#sidebar');
         const overlay = $('#sidebarOverlay');
         if (sidebar) sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('active'); // ✅ FIXED: was 'show'
+        if (overlay) overlay.classList.remove('active');
         document.body.classList.remove('sidebar-open');
     }
 
@@ -165,7 +164,6 @@
         chapterId = String(chapterId);
         state.currentChapter = chapterId;
 
-        // Get active container
         const container = getActiveContainer();
         if (!container) return;
 
@@ -187,14 +185,10 @@
             });
         }
 
-        // Update nav buttons state
         updateNavButtons(chapterId);
-
-        // Update progress info + dots + sidebar highlight
         updateProgress(chapterId);
         highlightSidebar(chapterId);
 
-        // Scroll to top of chapters (smooth)
         if (scroll) {
             const wrapper = $('.autobio-wrapper');
             if (wrapper) {
@@ -205,7 +199,6 @@
             }
         }
 
-        // Persist
         try { localStorage.setItem('autobio-chapter', chapterId); } catch (e) {}
     }
 
@@ -247,7 +240,6 @@
             pctDisplay.textContent = `${pct}% complete`;
         }
 
-        // Update dots
         $$('#progressDots .dot').forEach(dot => {
             const dotId = dot.dataset.dot;
             const dotIdx = CHAPTER_ORDER.indexOf(dotId);
@@ -262,7 +254,17 @@
         });
     }
 
+    /* ---------- CLICK HANDLERS (single source of truth) ---------- */
     function initChapterClicks() {
+        // ✅ FIX: inline onclick hata do taaki double firing na ho
+        // (HTML me agar onclick="nextChapter()" / "prevChapter()" / "showChapter()" hai,
+        //  wo JS handler ke saath milkar 2 step jump karata tha)
+        $$('.nav-btn, .prev-btn, .next-btn, #chapterSidebarMenu a, #progressDots .dot')
+            .forEach(el => {
+                el.removeAttribute('onclick');
+                el.onclick = null;
+            });
+
         // Sidebar chapter links
         $$('#chapterSidebarMenu a').forEach(a => {
             a.addEventListener('click', (e) => {
@@ -283,10 +285,14 @@
             });
         });
 
-        // Prev/Next buttons (event delegation so it works for both languages)
+        // Prev/Next buttons — event delegation
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.nav-btn');
             if (!btn) return;
+
+            // Safety: agar kahin inline onclick bach gaya ho to skip
+            if (btn.hasAttribute('onclick')) return;
+
             if (btn.classList.contains('prev-btn')) prevChapter();
             else if (btn.classList.contains('next-btn')) nextChapter();
         });
@@ -295,7 +301,7 @@
         document.addEventListener('keydown', (e) => {
             if (document.body.classList.contains('sidebar-open')) return;
             const modal = $('#downloadModal');
-            if (modal && modal.classList.contains('active')) return;  // ✅ FIXED: was 'show'
+            if (modal && modal.classList.contains('active')) return;
 
             if (e.key === 'ArrowLeft')  prevChapter();
             if (e.key === 'ArrowRight') nextChapter();
@@ -308,14 +314,14 @@
     function openModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
-        modal.classList.add('active');   // ✅ FIXED: was 'show'
+        modal.classList.add('active');
         document.body.classList.add('modal-open');
     }
 
     function closeModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
-        modal.classList.remove('active'); // ✅ FIXED: was 'show'
+        modal.classList.remove('active');
         document.body.classList.remove('modal-open');
     }
 
@@ -336,7 +342,6 @@
 
     /* ============================================================
        9. EBOOK DOWNLOAD HELPERS
-       (Delegates to ebook.js if available, else fallback)
        ============================================================ */
     function downloadEnglishEbook() {
         if (typeof window.generateEbook === 'function') {
@@ -344,7 +349,6 @@
         } else if (typeof window.generateEbookEn === 'function') {
             window.generateEbookEn();
         } else {
-            // Fallback: trigger print/save-as-PDF
             showToast('📄 Opening print dialog...');
             setTimeout(() => window.print(), 400);
         }
@@ -367,14 +371,12 @@
        10. RESTORE STATE
        ============================================================ */
     function restoreState() {
-        // Language
         let savedLang = null;
         try { savedLang = localStorage.getItem('autobio-lang'); } catch (e) {}
         if (savedLang === 'hi' || savedLang === 'en') {
             state.currentLang = savedLang;
         }
 
-        // Chapter
         let savedCh = null;
         try { savedCh = localStorage.getItem('autobio-chapter'); } catch (e) {}
         if (savedCh && CHAPTER_ORDER.includes(String(savedCh))) {
@@ -396,18 +398,17 @@
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
 
-        // Bind language buttons (in case HTML inline onclick fails)
+        // Language buttons — use onclick = to also wipe any old inline handler
         const btnEn = $('#btnEn');
         const btnHi = $('#btnHi');
         if (btnEn) btnEn.onclick = () => switchLang('en');
         if (btnHi) btnHi.onclick = () => switchLang('hi');
 
-        // Mark body as JS-ready (useful for CSS)
         document.body.classList.add('js-ready');
     }
 
     /* ============================================================
-       12. EXPOSE GLOBALS (HTML uses onclick="...")
+       12. EXPOSE GLOBALS (console / debug ke liye)
        ============================================================ */
     window.openModal            = openModal;
     window.closeModal           = closeModal;
