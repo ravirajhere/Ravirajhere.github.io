@@ -2,7 +2,8 @@
    autobiography.js
    My Autobiography — Ravi Raj
    Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
-            Reader Wizard (4-step ebook personalization)
+            Reader Wizard (4-step ebook personalization),
+            Webcam Capture
    ============================================================ */
 
 (function () {
@@ -357,7 +358,7 @@
     }
 
     /* ============================================================
-       9B. READER WIZARD — 4-Step Ebook Personalization Flow
+       9B. READER WIZARD — Multi-Step Ebook Personalization Flow
        ============================================================ */
 
     // Wizard state
@@ -368,10 +369,17 @@
         language: 'en'        // 'en' | 'hi'
     };
 
+    // Webcam state
+    let webcamStream = null;
+    let webcamActive = false;
+
     // ─── Step Navigation ───
     function goToStep(stepNum) {
         $$('.modal-step').forEach(step => step.classList.remove('active'));
-        const target = $('#step' + stepNum);
+
+        // Support both numeric (1, 2, 3, 4) and named steps ('Camera')
+        const targetId = 'step' + stepNum;
+        const target = $('#' + targetId);
         if (target) target.classList.add('active');
 
         if (stepNum === 2) {
@@ -412,8 +420,8 @@
 
     // ─── Photo Handling ───
     function triggerCamera() {
-        const input = $('#cameraInput');
-        if (input) input.click();
+        // ⭐ Ab file input ke bajaye webcam open karo
+        openWebcam();
     }
 
     function triggerUpload() {
@@ -449,9 +457,7 @@
     }
 
     function initPhotoInputs() {
-        const cameraInput = $('#cameraInput');
         const uploadInput = $('#uploadInput');
-        if (cameraInput) cameraInput.addEventListener('change', handlePhotoSelect);
         if (uploadInput) uploadInput.addEventListener('change', handlePhotoSelect);
 
         const nameInput = $('#readerName');
@@ -465,8 +471,190 @@
         }
     }
 
+    /* ============================================================
+       9C. WEBCAM — Live camera capture
+       ============================================================ */
+
+    /**
+     * Open webcam — request permission and start live feed
+     */
+    async function openWebcam() {
+        // Check browser support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showToast('Camera not supported on this browser');
+            triggerUpload();
+            return;
+        }
+
+        // Move to camera step
+        goToStep('Camera');
+
+        // Reset UI states
+        const video = $('#webcamVideo');
+        const loading = $('#webcamLoading');
+        const error = $('#webcamError');
+        const controls = $('#webcamControls');
+        const fallback = $('#webcamFallback');
+        const captureBtn = $('#captureBtn');
+
+        if (loading) loading.style.display = 'flex';
+        if (error) error.style.display = 'none';
+        if (controls) controls.style.display = 'flex';
+        if (fallback) fallback.style.display = 'none';
+        if (captureBtn) captureBtn.disabled = true;
+
+        try {
+            // Request camera — prefer front camera (selfie)
+            webcamStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 720 },
+                    height: { ideal: 720 }
+                },
+                audio: false
+            });
+
+            if (video) {
+                video.srcObject = webcamStream;
+
+                video.onloadedmetadata = () => {
+                    video.play();
+                    webcamActive = true;
+
+                    if (loading) loading.style.display = 'none';
+                    if (captureBtn) captureBtn.disabled = false;
+                };
+            }
+
+        } catch (err) {
+            console.warn('Webcam error:', err);
+            showWebcamError(err);
+        }
+    }
+
+    /**
+     * Show error UI based on error type
+     */
+    function showWebcamError(err) {
+        const loading = $('#webcamLoading');
+        const error = $('#webcamError');
+        const errorMsg = $('#webcamErrorMsg');
+        const controls = $('#webcamControls');
+        const fallback = $('#webcamFallback');
+
+        if (loading) loading.style.display = 'none';
+        if (error) error.style.display = 'flex';
+        if (controls) controls.style.display = 'none';
+        if (fallback) fallback.style.display = 'flex';
+
+        let msg = 'Please allow camera access or use Gallery instead.';
+
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            msg = 'Camera permission was denied. Please allow access in your browser settings.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            msg = 'No camera found on this device. Please use Gallery instead.';
+        } else if (err.name === 'NotReadableError') {
+            msg = 'Camera is in use by another app. Close it and try again.';
+        } else if (err.name === 'OverconstrainedError') {
+            msg = 'Camera does not meet requirements. Please use Gallery instead.';
+        }
+
+        if (errorMsg) errorMsg.textContent = msg;
+    }
+
+    /**
+     * Capture photo from webcam video
+     */
+    function capturePhoto() {
+        if (!webcamActive) return;
+
+        const video = $('#webcamVideo');
+        const container = document.querySelector('.webcam-container');
+        if (!video) return;
+
+        // Create canvas at video's native resolution
+        const canvas = document.createElement('canvas');
+        const videoWidth = video.videoWidth || 720;
+        const videoHeight = video.videoHeight || 720;
+
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+
+        const ctx = canvas.getContext('2d');
+
+        // Mirror the capture (since video is mirror-flipped for display)
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert to JPEG base64 (compressed for smaller PDF size)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+        // Flash effect
+        if (container) {
+            container.classList.add('captured');
+            setTimeout(() => container.classList.remove('captured'), 400);
+        }
+
+        // Save photo to reader data
+        readerData.photo = dataUrl;
+
+        // Update preview in Step 3
+        const previewBox = $('#photoPreviewBox');
+        if (previewBox) {
+            previewBox.innerHTML = `<img src="${dataUrl}" alt="Reader photo" />`;
+            previewBox.classList.add('has-photo');
+        }
+
+        // Close webcam and return to Step 3
+        setTimeout(() => {
+            closeWebcam();
+            goToStep(3);
+            showToast('📸 Photo captured!');
+        }, 300);
+    }
+
+    /**
+     * Close webcam — stop stream and clean up
+     */
+    function closeWebcam() {
+        // Stop all video tracks
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream = null;
+        }
+
+        const video = $('#webcamVideo');
+        if (video) video.srcObject = null;
+
+        webcamActive = false;
+
+        // Reset UI
+        const loading = $('#webcamLoading');
+        const error = $('#webcamError');
+        const controls = $('#webcamControls');
+        const fallback = $('#webcamFallback');
+        const captureBtn = $('#captureBtn');
+
+        if (loading) loading.style.display = 'flex';
+        if (error) error.style.display = 'none';
+        if (controls) controls.style.display = 'flex';
+        if (fallback) fallback.style.display = 'none';
+        if (captureBtn) captureBtn.disabled = true;
+
+        // Go back to Step 3
+        goToStep(3);
+    }
+
     // ─── Reset Wizard State ───
     function resetWizard() {
+        // ⭐ Stop webcam if active
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(track => track.stop());
+            webcamStream = null;
+        }
+        webcamActive = false;
+
         readerData.name = '';
         readerData.gender = 'neutral';
         readerData.photo = null;
@@ -487,9 +675,7 @@
         const neutralRadio = document.querySelector('input[name="gender"][value="neutral"]');
         if (neutralRadio) neutralRadio.checked = true;
 
-        const cameraInput = $('#cameraInput');
         const uploadInput = $('#uploadInput');
-        if (cameraInput) cameraInput.value = '';
         if (uploadInput) uploadInput.value = '';
     }
 
@@ -532,7 +718,6 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         updateModalProgress(0, 'Preparing ebook...');
 
         try {
-            // ebook.js should expose this globally
             if (typeof window.generateEbookWithReader !== 'function') {
                 throw new Error('Ebook generator not ready');
             }
@@ -596,7 +781,7 @@ Some people come into life and leave, some become a memory. ${name} is one of th
         initSidebar();
         initModal();
         initChapterClicks();
-        initPhotoInputs();          // ⭐ Wizard photo listeners
+        initPhotoInputs();
 
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
@@ -630,6 +815,11 @@ Some people come into life and leave, some become a memory. ${name} is one of th
     window.triggerCamera        = triggerCamera;
     window.triggerUpload        = triggerUpload;
     window.startPDFGeneration   = startPDFGeneration;
+
+    // ⭐ Webcam functions
+    window.openWebcam           = openWebcam;
+    window.closeWebcam          = closeWebcam;
+    window.capturePhoto         = capturePhoto;
 
     /* ============================================================
        13. BOOT
