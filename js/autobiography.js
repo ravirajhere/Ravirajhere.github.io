@@ -1,417 +1,432 @@
 /* ============================================================
-   AUTOBIOGRAPHY.JS — Full Logic (11 Chapters - 6A/6B Support)
-   Ravi Raj / Suraj Anand — "A Boy Who Never Thought"
-   Includes: Theme Toggle, Language Switch, Chapter Nav, Progress
+   autobiography.js
+   My Autobiography — Ravi Raj
+   Handles: Theme, Sidebar, Language, Chapters, Modal, Toast
    ============================================================ */
 
-/* ============================================================
-   GLOBAL STATE
-   ============================================================ */
-let currentLang = 'en';           // 'en' or 'hi'
+(function () {
+    'use strict';
 
-// Chapter IDs in order — 11 chapters (6A aur 6B alag hain)
-const CHAPTER_LIST = ['1', '2', '3', '4', '5', '6a', '6b', '7', '8', '9', '10'];
-const TOTAL_CHAPTERS = CHAPTER_LIST.length; // = 11
+    /* ============================================================
+       1. CONFIG & STATE
+       ============================================================ */
+    const TOTAL_CHAPTERS = 11;
 
-let currentChapter = '1';         // chapter ID (string)
+    // Chapter order (matches data-chapter attributes in HTML)
+    const CHAPTER_ORDER = ['1', '2', '3', '4', '5', '6a', '6b', '7', '8', '9', '10'];
 
-/* ============================================================
-   HELPER — Chapter Index <-> ID
-   ============================================================ */
-function getChapterIndex(chapterId) {
-    return CHAPTER_LIST.indexOf(String(chapterId).toLowerCase());
-}
+    const state = {
+        currentChapter: '1',
+        currentLang: 'en',       // 'en' | 'hi'
+        theme: 'light'           // 'light' | 'dark'
+    };
 
-function getChapterIdByIndex(index) {
-    return CHAPTER_LIST[index];
-}
+    /* ============================================================
+       2. DOM HELPERS
+       ============================================================ */
+    const $  = (sel, ctx = document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-/* ============================================================
-   1. TOAST NOTIFICATION
-   ============================================================ */
-function showToast(message, duration = 2500) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add('show');
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => {
-        toast.classList.remove('show');
-    }, duration);
-}
-window.showToast = showToast;
-
-/* ============================================================
-   2. THEME TOGGLE (Dark / Light)
-   ============================================================ */
-function applyTheme(theme) {
-    // theme: 'light' or 'dark'
-    if (theme === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        document.body.classList.remove('dark-mode');
-        document.documentElement.setAttribute('data-theme', 'light');
+    /* ============================================================
+       3. TOAST
+       ============================================================ */
+    let toastTimer = null;
+    function showToast(message, duration = 2500) {
+        const toast = $('#toast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    // Update all theme labels (top-left + navbar)
-    const label = document.getElementById('themeLabel');
-    if (label) {
-        label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+    /* ============================================================
+       4. THEME TOGGLE (Light / Dark)
+       ============================================================ */
+    function applyTheme(theme) {
+        state.theme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.classList.toggle('dark-mode', theme === 'dark');
+
+        // Update label (sidebar one)
+        const label = $('#themeLabel');
+        if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+
+        // Sync both switches (sidebar + nav)
+        $$('.switch').forEach(sw => {
+            sw.classList.toggle('active', theme === 'dark');
+            sw.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+        });
+
+        // Persist
+        try { localStorage.setItem('autobio-theme', theme); } catch (e) {}
     }
 
-    // Save preference
-    try {
-        localStorage.setItem('autobioTheme', theme);
-    } catch (e) {}
-}
-
-function toggleTheme() {
-    const isDark = document.body.classList.contains('dark-mode');
-    const newTheme = isDark ? 'light' : 'dark';
-    applyTheme(newTheme);
-    showToast(newTheme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
-}
-window.toggleTheme = toggleTheme;
-
-function initThemeToggle() {
-    // Restore saved theme, or fall back to system preference
-    let savedTheme = null;
-    try {
-        savedTheme = localStorage.getItem('autobioTheme');
-    } catch (e) {}
-
-    if (!savedTheme) {
-        // Detect system preference
-        const prefersDark = window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches;
-        savedTheme = prefersDark ? 'dark' : 'light';
+    function toggleTheme() {
+        applyTheme(state.theme === 'dark' ? 'light' : 'dark');
     }
 
-    // Apply saved/system theme
-    applyTheme(savedTheme);
+    function initTheme() {
+        let saved = null;
+        try { saved = localStorage.getItem('autobio-theme'); } catch (e) {}
 
-    // Attach click handlers to BOTH switches (top-left + navbar)
-    const switch1 = document.getElementById('themeSwitch');
-    const switch2 = document.getElementById('themeSwitchNav');
+        if (!saved) {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches;
+            saved = prefersDark ? 'dark' : 'light';
+        }
+        applyTheme(saved);
 
-    [switch1, switch2].forEach((sw) => {
-        if (!sw) return;
+        // Bind both switches
+        ['#themeSwitch', '#themeSwitchNav'].forEach(id => {
+            const sw = $(id);
+            if (!sw) return;
+            sw.addEventListener('click', toggleTheme);
+            sw.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleTheme();
+                }
+            });
+        });
+    }
 
-        // Click
-        sw.addEventListener('click', toggleTheme);
+    /* ============================================================
+       5. SIDEBAR (open / close)
+       ============================================================ */
+    function openSidebar() {
+        const sidebar = $('#sidebar');
+        const overlay = $('#sidebarOverlay');
+        if (sidebar) sidebar.classList.add('open');
+        if (overlay) overlay.classList.add('show');
+        document.body.classList.add('sidebar-open');
+    }
 
-        // Keyboard (Enter / Space) — accessibility
-        sw.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleTheme();
+    function closeSidebar() {
+        const sidebar = $('#sidebar');
+        const overlay = $('#sidebarOverlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+    }
+
+    function initSidebar() {
+        const hamburger = $('#hamburgerBtn');
+        const closeBtn  = $('#sidebarClose');
+        const overlay   = $('#sidebarOverlay');
+
+        if (hamburger) hamburger.addEventListener('click', openSidebar);
+        if (closeBtn)  closeBtn.addEventListener('click', closeSidebar);
+        if (overlay)   overlay.addEventListener('click', closeSidebar);
+
+        // ESC closes sidebar
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSidebar();
+        });
+    }
+
+    /* ============================================================
+       6. LANGUAGE SWITCH
+       ============================================================ */
+    function switchLang(lang) {
+        if (lang !== 'en' && lang !== 'hi') return;
+        state.currentLang = lang;
+
+        // Toggle active button
+        const btnEn = $('#btnEn');
+        const btnHi = $('#btnHi');
+        if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+        if (btnHi) btnHi.classList.toggle('active', lang === 'hi');
+
+        // Toggle chapters containers
+        const enBox = $('#chaptersEn');
+        const hiBox = $('#chaptersHi');
+        if (enBox) enBox.style.display = lang === 'en' ? '' : 'none';
+        if (hiBox) hiBox.style.display = lang === 'hi' ? '' : 'none';
+
+        // Show only current chapter in the active language
+        showChapter(state.currentChapter, false);
+
+        // Persist
+        try { localStorage.setItem('autobio-lang', lang); } catch (e) {}
+
+        showToast(lang === 'en' ? '🇬🇧 English' : '🗣️ Hinglish');
+    }
+
+    /* ============================================================
+       7. CHAPTERS
+       ============================================================ */
+    function getActiveContainer() {
+        return state.currentLang === 'en' ? $('#chaptersEn') : $('#chaptersHi');
+    }
+
+    function showChapter(chapterId, scroll = true) {
+        chapterId = String(chapterId);
+        state.currentChapter = chapterId;
+
+        // Get active container
+        const container = getActiveContainer();
+        if (!container) return;
+
+        // Hide all chapters in this container, show the matching one
+        $$('.chapter', container).forEach(ch => {
+            const match = ch.dataset.chapter === chapterId;
+            ch.classList.toggle('active', match);
+            ch.style.display = match ? '' : 'none';
+        });
+
+        // Also hide all chapters in the *other* language container
+        const otherContainer = state.currentLang === 'en'
+            ? $('#chaptersHi')
+            : $('#chaptersEn');
+        if (otherContainer) {
+            $$('.chapter', otherContainer).forEach(ch => {
+                ch.classList.remove('active');
+                ch.style.display = 'none';
+            });
+        }
+
+        // Update nav buttons state
+        updateNavButtons(chapterId);
+
+        // Update progress info + dots + sidebar highlight
+        updateProgress(chapterId);
+        highlightSidebar(chapterId);
+
+        // Scroll to top of chapters (smooth)
+        if (scroll) {
+            const wrapper = $('.autobio-wrapper');
+            if (wrapper) {
+                window.scrollTo({
+                    top: wrapper.offsetTop - 60,
+                    behavior: 'smooth'
+                });
             }
-        });
-    });
-
-    console.log('🎨 Theme initialised:', savedTheme);
-}
-
-/* ============================================================
-   3. LANGUAGE SWITCH (English ↔ Hinglish)
-   ============================================================ */
-function switchLang(lang) {
-    currentLang = lang;
-
-    // Toggle chapter containers
-    const enBox = document.getElementById('chaptersEn');
-    const hiBox = document.getElementById('chaptersHi');
-
-    if (lang === 'en') {
-        if (enBox) enBox.style.display = 'block';
-        if (hiBox) hiBox.style.display = 'none';
-    } else {
-        if (enBox) enBox.style.display = 'none';
-        if (hiBox) hiBox.style.display = 'block';
-    }
-
-    // Toggle active class on lang buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(lang === 'en' ? 'btnEn' : 'btnHi');
-    if (activeBtn) activeBtn.classList.add('active');
-
-    // Reset to chapter 1 of the selected language
-    goToChapter(lang, '1');
-
-    // Show toast
-    showToast(lang === 'en' ? '🇬🇧 English Mode' : '🗣️ Hinglish Mode');
-
-    // Save preference
-    try {
-        localStorage.setItem('autobioLang', lang);
-    } catch (e) {}
-}
-window.switchLang = switchLang;
-
-/* ============================================================
-   4. CHAPTER NAVIGATION
-   ============================================================ */
-function getChaptersContainer(lang) {
-    return document.getElementById(lang === 'en' ? 'chaptersEn' : 'chaptersHi');
-}
-
-function getChapterElements(lang) {
-    const container = getChaptersContainer(lang);
-    if (!container) return [];
-    return Array.from(container.querySelectorAll('.chapter'));
-}
-
-function goToChapter(lang, chapterId) {
-    // Convert to string and lowercase for safety
-    const targetId = String(chapterId).toLowerCase();
-
-    // Validate — chapter must exist in list
-    if (!CHAPTER_LIST.includes(targetId)) {
-        console.warn('⚠️ Invalid chapter:', chapterId);
-        return;
-    }
-
-    currentLang = lang;
-    currentChapter = targetId;
-
-    const chapters = getChapterElements(lang);
-
-    // Hide all, show only the target (match by data-chapter attribute)
-    chapters.forEach((ch) => {
-        const chId = String(ch.dataset.chapter).toLowerCase();
-        if (chId === targetId) {
-            ch.classList.add('active');
-        } else {
-            ch.classList.remove('active');
         }
-    });
 
-    // Update progress info
-    updateProgressInfo();
-
-    // Update progress dots
-    updateProgressDots();
-
-    // Scroll to the active chapter
-    const activeChapter = chapters.find(
-        (ch) => String(ch.dataset.chapter).toLowerCase() === targetId
-    );
-    if (activeChapter) {
-        requestAnimationFrame(() => {
-            const yOffset = -90; // navbar + breathing space
-            const y = activeChapter.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        });
+        // Persist
+        try { localStorage.setItem('autobio-chapter', chapterId); } catch (e) {}
     }
 
-    // Save progress
-    try {
-        localStorage.setItem('autobioChapter', targetId);
-        localStorage.setItem('autobioLang', lang);
-    } catch (e) {}
-}
-window.goToChapter = goToChapter;
+    function updateNavButtons(chapterId) {
+        const container = getActiveContainer();
+        if (!container) return;
 
-function nextChapter(lang) {
-    const targetLang = lang || currentLang;
-    const idx = getChapterIndex(currentChapter);
-    if (idx >= 0 && idx < TOTAL_CHAPTERS - 1) {
-        goToChapter(targetLang, CHAPTER_LIST[idx + 1]);
-    }
-}
-window.nextChapter = nextChapter;
+        const idx = CHAPTER_ORDER.indexOf(chapterId);
+        const activeCh = $('.chapter.active', container);
+        if (!activeCh) return;
 
-function prevChapter(lang) {
-    const targetLang = lang || currentLang;
-    const idx = getChapterIndex(currentChapter);
-    if (idx > 0) {
-        goToChapter(targetLang, CHAPTER_LIST[idx - 1]);
-    }
-}
-window.prevChapter = prevChapter;
+        const prevBtn = $('.prev-btn', activeCh);
+        const nextBtn = $('.next-btn', activeCh);
 
-/* ============================================================
-   5. PROGRESS INFO UPDATE
-   ============================================================ */
-function updateProgressInfo() {
-    const numDisplay = document.getElementById('chapterNumDisplay');
-    const percentDisplay = document.getElementById('chapterPercentDisplay');
-
-    const idx = getChapterIndex(currentChapter);
-    const humanNum = idx + 1; // 1-based
-
-    if (numDisplay) {
-        // 6A / 6B dikhane ke liye special label
-        let label = String(currentChapter).toUpperCase();
-        numDisplay.textContent = `Chapter ${label} of ${TOTAL_CHAPTERS}`;
+        if (prevBtn) prevBtn.disabled = idx <= 0;
+        if (nextBtn) nextBtn.disabled = idx >= CHAPTER_ORDER.length - 1;
     }
 
-    if (percentDisplay) {
-        const percent = Math.round(((humanNum - 1) / (TOTAL_CHAPTERS - 1)) * 100);
-        percentDisplay.textContent = `${percent}% complete`;
+    function prevChapter() {
+        const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
+        if (idx > 0) showChapter(CHAPTER_ORDER[idx - 1]);
     }
-}
 
-/* ============================================================
-   6. PROGRESS DOTS UPDATE
-   ============================================================ */
-function updateProgressDots() {
-    const dots = document.querySelectorAll('#progressDots .dot');
-    dots.forEach((dot) => {
-        const dotId = String(dot.dataset.dot).toLowerCase();
-        if (dotId === currentChapter) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
+    function nextChapter() {
+        const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
+        if (idx < CHAPTER_ORDER.length - 1) showChapter(CHAPTER_ORDER[idx + 1]);
+    }
+
+    function updateProgress(chapterId) {
+        const idx = CHAPTER_ORDER.indexOf(chapterId);
+        const numDisplay = $('#chapterNumDisplay');
+        const pctDisplay = $('#chapterPercentDisplay');
+
+        if (numDisplay) {
+            numDisplay.textContent = `Chapter ${idx + 1} of ${TOTAL_CHAPTERS}`;
         }
-    });
-}
+        if (pctDisplay) {
+            const pct = Math.round(((idx + 1) / TOTAL_CHAPTERS) * 100);
+            pctDisplay.textContent = `${pct}% complete`;
+        }
 
-/* ============================================================
-   7. PROGRESS DOTS CLICK HANDLER
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-    const dots = document.querySelectorAll('#progressDots .dot');
-    dots.forEach((dot) => {
-        dot.style.cursor = 'pointer';
-        dot.addEventListener('click', () => {
-            const dotId = String(dot.dataset.dot).toLowerCase();
-            goToChapter(currentLang, dotId);
+        // Update dots
+        $$('#progressDots .dot').forEach(dot => {
+            const dotId = dot.dataset.dot;
+            const dotIdx = CHAPTER_ORDER.indexOf(dotId);
+            dot.classList.toggle('active', dotId === chapterId);
+            dot.classList.toggle('done', dotIdx < idx);
         });
-    });
-});
-
-/* ============================================================
-   8. KEYBOARD NAVIGATION (Arrow keys)
-   ============================================================ */
-document.addEventListener('keydown', (e) => {
-    // Ignore if typing in input/textarea
-    const tag = (e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
-
-    // Ignore if modal or sidebar open
-    const modal = document.getElementById('downloadModal');
-    const sidebar = document.getElementById('sidebar');
-    if (modal && modal.classList.contains('active')) return;
-    if (sidebar && sidebar.classList.contains('open')) return;
-
-    if (e.key === 'ArrowRight') {
-        nextChapter(currentLang);
-    } else if (e.key === 'ArrowLeft') {
-        prevChapter(currentLang);
     }
-});
 
-/* ============================================================
-   9. GOOGLE TRANSLATE OPENER
-   ============================================================ */
-function openGoogleTranslate() {
-    const url = `https://translate.google.com/?sl=auto&tl=en&op=translate`;
-    window.open(url, '_blank', 'noopener');
-}
-window.openGoogleTranslate = openGoogleTranslate;
-
-/* ============================================================
-   10. DOWNLOAD MODAL
-   ============================================================ */
-function openModal() {
-    const modal = document.getElementById('downloadModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    function highlightSidebar(chapterId) {
+        $$('#chapterSidebarMenu a').forEach(a => {
+            a.classList.toggle('active', a.dataset.chapter === chapterId);
+        });
     }
-}
-window.openModal = openModal;
 
-function closeModal() {
-    const modal = document.getElementById('downloadModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+    function initChapterClicks() {
+        // Sidebar chapter links
+        $$('#chapterSidebarMenu a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const ch = a.dataset.chapter;
+                if (ch) {
+                    showChapter(ch);
+                    closeSidebar();
+                }
+            });
+        });
+
+        // Progress dots
+        $$('#progressDots .dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const ch = dot.dataset.dot;
+                if (ch) showChapter(ch);
+            });
+        });
+
+        // Prev/Next buttons (event delegation so it works for both languages)
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-btn');
+            if (!btn) return;
+            if (btn.classList.contains('prev-btn')) prevChapter();
+            else if (btn.classList.contains('next-btn')) nextChapter();
+        });
+
+        // Keyboard: Left / Right arrows (only if modal/sidebar not open)
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('sidebar-open')) return;
+            const modal = $('#downloadModal');
+            if (modal && modal.classList.contains('show')) return;
+
+            if (e.key === 'ArrowLeft')  prevChapter();
+            if (e.key === 'ArrowRight') nextChapter();
+        });
     }
-}
-window.closeModal = closeModal;
 
-// Close modal on overlay click
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('downloadModal');
-    if (modal) {
+    /* ============================================================
+       8. MODAL (Download Ebook)
+       ============================================================ */
+    function openModal() {
+        const modal = $('#downloadModal');
+        if (!modal) return;
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+    }
+
+    function closeModal() {
+        const modal = $('#downloadModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.classList.remove('modal-open');
+    }
+
+    function initModal() {
+        const modal = $('#downloadModal');
+        if (!modal) return;
+
+        // Click on overlay (not content) closes
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
+
+        // ESC closes
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
     }
 
-    // Close modal on Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const m = document.getElementById('downloadModal');
-            if (m && m.classList.contains('active')) closeModal();
+    /* ============================================================
+       9. EBOOK DOWNLOAD HELPERS
+       (Delegates to ebook.js if available, else fallback)
+       ============================================================ */
+    function downloadEnglishEbook() {
+        if (typeof window.generateEbook === 'function') {
+            window.generateEbook('en');
+        } else if (typeof window.generateEbookEn === 'function') {
+            window.generateEbookEn();
+        } else {
+            // Fallback: trigger print/save-as-PDF
+            showToast('📄 Opening print dialog...');
+            setTimeout(() => window.print(), 400);
         }
-    });
-});
+        closeModal();
+    }
 
-/* ============================================================
-   11. DOWNLOAD EBOOK HANDLERS
-   ============================================================ */
-function downloadEnglishEbook() {
-    if (typeof window.downloadEbook === 'function') {
-        window.downloadEbook('en');
+    function downloadHinglishEbook() {
+        if (typeof window.generateEbook === 'function') {
+            window.generateEbook('hi');
+        } else if (typeof window.generateEbookHi === 'function') {
+            window.generateEbookHi();
+        } else {
+            showToast('📄 Opening print dialog...');
+            setTimeout(() => window.print(), 400);
+        }
+        closeModal();
+    }
+
+    /* ============================================================
+       10. RESTORE STATE
+       ============================================================ */
+    function restoreState() {
+        // Language
+        let savedLang = null;
+        try { savedLang = localStorage.getItem('autobio-lang'); } catch (e) {}
+        if (savedLang === 'hi' || savedLang === 'en') {
+            state.currentLang = savedLang;
+        }
+
+        // Chapter
+        let savedCh = null;
+        try { savedCh = localStorage.getItem('autobio-chapter'); } catch (e) {}
+        if (savedCh && CHAPTER_ORDER.includes(String(savedCh))) {
+            state.currentChapter = String(savedCh);
+        }
+    }
+
+    /* ============================================================
+       11. INIT
+       ============================================================ */
+    function init() {
+        restoreState();
+        initTheme();
+        initSidebar();
+        initModal();
+        initChapterClicks();
+
+        // Apply language + chapter after DOM ready
+        switchLang(state.currentLang);
+        showChapter(state.currentChapter, false);
+
+        // Bind language buttons (in case HTML inline onclick fails)
+        const btnEn = $('#btnEn');
+        const btnHi = $('#btnHi');
+        if (btnEn) btnEn.onclick = () => switchLang('en');
+        if (btnHi) btnHi.onclick = () => switchLang('hi');
+
+        // Mark body as JS-ready (useful for CSS)
+        document.body.classList.add('js-ready');
+    }
+
+    /* ============================================================
+       12. EXPOSE GLOBALS (HTML uses onclick="...")
+       ============================================================ */
+    window.openModal            = openModal;
+    window.closeModal           = closeModal;
+    window.switchLang           = switchLang;
+    window.showChapter          = showChapter;
+    window.prevChapter          = prevChapter;
+    window.nextChapter          = nextChapter;
+    window.downloadEnglishEbook = downloadEnglishEbook;
+    window.downloadHinglishEbook= downloadHinglishEbook;
+    window.toggleTheme          = toggleTheme;
+    window.showToast            = showToast;
+
+    /* ============================================================
+       13. BOOT
+       ============================================================ */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        showToast('📥 English eBook download starting...');
-        setTimeout(() => closeModal(), 800);
-    }
-}
-window.downloadEnglishEbook = downloadEnglishEbook;
-
-function downloadHinglishEbook() {
-    if (typeof window.downloadEbook === 'function') {
-        window.downloadEbook('hi');
-    } else {
-        showToast('📥 Hinglish eBook download starting...');
-        setTimeout(() => closeModal(), 800);
-    }
-}
-window.downloadHinglishEbook = downloadHinglishEbook;
-
-/* ============================================================
-   12. INITIALISE ON LOAD
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Theme toggle (dark/light)
-    initThemeToggle();
-
-    // 2. Restore language + chapter preference
-    let savedLang = 'en';
-    let savedChapter = '1';
-    try {
-        savedLang = localStorage.getItem('autobioLang') || 'en';
-        savedChapter = localStorage.getItem('autobioChapter') || '1';
-    } catch (e) {}
-
-    // Validate
-    if (savedLang !== 'en' && savedLang !== 'hi') savedLang = 'en';
-    if (!CHAPTER_LIST.includes(String(savedChapter).toLowerCase())) {
-        savedChapter = '1';
+        init();
     }
 
-    // Apply
-    switchLang(savedLang);
-    goToChapter(savedLang, savedChapter);
-
-    console.log(
-        '✅ Autobiography.js loaded — Chapter',
-        savedChapter,
-        'in',
-        savedLang,
-        '| Total:',
-        TOTAL_CHAPTERS
-    );
-});
-
-/* ============================================================
-   13. EXPOSE GLOBALS
-   ============================================================ */
-window.currentLang = currentLang;
-window.TOTAL_CHAPTERS = TOTAL_CHAPTERS;
-window.CHAPTER_LIST = CHAPTER_LIST;
+})();
