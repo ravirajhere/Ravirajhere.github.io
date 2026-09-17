@@ -103,29 +103,125 @@
         </div>
     </nav>
 
-    <div class="modal-overlay" id="downloadModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">✕</button>
-            <h2>📥 Download Ebook</h2>
-            <p class="modal-desc">Choose your preferred language</p>
-            
-            <div class="modal-option">
-                <div class="opt-info">
-                    <span class="opt-title">🇬🇧 English Ebook</span>
-                    <span class="opt-desc">For South Indian Friend - In English</span>
-                </div>
-                <button class="modal-btn" onclick="downloadEnglishEbook()">Download</button>
-            </div>
-            
-            <div class="modal-option">
-                <div class="opt-info">
-                    <span class="opt-title">🗣️ Hinglish Ebook</span>
-                    <span class="opt-desc">For North Indian Friend - In Hinglish</span>
-                </div>
-                <button class="modal-btn" onclick="downloadHinglishEbook()">Download</button>
-            </div>
+<!-- ═══════════════════════════════════════════════════════
+     DOWNLOAD MODAL — 4 Step Wizard
+     Step 1: Language | Step 2: Name & Gender | Step 3: Photo | Step 4: Progress
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="downloadModal">
+  <div class="modal-content">
+
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- ════════ STEP 1: LANGUAGE ════════ -->
+    <div class="modal-step active" id="step1">
+      <h2>📥 Download Ebook</h2>
+      <p class="modal-desc">Please select your preferred language</p>
+
+      <div class="modal-option">
+        <div class="opt-info">
+          <span class="opt-title">🇬🇧 English Ebook</span>
+          <span class="opt-desc">For South Indian readers — written in English</span>
         </div>
+        <button class="modal-btn" onclick="selectLanguage('en')">Select</button>
+      </div>
+
+      <div class="modal-option">
+        <div class="opt-info">
+          <span class="opt-title">🗣️ Hinglish Ebook</span>
+          <span class="opt-desc">For North Indian readers — written in Hinglish</span>
+        </div>
+        <button class="modal-btn" onclick="selectLanguage('hi')">Select</button>
+      </div>
     </div>
+
+    <!-- ════════ STEP 2: NAME & GENDER ════════ -->
+    <div class="modal-step" id="step2">
+      <h2>✨ About You</h2>
+      <p class="modal-desc">A special page will be created in the ebook, dedicated to you</p>
+
+      <div class="form-group">
+        <label for="readerName">Your name:</label>
+        <input 
+          type="text" 
+          id="readerName" 
+          placeholder="e.g. Priya Sharma" 
+          maxlength="40"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>How should we address you?</label>
+        <div class="gender-options">
+          <label class="gender-opt">
+            <input type="radio" name="gender" value="male" />
+            <span>👦 Male</span>
+          </label>
+          <label class="gender-opt">
+            <input type="radio" name="gender" value="female" />
+            <span>👧 Female</span>
+          </label>
+          <label class="gender-opt">
+            <input type="radio" name="gender" value="neutral" checked />
+            <span>🌈 Prefer not to say</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-nav-buttons">
+        <button class="modal-btn-secondary" onclick="goToStep(1)">← Back</button>
+        <button class="modal-btn-primary" onclick="goToStep3()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ════════ STEP 3: PHOTO ════════ -->
+    <div class="modal-step" id="step3">
+      <h2>📸 Your Photograph</h2>
+      <p class="modal-desc">This photograph will appear on the "About the Reader" page of your ebook</p>
+
+      <div class="photo-upload-area" id="photoUploadArea">
+        <div class="photo-preview-box" id="photoPreviewBox">
+          <span class="photo-placeholder-icon">📷</span>
+          <span class="photo-placeholder-text">No photo selected</span>
+        </div>
+
+        <div class="photo-buttons">
+          <button class="modal-btn" onclick="triggerCamera()">
+            📷 Take a Photo
+          </button>
+          <button class="modal-btn" onclick="triggerUpload()">
+            🖼️ Upload from Gallery
+          </button>
+        </div>
+
+        <!-- Hidden file inputs -->
+        <input type="file" id="cameraInput" accept="image/*" capture="user" hidden />
+        <input type="file" id="uploadInput" accept="image/*" hidden />
+      </div>
+
+      <div class="modal-nav-buttons">
+        <button class="modal-btn-secondary" onclick="goToStep(2)">← Back</button>
+        <button class="modal-btn-primary" id="generateBtn" onclick="startPDFGeneration()">
+          Generate PDF →
+        </button>
+      </div>
+    </div>
+
+    <!-- ════════ STEP 4: PROGRESS ════════ -->
+    <div class="modal-step" id="step4">
+      <h2>📄 Generating Your PDF...</h2>
+      <p class="modal-desc">Please wait a moment while your personalized ebook is being prepared</p>
+
+      <div class="modal-progress-bar">
+        <div class="modal-progress-fill" id="modalProgressFill"></div>
+      </div>
+      <div class="modal-progress-text" id="modalProgressText">0%</div>
+
+      <p class="modal-hint" id="modalHint">Adding chapters...</p>
+    </div>
+
+  </div>
+</div>
 
     <div class="autobio-wrapper">
 
