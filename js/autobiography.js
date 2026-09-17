@@ -13,7 +13,7 @@
     const TOTAL_CHAPTERS = 11;
 
     // Chapter order (matches data-chapter attributes in HTML)
-    const CHAPTER_ORDER = ['1', '2', '3', '4', '5', '6a', '6b', '7', '8', '9', '10'];
+    const CHAPTER_ORDER = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
     const state = {
         currentChapter: '1',
