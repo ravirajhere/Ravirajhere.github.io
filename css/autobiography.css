@@ -2151,3 +2151,156 @@ a:focus-visible,
         font-size: 0.9rem;
     }
 }
+
+/* ============================================================
+   25. WEBCAM CAPTURE — Step 3.5
+   ============================================================ */
+
+.webcam-container {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 4 / 3;
+    margin: 1.2rem auto;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0a0a0a;
+    border: 2px solid var(--border);
+    box-shadow: 0 8px 24px var(--shadow);
+}
+
+#webcamVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Mirror effect for selfie feel */
+    transform: scaleX(-1);
+}
+
+/* Loading overlay */
+.webcam-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    gap: 12px;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+.webcam-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: webcamSpin 0.9s linear infinite;
+}
+
+@keyframes webcamSpin {
+    to { transform: rotate(360deg); }
+}
+
+.webcam-loading p {
+    font-size: 13px;
+    opacity: 0.8;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* Error overlay */
+.webcam-error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 20, 20, 0.95);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    z-index: 3;
+}
+
+.webcam-error-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+
+.webcam-error-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 6px;
+}
+
+.webcam-error-msg {
+    font-size: 12px;
+    color: #bbb;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 240px;
+}
+
+/* Controls */
+.webcam-controls {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+
+.webcam-controls button {
+    flex: 1;
+}
+
+.webcam-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Fallback buttons */
+.webcam-fallback {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.webcam-fallback button {
+    width: 100%;
+}
+
+/* Flash animation on capture */
+.webcam-container.captured::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    animation: captureFlash 0.35s ease-out;
+    pointer-events: none;
+    z-index: 4;
+}
+
+@keyframes captureFlash {
+    0% { opacity: 0.9; }
+    100% { opacity: 0; }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .webcam-container {
+        max-width: 100%;
+    }
+    .webcam-controls {
+        flex-direction: column;
+    }
+}
