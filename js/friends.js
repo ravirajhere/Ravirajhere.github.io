@@ -1,6 +1,7 @@
 // ============================================
 // FRIENDS.JS — CERTIFICATE OF FRIENDSHIP
 // (Design matched to sample - Ravi Raj + Friend connected)
+// + HAMBURGER MENU + THEME TOGGLE
 // ============================================
 
 'use strict';
@@ -193,24 +194,31 @@ const DOM = {
     friendSearch: document.getElementById('friendSearch'),
     foundAvatar: document.getElementById('foundAvatar'),
     foundName: document.getElementById('foundName'),
+    foundTag: document.getElementById('foundTag'),
     timelineBar: document.getElementById('timelineBar'),
     timelineText: document.getElementById('timelineText'),
     newFriendAvatar: document.getElementById('newFriendAvatar'),
     newFriendName: document.getElementById('newFriendName'),
     profileAvatar: document.getElementById('profileAvatar'),
     displayName: document.getElementById('displayName'),
-    displayPersonalName: document.getElementById('displayPersonalName'),
     displayConnection: document.getElementById('displayConnection'),
     displayExperience: document.getElementById('displayExperience'),
     displayAge: document.getElementById('displayAge'),
     displaySchool: document.getElementById('displaySchool'),
     displayHobby: document.getElementById('displayHobby'),
-    displaySinceClass: document.getElementById('displaySinceClass'),
-    displaySchoolClass: document.getElementById('displaySchoolClass'),
+    displayTag: document.getElementById('displayTag'),
+    displaySince: document.getElementById('displaySince'),
+    displayQuote: document.getElementById('displayQuote'),
     detailsTimelineBar: document.getElementById('detailsTimelineBar'),
     detailsTimelineText: document.getElementById('detailsTimelineText'),
     confettiContainer: document.getElementById('confettiContainer'),
-    filterButtons: document.querySelectorAll('.filter-btn')
+    filterButtons: document.querySelectorAll('.filter-btn'),
+    // MENU + THEME
+    hamburgerBtn: document.getElementById('hamburgerBtn'),
+    sidebar: document.getElementById('sidebar'),
+    sidebarClose: document.getElementById('sidebarClose'),
+    sidebarOverlay: document.getElementById('sidebarOverlay'),
+    themeSwitchNav: document.getElementById('themeSwitchNav')
 };
 
 // ============================================
@@ -218,25 +226,135 @@ const DOM = {
 // ============================================
 function init() {
     console.log('✅ Friends Corner JS loaded!');
-    
+
     if (DOM.friendSearch) {
-        DOM.friendSearch.addEventListener('keydown', function(e) {
+        DOM.friendSearch.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') searchFriend();
         });
     }
-    
+
     DOM.filterButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             DOM.filterButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             currentFilter = this.dataset.filter;
             applyFilterToVideo(currentFilter);
         });
     });
-    
+
+    initMenu();
+    initTheme();
+
     loadLibraries();
     console.log('✅ Friends Corner initialized successfully!');
     console.log('👥 ' + friendsData.length + ' friends in database');
+}
+
+// ============================================
+// HAMBURGER MENU / SIDEBAR
+// ============================================
+function initMenu() {
+    const { hamburgerBtn, sidebar, sidebarClose, sidebarOverlay } = DOM;
+
+    function openSidebar() {
+        if (!sidebar || !sidebarOverlay) return;
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (!sidebar || !sidebarOverlay) return;
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Expose globally for inline onclick (sidebar links use closeSidebar)
+    window.closeSidebar = closeSidebar;
+    window.openSidebar = openSidebar;
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+    if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+
+    // Auto close on window resize (desktop)
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
+        }, 250);
+    });
+
+    // Swipe left inside sidebar to close
+    let touchStartX = 0, touchEndX = 0;
+    if (sidebar) {
+        sidebar.addEventListener('touchstart', function (e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        sidebar.addEventListener('touchend', function (e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX - touchStartX < -60) closeSidebar();
+        }, { passive: true });
+    }
+
+    // Swipe right from left edge to open
+    let edgeStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+        edgeStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function (e) {
+        const edgeEndX = e.changedTouches[0].screenX;
+        if (edgeStartX < 30 && (edgeEndX - edgeStartX) > 60) {
+            if (sidebar && !sidebar.classList.contains('open')) openSidebar();
+        }
+    }, { passive: true });
+
+    // Nav avatar click → open sidebar
+    const navAvatar = document.querySelector('.nav-avatar');
+    if (navAvatar) navAvatar.addEventListener('click', openSidebar);
+}
+
+// ============================================
+// THEME TOGGLE (Dark / Light)
+// ============================================
+function initTheme() {
+    const { themeSwitchNav } = DOM;
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('friends-theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        if (themeSwitchNav) themeSwitchNav.classList.add('dark');
+    }
+
+    function toggleTheme() {
+        const isLight = document.body.classList.toggle('light-theme');
+        if (themeSwitchNav) themeSwitchNav.classList.toggle('dark', isLight);
+        localStorage.setItem('friends-theme', isLight ? 'light' : 'dark');
+    }
+
+    if (themeSwitchNav) {
+        themeSwitchNav.addEventListener('click', toggleTheme);
+        themeSwitchNav.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+    }
 }
 
 // ============================================
@@ -245,16 +363,16 @@ function init() {
 function loadLibraries(callback) {
     const needHtml2canvas = typeof html2canvas === 'undefined';
     const needJspdf = typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined';
-    
+
     if (!needHtml2canvas && !needJspdf) {
         console.log('✅ Libraries already loaded');
         if (callback) callback();
         return;
     }
-    
+
     let loaded = 0;
     const total = (needHtml2canvas ? 1 : 0) + (needJspdf ? 1 : 0);
-    
+
     function checkLoaded() {
         loaded++;
         console.log('📦 Library loaded:', loaded + '/' + total);
@@ -263,25 +381,25 @@ function loadLibraries(callback) {
             if (callback) callback();
         }
     }
-    
+
     if (needHtml2canvas) {
         console.log('⏳ Loading html2canvas...');
         const script1 = document.createElement('script');
         script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
         script1.onload = checkLoaded;
-        script1.onerror = function() {
+        script1.onerror = function () {
             console.error('❌ Failed to load html2canvas');
             alert('❌ Failed to load html2canvas. Please check internet connection.');
         };
         document.head.appendChild(script1);
     }
-    
+
     if (needJspdf) {
         console.log('⏳ Loading jsPDF...');
         const script2 = document.createElement('script');
         script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
         script2.onload = checkLoaded;
-        script2.onerror = function() {
+        script2.onerror = function () {
             console.error('❌ Failed to load jsPDF');
             alert('❌ Failed to load jsPDF. Please check internet connection.');
         };
@@ -295,14 +413,14 @@ function loadLibraries(callback) {
 function searchFriend() {
     const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
     hideAllScreens();
-    
+
     if (!input) {
         alert('Please enter a first name!');
         return;
     }
-    
+
     const found = friendsData.find(f => f.firstName.toLowerCase() === input.toLowerCase());
-    
+
     if (found) {
         currentFriend = found;
         isDatabaseFriend = true;
@@ -320,7 +438,7 @@ function searchFriend() {
         };
         isDatabaseFriend = false;
     }
-    
+
     if (DOM.photoFriendName) DOM.photoFriendName.textContent = currentFriend.firstName;
     if (DOM.searchArea) DOM.searchArea.style.display = 'none';
     if (DOM.photoScreen) DOM.photoScreen.style.display = 'block';
@@ -340,13 +458,13 @@ async function startWebcam() {
             }
         } catch (e) {}
     }
-    
+
     try {
         stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: 'user', width: 400, height: 300 },
             audio: false
         });
-        
+
         if (DOM.webcamVideo) {
             DOM.webcamVideo.srcObject = stream;
             await DOM.webcamVideo.play();
@@ -355,10 +473,10 @@ async function startWebcam() {
         if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'none';
         if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'none';
         if (DOM.captureBtn) DOM.captureBtn.style.display = 'inline-block';
-        
+
         const filterControls = document.querySelector('.filter-controls');
         if (filterControls) filterControls.style.display = 'flex';
-        
+
     } catch (error) {
         showCameraDenied('Camera start nahi ho paya. Please allow camera permission.');
     }
@@ -368,16 +486,16 @@ function applyFilterToVideo(filter) {
     currentFilter = filter;
     const video = DOM.webcamVideo;
     if (!video) return;
-    
+
     const filters = {
         'normal': 'none',
         'bw': 'grayscale(100%)',
         'sepia': 'sepia(100%)',
         'vintage': 'sepia(50%) contrast(120%) brightness(90%)'
     };
-    
+
     video.style.filter = filters[filter] || 'none';
-    
+
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.filter === filter);
     });
@@ -414,24 +532,24 @@ function captureFriendPhoto() {
         alert('Camera not active! Please allow camera access.');
         return;
     }
-    
+
     const video = DOM.webcamVideo;
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth || 400;
     canvas.height = video.videoHeight || 300;
     const ctx = canvas.getContext('2d');
-    
+
     if (currentFilter !== 'normal') {
         ctx.filter = video.style.filter || 'none';
     }
-    
+
     ctx.drawImage(video, 0, 0);
     ctx.filter = 'none';
-    
+
     capturedPhotoData = canvas.toDataURL('image/png');
     stopWebcam();
     if (DOM.photoScreen) DOM.photoScreen.style.display = 'none';
-    
+
     if (isDatabaseFriend) {
         showFriendFound();
     } else {
@@ -447,6 +565,7 @@ function showFriendFound() {
         DOM.foundAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
     }
     if (DOM.foundName) DOM.foundName.textContent = currentFriend.firstName;
+    if (DOM.foundTag) DOM.foundTag.textContent = currentFriend.tag || 'Friend';
     updateTimeline('found');
     if (DOM.foundScreen) DOM.foundScreen.style.display = 'block';
 }
@@ -465,20 +584,20 @@ function showNewFriend() {
 // ============================================
 function updateTimeline(prefix) {
     if (!currentFriend || currentFriend.sinceClass === 'new') return;
-    
+
     const currentYear = 2026;
     let startYear;
     if (currentFriend.sinceClass <= 5) startYear = 2013;
     else if (currentFriend.sinceClass <= 10) startYear = 2019;
     else startYear = 2024;
-    
+
     const years = currentYear - startYear;
     const maxYears = 14;
     const percent = Math.min((years / maxYears) * 100, 100);
-    
+
     const barId = prefix === 'found' ? 'timelineBar' : 'detailsTimelineBar';
     const textId = prefix === 'found' ? 'timelineText' : 'detailsTimelineText';
-    
+
     const bar = document.getElementById(barId);
     const text = document.getElementById(textId);
     if (bar) bar.style.width = percent + '%';
@@ -492,10 +611,10 @@ function launchConfetti() {
     const container = DOM.confettiContainer;
     if (!container) return;
     container.innerHTML = '';
-    
+
     const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#a29bfe', '#ff69b4', '#00ff64', '#DAA520'];
     const emojis = ['🎉', '🎊', '❤️', '🌟', '✨', '💫', '⭐', '🎈', '🎁'];
-    
+
     for (let i = 0; i < 80; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
@@ -507,16 +626,16 @@ function launchConfetti() {
         piece.style.width = (Math.random() * 10 + 8) + 'px';
         piece.style.height = (Math.random() * 10 + 8) + 'px';
         piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-        
+
         if (i < 10) {
             piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             piece.style.fontSize = '20px';
             piece.style.backgroundColor = 'transparent';
         }
-        
+
         container.appendChild(piece);
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             if (piece.parentNode) piece.remove();
         }, 3500);
     }
@@ -528,20 +647,22 @@ function launchConfetti() {
 function proceedToDetails() {
     if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
     if (DOM.detailsScreen) DOM.detailsScreen.style.display = 'block';
-    
+
     if (DOM.profileAvatar) {
         DOM.profileAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
     }
     if (DOM.displayName) DOM.displayName.textContent = currentFriend.firstName;
-    if (DOM.displayPersonalName) DOM.displayPersonalName.textContent = currentFriend.personalName || '';
     if (DOM.displayConnection) DOM.displayConnection.textContent = currentFriend.connection || '';
     if (DOM.displayExperience) DOM.displayExperience.textContent = currentFriend.experience || '';
     if (DOM.displayAge) DOM.displayAge.textContent = currentFriend.age || '';
     if (DOM.displaySchool) DOM.displaySchool.textContent = currentFriend.school || '';
     if (DOM.displayHobby) DOM.displayHobby.textContent = currentFriend.hobby || '';
-    if (DOM.displaySinceClass) DOM.displaySinceClass.textContent = currentFriend.sinceClass || '';
-    if (DOM.displaySchoolClass) DOM.displaySchoolClass.textContent = 'School: ' + (currentFriend.school || '') + ' — Since Class ' + (currentFriend.sinceClass || '');
-    
+    if (DOM.displayTag) DOM.displayTag.textContent = currentFriend.tag || 'Friend';
+    if (DOM.displaySince) DOM.displaySince.textContent = currentFriend.sinceClass !== 'new'
+        ? currentFriend.sinceClass + ' (Class)'
+        : 'New';
+    if (DOM.displayQuote) DOM.displayQuote.textContent = currentFriend.connection || 'Friend';
+
     updateTimeline('details');
 }
 
@@ -550,27 +671,27 @@ function proceedToDetails() {
 // ============================================
 function generateFriendCardPDF(isDBFriend) {
     console.log('📄 Generating Certificate PDF...');
-    
+
     if (!capturedPhotoData) {
         alert('❌ No photo captured! Please capture photo first.');
         return;
     }
-    
+
     if (!currentFriend) {
         alert('❌ No friend found! Please search first.');
         return;
     }
-    
+
     if (typeof html2canvas === 'undefined' || (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined')) {
         alert('⏳ Libraries loading... Please try again in 2 seconds.');
-        loadLibraries(function() {
-            setTimeout(function() {
+        loadLibraries(function () {
+            setTimeout(function () {
                 generateFriendCardPDF(isDBFriend);
             }, 500);
         });
         return;
     }
-    
+
     const certHTML = createCertificateHTML(isDBFriend);
     renderCertificateToPDF(certHTML, isDBFriend);
 }
@@ -580,15 +701,14 @@ function generateFriendCardPDF(isDBFriend) {
 // ============================================
 function createCertificateHTML(isDBFriend) {
     const now = new Date();
-    const dateStr = now.toLocaleDateString('en-IN', { 
-        day: 'numeric', month: 'short', year: 'numeric' 
+    const dateStr = now.toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric'
     });
     const friendName = (currentFriend.firstName || 'Friend').toUpperCase();
     const tag = currentFriend.tag || 'New Friend';
-    
-    // ✅ Teri photo ka path
+
     const issuerPhoto = 'assets/images/casual.jpg';
-    
+
     return `
         <div id="certificate-container" style="
             width: 210mm;
@@ -600,8 +720,7 @@ function createCertificateHTML(isDBFriend) {
             box-sizing: border-box;
             position: relative;
         ">
-            
-            <!-- TOP: FRIENDS CORNER Badge -->
+
             <div style="text-align:center; margin-bottom: 20px;">
                 <span style="
                     display: inline-block;
@@ -615,8 +734,7 @@ function createCertificateHTML(isDBFriend) {
                     font-family: 'Arial', sans-serif;
                 ">FRIENDS CORNER</span>
             </div>
-            
-            <!-- TITLE -->
+
             <h1 style="
                 text-align: center;
                 font-size: 26px;
@@ -626,16 +744,14 @@ function createCertificateHTML(isDBFriend) {
                 margin: 0 0 8px 0;
                 font-family: 'Georgia', serif;
             ">CERTIFICATE OF FRIENDSHIP</h1>
-            
-            <!-- Gold Underline -->
+
             <div style="
                 width: 80px;
                 height: 2px;
                 background: #DAA520;
                 margin: 0 auto 35px auto;
             "></div>
-            
-            <!-- TWO PHOTOS + CONNECTED ICON -->
+
             <div style="
                 display: flex;
                 justify-content: center;
@@ -643,8 +759,7 @@ function createCertificateHTML(isDBFriend) {
                 gap: 50px;
                 margin-bottom: 30px;
             ">
-                
-                <!-- LEFT: Ravi Raj (Issuer) -->
+
                 <div style="text-align:center;">
                     <div style="
                         width: 100px;
@@ -655,7 +770,7 @@ function createCertificateHTML(isDBFriend) {
                         margin: 0 auto 10px auto;
                         background: #f5f5f5;
                     ">
-                        <img src="${issuerPhoto}" alt="Ravi Raj" 
+                        <img src="${issuerPhoto}" alt="Ravi Raj"
                              style="width:100%;height:100%;object-fit:cover;"
                              onerror="this.style.display='none'; this.parentNode.style.background='#DAA520'; this.parentNode.innerHTML='<div style=&quot;color:#fff;font-size:36px;line-height:100px;text-align:center;font-weight:bold;&quot;>R</div>';">
                     </div>
@@ -671,8 +786,7 @@ function createCertificateHTML(isDBFriend) {
                         margin-top: 2px;
                     ">Certificate Issuer</div>
                 </div>
-                
-                <!-- CENTER: CONNECTED Icon -->
+
                 <div style="text-align:center; padding-top: 20px;">
                     <div style="
                         width: 50px;
@@ -692,8 +806,7 @@ function createCertificateHTML(isDBFriend) {
                         letter-spacing: 2px;
                     ">CONNECTED</div>
                 </div>
-                
-                <!-- RIGHT: Friend (Verified) -->
+
                 <div style="text-align:center;">
                     <div style="
                         width: 100px;
@@ -704,7 +817,7 @@ function createCertificateHTML(isDBFriend) {
                         margin: 0 auto 10px auto;
                         background: #f5f5f5;
                     ">
-                        <img src="${capturedPhotoData}" alt="${friendName}" 
+                        <img src="${capturedPhotoData}" alt="${friendName}"
                              style="width:100%;height:100%;object-fit:cover;">
                     </div>
                     <div style="
@@ -719,10 +832,9 @@ function createCertificateHTML(isDBFriend) {
                         margin-top: 2px;
                     ">Verified Friend</div>
                 </div>
-                
+
             </div>
-            
-            <!-- MAIN TEXT -->
+
             <p style="
                 text-align: center;
                 font-size: 15px;
@@ -734,8 +846,7 @@ function createCertificateHTML(isDBFriend) {
                 This is to certify that the above person is a verified friend of <strong>Ravi Raj</strong>.<br>
                 Their friendship has been officially recognized and recorded.
             </p>
-            
-            <!-- BOTTOM SECTION -->
+
             <div style="
                 display: flex;
                 justify-content: space-between;
@@ -743,8 +854,7 @@ function createCertificateHTML(isDBFriend) {
                 margin-top: 60px;
                 padding: 0 10px;
             ">
-                
-                <!-- Left: Details -->
+
                 <div style="
                     font-size: 11px;
                     color: #555;
@@ -755,15 +865,14 @@ function createCertificateHTML(isDBFriend) {
                     <div><strong>Location:</strong> Begusarai, Bihar, India</div>
                     <div><strong>Tag:</strong> ${tag}</div>
                 </div>
-                
-                <!-- Right: Signature -->
+
                 <div style="text-align:center;">
                     <div style="
                         width: 120px;
                         height: 45px;
                         margin: 0 auto 5px auto;
                     ">
-                        <img src="assets/images/signature.jpg" alt="Signature" 
+                        <img src="assets/images/signature.jpg" alt="Signature"
                              style="width:100%;height:100%;object-fit:contain;"
                              onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-family:cursive;font-size:26px;color:#1a1a1a;&quot;>Ravi Raj</div>';">
                     </div>
@@ -777,18 +886,16 @@ function createCertificateHTML(isDBFriend) {
                         color: #888;
                     ">Founder, Friends Corner</div>
                 </div>
-                
+
             </div>
-            
-            <!-- Gold Divider -->
+
             <div style="
                 width: 100%;
                 height: 1px;
                 background: #DAA520;
                 margin: 25px 0 15px 0;
             "></div>
-            
-            <!-- FOOTER -->
+
             <div style="
                 text-align: center;
                 font-size: 10px;
@@ -798,7 +905,7 @@ function createCertificateHTML(isDBFriend) {
             ">
                 © 2026 Ravi Raj · All Rights Reserved
             </div>
-            
+
         </div>
     `;
 }
@@ -808,7 +915,7 @@ function createCertificateHTML(isDBFriend) {
 // ============================================
 function renderCertificateToPDF(certHTML, isDBFriend) {
     console.log('📄 Generating certificate PDF...');
-    
+
     const container = document.createElement('div');
     container.innerHTML = certHTML;
     container.style.cssText = `
@@ -821,31 +928,31 @@ function renderCertificateToPDF(certHTML, isDBFriend) {
         margin: 0;
     `;
     document.body.appendChild(container);
-    
-    setTimeout(function() {
+
+    setTimeout(function () {
         html2canvas(container, {
             scale: 2,
             useCORS: true,
             backgroundColor: '#ffffff',
             logging: false
-        }).then(function(canvas) {
+        }).then(function (canvas) {
             document.body.removeChild(container);
-            
+
             const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            
+
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdfWidth = 210;
             const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
-            
+
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
             pdf.save('Friendship_Certificate_' + (currentFriend.firstName || 'Friend') + '.pdf');
-            
+
             console.log('✅ PDF downloaded!');
             if (typeof showToast === 'function') {
                 showToast('🎉 Certificate Downloaded!', 'success');
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.error('❌ Error:', error);
             document.body.removeChild(container);
             alert('PDF generation failed: ' + error.message);
@@ -879,15 +986,46 @@ function hideAllScreens() {
 // ============================================
 // DOWNLOAD FUNCTIONS
 // ============================================
-window.downloadFriendCard = function() {
+window.downloadFriendCard = function () {
     console.log('⬇️ Download Friend Card clicked!');
     generateFriendCardPDF(isDatabaseFriend);
 };
 
-window.downloadNewFriendCard = function() {
+window.downloadNewFriendCard = function () {
     console.log('⬇️ Download New Friend Card clicked!');
     generateFriendCardPDF(false);
 };
+
+// ============================================
+// VOICE SEARCH (Bonus)
+// ============================================
+function toggleVoiceSearch() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Voice search is not supported in this browser.');
+        return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    const voiceBtn = document.querySelector('.search-voice');
+    if (voiceBtn) voiceBtn.classList.add('listening');
+
+    recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        if (DOM.friendSearch) DOM.friendSearch.value = transcript;
+        searchFriend();
+    };
+    recognition.onerror = function () {
+        if (voiceBtn) voiceBtn.classList.remove('listening');
+    };
+    recognition.onend = function () {
+        if (voiceBtn) voiceBtn.classList.remove('listening');
+    };
+    recognition.start();
+}
 
 // ============================================
 // TOAST NOTIFICATION
@@ -898,7 +1036,7 @@ function showToast(message, type) {
     toast.textContent = message;
     toast.className = 'toast show ' + (type || 'info');
     clearTimeout(toast._timer);
-    toast._timer = setTimeout(function() {
+    toast._timer = setTimeout(function () {
         toast.classList.remove('show');
     }, 3000);
 }
@@ -906,7 +1044,7 @@ function showToast(message, type) {
 // ============================================
 // INIT ON PAGE LOAD
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     init();
 });
 
@@ -922,5 +1060,7 @@ window.resetSearch = resetSearch;
 window.generateFriendCardPDF = generateFriendCardPDF;
 window.downloadFriendCard = downloadFriendCard;
 window.downloadNewFriendCard = downloadNewFriendCard;
+window.toggleVoiceSearch = toggleVoiceSearch;
+window.showToast = showToast;
 
 console.log('✅ Friends Corner JS Loaded Successfully!');
