@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- ====== SEO & META TAGS ====== -->
     <title>Ravi Raj | Portfolio Website</title>
     <meta name="description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
     <meta name="keywords" content="Ravi Raj, portfolio, web developer, student, author, projects, autobiography" />
     <meta name="author" content="Ravi Raj" />
     <link rel="canonical" href="https://ravirajhere.github.io/" />
-    
+
+    <!-- ====== RECRUITER-FRIENDLY / ATS META TAGS ====== -->
+    <meta name="robots" content="index, follow" />
+    <meta name="rating" content="general" />
+    <meta name="theme-color" content="#0d1117" />
+    <meta name="geo.region" content="IN-BR" />
+    <meta name="geo.placename" content="Begusarai, Bihar, India" />
+    <meta name="role" content="Frontend Developer, Web Developer, Student Developer" />
+    <meta name="skills" content="HTML5, CSS3, JavaScript, Python, Responsive Design, Git, GitHub, Frontend Development" />
+    <meta name="availability" content="Open to Internships, Freelance Projects & Entry-Level Roles" />
+    <meta name="hiring-status" content="Actively seeking internship and junior frontend developer opportunities" />
+
     <!-- ====== OPEN GRAPH TAGS ====== -->
     <meta property="og:title" content="Ravi Raj | Personal Website & Portfolio" />
     <meta property="og:description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
@@ -20,18 +31,63 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Ravi Raj | Personal Website & Portfolio" />
     <meta name="twitter:description" content="Ravi Raj — Student, Author & Web Developer. Personal portfolio showcasing projects, autobiography, and web development journey." />
-    
+
     <!-- ====== FAVICON ====== -->
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    
+
     <!-- ====== FONTS & ICONS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    
+
     <!-- ====== CSS ====== -->
     <link rel="stylesheet" href="css/style.css" />
+
+    <!-- ====== STRUCTURED DATA (JSON-LD) — RECRUITER & GOOGLE FRIENDLY ====== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ravi Raj",
+      "alternateName": "Ravi Raj Singh",
+      "url": "https://ravirajhere.github.io/",
+      "image": "https://ravirajhere.github.io/assets/images/formal.jpg",
+      "jobTitle": "Frontend Developer (Student)",
+      "description": "Student, Author & Web Developer from Begusarai, Bihar. Building responsive websites and learning React & Python.",
+      "email": "mailto:rravirajhere@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Begusarai",
+        "addressRegion": "Bihar",
+        "addressCountry": "India"
+      },
+      "alumniOf": [
+        {
+          "@type": "EducationalOrganization",
+          "name": "Udaan International School, Begusarai"
+        },
+        {
+          "@type": "EducationalOrganization",
+          "name": "Mother's Pride International School"
+        },
+        {
+          "@type": "EducationalOrganization",
+          "name": "Gautam Buddha Global School"
+        }
+      ],
+      "knowsAbout": [
+        "HTML5", "CSS3", "JavaScript", "Python",
+        "Responsive Web Design", "Frontend Development", "Git", "GitHub"
+      ],
+      "sameAs": [
+        "https://github.com/ravirajhere",
+        "https://linkedin.com/in/Ravirajhere",
+        "https://instagram.com/rravirajhere",
+        "https://youtube.com/@Ravirajhere"
+      ]
+    }
+    </script>
 </head>
 <body>
 
@@ -55,6 +111,11 @@
     <div id="custom-cursor"></div>
 
     <!-- ============================================================
+    SKIP TO CONTENT (Accessibility / Recruiter Friendly)
+    ============================================================ -->
+    <a href="#home" class="skip-to-content" aria-label="Skip to main content">Skip to content</a>
+
+    <!-- ============================================================
     TOP NAVBAR
     ============================================================ -->
     <nav class="top-nav" id="topNav">
@@ -67,6 +128,16 @@
                 <span class="nav-brand-sub">✦ Portfolio / Resume</span>
             </div>
         </div>
+
+        <!-- ===== QUICK RECRUITER NAV (Desktop) ===== -->
+        <ul class="nav-quick-links" aria-label="Quick recruiter navigation">
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+            <li><a href="resume-pdf.html" class="nav-hire-btn">📃 Resume</a></li>
+        </ul>
+
         <div class="nav-right">
             <div class="theme-toggle-nav">
                 <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
@@ -82,16 +153,21 @@
     SIDEBAR / HAMBURGER MENU
     ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
+
     <aside class="sidebar" id="sidebar">
         <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
-        
+
         <div class="sidebar-profile">
             <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" />
             <div class="sp-name">Ravi Raj</div>
             <div class="sp-title">Student · Author · Developer</div>
+
+            <!-- ===== AVAILABILITY BADGE (Recruiter friendly) ===== -->
+            <div class="sp-availability">
+                <span class="status-dot"></span> Open to Internships &amp; Freelance
+            </div>
         </div>
-        
+
         <ul class="sidebar-menu">
             <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="#story"><i class="fas fa-book-open"></i> My Autobiography</a></li>
@@ -103,14 +179,25 @@
             <li><a href="#contact"><i class="fas fa-envelope"></i> Contact Me</a></li>
         </ul>
 
+        <!-- ===== RECRUITER QUICK INFO (Sidebar) ===== -->
+        <div class="sidebar-recruiter-box">
+            <p class="sr-title">💼 For Recruiters</p>
+            <ul class="sr-list">
+                <li><i class="fas fa-map-marker-alt"></i> Begusarai, Bihar, India</li>
+                <li><i class="fas fa-briefcase"></i> Entry-Level / Internship</li>
+                <li><i class="fas fa-clock"></i> Replies within 24 hrs</li>
+                <li><i class="fas fa-file-alt"></i> <a href="resume-pdf.html">View Resume</a></li>
+            </ul>
+        </div>
+
         <!-- ===== OPTIONAL PERSONALIZED GREETING (Sidebar Version) ===== -->
         <div class="greeting-box-sidebar" id="greetingBox">
             <p class="greeting-prompt">✨ Want a personalized welcome?</p>
             <div class="greeting-input-wrap">
-                <input 
-                    type="text" 
-                    id="userNameInput" 
-                    placeholder="Enter your name (optional)" 
+                <input
+                    type="text"
+                    id="userNameInput"
+                    placeholder="Enter your name (optional)"
                     maxlength="30"
                     autocomplete="off"
                 />
@@ -120,7 +207,7 @@
             </div>
             <p class="greeting-hint">Press Enter or click →</p>
         </div>
-        
+
         <div class="sidebar-footer">
             <p class="sf-motto">Made with <i>❤️</i> &amp; Curiosity</p>
         </div>
@@ -152,10 +239,30 @@
             <p class="hero-subtitle">Student • <span class="highlight">Author</span> • Web_Developer</p>
             <p class="hero-bio">Building trust on the internet since 2023. Currently learning React and Python.</p>
 
+            <!-- ===== RECRUITER TAGLINE / VALUE STATEMENT ===== -->
+            <p class="hero-recruiter-line">
+                💼 <strong>Open to:</strong> Frontend Internships · Freelance Web Projects · Entry-Level Developer Roles
+            </p>
+
             <!-- HERO ACTIONS -->
             <div class="hero-actions">
                 <a href="resume-pdf.html" class="btn btn-primary">📃 Download Resume</a>
                 <a href="#projects" class="btn btn-outline">💻 See Projects</a>
+            </div>
+
+            <!-- ===== QUICK CONTACT STRIP (Recruiter Fast-Access) ===== -->
+            <div class="hero-quick-contact" aria-label="Quick contact options">
+                <a href="mailto:rravirajhere@gmail.com" class="hqc-item">
+                    <i class="fas fa-envelope"></i> rravirajhere@gmail.com
+                </a>
+                <span class="hqc-divider">•</span>
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener" class="hqc-item">
+                    <i class="fab fa-linkedin-in"></i> LinkedIn
+                </a>
+                <span class="hqc-divider">•</span>
+                <a href="https://github.com/ravirajhere" target="_blank" rel="noopener" class="hqc-item">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
         </section>
 
@@ -172,7 +279,39 @@
                     <span class="stat-number">5+</span>
                     <span class="stat-label">Projects Built</span>
                 </div>
-                
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+        PROFESSIONAL SUMMARY (Recruiter Friendly) — NEW
+        ============================================================ -->
+        <section id="about" class="section-block">
+            <div class="section-header">
+                <span class="emoji">🧾</span>
+                <h2>Professional <span>Summary</span></h2>
+                <p class="sub">A quick snapshot for recruiters</p>
+            </div>
+
+            <div class="summary-card">
+                <p>
+                    I am <strong>Ravi Raj</strong>, a self-taught frontend developer and student based in Begusarai, Bihar,
+                    currently pursuing Senior Secondary (PCM). Since writing my first HTML tag in 2023, I have been
+                    building responsive, accessible, and user-focused web pages using <strong>HTML5, CSS3,
+                    JavaScript, and Python</strong>.
+                </p>
+                <p>
+                    I am actively seeking <strong>internship, freelance, or entry-level frontend opportunities</strong>
+                    where I can contribute to real projects, learn from experienced teams, and grow as a developer.
+                    I bring strong fundamentals, a writer's eye for detail, and a habit of shipping work consistently.
+                </p>
+
+                <ul class="summary-highlights">
+                    <li>✅ Self-taught in HTML, CSS, JavaScript &amp; Python</li>
+                    <li>✅ Author of personal autobiography &amp; blog on this site</li>
+                    <li>✅ Comfortable with Git, GitHub &amp; responsive design</li>
+                    <li>✅ Available for remote / hybrid / on-site internships</li>
+                </ul>
             </div>
         </section>
 
@@ -202,6 +341,36 @@
                 <div class="skill-item">
                     <div class="skill-name"><span>Python</span><span>50%</span></div>
                     <div class="skill-bar"><div class="skill-fill" style="width:50%"></div></div>
+                </div>
+            </div>
+
+            <!-- ===== CORE STRENGTHS (Recruiter Friendly) — NEW ===== -->
+            <div class="core-strengths">
+                <h3 class="cs-title">⭐ Core Strengths</h3>
+                <div class="cs-grid">
+                    <span class="cs-pill">Problem Solving</span>
+                    <span class="cs-pill">Responsive Design</span>
+                    <span class="cs-pill">Self-Learning</span>
+                    <span class="cs-pill">Written Communication</span>
+                    <span class="cs-pill">Attention to Detail</span>
+                    <span class="cs-pill">Consistency</span>
+                    <span class="cs-pill">Git &amp; Version Control</span>
+                    <span class="cs-pill">Team Collaboration</span>
+                </div>
+            </div>
+
+            <!-- ===== TOOLS & TECHNOLOGIES (Recruiter Friendly) — NEW ===== -->
+            <div class="tools-section">
+                <h3 class="cs-title">🧰 Tools &amp; Technologies</h3>
+                <div class="tools-grid">
+                    <div class="tool-chip"><i class="fab fa-html5"></i> HTML5</div>
+                    <div class="tool-chip"><i class="fab fa-css3-alt"></i> CSS3</div>
+                    <div class="tool-chip"><i class="fab fa-js"></i> JavaScript</div>
+                    <div class="tool-chip"><i class="fab fa-python"></i> Python</div>
+                    <div class="tool-chip"><i class="fab fa-git-alt"></i> Git</div>
+                    <div class="tool-chip"><i class="fab fa-github"></i> GitHub</div>
+                    <div class="tool-chip"><i class="fas fa-code"></i> VS Code</div>
+                    <div class="tool-chip"><i class="fas fa-mobile-alt"></i> Responsive Design</div>
                 </div>
             </div>
         </section>
@@ -235,6 +404,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ===== CERTIFICATIONS / COURSES (Recruiter Friendly) — NEW ===== -->
+            <div class="certifications">
+                <h3 class="cs-title">📜 Certifications &amp; Self-Learning</h3>
+                <ul class="cert-list">
+                    <li><i class="fas fa-certificate"></i> Self-taught Web Development (HTML, CSS, JS) — 2023 onwards</li>
+                    <li><i class="fas fa-certificate"></i> Python Fundamentals — Self-paced learning</li>
+                    <li><i class="fas fa-certificate"></i> Currently exploring React &amp; modern JavaScript</li>
+                </ul>
+            </div>
         </section>
 
         <!-- ============================================================
@@ -253,6 +432,10 @@
                     <span class="project-icon">📖</span>
                     <h3>Autobiography</h3>
                     <p>My life story in a single HTML page. Raw, honest, and unfiltered.</p>
+                    <!-- ===== TECH STACK TAGS — NEW ===== -->
+                    <div class="project-tech">
+                        <span>HTML5</span><span>CSS3</span><span>Responsive</span>
+                    </div>
                     <div class="project-links">
                         <a href="autobiography.html" target="_blank" class="demo">🔗 Live Demo</a>
                         <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" class="source">📂 Source</a>
@@ -264,6 +447,9 @@
                     <span class="project-icon">👥</span>
                     <h3>Friends Gallery</h3>
                     <p>Photo gallery of the people who matter most in my life.</p>
+                    <div class="project-tech">
+                        <span>HTML5</span><span>CSS Grid</span><span>JavaScript</span>
+                    </div>
                     <div class="project-links">
                         <a href="friends.html" target="_blank" class="demo">🔗 Live Demo</a>
                         <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" class="source">📂 Source</a>
@@ -275,6 +461,9 @@
                     <span class="project-icon">📄</span>
                     <h3>Resume</h3>
                     <p>Clean, printable, and professional. Everything a resume should be.</p>
+                    <div class="project-tech">
+                        <span>HTML5</span><span>Print CSS</span><span>ATS Friendly</span>
+                    </div>
                     <div class="project-links">
                         <a href="resume-pdf.html" target="_blank" class="demo">🔗 Live Demo</a>
                         <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/resume-pdf.html" target="_blank" class="source">📂 Source</a>
@@ -321,6 +510,47 @@
         </section>
 
         <!-- ============================================================
+        ACHIEVEMENTS & AWARDS (Recruiter Friendly) — NEW
+        ============================================================ -->
+        <section id="achievements" class="section-block">
+            <div class="section-header">
+                <span class="emoji">🥇</span>
+                <h2>Achievements &amp; <span>Awards</span></h2>
+                <p class="sub">Recognition earned along the way</p>
+            </div>
+
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <span class="ach-icon">🏅</span>
+                    <h3>EC Competition Award</h3>
+                    <p>Selected among <strong>51 students</strong> at the Clean &amp; Green School (EC) competition, November 2018 — awarded Certificate, Medal &amp; GK Award.</p>
+                    <span class="ach-year">2018</span>
+                </div>
+
+                <div class="achievement-card">
+                    <span class="ach-icon">🎤</span>
+                    <h3>Stage Speech &amp; Dance</h3>
+                    <p>First public speech and dance performance at the Independence Day function — the day I confidently declared my dream to become an engineer.</p>
+                    <span class="ach-year">2018</span>
+                </div>
+
+                <div class="achievement-card">
+                    <span class="ach-icon">📈</span>
+                    <h3>Academic Rank 1</h3>
+                    <p>Secured <strong>Rank 1</strong> in 5th Class after a hard-won turnaround following a 4th-place finish in 4th Class.</p>
+                    <span class="ach-year">2019</span>
+                </div>
+
+                <div class="achievement-card">
+                    <span class="ach-icon">🌐</span>
+                    <h3>First Live Website</h3>
+                    <p>Designed, built, and deployed my first personal website on GitHub Pages — a full end-to-end learning milestone.</p>
+                    <span class="ach-year">2024</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
         STORY (Autobiography)
         ============================================================ -->
         <section id="story" class="section-block">
@@ -329,18 +559,18 @@
                 <h2>My <span>Story</span></h2>
                 <p class="sub">Journey from student to building for the web</p>
             </div>
-            
+
             <div class="story-card">
                 <p>I'm Ravi Raj Singh, born and raised in Begusarai, Bihar. I started coding in 2023 with a single HTML tag. That simple <code>&lt;h1&gt;</code> changed everything.</p>
-                
+
                 <p>Today, I build websites that work for real people. I believe in clean code, responsive design, and continuous learning.</p>
-                
+
                 <p>I'm currently 12th Passed, balancing studies with my passion for web development. This website is my digital diary — where I share my journey, my projects, and my thoughts.</p>
-                
+
                 <div class="fun-fact">
                     <span>💡 Fun Fact:</span> I still get nervous before hitting "deploy". Every. Single. Time.
                 </div>
-                
+
                 <a href="autobiography.html" class="btn btn-outline">📖 Read Full Story →</a>
             </div>
         </section>
@@ -643,7 +873,69 @@
             </div>
 
         </section>
-                
+
+        <!-- ============================================================
+        SERVICES / WHAT I CAN DO (Recruiter Friendly) — NEW
+        ============================================================ -->
+        <section id="services" class="section-block">
+            <div class="section-header">
+                <span class="emoji">🤝</span>
+                <h2>What I Can <span>Do For You</span></h2>
+                <p class="sub">Services I offer as a freelance / intern developer</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <span class="service-icon">🖥️</span>
+                    <h3>Responsive Website Development</h3>
+                    <p>Mobile-first, accessible websites built with clean HTML5 &amp; CSS3 that look great on every device.</p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">🎨</span>
+                    <h3>Landing Page Design</h3>
+                    <p>Conversion-focused landing pages for personal brands, portfolios, and small businesses.</p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">📄</span>
+                    <h3>Resume &amp; Portfolio Pages</h3>
+                    <p>ATS-friendly, printable resume pages and digital portfolios — like the one you're viewing now.</p>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">🔧</span>
+                    <h3>Website Maintenance</h3>
+                    <p>Bug fixes, layout improvements, and content updates for existing static websites.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        LANGUAGES & AVAILABILITY (Recruiter Friendly) — NEW
+        ============================================================ -->
+        <section class="section-block">
+            <div class="info-duo-grid">
+                <!-- Languages -->
+                <div class="info-duo-card">
+                    <h3 class="cs-title">🌐 Languages</h3>
+                    <ul class="lang-list">
+                        <li><span>Hindi</span><span class="lang-level">Native</span></li>
+                        <li><span>English</span><span class="lang-level">Professional</span></li>
+                        <li><span>Bhojpuri</span><span class="lang-level">Conversational</span></li>
+                    </ul>
+                </div>
+
+                <!-- Availability -->
+                <div class="info-duo-card">
+                    <h3 class="cs-title">📅 Availability</h3>
+                    <ul class="avail-list">
+                        <li><i class="fas fa-check-circle"></i> Open to Internships</li>
+                        <li><i class="fas fa-check-circle"></i> Freelance Projects</li>
+                        <li><i class="fas fa-check-circle"></i> Entry-Level Roles</li>
+                        <li><i class="fas fa-check-circle"></i> Remote / Hybrid / On-Site</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- ============================================================
         CONTACT
         ============================================================ -->
@@ -657,6 +949,15 @@
             <div class="contact-section">
                 <p class="contact-email">✉️ rravirajhere@gmail.com</p>
                 <a href="emailjs.html" class="contact-btn">✉️ Send a Message</a>
+            </div>
+
+            <!-- ===== RECRUITER CONTACT CTA (Extra) — NEW ===== -->
+            <div class="recruiter-cta">
+                <p>👋 <strong>Recruiters:</strong> Looking for a motivated intern or junior developer? I'd love to connect.</p>
+                <div class="recruiter-cta-actions">
+                    <a href="mailto:rravirajhere@gmail.com" class="btn btn-primary">📧 Email Me</a>
+                    <a href="resume-pdf.html" class="btn btn-outline">📃 View Resume</a>
+                </div>
             </div>
         </section>
 
@@ -692,6 +993,11 @@
                 <p class="footer-motto">Made with <i>❤️</i> &amp; Curiosity</p>
                 <p class="footer-init">An initiative by <span>Ravi Raj</span></p>
                 <p class="footer-copy">© <span id="current-year">2026</span> Ravi Raj. All Rights Reserved.</p>
+
+                <!-- ===== FOOTER RECRUITER NOTE — NEW ===== -->
+                <p class="footer-recruiter-note">
+                    💼 Open to internships &amp; entry-level frontend roles · <a href="mailto:rravirajhere@gmail.com">rravirajhere@gmail.com</a>
+                </p>
             </div>
 
             <div class="footer-right">
