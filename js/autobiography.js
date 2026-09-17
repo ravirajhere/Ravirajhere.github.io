@@ -1,7 +1,8 @@
 /* ============================================================
    autobiography.js
    My Autobiography — Ravi Raj
-   Handles: Theme, Sidebar, Language, Chapters, Modal, Toast
+   Handles: Theme, Sidebar, Language, Chapters, Modal, Toast,
+            Reader Wizard (4-step ebook personalization)
    ============================================================ */
 
 (function () {
@@ -179,13 +180,11 @@
         highlightSidebar(chapterId);
 
         if (scroll) {
-            // ✅ FIX: scroll to the active chapter's heading, not page top
             const activeCh = $('.chapter.active', container);
             if (activeCh) {
-                // Small delay so display changes apply first
                 requestAnimationFrame(() => {
-                    const topNavHeight = 70;      // top-nav is fixed, ~70px
-                    const extraGap = 12;          // thoda breathing room
+                    const topNavHeight = 70;
+                    const extraGap = 12;
                     const rect = activeCh.getBoundingClientRect();
                     const absoluteTop = rect.top + window.pageYOffset;
                     window.scrollTo({
@@ -297,13 +296,17 @@
     }
 
     /* ============================================================
-       8. MODAL (Download Ebook)
+       8. MODAL (Download Ebook) — with wizard integration
        ============================================================ */
     function openModal() {
         const modal = $('#downloadModal');
         if (!modal) return;
         modal.classList.add('active');
         document.body.classList.add('modal-open');
+
+        // ⭐ Wizard: reset to Step 1 and clear any previous data
+        resetWizard();
+        goToStep(1);
     }
 
     function closeModal() {
@@ -327,7 +330,7 @@
     }
 
     /* ============================================================
-       9. EBOOK DOWNLOAD HELPERS
+       9. EBOOK DOWNLOAD HELPERS (legacy — kept for compatibility)
        ============================================================ */
     function downloadEnglishEbook() {
         if (typeof window.generateEbook === 'function') {
@@ -352,6 +355,220 @@
         }
         closeModal();
     }
+
+    /* ============================================================
+       9B. READER WIZARD — 4-Step Ebook Personalization Flow
+       ============================================================ */
+
+    // Wizard state
+    const readerData = {
+        name: '',
+        gender: 'neutral',    // 'male' | 'female' | 'neutral'
+        photo: null,          // base64 string
+        language: 'en'        // 'en' | 'hi'
+    };
+
+    // ─── Step Navigation ───
+    function goToStep(stepNum) {
+        $$('.modal-step').forEach(step => step.classList.remove('active'));
+        const target = $('#step' + stepNum);
+        if (target) target.classList.add('active');
+
+        if (stepNum === 2) {
+            setTimeout(() => {
+                const nameInput = $('#readerName');
+                if (nameInput) nameInput.focus();
+            }, 300);
+        }
+    }
+
+    function selectLanguage(lang) {
+        readerData.language = lang;
+        goToStep(2);
+    }
+
+    function goToStep3() {
+        const nameInput = $('#readerName');
+        const name = nameInput ? nameInput.value.trim() : '';
+
+        if (!name) {
+            showToast('Please enter your name');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+        if (name.length < 2) {
+            showToast('Name must be at least 2 characters');
+            if (nameInput) nameInput.focus();
+            return;
+        }
+
+        readerData.name = name;
+
+        const genderRadio = document.querySelector('input[name="gender"]:checked');
+        readerData.gender = genderRadio ? genderRadio.value : 'neutral';
+
+        goToStep(3);
+    }
+
+    // ─── Photo Handling ───
+    function triggerCamera() {
+        const input = $('#cameraInput');
+        if (input) input.click();
+    }
+
+    function triggerUpload() {
+        const input = $('#uploadInput');
+        if (input) input.click();
+    }
+
+    function handlePhotoSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showToast('Please select an image file');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image too large. Please select under 5MB');
+            return;
+        }
+
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            const base64 = e.target.result;
+            readerData.photo = base64;
+
+            const previewBox = $('#photoPreviewBox');
+            if (previewBox) {
+                previewBox.innerHTML = `<img src="${base64}" alt="Reader photo" />`;
+                previewBox.classList.add('has-photo');
+            }
+        };
+        fileReader.readAsDataURL(file);
+    }
+
+    function initPhotoInputs() {
+        const cameraInput = $('#cameraInput');
+        const uploadInput = $('#uploadInput');
+        if (cameraInput) cameraInput.addEventListener('change', handlePhotoSelect);
+        if (uploadInput) uploadInput.addEventListener('change', handlePhotoSelect);
+
+        const nameInput = $('#readerName');
+        if (nameInput) {
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    goToStep3();
+                }
+            });
+        }
+    }
+
+    // ─── Reset Wizard State ───
+    function resetWizard() {
+        readerData.name = '';
+        readerData.gender = 'neutral';
+        readerData.photo = null;
+        readerData.language = 'en';
+
+        const previewBox = $('#photoPreviewBox');
+        if (previewBox) {
+            previewBox.classList.remove('has-photo');
+            previewBox.innerHTML = `
+                <span class="photo-placeholder-icon">📷</span>
+                <span class="photo-placeholder-text">No photo selected</span>
+            `;
+        }
+
+        const nameInput = $('#readerName');
+        if (nameInput) nameInput.value = '';
+
+        const neutralRadio = document.querySelector('input[name="gender"][value="neutral"]');
+        if (neutralRadio) neutralRadio.checked = true;
+
+        const cameraInput = $('#cameraInput');
+        const uploadInput = $('#uploadInput');
+        if (cameraInput) cameraInput.value = '';
+        if (uploadInput) uploadInput.value = '';
+    }
+
+    // ─── Message Template (gender-aware) ───
+    function buildReaderMessage(name, gender) {
+        let pronoun, possessive, objectPronoun;
+
+        if (gender === 'male') {
+            pronoun = 'he'; possessive = 'his'; objectPronoun = 'him';
+        } else if (gender === 'female') {
+            pronoun = 'she'; possessive = 'her'; objectPronoun = 'her';
+        } else {
+            pronoun = 'they'; possessive = 'their'; objectPronoun = 'them';
+        }
+
+        return `${name} is someone who is easy to write about, because there is no pretence at all.
+
+Less talk, more action — that's who ${pronoun} is. Even in a crowd, ${pronoun} stands out, not because of clothes or style, but because of ${possessive} nature.
+
+The best thing about ${name} is that ${pronoun} understands. Without being told, ${pronoun} knows when to be there and when to stay quiet. People like this are rare these days.
+
+Hardworking and determined — once ${pronoun} sets ${possessive} mind on something, ${pronoun} gets it done. ${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} has a pure heart, which is why it feels safe to be around ${objectPronoun}.
+
+Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
+    }
+
+    // ─── PDF Generation Trigger ───
+    async function startPDFGeneration() {
+        if (!readerData.name) {
+            showToast('Name is missing. Please go back.');
+            goToStep(2);
+            return;
+        }
+        if (!readerData.photo) {
+            showToast('Please select a photo first');
+            return;
+        }
+
+        goToStep(4);
+        updateModalProgress(0, 'Preparing ebook...');
+
+        try {
+            // ebook.js should expose this globally
+            if (typeof window.generateEbookWithReader !== 'function') {
+                throw new Error('Ebook generator not ready');
+            }
+
+            await window.generateEbookWithReader(readerData, (percent, message) => {
+                updateModalProgress(percent, message);
+            });
+
+            updateModalProgress(100, '✅ Your ebook is ready!');
+
+            setTimeout(() => {
+                closeModal();
+                showToast('Ebook downloaded successfully! 🎉');
+            }, 1200);
+
+        } catch (error) {
+            console.error('PDF generation failed:', error);
+            updateModalProgress(0, '❌ Something went wrong');
+            showToast('PDF generation failed. Please try again.');
+
+            setTimeout(() => goToStep(3), 2000);
+        }
+    }
+
+    function updateModalProgress(percent, message) {
+        const fill = $('#modalProgressFill');
+        const text = $('#modalProgressText');
+        const hint = $('#modalHint');
+
+        if (fill) fill.style.width = percent + '%';
+        if (text) text.textContent = Math.round(percent) + '%';
+        if (hint && message) hint.textContent = message;
+    }
+
+    // ─── Public helper exposed for ebook.js to use ───
+    window.buildReaderMessage = buildReaderMessage;
 
     /* ============================================================
        10. RESTORE STATE
@@ -379,6 +596,7 @@
         initSidebar();
         initModal();
         initChapterClicks();
+        initPhotoInputs();          // ⭐ Wizard photo listeners
 
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
@@ -404,6 +622,14 @@
     window.downloadHinglishEbook= downloadHinglishEbook;
     window.toggleTheme          = toggleTheme;
     window.showToast            = showToast;
+
+    // ⭐ Wizard functions (needed for HTML onclick="")
+    window.goToStep             = goToStep;
+    window.selectLanguage       = selectLanguage;
+    window.goToStep3            = goToStep3;
+    window.triggerCamera        = triggerCamera;
+    window.triggerUpload        = triggerUpload;
+    window.startPDFGeneration   = startPDFGeneration;
 
     /* ============================================================
        13. BOOT
