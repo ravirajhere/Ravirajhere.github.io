@@ -3,6 +3,7 @@
 // Handles: Loader · Theme · Sidebar · Cursor · Interests
 //          Stats · Typing · Active-link · Toast · Time · Top
 //          Thoughts · Blog Archive · Raw Diary · Greeting
+// Version: 2.0 (Enhanced · Recruiter Friendly)
 // ============================================================
 
 (function () {
@@ -13,6 +14,7 @@
     // ============================================================
     const $  = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ============================================================
     // 1. LOADER — Hide on page fully loaded
@@ -32,9 +34,10 @@
     }
 
     // ============================================================
-    // 2. THEME TOGGLE (Light default → [data-theme] on <html>)
+    // 2. THEME TOGGLE
+    //    CSS uses: body.dark-theme  → so we toggle class on <body>
     // ============================================================
-    const root = document.documentElement;
+    const body = document.body;
     const THEME_KEY = 'raviraj-theme';
     const themeSwitch = $('#themeSwitchNav');
 
@@ -42,20 +45,27 @@
         try { return localStorage.getItem(THEME_KEY); } catch { return null; }
     })();
 
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        body.classList.toggle('dark-theme', isDark);
+    }
+
     if (savedTheme === 'light' || savedTheme === 'dark') {
-        root.setAttribute('data-theme', savedTheme);
+        applyTheme(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyTheme('dark');
     } else {
-        root.setAttribute('data-theme', 'light');   // ← Default = LIGHT
+        applyTheme('light');   // ← Default = LIGHT
     }
 
     function setTheme(theme) {
-        root.setAttribute('data-theme', theme);
+        applyTheme(theme);
         try { localStorage.setItem(THEME_KEY, theme); } catch { /* silent */ }
     }
 
     function toggleTheme() {
-        const current = root.getAttribute('data-theme') || 'light';
-        setTheme(current === 'light' ? 'dark' : 'light');
+        const isDark = body.classList.contains('dark-theme');
+        setTheme(isDark ? 'light' : 'dark');
     }
 
     if (themeSwitch) {
@@ -70,6 +80,7 @@
 
     // ============================================================
     // 3. HAMBURGER / SIDEBAR
+    //    CSS uses: .sidebar.active + .sidebar-overlay.active
     // ============================================================
     const hamburgerBtn   = $('#hamburgerBtn');
     const sidebar        = $('#sidebar');
@@ -78,19 +89,19 @@
 
     function openSidebar() {
         if (!sidebar) return;
-        sidebar.classList.add('open');
+        sidebar.classList.add('active');
         sidebarOverlay?.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
     function closeSidebar() {
         if (!sidebar) return;
-        sidebar.classList.remove('open');
+        sidebar.classList.remove('active');
         sidebarOverlay?.classList.remove('active');
         document.body.style.overflow = '';
     }
     function toggleSidebar() {
         if (!sidebar) return;
-        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        sidebar.classList.contains('active') ? closeSidebar() : openSidebar();
     }
 
     hamburgerBtn?.addEventListener('click', toggleSidebar);
@@ -98,7 +109,7 @@
     sidebarClose?.addEventListener('click', closeSidebar);
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar?.classList.contains('open')) {
+        if (e.key === 'Escape' && sidebar?.classList.contains('active')) {
             closeSidebar();
         }
     });
@@ -120,7 +131,7 @@
             if (!target) return;
             e.preventDefault();
             const top = target.getBoundingClientRect().top + window.scrollY - 80;
-            window.scrollTo({ top, behavior: 'smooth' });
+            window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         });
     });
 
@@ -153,6 +164,7 @@
 
     // ============================================================
     // 6. INTEREST CARDS — Expand / Collapse
+    //    CSS uses: .hidden-content.revealed
     // ============================================================
     window.revealInterest = function (id) {
         const content = document.getElementById(id);
@@ -160,13 +172,14 @@
         const card = content.closest('.interest-card');
         if (!card) return;
 
-        const isOpen = card.classList.contains('revealed');
+        const isOpen = content.classList.contains('revealed');
 
-        $$('.interest-card.revealed').forEach((other) => {
-            if (other !== card) other.classList.remove('revealed');
+        // Close other open interest cards
+        $$('.hidden-content.revealed').forEach((other) => {
+            if (other !== content) other.classList.remove('revealed');
         });
 
-        card.classList.toggle('revealed', !isOpen);
+        content.classList.toggle('revealed', !isOpen);
     };
 
     // ============================================================
@@ -175,23 +188,31 @@
     $$('.interest-card, .milestone-card').forEach((el) => {
         el.setAttribute('role', 'button');
         el.setAttribute('tabindex', '0');
+        el.style.cursor = 'pointer';
         el.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 el.click();
             }
             if (e.key === 'Escape') {
-                el.classList.remove('revealed');
+                const hidden = el.querySelector('.hidden-content.revealed');
+                hidden?.classList.remove('revealed');
             }
         });
     });
 
     // ============================================================
     // 8. TYPING ANIMATION — Hero subtitle
+    //    Disabled for reduced-motion users.
     // ============================================================
     function initTyping() {
         const el = $('.hero-subtitle');
         if (!el || el.dataset.typed === 'true') return;
+
+        if (prefersReducedMotion) {
+            el.dataset.typed = 'true';
+            return;
+        }
 
         const originalHTML = el.innerHTML;
         if (/<[a-z]/i.test(originalHTML)) {
@@ -232,7 +253,7 @@
     if (backToTop) {
         backToTop.addEventListener('click', (e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         });
     }
 
@@ -240,7 +261,7 @@
     // 11. SKILL BARS — Animate on view
     // ============================================================
     const skillItems = $$('.skill-item');
-    if (skillItems.length && 'IntersectionObserver' in window) {
+    if (skillItems.length && 'IntersectionObserver' in window && !prefersReducedMotion) {
         skillItems.forEach((item) => {
             const fill = $('.skill-fill', item);
             if (!fill) return;
@@ -271,18 +292,23 @@
     const liveTimeEl = $('#live-time');
     if (liveTimeEl) {
         const updateLiveTime = () => {
-            const now = new Date();
-            const opts = {
-                timeZone: 'Asia/Kolkata',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true,
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            };
-            liveTimeEl.textContent = '⏱️ ' + now.toLocaleString('en-IN', opts) + ' IST';
+            try {
+                const now = new Date();
+                const opts = {
+                    timeZone: 'Asia/Kolkata',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true,
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                };
+                liveTimeEl.textContent = '⏱️ ' + now.toLocaleString('en-IN', opts) + ' IST';
+            } catch {
+                // Fallback if Intl timezone unsupported
+                liveTimeEl.textContent = '⏱️ ' + new Date().toLocaleString();
+            }
         };
         updateLiveTime();
         setInterval(updateLiveTime, 1000);
@@ -290,8 +316,6 @@
 
     // ============================================================
     // 13. CUSTOM CURSOR — Disabled in formal theme
-    //     (CSS has #custom-cursor { display: none !important; })
-    //     JS still runs safely, no errors.
     // ============================================================
     const cursor = $('#custom-cursor');
     if (cursor) {
@@ -329,8 +353,8 @@
     // ============================================================
     // 16. FADE-IN ON SCROLL — Sections & Cards
     // ============================================================
-    if ('IntersectionObserver' in window) {
-        const revealTargets = $$('.section-block, .stat-card, .project-card, .article-card, .milestone-card, .thought-card, .thought-featured');
+    if ('IntersectionObserver' in window && !prefersReducedMotion) {
+        const revealTargets = $$('.section-block, .stat-card, .project-card, .milestone-card, .thought-card, .thought-featured, .achievement-card, .service-card');
         revealTargets.forEach((el) => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(24px)';
@@ -366,6 +390,7 @@
 
     // ============================================================
     // 18. MY THOUGHTS — Expandable blog cards
+    //     CSS uses: .thought-full.open + .thought-featured.open/.thought-card.open
     // ============================================================
     window.toggleThought = function (id) {
         const content = document.getElementById(id);
@@ -374,21 +399,23 @@
         const card = content.closest('.thought-featured, .thought-card');
         if (!card) return;
 
-        const isOpen = card.classList.contains('expanded');
+        const isOpen = content.classList.contains('open');
 
-        $$('.thought-featured.expanded, .thought-card.expanded').forEach((other) => {
-            if (other === card) return;
-            other.classList.remove('expanded');
-
-            const otherToggle = $('.thought-toggle', other);
+        // Close other open thoughts
+        $$('.thought-full.open').forEach((other) => {
+            if (other === content) return;
+            other.classList.remove('open');
+            const parent = other.closest('.thought-featured, .thought-card');
+            parent?.classList.remove('open');
+            const otherToggle = parent ? $('.thought-toggle', parent) : null;
             if (otherToggle && otherToggle.firstChild) {
                 otherToggle.firstChild.nodeValue = 'Read Full Thought ';
             }
-
-            closeRawInCard(other);
+            closeRawInCard(parent);
         });
 
-        card.classList.toggle('expanded', !isOpen);
+        content.classList.toggle('open', !isOpen);
+        card.classList.toggle('open', !isOpen);
 
         const toggle = $('.thought-toggle', card);
         if (toggle && toggle.firstChild) {
@@ -401,7 +428,7 @@
             closeRawInCard(card);
         }
 
-        if (!isOpen) {
+        if (!isOpen && !prefersReducedMotion) {
             setTimeout(() => {
                 const top = card.getBoundingClientRect().top + window.scrollY - 90;
                 window.scrollTo({ top, behavior: 'smooth' });
@@ -411,6 +438,7 @@
 
     // ============================================================
     // 19. BLOG ARCHIVE — Toggle expand/collapse
+    //     CSS uses: .blog-archive.open + .archive-toggle-btn.open
     // ============================================================
     window.toggleArchive = function () {
         const archive = document.getElementById('blogArchive');
@@ -420,7 +448,7 @@
         const isOpen = archive.classList.contains('open');
 
         archive.classList.toggle('open', !isOpen);
-        btn.classList.toggle('active', !isOpen);
+        btn.classList.toggle('open', !isOpen);
 
         const btnText = $('.archive-btn-text', btn);
         if (btnText) {
@@ -438,7 +466,7 @@
             });
         }
 
-        if (!isOpen) {
+        if (!isOpen && !prefersReducedMotion) {
             setTimeout(() => {
                 const top = btn.getBoundingClientRect().top + window.scrollY - 100;
                 window.scrollTo({ top, behavior: 'smooth' });
@@ -458,6 +486,7 @@
 
         const isOpen = raw.classList.contains('open');
 
+        // Close other raw-content
         $$('.raw-content.open').forEach((other) => {
             if (other === raw) return;
             other.classList.remove('open');
@@ -474,7 +503,7 @@
             ? '📓 Read Original Diary Entry'
             : '✕ Hide Original Entry';
 
-        if (!isOpen) {
+        if (!isOpen && !prefersReducedMotion) {
             setTimeout(() => {
                 const top = raw.getBoundingClientRect().top + window.scrollY - 120;
                 window.scrollTo({ top, behavior: 'smooth' });
@@ -559,6 +588,12 @@
             25% { transform: translateX(-6px); }
             50% { transform: translateX(6px); }
             75% { transform: translateX(-4px); }
+        }
+        .greeting-box-sidebar.hidden { display: none !important; }
+        .user-name-highlight {
+            color: var(--accent);
+            border-bottom: 2px dashed var(--accent);
+            padding-bottom: 1px;
         }
     `;
     document.head.appendChild(shakeStyle);
