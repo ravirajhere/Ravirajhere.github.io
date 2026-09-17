@@ -48,17 +48,14 @@
         document.documentElement.setAttribute('data-theme', theme);
         document.body.classList.toggle('dark-mode', theme === 'dark');
 
-        // Update label (sidebar one, if exists)
         const label = $('#themeLabel');
         if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
 
-        // Sync both switches (sidebar + nav)
         $$('.switch').forEach(sw => {
             sw.classList.toggle('active', theme === 'dark');
             sw.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
         });
 
-        // Persist
         try { localStorage.setItem('autobio-theme', theme); } catch (e) {}
     }
 
@@ -77,7 +74,6 @@
         }
         applyTheme(saved);
 
-        // Bind both switches
         ['#themeSwitch', '#themeSwitchNav'].forEach(id => {
             const sw = $(id);
             if (!sw) return;
@@ -119,7 +115,6 @@
         if (closeBtn)  closeBtn.addEventListener('click', closeSidebar);
         if (overlay)   overlay.addEventListener('click', closeSidebar);
 
-        // ESC closes sidebar
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeSidebar();
         });
@@ -132,22 +127,18 @@
         if (lang !== 'en' && lang !== 'hi') return;
         state.currentLang = lang;
 
-        // Toggle active button
         const btnEn = $('#btnEn');
         const btnHi = $('#btnHi');
         if (btnEn) btnEn.classList.toggle('active', lang === 'en');
         if (btnHi) btnHi.classList.toggle('active', lang === 'hi');
 
-        // Toggle chapters containers
         const enBox = $('#chaptersEn');
         const hiBox = $('#chaptersHi');
         if (enBox) enBox.style.display = lang === 'en' ? '' : 'none';
         if (hiBox) hiBox.style.display = lang === 'hi' ? '' : 'none';
 
-        // Show only current chapter in the active language
         showChapter(state.currentChapter, false);
 
-        // Persist
         try { localStorage.setItem('autobio-lang', lang); } catch (e) {}
 
         showToast(lang === 'en' ? '🇬🇧 English' : '🗣️ Hinglish');
@@ -167,14 +158,12 @@
         const container = getActiveContainer();
         if (!container) return;
 
-        // Hide all chapters in this container, show the matching one
         $$('.chapter', container).forEach(ch => {
             const match = ch.dataset.chapter === chapterId;
             ch.classList.toggle('active', match);
             ch.style.display = match ? '' : 'none';
         });
 
-        // Also hide all chapters in the *other* language container
         const otherContainer = state.currentLang === 'en'
             ? $('#chaptersHi')
             : $('#chaptersEn');
@@ -190,11 +179,19 @@
         highlightSidebar(chapterId);
 
         if (scroll) {
-            const wrapper = $('.autobio-wrapper');
-            if (wrapper) {
-                window.scrollTo({
-                    top: wrapper.offsetTop - 60,
-                    behavior: 'smooth'
+            // ✅ FIX: scroll to the active chapter's heading, not page top
+            const activeCh = $('.chapter.active', container);
+            if (activeCh) {
+                // Small delay so display changes apply first
+                requestAnimationFrame(() => {
+                    const topNavHeight = 70;      // top-nav is fixed, ~70px
+                    const extraGap = 12;          // thoda breathing room
+                    const rect = activeCh.getBoundingClientRect();
+                    const absoluteTop = rect.top + window.pageYOffset;
+                    window.scrollTo({
+                        top: absoluteTop - topNavHeight - extraGap,
+                        behavior: 'smooth'
+                    });
                 });
             }
         }
@@ -256,16 +253,12 @@
 
     /* ---------- CLICK HANDLERS (single source of truth) ---------- */
     function initChapterClicks() {
-        // ✅ FIX: inline onclick hata do taaki double firing na ho
-        // (HTML me agar onclick="nextChapter()" / "prevChapter()" / "showChapter()" hai,
-        //  wo JS handler ke saath milkar 2 step jump karata tha)
         $$('.nav-btn, .prev-btn, .next-btn, #chapterSidebarMenu a, #progressDots .dot')
             .forEach(el => {
                 el.removeAttribute('onclick');
                 el.onclick = null;
             });
 
-        // Sidebar chapter links
         $$('#chapterSidebarMenu a').forEach(a => {
             a.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -277,7 +270,6 @@
             });
         });
 
-        // Progress dots
         $$('#progressDots .dot').forEach(dot => {
             dot.addEventListener('click', () => {
                 const ch = dot.dataset.dot;
@@ -285,19 +277,15 @@
             });
         });
 
-        // Prev/Next buttons — event delegation
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('.nav-btn');
             if (!btn) return;
-
-            // Safety: agar kahin inline onclick bach gaya ho to skip
             if (btn.hasAttribute('onclick')) return;
 
             if (btn.classList.contains('prev-btn')) prevChapter();
             else if (btn.classList.contains('next-btn')) nextChapter();
         });
 
-        // Keyboard: Left / Right arrows (only if modal/sidebar not open)
         document.addEventListener('keydown', (e) => {
             if (document.body.classList.contains('sidebar-open')) return;
             const modal = $('#downloadModal');
@@ -329,12 +317,10 @@
         const modal = $('#downloadModal');
         if (!modal) return;
 
-        // Click on overlay (not content) closes
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
 
-        // ESC closes
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
@@ -394,11 +380,9 @@
         initModal();
         initChapterClicks();
 
-        // Apply language + chapter after DOM ready
         switchLang(state.currentLang);
         showChapter(state.currentChapter, false);
 
-        // Language buttons — use onclick = to also wipe any old inline handler
         const btnEn = $('#btnEn');
         const btnHi = $('#btnHi');
         if (btnEn) btnEn.onclick = () => switchLang('en');
@@ -408,7 +392,7 @@
     }
 
     /* ============================================================
-       12. EXPOSE GLOBALS (console / debug ke liye)
+       12. EXPOSE GLOBALS
        ============================================================ */
     window.openModal            = openModal;
     window.closeModal           = closeModal;
