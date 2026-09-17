@@ -8,91 +8,212 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/favicon.png" />
 
-    <!-- Google Font: Georgia (Recruiter Favorite) -->
+    <!-- Google Fonts: Inter (Professional) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Georgia&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Font Awesome for 3D Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="css/global.css" />
 
     <style>
         /* ============================================================
-           RESUME-SPECIFIC STYLES (Only for this page)
+           RESUME-PDF.HTML — Professional Slate/Navy Theme
+           All styles inline — no external CSS needed
+           ============================================================ */
+
+        /* ============================================================
+           1. ROOT VARIABLES (Light Default)
            ============================================================ */
         :root {
-            --bg-body: #f0f0f0;
+            --bg-body: #f8fafc;
             --bg-card: #ffffff;
-            --text: #1a1a1a;
-            --text2: #333;
-            --text3: #888;
-            --border: #e0e0e0;
-            --border2: #e8e8e8;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            --gold: #DAA520;
-            --gold-dark: #b8960f;
-            --btn-bg: #1a1a1a;
+            --text: #0f172a;
+            --text2: #334155;
+            --text3: #64748b;
+            --border: #e2e8f0;
+            --border2: #e2e8f0;
+            --shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            --accent: #1e40af;
+            --accent2: #1e3a8a;
+            --accent-soft: #eff6ff;
+            --btn-bg: #1e40af;
             --btn-text: #ffffff;
-            --icon-bg: #f0f0f0;
-            --highlight: #f8f8f8;
-            --connect-bg: #fafafa;
-            --footer: #bbb;
-            --transition: 0.3s ease;
+            --icon-bg: #f1f5f9;
+            --highlight: #f1f5f9;
+            --connect-bg: #f8fafc;
+            --footer: #94a3b8;
+            --transition: 0.25s ease;
         }
 
+        /* ============================================================
+           2. DARK THEME
+           ============================================================ */
         [data-theme="dark"] {
-            --bg-body: #0a0a0a;
-            --bg-card: #1a1a1a;
-            --text: #f0f0f0;
-            --text2: #d0d0d0;
-            --text3: #999;
-            --border: #333;
-            --border2: #444;
-            --shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
-            --btn-bg: #DAA520;
-            --btn-text: #1a1a1a;
-            --icon-bg: #2a2a2a;
-            --highlight: #2a2a2a;
-            --connect-bg: #2a2a2a;
-            --footer: #666;
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text2: #cbd5e1;
+            --text3: #94a3b8;
+            --border: #334155;
+            --border2: #334155;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --accent: #60a5fa;
+            --accent2: #93c5fd;
+            --accent-soft: rgba(96, 165, 250, 0.1);
+            --btn-bg: #60a5fa;
+            --btn-text: #0f172a;
+            --icon-bg: #334155;
+            --highlight: #334155;
+            --connect-bg: #334155;
+            --footer: #64748b;
+        }
+
+        /* ============================================================
+           3. RESET + BASE
+           ============================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
-            font-family: 'Georgia', 'Times New Roman', serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg-body);
             color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: 100vh;
             padding: 30px 20px;
             transition: background var(--transition), color var(--transition);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ---- Theme toggle position override for this page ---- */
+        img { max-width: 100%; display: block; }
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; }
+
+        ::selection {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        /* ============================================================
+           4. THEME TOGGLE (Fixed top-right)
+           ============================================================ */
         .theme-toggle-wrapper {
-            background: var(--bg-card) !important;
-            border-color: var(--border) !important;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+            background: var(--bg-card);
+            padding: 8px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text2);
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
 
-        #themeLabel {
-            color: var(--text2) !important;
+        [data-theme="dark"] .theme-toggle-wrapper {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
         }
 
         .switch {
-            background: var(--highlight) !important;
-            border-color: var(--border) !important;
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--icon-bg);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
+            transition: background 0.25s ease;
+            user-select: none;
+            outline: none;
         }
+
+        .switch:focus-visible {
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
+        }
+
+        .switch-icon {
+            font-size: 11px;
+            z-index: 2;
+            line-height: 1;
+            transition: opacity 0.25s ease;
+        }
+
+        .switch .sun { opacity: 1; }
+        .switch .moon { opacity: 0.35; }
+
+        [data-theme="dark"] .switch .sun { opacity: 0.35; }
+        [data-theme="dark"] .switch .moon { opacity: 1; }
 
         .switch .slider {
-            background: var(--gold) !important;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.3);
+            z-index: 1;
         }
 
-        /* ---- Download Button ---- */
+        [data-theme="dark"] .switch .slider {
+            transform: translateX(22px);
+        }
+
+        /* ============================================================
+           5. TOAST
+           ============================================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text);
+            color: var(--bg-card);
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+            white-space: nowrap;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.2);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================================
+           6. DOWNLOAD BUTTON
+           ============================================================ */
         .download-btn-wrapper {
             text-align: center;
             margin-bottom: 24px;
@@ -102,47 +223,58 @@
             background: var(--btn-bg);
             color: var(--btn-text);
             border: none;
-            padding: 12px 36px;
-            font-size: 16px;
-            font-family: 'Georgia', serif;
-            border-radius: 4px;
+            padding: 12px 32px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            border-radius: 8px;
             cursor: pointer;
-            letter-spacing: 0.5px;
-            transition: background 0.3s ease, color 0.3s ease;
+            letter-spacing: 0.3px;
+            transition: all var(--transition);
+            box-shadow: 0 4px 14px rgba(30, 64, 175, 0.2);
         }
 
         .download-btn:hover {
-            background: var(--gold);
-            color: var(--text);
+            background: var(--accent2);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.3);
         }
 
-        /* ---- Resume Container ---- */
+        [data-theme="dark"] .download-btn:hover {
+            background: var(--accent2);
+        }
+
+        /* ============================================================
+           7. RESUME CONTAINER
+           ============================================================ */
         .resume {
             max-width: 900px;
             width: 100%;
             background: var(--bg-card);
             padding: 45px 50px;
             border: 1px solid var(--border);
+            border-radius: 12px;
             box-shadow: var(--shadow);
             transition: background var(--transition), border var(--transition), box-shadow var(--transition);
         }
 
-        /* ---- Header ---- */
+        /* ============================================================
+           8. HEADER
+           ============================================================ */
         .header {
             display: flex;
             align-items: center;
             gap: 28px;
-            padding-bottom: 18px;
-            border-bottom: 2px solid var(--border2);
-            margin-bottom: 22px;
-            transition: border-color var(--transition);
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
         }
 
         .profile-photo {
-            width: 110px;
-            height: 110px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            border: 3px solid var(--gold);
+            border: 2px solid var(--accent);
             object-fit: cover;
             flex-shrink: 0;
         }
@@ -152,73 +284,69 @@
         }
 
         .header-right h1 {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             color: var(--text);
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-            transition: color var(--transition);
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
         }
 
         .header-right .title {
-            font-size: 17px;
-            color: var(--gold);
+            font-size: 14px;
+            color: var(--accent);
             font-weight: 600;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .header-right .location {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text3);
-            margin-bottom: 6px;
-            transition: color var(--transition);
+            margin-bottom: 8px;
         }
 
         .header-right .contact-links {
-            font-size: 13px;
+            font-size: 12.5px;
             color: var(--text2);
             display: flex;
             flex-wrap: wrap;
             gap: 4px 16px;
-            transition: color var(--transition);
         }
 
         .header-right .contact-links a {
             color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--border2);
+            border-bottom: 1px dotted var(--border);
             transition: all var(--transition);
         }
 
         .header-right .contact-links a:hover {
-            border-bottom-color: var(--gold);
-            color: var(--gold);
+            border-bottom-color: var(--accent);
+            color: var(--accent);
         }
 
-        /* ---- Sections ---- */
+        /* ============================================================
+           9. SECTIONS
+           ============================================================ */
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .section-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 800;
             color: var(--text);
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 4px;
-            margin-bottom: 10px;
-            transition: color var(--transition);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
         }
 
         .section p,
         .section li {
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13.5px;
+            line-height: 1.65;
             color: var(--text2);
             font-weight: 400;
-            transition: color var(--transition);
         }
 
         .section ul {
@@ -227,36 +355,39 @@
         }
 
         .section ul li {
-            padding: 2px 0;
+            padding: 3px 0;
         }
 
         .section ul li::before {
             content: "▸ ";
-            color: var(--gold);
+            color: var(--accent);
             font-weight: 700;
         }
 
-        /* ---- Summary Highlights ---- */
+        /* ============================================================
+           10. SUMMARY HIGHLIGHTS
+           ============================================================ */
         .summary-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px 20px;
-            margin-top: 6px;
+            gap: 6px 12px;
+            margin-top: 10px;
         }
 
         .summary-grid .highlight-item {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text2);
             background: var(--highlight);
-            padding: 2px 14px;
-            border-radius: 12px;
-            border-left: 3px solid var(--gold);
-            transition: all var(--transition);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
         }
 
-        /* ---- Experience / Projects ---- */
+        /* ============================================================
+           11. EXPERIENCE / PROJECTS
+           ============================================================ */
         .exp-item {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .exp-item .exp-header {
@@ -264,34 +395,33 @@
             justify-content: space-between;
             flex-wrap: wrap;
             align-items: baseline;
+            margin-bottom: 4px;
         }
 
         .exp-item .exp-title {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text);
-            transition: color var(--transition);
         }
 
         .exp-item .exp-org {
             font-weight: 600;
-            color: var(--gold);
-            font-size: 14px;
+            color: var(--accent);
+            font-size: 13.5px;
         }
 
         .exp-item .exp-date {
-            font-size: 13px;
+            font-size: 12.5px;
             color: var(--text3);
-            font-style: italic;
-            transition: color var(--transition);
+            font-weight: 500;
         }
 
         .exp-item .exp-desc {
             font-size: 13px;
             color: var(--text2);
             margin-top: 2px;
-            padding-left: 4px;
-            transition: color var(--transition);
+            padding-left: 2px;
+            line-height: 1.65;
         }
 
         .exp-item .exp-desc ul {
@@ -301,187 +431,193 @@
         .exp-item .exp-desc ul li {
             font-size: 13px;
             color: var(--text2);
-            padding: 1px 0;
+            padding: 2px 0;
             font-weight: 400;
-            transition: color var(--transition);
         }
 
         .exp-item .exp-desc ul li::before {
             content: "• ";
-            color: var(--gold);
+            color: var(--accent);
         }
 
         .exp-item .exp-links {
             font-size: 12px;
-            margin-top: 3px;
+            margin-top: 6px;
         }
 
         .exp-item .exp-links a {
-            color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--border2);
+            color: var(--accent);
+            border-bottom: 1px dotted var(--accent);
             margin-right: 14px;
+            font-weight: 500;
             transition: all var(--transition);
         }
 
         .exp-item .exp-links a:hover {
-            border-bottom-color: var(--gold);
-            color: var(--gold);
+            border-bottom-style: solid;
         }
 
-        /* ---- Skills ---- */
+        /* ============================================================
+           12. SKILLS
+           ============================================================ */
         .skills-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 28px;
+            gap: 8px 28px;
+        }
+
+        .skills-grid > div {
+            font-size: 13.5px;
+            line-height: 1.6;
         }
 
         .skills-grid .skill-cat {
             font-weight: 700;
             color: var(--text);
-            min-width: 90px;
-            font-size: 14px;
-            transition: color var(--transition);
+            margin-right: 6px;
+            font-size: 13.5px;
         }
 
         .skills-grid .skill-list {
             color: var(--text2);
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 400;
-            transition: color var(--transition);
         }
 
-        /* ---- Achievements ---- */
+        /* ============================================================
+           13. ACHIEVEMENTS / CERTIFICATIONS
+           ============================================================ */
         .achievement-list li::before {
             content: "✦ ";
-            color: var(--gold);
+            color: var(--accent);
             font-weight: 700;
         }
 
-        /* ---- Languages ---- */
+        /* ============================================================
+           14. LANGUAGES
+           ============================================================ */
         .inline-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 28px;
-            font-size: 14px;
+            gap: 6px 28px;
+            font-size: 13.5px;
             color: var(--text2);
-            transition: color var(--transition);
         }
 
         .inline-list .label {
             font-weight: 700;
             color: var(--text);
-            transition: color var(--transition);
         }
 
-        /* ---- Education ---- */
+        /* ============================================================
+           15. EDUCATION
+           ============================================================ */
+        .edu-item {
+            margin-bottom: 10px;
+        }
+
         .edu-item .school {
             font-weight: 700;
             color: var(--text);
-            font-size: 15px;
-            transition: color var(--transition);
+            font-size: 14px;
         }
 
         .edu-item .board {
-            font-size: 13px;
-            color: var(--gold);
+            font-size: 12.5px;
+            color: var(--accent);
             font-weight: 600;
         }
 
         .edu-item .detail {
-            font-size: 13px;
+            font-size: 12.5px;
             color: var(--text2);
-            transition: color var(--transition);
+            margin-top: 1px;
         }
 
-        /* ---- Connect — 3D Icon Links ---- */
+        /* ============================================================
+           16. CONNECT — Icon Links
+           ============================================================ */
         .connect-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px 28px;
+            gap: 10px 14px;
         }
 
         .connect-link {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: var(--text);
-            text-decoration: none;
             font-weight: 500;
-            padding: 6px 14px 6px 10px;
-            border-radius: 6px;
+            font-size: 13px;
+            padding: 8px 16px 8px 10px;
+            border-radius: 8px;
             background: var(--connect-bg);
             border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-        }
-
-        .connect-link i {
-            font-size: 18px;
-            width: 26px;
-            text-align: center;
-            transition: transform 0.3s ease;
+            transition: all var(--transition);
         }
 
         .connect-link:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            border-color: var(--gold);
+            transform: translateY(-2px);
+            border-color: var(--accent);
             background: var(--bg-card);
-        }
-
-        .connect-link:hover i {
-            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
         }
 
         .connect-link .icon-bg {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: var(--icon-bg);
-            transition: all 0.3s ease;
+            transition: all var(--transition);
+            color: var(--text2);
+            font-size: 15px;
         }
 
         .connect-link:hover .icon-bg {
-            background: var(--gold);
-            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.35);
+            background: var(--accent);
+            color: #ffffff;
         }
 
-        .connect-link:hover .icon-bg i {
-            color: #ffffff !important;
-        }
-
-        /* ---- References ---- */
+        /* ============================================================
+           17. REFERENCES
+           ============================================================ */
         .ref-text {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text3);
             font-style: italic;
-            transition: color var(--transition);
         }
 
-        /* ---- Footer ---- */
+        /* ============================================================
+           18. FOOTER
+           ============================================================ */
         .footer {
             text-align: center;
             font-size: 11px;
             color: var(--footer);
-            border-top: 1px solid var(--border2);
+            border-top: 1px solid var(--border);
             padding-top: 14px;
-            margin-top: 8px;
-            transition: all var(--transition);
+            margin-top: 10px;
+            letter-spacing: 0.3px;
         }
 
-        /* ---- Phone Number — Hidden on Website ---- */
+        /* ============================================================
+           19. PHONE NUMBER (Hidden on website, shown on print)
+           ============================================================ */
         .phone-number {
             display: none;
         }
 
-        /* ---- Responsive ---- */
+        /* ============================================================
+           20. RESPONSIVE
+           ============================================================ */
         @media (max-width: 600px) {
             .resume {
                 padding: 24px 18px;
+                border-radius: 8px;
             }
 
             .header {
@@ -490,11 +626,11 @@
                 gap: 14px;
             }
 
-            .header h1 {
-                font-size: 26px;
+            .header-right h1 {
+                font-size: 22px;
             }
 
-            .header .contact-links {
+            .header-right .contact-links {
                 flex-direction: column;
                 gap: 3px;
                 align-items: center;
@@ -508,7 +644,10 @@
             .connect-grid {
                 flex-direction: column;
                 gap: 8px;
-                align-items: center;
+            }
+
+            .connect-link {
+                justify-content: center;
             }
 
             .inline-list {
@@ -522,13 +661,13 @@
             }
 
             .profile-photo {
-                width: 100px;
-                height: 100px;
+                width: 90px;
+                height: 90px;
             }
 
             .download-btn {
-                padding: 10px 28px;
-                font-size: 14px;
+                padding: 10px 24px;
+                font-size: 13px;
             }
 
             .exp-item .exp-header {
@@ -536,32 +675,51 @@
                 align-items: flex-start;
                 gap: 2px;
             }
+
+            .theme-toggle-wrapper {
+                top: 14px;
+                right: 14px;
+                padding: 6px 10px;
+                font-size: 11.5px;
+            }
+
+            .switch {
+                width: 44px;
+                height: 24px;
+            }
+
+            .switch .slider {
+                width: 18px;
+                height: 18px;
+            }
+
+            [data-theme="dark"] .switch .slider {
+                transform: translateX(20px);
+            }
         }
 
-        /* ---- Print Styles ---- */
+        /* ============================================================
+           21. PRINT STYLES
+           ============================================================ */
         @media print {
             body {
                 background: #fff;
                 padding: 0;
                 margin: 0;
+                display: block;
             }
 
             .resume {
                 box-shadow: none;
                 border: none;
-                padding: 35px 40px;
+                border-radius: 0;
+                padding: 30px 40px;
                 max-width: 100%;
                 background: #fff;
             }
 
-            .download-btn-wrapper {
-                display: none !important;
-            }
-
-            .theme-toggle-wrapper {
-                display: none !important;
-            }
-
+            .download-btn-wrapper,
+            .theme-toggle-wrapper,
             .toast {
                 display: none !important;
             }
@@ -584,18 +742,23 @@
 
             .connect-link .icon-bg {
                 background: #f5f5f5;
-            }
-
-            .connect-link .icon-bg i {
                 color: #1a1a1a !important;
             }
 
             .section {
                 page-break-inside: avoid;
             }
+        }
 
-            .profile-photo:hover {
-                transform: none;
+        /* ============================================================
+           22. REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
@@ -617,7 +780,7 @@
 
     <!-- ===== DOWNLOAD BUTTON ===== -->
     <div class="download-btn-wrapper">
-        <button class="download-btn" onclick="window.print()">
+        <button class="download-btn" id="downloadBtn">
             📄 Download CV (PDF)
         </button>
     </div>
@@ -632,12 +795,12 @@
             <img src="assets/images/formal.jpg" alt="Ravi Raj" class="profile-photo" />
             <div class="header-right">
                 <h1>RAVI RAJ</h1>
-                <div class="title">Web Developer | Student</div>
+                <div class="title">Web Developer · Student</div>
                 <div class="location">Patna, India</div>
                 <div class="contact-links">
                     <a href="mailto:raviraj2k09@gmail.com">✉️ raviraj2k09@gmail.com</a>
                     <span class="phone-number">📱 +91 91022 24971</span>
-                    <a href="https://ravirajhere.github.io">🌐 ravirajhere.github.io</a>
+                    <a href="https://ravirajhere.github.io" target="_blank" rel="noopener">🌐 ravirajhere.github.io</a>
                 </div>
             </div>
         </div>
@@ -711,8 +874,8 @@
                     4 Chapters | 2 Languages (English/Hinglish)
                     <br />Personal life story with childhood memories
                     <div class="exp-links">
-                        <a href="https://ravirajhere.github.io/autobiography.html" target="_blank">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank">Source</a>
+                        <a href="https://ravirajhere.github.io/autobiography.html" target="_blank" rel="noopener">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" rel="noopener">Source</a>
                     </div>
                 </div>
             </div>
@@ -725,8 +888,8 @@
                     Real-time messaging | Emoji support | LocalStorage
                     <br />Built with vanilla JavaScript
                     <div class="exp-links">
-                        <a href="https://ravirajhere.github.io/chatbox.html" target="_blank">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank">Source</a>
+                        <a href="https://ravirajhere.github.io/chatbox.html" target="_blank" rel="noopener">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/chatbox.html" target="_blank" rel="noopener">Source</a>
                     </div>
                 </div>
             </div>
@@ -739,8 +902,8 @@
                     Lightbox view | Category filters | Smooth animations
                     <br />Photo gallery with memory showcase
                     <div class="exp-links">
-                        <a href="https://ravirajhere.github.io/friends.html" target="_blank">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank">Source</a>
+                        <a href="https://ravirajhere.github.io/friends.html" target="_blank" rel="noopener">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" rel="noopener">Source</a>
                     </div>
                 </div>
             </div>
@@ -753,8 +916,8 @@
                     Responsive design | Project showcase | Contact form
                     <br />Live on GitHub Pages
                     <div class="exp-links">
-                        <a href="https://ravirajhere.github.io" target="_blank">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io" target="_blank">Source</a>
+                        <a href="https://ravirajhere.github.io" target="_blank" rel="noopener">Live Demo</a>
+                        <a href="https://github.com/ravirajhere/ravirajhere.github.io" target="_blank" rel="noopener">Source</a>
                     </div>
                 </div>
             </div>
@@ -798,7 +961,7 @@
                 <div class="detail">Physics, Chemistry, Mathematics</div>
             </div>
 
-            <div class="edu-item" style="margin-top: 8px;">
+            <div class="edu-item">
                 <div class="school">Secondary (Class 10) | 2024</div>
                 <div class="board">CBSE Board</div>
                 <div class="detail">Mother's Pride International Sr. Sec. Anglo Public School, Begusarai</div>
@@ -842,28 +1005,28 @@
         </div>
 
         <!-- ================================ -->
-        <!-- CONNECT — 3D ICONS              -->
+        <!-- CONNECT                          -->
         <!-- ================================ -->
         <div class="section">
             <div class="section-title">Connect</div>
             <div class="connect-grid">
 
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" class="connect-link">
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener" class="connect-link">
                     <span class="icon-bg"><i class="fab fa-linkedin-in"></i></span>
                     LinkedIn
                 </a>
 
-                <a href="https://twitter.com/Raviraj2k09" target="_blank" class="connect-link">
+                <a href="https://twitter.com/Raviraj2k09" target="_blank" rel="noopener" class="connect-link">
                     <span class="icon-bg"><i class="fab fa-x-twitter"></i></span>
                     Twitter/X
                 </a>
 
-                <a href="https://github.com/ravirajhere" target="_blank" class="connect-link">
+                <a href="https://github.com/ravirajhere" target="_blank" rel="noopener" class="connect-link">
                     <span class="icon-bg"><i class="fab fa-github"></i></span>
                     GitHub
                 </a>
 
-                <a href="https://ravirajhere.github.io" target="_blank" class="connect-link">
+                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener" class="connect-link">
                     <span class="icon-bg"><i class="fas fa-globe"></i></span>
                     Website
                 </a>
@@ -889,9 +1052,100 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT
-    ============================================================ -->
-    <script src="js/global.js"></script>
+         INLINE JAVASCRIPT (Theme toggle, print, toast)
+         ============================================================ -->
+    <script>
+        (function () {
+            'use strict';
+
+            // ============================================================
+            // 1. THEME TOGGLE
+            // ============================================================
+            const root = document.documentElement;
+            const THEME_KEY = 'raviraj-theme';
+
+            // Apply saved theme or default to light
+            const savedTheme = (() => {
+                try { return localStorage.getItem(THEME_KEY); } catch { return null; }
+            })();
+
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                root.setAttribute('data-theme', savedTheme);
+            } else {
+                root.setAttribute('data-theme', 'light');
+            }
+
+            function updateLabel() {
+                const label = document.getElementById('themeLabel');
+                if (!label) return;
+                const t = root.getAttribute('data-theme') || 'light';
+                label.textContent = t === 'dark' ? 'Dark' : 'Light';
+            }
+
+            updateLabel();
+
+            // Wire up theme switch
+            const themeSwitch = document.getElementById('themeSwitch');
+            if (themeSwitch) {
+                const toggleTheme = () => {
+                    const current = root.getAttribute('data-theme') || 'light';
+                    const next = current === 'light' ? 'dark' : 'light';
+                    root.setAttribute('data-theme', next);
+                    try { localStorage.setItem(THEME_KEY, next); } catch { /* silent */ }
+                    updateLabel();
+                };
+
+                themeSwitch.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleTheme();
+                });
+
+                themeSwitch.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleTheme();
+                    }
+                });
+            }
+
+            // ============================================================
+            // 2. DOWNLOAD BUTTON (Print)
+            // ============================================================
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            // ============================================================
+            // 3. TOAST (for future use)
+            // ============================================================
+            const toastEl = document.getElementById('toast');
+            let toastTimer = null;
+
+            window.showToast = function (msg, duration = 2400) {
+                if (!toastEl) return;
+                toastEl.textContent = msg;
+                toastEl.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toastEl.classList.remove('show');
+                }, duration);
+            };
+
+            // ============================================================
+            // 4. EASTER EGG — Console
+            // ============================================================
+            const navy = 'color:#1e40af;font-weight:600;';
+            const slate = 'color:#334155;';
+            console.log('%c 👋 Hey there, fellow developer!', `font-size:18px;font-weight:700;${navy}`);
+            console.log('%c Thanks for peeking under the hood. Built with ❤️ by Ravi Raj', `font-size:13px;${slate}`);
+            console.log('%c 📖 https://github.com/ravirajhere', `font-size:13px;${navy}`);
+            console.log('%c ✅ Resume page loaded successfully.', `font-size:12px;${slate}`);
+
+        })();
+    </script>
 
 </body>
 </html>
