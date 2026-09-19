@@ -1,611 +1,508 @@
-// ============================================================
-// SCRIPT.JS — Ravi Raj Portfolio
-// Handles: Loader · Theme · Sidebar · Cursor · Interests
-//          Stats · Typing · Active-link · Toast · Time · Top
-//          Thoughts · Blog Archive · Raw Diary · Greeting
-// Version: 2.0 (Enhanced · Recruiter Friendly)
-// ============================================================
+/* ==========================================================================
+   RAVI RAJ — SITE SCRIPT
+   Version: 3.0
+   Handles: Year · Mobile Menu · Command Palette (K) · Smooth Scroll
+            Copy Email · Active Nav · Scroll Cue · Reduced Motion
+   No dependencies. No frameworks. ~230 lines.
+   ========================================================================== */
 
 (function () {
     'use strict';
 
-    // ============================================================
-    // 0. HELPERS
-    // ============================================================
+    /* ======================================================================
+       0. HELPERS + PREFERENCES
+       ====================================================================== */
     const $  = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ============================================================
-    // 1. LOADER — Hide on page fully loaded
-    // ============================================================
-    const loader = $('#loader');
-    if (loader) {
-        const hideLoader = () => {
-            setTimeout(() => loader.classList.add('hidden'), 350);
-        };
-        if (document.readyState === 'complete') {
-            hideLoader();
-        } else {
-            window.addEventListener('load', hideLoader);
-        }
-        // Fallback: force hide after 1.2s (recruiter-friendly, fast)
-        setTimeout(() => loader.classList.add('hidden'), 1200);
-    }
+    const focusableSelector = [
+        'a[href]',
+        'button:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
 
-    // ============================================================
-    // 2. THEME TOGGLE
-    //    CSS uses: body.dark-theme  → so we toggle class on <body>
-    // ============================================================
-    const body = document.body;
-    const THEME_KEY = 'raviraj-theme';
-    const themeSwitch = $('#themeSwitchNav');
+    /* ======================================================================
+       1. YEAR IN FOOTER
+       ====================================================================== */
+    const yearEl = $('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    const savedTheme = (() => {
-        try { return localStorage.getItem(THEME_KEY); } catch { return null; }
-    })();
+    /* ======================================================================
+       2. MOBILE MENU
+       ====================================================================== */
+    const menuBtn       = $('#menuBtn');
+    const mobileNav     = $('#mobileNav');
+    const mobileOverlay = $('#mobileOverlay');
+    const mobileClose   = $('#mobileNavClose');
 
-    function applyTheme(theme) {
-        const isDark = theme === 'dark';
-        body.classList.toggle('dark-theme', isDark);
-    }
+    let lastFocused = null;
 
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-        applyTheme(savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        applyTheme('dark');
-    } else {
-        applyTheme('light');   // ← Default = LIGHT
-    }
+    function openMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+        lastFocused = document.activeElement;
 
-    function setTheme(theme) {
-        applyTheme(theme);
-        try { localStorage.setItem(THEME_KEY, theme); } catch { /* silent */ }
-    }
+        mobileNav.hidden = false;
+        mobileOverlay.hidden = false;
 
-    function toggleTheme() {
-        const isDark = body.classList.contains('dark-theme');
-        setTheme(isDark ? 'light' : 'dark');
-    }
-
-    if (themeSwitch) {
-        themeSwitch.addEventListener('click', toggleTheme);
-        themeSwitch.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleTheme();
-            }
+        // force reflow for transition
+        requestAnimationFrame(() => {
+            mobileNav.dataset.open = 'true';
+            mobileOverlay.dataset.open = 'true';
         });
-    }
 
-    // ============================================================
-    // 3. HAMBURGER / SIDEBAR
-    //    CSS uses: .sidebar.active + .sidebar-overlay.active
-    // ============================================================
-    const hamburgerBtn   = $('#hamburgerBtn');
-    const sidebar        = $('#sidebar');
-    const sidebarOverlay = $('#sidebarOverlay');
-    const sidebarClose   = $('#sidebarClose');
-
-    function openSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.add('active');
-        sidebarOverlay?.classList.add('active');
         document.body.style.overflow = 'hidden';
+        menuBtn?.setAttribute('aria-expanded', 'true');
+
+        // Focus first link
+        requestAnimationFrame(() => {
+            const firstLink = $('a', mobileNav);
+            firstLink?.focus();
+        });
+
+        trapFocus(mobileNav);
     }
-    function closeSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.remove('active');
-        sidebarOverlay?.classList.remove('active');
+
+    function closeMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+
+        mobileNav.dataset.open = 'false';
+        mobileOverlay.dataset.open = 'false';
+        menuBtn?.setAttribute('aria-expanded', 'false');
+
         document.body.style.overflow = '';
-    }
-    function toggleSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.contains('active') ? closeSidebar() : openSidebar();
-    }
 
-    hamburgerBtn?.addEventListener('click', toggleSidebar);
-    sidebarOverlay?.addEventListener('click', closeSidebar);
-    sidebarClose?.addEventListener('click', closeSidebar);
+        setTimeout(() => {
+            mobileNav.hidden = true;
+            mobileOverlay.hidden = true;
+        }, 400);
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar?.classList.contains('active')) {
-            closeSidebar();
+        releaseFocus();
+
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+            lastFocused.focus();
         }
+    }
+
+    menuBtn?.addEventListener('click', () => {
+        const isOpen = mobileNav?.dataset.open === 'true';
+        isOpen ? closeMenu() : openMenu();
     });
 
-    $$('.sidebar-menu a').forEach((link) => {
+    mobileClose?.addEventListener('click', closeMenu);
+    mobileOverlay?.addEventListener('click', closeMenu);
+
+    // Close on link click
+    $$('#mobileNav a').forEach((link) => {
         link.addEventListener('click', () => {
-            setTimeout(closeSidebar, 250);
+            setTimeout(closeMenu, 50);
         });
     });
 
-    // ============================================================
-    // 4. SMOOTH SCROLL — Internal anchors
-    // ============================================================
+    /* ======================================================================
+       3. FOCUS TRAP (for mobile nav & command palette)
+       ====================================================================== */
+    let activeTrap = null;
+
+    function trapFocus(container) {
+        activeTrap = container;
+
+        container.addEventListener('keydown', handleTrapKey);
+        document.addEventListener('keydown', handleGlobalEscape);
+    }
+
+    function releaseFocus() {
+        if (activeTrap) {
+            activeTrap.removeEventListener('keydown', handleTrapKey);
+            activeTrap = null;
+        }
+        document.removeEventListener('keydown', handleGlobalEscape);
+    }
+
+    function handleTrapKey(e) {
+        if (e.key !== 'Tab' || !activeTrap) return;
+
+        const focusables = $$(focusableSelector, activeTrap).filter(
+            (el) => el.offsetParent !== null
+        );
+        if (!focusables.length) return;
+
+        const first = focusables[0];
+        const last  = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+
+    function handleGlobalEscape(e) {
+        if (e.key !== 'Escape') return;
+        if (mobileNav?.dataset.open === 'true') {
+            closeMenu();
+        }
+        if (cmdPalette?.dataset.open === 'true') {
+            closeCmd();
+        }
+    }
+
+    /* ======================================================================
+       4. COMMAND PALETTE (K key)
+       ====================================================================== */
+    const cmdPalette = $('#cmdPalette');
+    const cmdOverlay = $('#cmdOverlay');
+    const cmdInput   = $('#cmdInput');
+    const cmdList    = $('#cmdList');
+
+    let cmdItems = [];
+    let activeIndex = 0;
+    let lastFocusedCmd = null;
+
+    if (cmdList) {
+        cmdItems = $$('li[role="option"]', cmdList);
+    }
+
+    function openCmd() {
+        if (!cmdPalette) return;
+        lastFocusedCmd = document.activeElement;
+
+        cmdPalette.hidden = false;
+        requestAnimationFrame(() => {
+            cmdPalette.dataset.open = 'true';
+        });
+
+        document.body.style.overflow = 'hidden';
+
+        if (cmdInput) {
+            cmdInput.value = '';
+            setTimeout(() => cmdInput.focus(), 80);
+        }
+        setActiveCmd(0);
+        filterCmd('');
+        trapFocus(cmdPalette);
+    }
+
+    function closeCmd() {
+        if (!cmdPalette) return;
+
+        cmdPalette.dataset.open = 'false';
+        document.body.style.overflow = '';
+
+        setTimeout(() => {
+            cmdPalette.hidden = true;
+        }, 300);
+
+        releaseFocus();
+
+        if (lastFocusedCmd && typeof lastFocusedCmd.focus === 'function') {
+            lastFocusedCmd.focus();
+        }
+    }
+
+    function setActiveCmd(index) {
+        if (!cmdItems.length) return;
+        activeIndex = (index + cmdItems.length) % cmdItems.length;
+        cmdItems.forEach((el, i) => {
+            el.classList.toggle('is-active', i === activeIndex);
+            el.setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
+        });
+        const active = cmdItems[activeIndex];
+        if (active) {
+            active.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function filterCmd(query) {
+        const q = query.trim().toLowerCase();
+        let firstVisible = -1;
+
+        cmdItems.forEach((el, i) => {
+            const text = el.textContent.toLowerCase();
+            const match = !q || text.includes(q);
+            el.style.display = match ? '' : 'none';
+            if (match && firstVisible === -1) firstVisible = i;
+        });
+
+        if (firstVisible !== -1) {
+            setActiveCmd(firstVisible);
+        }
+    }
+
+    function runCmd(target) {
+        if (!target) return;
+        closeCmd();
+
+        setTimeout(() => {
+            if (target.startsWith('#')) {
+                const el = document.querySelector(target);
+                if (el) {
+                    const offset = 100;
+                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({
+                        top,
+                        behavior: prefersReduced ? 'auto' : 'smooth'
+                    });
+                    el.setAttribute('tabindex', '-1');
+                    el.focus({ preventScroll: true });
+                }
+            } else {
+                window.location.href = target;
+            }
+        }, 120);
+    }
+
+    // Open palette with K
+    document.addEventListener('keydown', (e) => {
+        const tag = (document.activeElement?.tagName || '').toLowerCase();
+        const isTyping = tag === 'input' || tag === 'textarea' || document.activeElement?.isContentEditable;
+
+        if (e.key === 'k' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
+            e.preventDefault();
+            if (cmdPalette?.dataset.open === 'true') {
+                closeCmd();
+            } else {
+                openCmd();
+            }
+        }
+    });
+
+    // Kbd hint button
+    $('#kbdHint')?.addEventListener('click', openCmd);
+
+    // Overlay close
+    cmdOverlay?.addEventListener('click', closeCmd);
+
+    // Input filter
+    cmdInput?.addEventListener('input', (e) => {
+        filterCmd(e.target.value);
+    });
+
+    // Keyboard nav inside palette
+    cmdInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveCmd(activeIndex + 1);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveCmd(activeIndex - 1);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const active = cmdItems[activeIndex];
+            if (active) {
+                runCmd(active.dataset.target);
+            }
+        }
+    });
+
+    // Item click
+    cmdItems.forEach((el, i) => {
+        el.addEventListener('mouseenter', () => setActiveCmd(i));
+        el.addEventListener('click', () => runCmd(el.dataset.target));
+    });
+
+    /* ======================================================================
+       5. SMOOTH SCROLL (internal anchors, respects header height)
+       ====================================================================== */
     $$('a[href^="#"]').forEach((link) => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
             if (!href || href === '#' || href.length < 2) return;
+
             const target = document.querySelector(href);
             if (!target) return;
+
             e.preventDefault();
-            const top = target.getBoundingClientRect().top + window.scrollY - 80;
-            window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+
+            const top = target.getBoundingClientRect().top + window.scrollY - 100;
+            window.scrollTo({
+                top,
+                behavior: prefersReduced ? 'auto' : 'smooth'
+            });
+
+            // Update URL without jump
+            history.pushState(null, '', href);
         });
     });
 
-    // ============================================================
-    // 5. ACTIVE SIDEBAR LINK — on scroll
-    // ============================================================
-    const sections = $$('section[id]');
-    const sidebarLinks = $$('.sidebar-menu a');
+    /* ======================================================================
+       6. COPY EMAIL TO CLIPBOARD
+       ====================================================================== */
+    const copyBtn  = $('#copyEmail');
+    const emailTxt = $('#emailText');
 
-    function updateActiveLink() {
-        if (!sections.length) return;
-        const scrollPos = window.scrollY + 140;
-        let current = '';
+    async function copyEmail() {
+        if (!emailTxt) return;
+        const text = emailTxt.textContent.trim();
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                // Fallback for older browsers / non-HTTPS
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+            showCopyState('Copied ✓');
+        } catch (err) {
+            showCopyState('Copy failed');
+        }
+    }
+
+    function showCopyState(label) {
+        if (!copyBtn) return;
+        const original = copyBtn.getAttribute('data-label') || emailTxt?.textContent || '';
+        copyBtn.setAttribute('data-label', original);
+
+        // Replace visual text briefly
+        const span = $('#emailText');
+        if (span) {
+            const prev = span.textContent;
+            span.textContent = label;
+            setTimeout(() => {
+                span.textContent = prev;
+            }, 1600);
+        }
+    }
+
+    copyBtn?.addEventListener('click', copyEmail);
+
+    /* ======================================================================
+       7. ACTIVE NAV ON SCROLL
+       ====================================================================== */
+    const sections = $$('section[id]');
+    const navLinks = $$('.primary-nav a[href^="#"]');
+
+    function updateActiveNav() {
+        if (!sections.length || !navLinks.length) return;
+
+        const scrollY = window.scrollY + 140;
+        let currentId = '';
 
         sections.forEach((section) => {
             const top = section.offsetTop;
             const bottom = top + section.offsetHeight;
-            if (scrollPos >= top && scrollPos < bottom) {
-                current = section.id;
+            if (scrollY >= top && scrollY < bottom) {
+                currentId = section.id;
             }
         });
 
-        sidebarLinks.forEach((link) => {
+        navLinks.forEach((link) => {
             const href = link.getAttribute('href') || '';
-            link.classList.toggle('active', href === '#' + current);
+            const isActive = href === '#' + currentId;
+            link.classList.toggle('is-active', isActive);
+            if (isActive) {
+                link.setAttribute('aria-current', 'true');
+            } else {
+                link.removeAttribute('aria-current');
+            }
         });
     }
-    window.addEventListener('scroll', updateActiveLink, { passive: true });
-    window.addEventListener('load', updateActiveLink);
 
-    // ============================================================
-    // 6. INTEREST CARDS — Expand / Collapse
-    //    CSS uses: .hidden-content.revealed
-    // ============================================================
-    window.revealInterest = function (id) {
-        const content = document.getElementById(id);
-        if (!content) return;
-        const card = content.closest('.interest-card');
-        if (!card) return;
+    let navScrollRaf = null;
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (navScrollRaf) return;
+            navScrollRaf = requestAnimationFrame(() => {
+                updateActiveNav();
+                navScrollRaf = null;
+            });
+        },
+        { passive: true }
+    );
 
-        const isOpen = content.classList.contains('revealed');
+    window.addEventListener('load', updateActiveNav);
+    updateActiveNav();
 
-        // Close other open interest cards
-        $$('.hidden-content.revealed').forEach((other) => {
-            if (other !== content) other.classList.remove('revealed');
-        });
+    /* ======================================================================
+       8. HEADER TRANSITION ON SCROLL (dark → adapts when light section visible)
+       ====================================================================== */
+    const header = $('#siteHeader');
+    const lightSections = $$('.section-light, .site-footer');
 
-        content.classList.toggle('revealed', !isOpen);
-    };
+    function updateHeaderTheme() {
+        if (!header || !lightSections.length) return;
 
-    // ============================================================
-    // 7. KEYBOARD ACCESSIBILITY — Clickable cards
-    // ============================================================
-    $$('.interest-card, .milestone-card').forEach((el) => {
-        el.setAttribute('role', 'button');
-        el.setAttribute('tabindex', '0');
-        el.style.cursor = 'pointer';
-        el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                el.click();
-            }
-            if (e.key === 'Escape') {
-                const hidden = el.querySelector('.hidden-content.revealed');
-                hidden?.classList.remove('revealed');
+        const headerBottom = header.getBoundingClientRect().bottom;
+        let overLight = false;
+
+        lightSections.forEach((section) => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= headerBottom && rect.bottom >= 0) {
+                overLight = true;
             }
         });
+
+        header.classList.toggle('is-over-light', overLight);
+    }
+
+    let headerRaf = null;
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (headerRaf) return;
+            headerRaf = requestAnimationFrame(() => {
+                updateHeaderTheme();
+                headerRaf = null;
+            });
+        },
+        { passive: true }
+    );
+
+    window.addEventListener('load', updateHeaderTheme);
+    updateHeaderTheme();
+
+    /* ======================================================================
+       9. SCROLL CUE FADE
+       ====================================================================== */
+    const scrollCue = $('.scroll-cue');
+    if (scrollCue) {
+        const fadeCue = () => {
+            const opacity = Math.max(0, 1 - window.scrollY / 300);
+            scrollCue.style.opacity = String(opacity);
+            scrollCue.style.pointerEvents = opacity < 0.1 ? 'none' : 'auto';
+        };
+
+        window.addEventListener('scroll', fadeCue, { passive: true });
+        fadeCue();
+    }
+
+    /* ======================================================================
+       10. EXTERNAL LINKS — Security + A11y
+       ====================================================================== */
+    $$('a[target="_blank"]').forEach((link) => {
+        if (!link.hasAttribute('rel')) {
+            link.setAttribute('rel', 'noopener noreferrer');
+        }
     });
 
-    // ============================================================
-    // 8. TYPING ANIMATION — Hero subtitle
-    //    Disabled for reduced-motion users.
-    // ============================================================
-    function initTyping() {
-        const el = $('.hero-subtitle');
-        if (!el || el.dataset.typed === 'true') return;
+    /* ======================================================================
+       11. CONSOLE GREETING (Once, tasteful)
+       ====================================================================== */
+    const hasGreeted = sessionStorage.getItem('rr-greeted');
+    if (!hasGreeted) {
+        const accent = 'color:#b45309;font-weight:600;';
+        const soft   = 'color:#737373;';
 
-        if (prefersReducedMotion) {
-            el.dataset.typed = 'true';
-            return;
-        }
+        console.log('%cRavi Raj — Portfolio', `font-size:14px;font-weight:700;${accent}`);
+        console.log('%cHi, fellow developer. Thanks for opening the console.', `font-size:12px;${soft}`);
+        console.log('%cCode: https://github.com/ravirajhere', `font-size:12px;${soft}`);
+        console.log('%cPress K anywhere to jump around the site.', `font-size:12px;${accent}`);
 
-        const originalHTML = el.innerHTML;
-        if (/<[a-z]/i.test(originalHTML)) {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(8px)';
-            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            setTimeout(() => {
-                el.style.opacity = '1';
-                el.style.transform = 'translateY(0)';
-            }, 900);
-            el.dataset.typed = 'true';
-            return;
-        }
-
-        const text = originalHTML;
-        el.textContent = '';
-        el.dataset.typed = 'true';
-        let i = 0;
-        (function type() {
-            if (i < text.length) {
-                el.textContent += text.charAt(i++);
-                setTimeout(type, 45);
-            }
-        })();
+        try { sessionStorage.setItem('rr-greeted', '1'); } catch (e) {}
     }
-    document.addEventListener('DOMContentLoaded', () => setTimeout(initTyping, 900));
-
-    // ============================================================
-    // 9. FOOTER — Dynamic Year
-    // ============================================================
-    const yearSpan = $('#current-year');
-    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-    // ============================================================
-    // 10. BACK TO TOP
-    // ============================================================
-    const backToTop = $('#backToTop');
-    if (backToTop) {
-        backToTop.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-        });
-    }
-
-    // ============================================================
-    // 11. SKILL BARS — Animate on view
-    // ============================================================
-    const skillItems = $$('.skill-item');
-    if (skillItems.length && 'IntersectionObserver' in window && !prefersReducedMotion) {
-        skillItems.forEach((item) => {
-            const fill = $('.skill-fill', item);
-            if (!fill) return;
-            const w = fill.style.width || getComputedStyle(fill).width;
-            fill.dataset.targetWidth = w;
-            fill.style.width = '0';
-        });
-
-        const skillObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                const fill = $('.skill-fill', entry.target);
-                if (fill && fill.dataset.targetWidth) {
-                    requestAnimationFrame(() => {
-                        fill.style.width = fill.dataset.targetWidth;
-                    });
-                }
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.3 });
-
-        skillItems.forEach((item) => skillObserver.observe(item));
-    }
-
-    // ============================================================
-    // 12. LIVE TIME — Footer (IST)
-    // ============================================================
-    const liveTimeEl = $('#live-time');
-    if (liveTimeEl) {
-        const updateLiveTime = () => {
-            try {
-                const now = new Date();
-                const opts = {
-                    timeZone: 'Asia/Kolkata',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true,
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                };
-                liveTimeEl.textContent = '⏱️ ' + now.toLocaleString('en-IN', opts) + ' IST';
-            } catch {
-                // Fallback if Intl timezone unsupported
-                liveTimeEl.textContent = '⏱️ ' + new Date().toLocaleString();
-            }
-        };
-        updateLiveTime();
-        setInterval(updateLiveTime, 1000);
-    }
-
-    // ============================================================
-    // 13. CUSTOM CURSOR — Disabled in formal theme
-    // ============================================================
-    const cursor = $('#custom-cursor');
-    if (cursor) {
-        cursor.style.display = 'none';
-    }
-
-    // ============================================================
-    // 14. TOAST — Reusable notification
-    // ============================================================
-    const toastEl = $('#toast');
-    let toastTimer = null;
-
-    window.showToast = function (msg, duration = 2400) {
-        if (!toastEl) return;
-        toastEl.textContent = msg;
-        toastEl.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toastEl.classList.remove('show');
-        }, duration);
-    };
-
-    // ============================================================
-    // 15. NAVBAR — Shrink on scroll
-    // ============================================================
-    const topNav = $('#topNav') || $('.top-nav');
-    if (topNav) {
-        const onScrollNav = () => {
-            topNav.classList.toggle('scrolled', window.scrollY > 40);
-        };
-        window.addEventListener('scroll', onScrollNav, { passive: true });
-        onScrollNav();
-    }
-
-    // ============================================================
-    // 16. FADE-IN ON SCROLL — Sections & Cards
-    // ============================================================
-    if ('IntersectionObserver' in window && !prefersReducedMotion) {
-        const revealTargets = $$('.section-block, .stat-card, .project-card, .milestone-card, .thought-card, .thought-featured, .achievement-card, .service-card');
-        revealTargets.forEach((el) => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(24px)';
-            el.style.transition = 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-
-        const fadeObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-        revealTargets.forEach((el) => fadeObserver.observe(el));
-    }
-
-    // ============================================================
-    // 17. HELPER — Close raw-content inside a given card
-    // ============================================================
-    function closeRawInCard(card) {
-        if (!card) return;
-        card.querySelectorAll('.raw-content.open').forEach((raw) => {
-            raw.classList.remove('open');
-            const rawBtn = raw.previousElementSibling;
-            if (rawBtn && rawBtn.classList.contains('raw-toggle')) {
-                rawBtn.classList.remove('active');
-                rawBtn.innerHTML = '📓 Read Original Diary Entry';
-            }
-        });
-    }
-
-    // ============================================================
-    // 18. MY THOUGHTS — Expandable blog cards
-    //     CSS uses: .thought-full.open + .thought-featured.open/.thought-card.open
-    // ============================================================
-    window.toggleThought = function (id) {
-        const content = document.getElementById(id);
-        if (!content) return;
-
-        const card = content.closest('.thought-featured, .thought-card');
-        if (!card) return;
-
-        const isOpen = content.classList.contains('open');
-
-        // Close other open thoughts
-        $$('.thought-full.open').forEach((other) => {
-            if (other === content) return;
-            other.classList.remove('open');
-            const parent = other.closest('.thought-featured, .thought-card');
-            parent?.classList.remove('open');
-            const otherToggle = parent ? $('.thought-toggle', parent) : null;
-            if (otherToggle && otherToggle.firstChild) {
-                otherToggle.firstChild.nodeValue = 'Read Full Thought ';
-            }
-            closeRawInCard(parent);
-        });
-
-        content.classList.toggle('open', !isOpen);
-        card.classList.toggle('open', !isOpen);
-
-        const toggle = $('.thought-toggle', card);
-        if (toggle && toggle.firstChild) {
-            toggle.firstChild.nodeValue = isOpen
-                ? 'Read Full Thought '
-                : 'Close Thought ';
-        }
-
-        if (isOpen) {
-            closeRawInCard(card);
-        }
-
-        if (!isOpen && !prefersReducedMotion) {
-            setTimeout(() => {
-                const top = card.getBoundingClientRect().top + window.scrollY - 90;
-                window.scrollTo({ top, behavior: 'smooth' });
-            }, 280);
-        }
-    };
-
-    // ============================================================
-    // 19. BLOG ARCHIVE — Toggle expand/collapse
-    //     CSS uses: .blog-archive.open + .archive-toggle-btn.open
-    // ============================================================
-    window.toggleArchive = function () {
-        const archive = document.getElementById('blogArchive');
-        const btn = document.getElementById('archiveToggleBtn');
-        if (!archive || !btn) return;
-
-        const isOpen = archive.classList.contains('open');
-
-        archive.classList.toggle('open', !isOpen);
-        btn.classList.toggle('open', !isOpen);
-
-        const btnText = $('.archive-btn-text', btn);
-        if (btnText) {
-            btnText.textContent = isOpen ? 'View Blog Archive' : 'Hide Blog Archive';
-        }
-
-        if (isOpen) {
-            archive.querySelectorAll('.raw-content.open').forEach((raw) => {
-                raw.classList.remove('open');
-                const rawBtn = raw.previousElementSibling;
-                if (rawBtn && rawBtn.classList.contains('raw-toggle')) {
-                    rawBtn.classList.remove('active');
-                    rawBtn.innerHTML = '📓 Read Original Diary Entry';
-                }
-            });
-        }
-
-        if (!isOpen && !prefersReducedMotion) {
-            setTimeout(() => {
-                const top = btn.getBoundingClientRect().top + window.scrollY - 100;
-                window.scrollTo({ top, behavior: 'smooth' });
-            }, 400);
-        }
-    };
-
-    // ============================================================
-    // 20. RAW DIARY — Toggle original diary entry
-    // ============================================================
-    window.toggleRaw = function (id) {
-        const raw = document.getElementById(id);
-        if (!raw) return;
-
-        const btn = raw.previousElementSibling;
-        if (!btn || !btn.classList.contains('raw-toggle')) return;
-
-        const isOpen = raw.classList.contains('open');
-
-        // Close other raw-content
-        $$('.raw-content.open').forEach((other) => {
-            if (other === raw) return;
-            other.classList.remove('open');
-            const otherBtn = other.previousElementSibling;
-            if (otherBtn && otherBtn.classList.contains('raw-toggle')) {
-                otherBtn.classList.remove('active');
-                otherBtn.innerHTML = '📓 Read Original Diary Entry';
-            }
-        });
-
-        raw.classList.toggle('open', !isOpen);
-        btn.classList.toggle('active', !isOpen);
-        btn.innerHTML = isOpen
-            ? '📓 Read Original Diary Entry'
-            : '✕ Hide Original Entry';
-
-        if (!isOpen && !prefersReducedMotion) {
-            setTimeout(() => {
-                const top = raw.getBoundingClientRect().top + window.scrollY - 120;
-                window.scrollTo({ top, behavior: 'smooth' });
-            }, 250);
-        }
-    };
-
-    // ============================================================
-    // 21. OPTIONAL PERSONALIZED GREETING (Sidebar Version)
-    // ============================================================
-    (function initGreeting() {
-        const heroTitle = document.getElementById('heroTitle');
-        const greetingBox = document.getElementById('greetingBox');
-        const input = document.getElementById('userNameInput');
-
-        if (!heroTitle || !greetingBox || !input) return;
-
-        const savedName = localStorage.getItem('visitorName');
-        const skipped = localStorage.getItem('greetingSkipped');
-
-        if (savedName) {
-            applyPersonalizedGreeting(savedName, false);
-            greetingBox.classList.add('hidden');
-            return;
-        }
-
-        if (skipped) {
-            greetingBox.classList.add('hidden');
-            return;
-        }
-
-        window.greetUser = function () {
-            const rawName = input.value.trim();
-
-            if (!rawName) {
-                input.focus();
-                input.style.animation = 'shake 0.4s';
-                setTimeout(() => { input.style.animation = ''; }, 400);
-                return;
-            }
-
-            const cleanName = rawName.replace(/[<>]/g, '').slice(0, 30);
-            localStorage.setItem('visitorName', cleanName);
-            applyPersonalizedGreeting(cleanName, true);
-            greetingBox.classList.add('hidden');
-        };
-
-        function applyPersonalizedGreeting(name, animate) {
-            heroTitle.innerHTML =
-                `Hey <span class="user-name-highlight">${escapeHTML(name)}</span>, ` +
-                `I'm <span>Ravi Raj</span> 👋`;
-
-            if (animate) {
-                heroTitle.classList.add('personalized');
-                setTimeout(() => heroTitle.classList.remove('personalized'), 500);
-            }
-        }
-
-        function escapeHTML(str) {
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                window.greetUser();
-            }
-        });
-
-    })();
-
-    // Shake animation (injected once)
-    const shakeStyle = document.createElement('style');
-    shakeStyle.textContent = `
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            50% { transform: translateX(6px); }
-            75% { transform: translateX(-4px); }
-        }
-        .greeting-box-sidebar.hidden { display: none !important; }
-        .user-name-highlight {
-            color: var(--accent);
-            border-bottom: 2px dashed var(--accent);
-            padding-bottom: 1px;
-        }
-    `;
-    document.head.appendChild(shakeStyle);
-
-    // ============================================================
-    // 22. EASTER EGG — Console Welcome (Navy theme colors)
-    // ============================================================
-    const navy = 'color:#1e40af;font-weight:600;';
-    const slate = 'color:#334155;';
-    console.log('%c 👋 Hey there, fellow developer!', `font-size:18px;font-weight:700;${navy}`);
-    console.log('%c Thanks for peeking under the hood. Built with ❤️ by Ravi Raj', `font-size:13px;${slate}`);
-    console.log('%c 📖 https://github.com/ravirajhere', `font-size:13px;${navy}`);
-    console.log('%c ✅ Portfolio loaded successfully.', `font-size:12px;${slate}`);
 
 })();
