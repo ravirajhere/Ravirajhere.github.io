@@ -1,1066 +1,949 @@
-// ============================================
-// FRIENDS.JS — CERTIFICATE OF FRIENDSHIP
-// (Design matched to sample - Ravi Raj + Friend connected)
-// + HAMBURGER MENU + THEME TOGGLE
-// ============================================
+/* ==========================================================================
+   FRIENDS CORNER — friends.js
+   Search + Photo + Certificate + New friend request flow
+   Companion: friends.html · friends.css
+   ========================================================================== */
 
-'use strict';
+(function () {
+    'use strict';
 
-// ============================================
-// FRIENDS DATABASE (14 Friends)
-// ============================================
-const friendsData = [
-    {
-        firstName: "Sitanashu",
-        personalName: "",
-        connection: "Best Friend",
-        experience: "We've been friends since Class 1 — same bench, same lunch, same mischief! He taught me how to ride a bicycle. We still meet every Sunday to play cricket.",
-        age: 18,
-        school: "GBGS",
-        sinceClass: 1,
-        hobby: "Cricket, Coding",
-        tag: "Oldest Friend"
-    },
-    {
-        firstName: "Rohit",
-        personalName: "",
-        connection: "Best Friend",
-        experience: "Class 1 se saath — we've seen each other grow up! We started our coding journey together in Class 6. Best partner in crime!",
-        age: 18,
-        school: "GBGS",
-        sinceClass: 1,
-        hobby: "Cricket, Music",
-        tag: "Day One Friend"
-    },
-    {
-        firstName: "Suraj",
-        personalName: "",
-        connection: "Cricket Partner",
-        experience: "We played in the school cricket team — he hit the winning six in the final match! He's the most aggressive batsman I've ever seen.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 6,
-        hobby: "Cricket, Music",
-        tag: "Sports Buddy"
-    },
-    {
-        firstName: "Shresth",
-        personalName: "Ramlal",
-        connection: "Gaming Buddy",
-        experience: "We played PUBG & Free Fire all night during lockdown. He taught me how to snipe! He's the most chill person I know.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 6,
-        hobby: "Gaming, Tech",
-        tag: "Gamer Friend"
-    },
-    {
-        firstName: "Ayush",
-        personalName: "",
-        connection: "Drama Partner",
-        experience: "We performed together in school annual function — he forgot his lines and I saved him! He can dance, act, and make anyone laugh.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 6,
-        hobby: "Acting, Dancing",
-        tag: "Funniest Friend"
-    },
-    {
-        firstName: "Rishidev",
-        personalName: "Karait",
-        connection: "Study Partner",
-        experience: "We sat together in Class 10, shared notes, and helped each other pass exams! He's the most disciplined person I know.",
-        age: 18,
-        school: "Mother's Pride",
-        sinceClass: 6,
-        hobby: "Reading, Chess",
-        tag: "Scholar Friend"
-    },
-    {
-        firstName: "Jigyasha",
-        personalName: "",
-        connection: "Classmate",
-        experience: "She sits next to me in class. We share notes, gossip, and laugh at bad jokes! She's the most positive person I've ever met.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 6,
-        hobby: "Reading, Art",
-        tag: "Positive Vibes"
-    },
-    {
-        firstName: "Sudhanshu",
-        personalName: "",
-        connection: "Best Friend",
-        experience: "We grew up together, played cricket every evening, and copied each other's homework He's the most loyal friend I have. We've shared our deepest secrets.",
-        age: 18,
-        school: "Mother's Pride",
-        sinceClass: 7,
-        hobby: "Cricket, Coding",
-        tag: "Most Loyal"
-    },
-    {
-        firstName: "Priyam",
-        personalName: "Chota Gandhi",
-        connection: "Coding Buddy",
-        experience: "We learned HTML together in Class 6. He's the reason I started coding! He's incredibly smart and always comes up with creative solutions.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 8,
-        hobby: "Coding, Gaming",
-        tag: "Tech Genius"
-    },
-    {
-        firstName: "Harsh",
-        personalName: "Constant",
-        connection: "Music Partner",
-        experience: "We started a band together in Class 9 — he plays guitar, I sing (badly)! He practices 6 hours a day.",
-        age: 18,
-        school: "Mother's Pride",
-        sinceClass: 8,
-        hobby: "Music, Guitar",
-        tag: "Rockstar Friend"
-    },
-    {
-        firstName: "Keshav",
-        personalName: "Sin r (Keshav Khatoon)",
-        connection: "Chess Rival",
-        experience: "We played chess every break. He beat me 20 times, I beat him once and celebrated! He can calculate 5 moves ahead.",
-        age: 17,
-        school: "Mother's Pride",
-        sinceClass: 9,
-        hobby: "Chess, Tech",
-        tag: "Smartest Friend"
-    },
-    {
-        firstName: "Rani",
-        personalName: "",
-        connection: "Childhood Friend",
-        experience: "We've been friends since we were 5 — she's like a sister to me! She knows all my secrets and still loves me. She bakes the best cakes.",
-        age: 17,
-        school: "PW Iskon Vidypeeth, Patna",
-        sinceClass: 12,
-        hobby: "Dancing, Cooking",
-        tag: "Sweetest Friend"
-    },
-    {
-        firstName: "Sneha",
-        personalName: "",
-        connection: "Drama Partner",
-        experience: "We performed together in school annual function — I forgot my lines but she saved me! She's the most confident person I know.",
-        age: 18,
-        school: "PW Iskon Vidypeeth, Patna",
-        sinceClass: 12,
-        hobby: "Dance, Poetry",
-        tag: "Confident Friend"
-    },
-    {
-        firstName: "Rohini",
-        personalName: "",
-        connection: "Art Partner",
-        experience: "We painted posters for school events together. She taught me how to draw! We've won several inter-school competitions together.",
-        age: 18,
-        school: "PW Iskon Vidypeeth, Patna",
-        sinceClass: 12,
-        hobby: "Art, Poetry",
-        tag: "Creative Friend"
-    }
-];
-
-// ============================================
-// GLOBAL STATE
-// ============================================
-let currentFriend = null;
-let capturedPhotoData = null;
-let stream = null;
-let webcamActive = false;
-let isDatabaseFriend = false;
-let currentFilter = 'normal';
-
-// ============================================
-// DOM REFERENCES
-// ============================================
-const DOM = {
-    searchArea: document.getElementById('searchArea'),
-    photoScreen: document.getElementById('photoScreen'),
-    foundScreen: document.getElementById('foundScreen'),
-    newFriendScreen: document.getElementById('newFriendScreen'),
-    detailsScreen: document.getElementById('detailsScreen'),
-    photoFriendName: document.getElementById('photoFriendName'),
-    webcamVideo: document.getElementById('webcamVideo'),
-    webcamPlaceholder: document.getElementById('webcamPlaceholder'),
-    captureBtn: document.getElementById('captureBtn'),
-    permissionDenied: document.getElementById('permissionDenied'),
-    permissionMessage: document.getElementById('permissionMessage'),
-    friendSearch: document.getElementById('friendSearch'),
-    foundAvatar: document.getElementById('foundAvatar'),
-    foundName: document.getElementById('foundName'),
-    foundTag: document.getElementById('foundTag'),
-    timelineBar: document.getElementById('timelineBar'),
-    timelineText: document.getElementById('timelineText'),
-    newFriendAvatar: document.getElementById('newFriendAvatar'),
-    newFriendName: document.getElementById('newFriendName'),
-    profileAvatar: document.getElementById('profileAvatar'),
-    displayName: document.getElementById('displayName'),
-    displayConnection: document.getElementById('displayConnection'),
-    displayExperience: document.getElementById('displayExperience'),
-    displayAge: document.getElementById('displayAge'),
-    displaySchool: document.getElementById('displaySchool'),
-    displayHobby: document.getElementById('displayHobby'),
-    displayTag: document.getElementById('displayTag'),
-    displaySince: document.getElementById('displaySince'),
-    displayQuote: document.getElementById('displayQuote'),
-    detailsTimelineBar: document.getElementById('detailsTimelineBar'),
-    detailsTimelineText: document.getElementById('detailsTimelineText'),
-    confettiContainer: document.getElementById('confettiContainer'),
-    filterButtons: document.querySelectorAll('.filter-btn'),
-    // MENU + THEME
-    hamburgerBtn: document.getElementById('hamburgerBtn'),
-    sidebar: document.getElementById('sidebar'),
-    sidebarClose: document.getElementById('sidebarClose'),
-    sidebarOverlay: document.getElementById('sidebarOverlay'),
-    themeSwitchNav: document.getElementById('themeSwitchNav')
-};
-
-// ============================================
-// INITIALIZATION
-// ============================================
-function init() {
-    console.log('✅ Friends Corner JS loaded!');
-
-    if (DOM.friendSearch) {
-        DOM.friendSearch.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') searchFriend();
-        });
-    }
-
-    DOM.filterButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            DOM.filterButtons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            currentFilter = this.dataset.filter;
-            applyFilterToVideo(currentFilter);
-        });
-    });
-
-    initMenu();
-    initTheme();
-
-    loadLibraries();
-    console.log('✅ Friends Corner initialized successfully!');
-    console.log('👥 ' + friendsData.length + ' friends in database');
-}
-
-// ============================================
-// HAMBURGER MENU / SIDEBAR
-// ============================================
-function initMenu() {
-    const { hamburgerBtn, sidebar, sidebarClose, sidebarOverlay } = DOM;
-
-    function openSidebar() {
-        if (!sidebar || !sidebarOverlay) return;
-        sidebar.classList.add('open');
-        sidebarOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        if (!sidebar || !sidebarOverlay) return;
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    // Expose globally for inline onclick (sidebar links use closeSidebar)
-    window.closeSidebar = closeSidebar;
-    window.openSidebar = openSidebar;
-
-    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
-    if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
-
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
-            closeSidebar();
-        }
-    });
-
-    // Auto close on window resize (desktop)
-    let resizeTimer;
-    window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-            if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
-                closeSidebar();
-            }
-        }, 250);
-    });
-
-    // Swipe left inside sidebar to close
-    let touchStartX = 0, touchEndX = 0;
-    if (sidebar) {
-        sidebar.addEventListener('touchstart', function (e) {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        sidebar.addEventListener('touchend', function (e) {
-            touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX - touchStartX < -60) closeSidebar();
-        }, { passive: true });
-    }
-
-    // Swipe right from left edge to open
-    let edgeStartX = 0;
-    document.addEventListener('touchstart', function (e) {
-        edgeStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    document.addEventListener('touchend', function (e) {
-        const edgeEndX = e.changedTouches[0].screenX;
-        if (edgeStartX < 30 && (edgeEndX - edgeStartX) > 60) {
-            if (sidebar && !sidebar.classList.contains('open')) openSidebar();
-        }
-    }, { passive: true });
-
-    // Nav avatar click → open sidebar
-    const navAvatar = document.querySelector('.nav-avatar');
-    if (navAvatar) navAvatar.addEventListener('click', openSidebar);
-}
-
-// ============================================
-// THEME TOGGLE (Dark / Light)
-// ============================================
-function initTheme() {
-    const { themeSwitchNav } = DOM;
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('friends-theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        if (themeSwitchNav) themeSwitchNav.classList.add('dark');
-    }
-
-    function toggleTheme() {
-        const isLight = document.body.classList.toggle('light-theme');
-        if (themeSwitchNav) themeSwitchNav.classList.toggle('dark', isLight);
-        localStorage.setItem('friends-theme', isLight ? 'light' : 'dark');
-    }
-
-    if (themeSwitchNav) {
-        themeSwitchNav.addEventListener('click', toggleTheme);
-        themeSwitchNav.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleTheme();
-            }
-        });
-    }
-}
-
-// ============================================
-// LIBRARY LOADER (html2canvas + jsPDF)
-// ============================================
-function loadLibraries(callback) {
-    const needHtml2canvas = typeof html2canvas === 'undefined';
-    const needJspdf = typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined';
-
-    if (!needHtml2canvas && !needJspdf) {
-        console.log('✅ Libraries already loaded');
-        if (callback) callback();
-        return;
-    }
-
-    let loaded = 0;
-    const total = (needHtml2canvas ? 1 : 0) + (needJspdf ? 1 : 0);
-
-    function checkLoaded() {
-        loaded++;
-        console.log('📦 Library loaded:', loaded + '/' + total);
-        if (loaded >= total) {
-            console.log('✅ All libraries loaded!');
-            if (callback) callback();
-        }
-    }
-
-    if (needHtml2canvas) {
-        console.log('⏳ Loading html2canvas...');
-        const script1 = document.createElement('script');
-        script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        script1.onload = checkLoaded;
-        script1.onerror = function () {
-            console.error('❌ Failed to load html2canvas');
-            alert('❌ Failed to load html2canvas. Please check internet connection.');
-        };
-        document.head.appendChild(script1);
-    }
-
-    if (needJspdf) {
-        console.log('⏳ Loading jsPDF...');
-        const script2 = document.createElement('script');
-        script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-        script2.onload = checkLoaded;
-        script2.onerror = function () {
-            console.error('❌ Failed to load jsPDF');
-            alert('❌ Failed to load jsPDF. Please check internet connection.');
-        };
-        document.head.appendChild(script2);
-    }
-}
-
-// ============================================
-// SEARCH FRIEND
-// ============================================
-function searchFriend() {
-    const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
-    hideAllScreens();
-
-    if (!input) {
-        alert('Please enter a first name!');
-        return;
-    }
-
-    const found = friendsData.find(f => f.firstName.toLowerCase() === input.toLowerCase());
-
-    if (found) {
-        currentFriend = found;
-        isDatabaseFriend = true;
-    } else {
-        currentFriend = {
-            firstName: input,
-            personalName: '',
-            connection: 'Friend',
-            experience: 'A new friendship begins!',
-            age: '-',
-            school: '-',
-            sinceClass: 'new',
-            hobby: '-',
-            tag: 'New Friend'
-        };
-        isDatabaseFriend = false;
-    }
-
-    if (DOM.photoFriendName) DOM.photoFriendName.textContent = currentFriend.firstName;
-    if (DOM.searchArea) DOM.searchArea.style.display = 'none';
-    if (DOM.photoScreen) DOM.photoScreen.style.display = 'block';
-    startWebcam();
-}
-
-// ============================================
-// WEBCAM WITH FILTERS
-// ============================================
-async function startWebcam() {
-    if (navigator.permissions) {
-        try {
-            const permission = await navigator.permissions.query({ name: 'camera' });
-            if (permission.state === 'denied') {
-                showCameraDenied('Camera permission permanently denied! Browser settings mein jaake camera allow karo.');
-                return;
-            }
-        } catch (e) {}
-    }
-
-    try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: 400, height: 300 },
-            audio: false
-        });
-
-        if (DOM.webcamVideo) {
-            DOM.webcamVideo.srcObject = stream;
-            await DOM.webcamVideo.play();
-        }
-        webcamActive = true;
-        if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'none';
-        if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'none';
-        if (DOM.captureBtn) DOM.captureBtn.style.display = 'inline-block';
-
-        const filterControls = document.querySelector('.filter-controls');
-        if (filterControls) filterControls.style.display = 'flex';
-
-    } catch (error) {
-        showCameraDenied('Camera start nahi ho paya. Please allow camera permission.');
-    }
-}
-
-function applyFilterToVideo(filter) {
-    currentFilter = filter;
-    const video = DOM.webcamVideo;
-    if (!video) return;
-
-    const filters = {
-        'normal': 'none',
-        'bw': 'grayscale(100%)',
-        'sepia': 'sepia(100%)',
-        'vintage': 'sepia(50%) contrast(120%) brightness(90%)'
+    /* ======================================================================
+       1. CONFIG
+       ====================================================================== */
+    const CONFIG = {
+        themeKey: 'friends-theme',
+        maxSearchResults: 6,
+        certificateFilename: 'Friendship_Certificate'
     };
 
-    video.style.filter = filters[filter] || 'none';
+    /* ======================================================================
+       2. FRIENDS DATA
+       (14 friends — firstName, connection, experience, sinceClass, tag)
+       ====================================================================== */
+    const friendsData = [
+        {
+            firstName: 'Sitanashu',
+            connection: 'Best Friend',
+            experience: "Friends since Class 1 — same bench, same lunch, same mischief. He taught me how to ride a bicycle. We still meet every Sunday to play cricket.",
+            sinceClass: 1,
+            tag: 'Oldest Friend'
+        },
+        {
+            firstName: 'Rohit',
+            connection: 'Best Friend',
+            experience: "Class 1 se saath — we've watched each other grow up. We started our coding journey together in Class 6. Partner in crime, always.",
+            sinceClass: 1,
+            tag: 'Day One Friend'
+        },
+        {
+            firstName: 'Suraj',
+            connection: 'Cricket Partner',
+            experience: "Played in the school cricket team — he hit the winning six in the final. The most aggressive batsman I've ever seen.",
+            sinceClass: 6,
+            tag: 'Sports Buddy'
+        },
+        {
+            firstName: 'Shresth',
+            connection: 'Gaming Buddy',
+            experience: "We played PUBG and Free Fire all night during lockdown. He taught me how to snipe. The most chill person I know.",
+            sinceClass: 6,
+            tag: 'Gamer Friend'
+        },
+        {
+            firstName: 'Ayush',
+            connection: 'Drama Partner',
+            experience: "We performed together at the school annual function — he forgot his lines and I saved him. He can dance, act, and make anyone laugh.",
+            sinceClass: 6,
+            tag: 'Funniest Friend'
+        },
+        {
+            firstName: 'Rishidev',
+            connection: 'Study Partner',
+            experience: "We sat together in Class 10, shared notes, and helped each other pass exams. The most disciplined person I know.",
+            sinceClass: 6,
+            tag: 'Scholar Friend'
+        },
+        {
+            firstName: 'Jigyasha',
+            connection: 'Classmate',
+            experience: "She sits next to me in class. We share notes, gossip, and laugh at bad jokes. The most positive person I've ever met.",
+            sinceClass: 6,
+            tag: 'Positive Vibes'
+        },
+        {
+            firstName: 'Sudhanshu',
+            connection: 'Best Friend',
+            experience: "We grew up together, played cricket every evening, and copied each other's homework. The most loyal friend I have.",
+            sinceClass: 7,
+            tag: 'Most Loyal'
+        },
+        {
+            firstName: 'Priyam',
+            connection: 'Coding Buddy',
+            experience: "We learned HTML together in Class 6. He's the reason I started coding. Always coming up with creative solutions.",
+            sinceClass: 8,
+            tag: 'Tech Genius'
+        },
+        {
+            firstName: 'Harsh',
+            connection: 'Music Partner',
+            experience: "We started a band together in Class 9 — he plays guitar, I sing (badly). He practices six hours a day.",
+            sinceClass: 8,
+            tag: 'Rockstar Friend'
+        },
+        {
+            firstName: 'Keshav',
+            connection: 'Chess Rival',
+            experience: "We played chess every break. He beat me 20 times, I beat him once and celebrated. He calculates five moves ahead.",
+            sinceClass: 9,
+            tag: 'Smartest Friend'
+        },
+        {
+            firstName: 'Rani',
+            connection: 'Childhood Friend',
+            experience: "Friends since we were five — she's like a sister to me. She knows all my secrets and still loves me. She bakes the best cakes.",
+            sinceClass: 12,
+            tag: 'Sweetest Friend'
+        },
+        {
+            firstName: 'Sneha',
+            connection: 'Drama Partner',
+            experience: "We performed together at the school annual function — I forgot my lines but she saved me. The most confident person I know.",
+            sinceClass: 12,
+            tag: 'Confident Friend'
+        },
+        {
+            firstName: 'Rohini',
+            connection: 'Art Partner',
+            experience: "We painted posters for school events together. She taught me how to draw. We've won several inter-school competitions together.",
+            sinceClass: 12,
+            tag: 'Creative Friend'
+        }
+    ];
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === filter);
-    });
-}
+    /* ======================================================================
+       3. STATE
+       ====================================================================== */
+    const state = {
+        currentFriend: null,
+        capturedPhoto: null,
+        stream: null,
+        webcamActive: false,
+        isDatabaseFriend: false,
+        currentFilter: 'normal'
+    };
 
-function showCameraDenied(message) {
-    webcamActive = false;
-    if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'flex';
-    if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'block';
-    if (DOM.permissionMessage) DOM.permissionMessage.textContent = message;
-    if (DOM.captureBtn) DOM.captureBtn.style.display = 'none';
-    const filterControls = document.querySelector('.filter-controls');
-    if (filterControls) filterControls.style.display = 'none';
-}
+    /* ======================================================================
+       4. DOM REFS
+       ====================================================================== */
+    const $  = (sel, ctx) => (ctx || document).querySelector(sel);
+    const $$ = (sel, ctx) => Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
 
-function stopWebcam() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        if (DOM.webcamVideo) DOM.webcamVideo.srcObject = null;
-        webcamActive = false;
+    const DOM = {
+        searchArea:       $('#searchArea'),
+        friendSearch:     $('#friendSearch'),
+        searchClear:      $('#searchClear'),
+        suggestionsList:  $('#suggestionsList'),
+
+        photoScreen:      $('#photoScreen'),
+        photoFriendName:  $('#photoFriendName'),
+        webcamVideo:      $('#webcamVideo'),
+        webcamPlaceholder:$('#webcamPlaceholder'),
+        captureBtn:       $('#captureBtn'),
+        photoUploadInput: $('#photoUploadInput'),
+        permissionDenied: $('#permissionDenied'),
+        permissionMessage:$('#permissionMessage'),
+
+        foundScreen:      $('#foundScreen'),
+        foundAvatar:      $('#foundAvatar'),
+        foundName:        $('#foundName'),
+        foundTag:         $('#foundTag'),
+        timelineBar:      $('#timelineBar'),
+        timelineText:     $('#timelineText'),
+
+        newFriendScreen:  $('#newFriendScreen'),
+        newFriendName:    $('#newFriendName'),
+
+        detailsScreen:    $('#detailsScreen'),
+        profileAvatar:    $('#profileAvatar'),
+        displayName:      $('#displayName'),
+        displayConnection:$('#displayConnection'),
+        displayTag:       $('#displayTag'),
+        displaySince:     $('#displaySince'),
+        displayClass:     $('#displayClass'),
+        displayYears:     $('#displayYears'),
+        displayExperience:$('#displayExperience'),
+        detailsTimelineBar:  $('#detailsTimelineBar'),
+        detailsTimelineText: $('#detailsTimelineText'),
+
+        confettiContainer: $('#confettiContainer')
+    };
+
+    /* ======================================================================
+       5. UTILITIES
+       ====================================================================== */
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = String(str == null ? '' : str);
+        return div.innerHTML;
     }
-}
 
-function retryCamera() {
-    if (DOM.permissionDenied) DOM.permissionDenied.style.display = 'none';
-    startWebcam();
-}
-
-// ============================================
-// CAPTURE PHOTO
-// ============================================
-function captureFriendPhoto() {
-    if (!webcamActive || !DOM.webcamVideo) {
-        alert('Camera not active! Please allow camera access.');
-        return;
+    function yearsSinceClass(sinceClass) {
+        const startYear = (function () {
+            if (sinceClass <= 5) return 2013;
+            if (sinceClass <= 10) return 2019;
+            return 2024;
+        })();
+        return Math.max(0, 2026 - startYear);
     }
 
-    const video = DOM.webcamVideo;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 400;
-    canvas.height = video.videoHeight || 300;
-    const ctx = canvas.getContext('2d');
-
-    if (currentFilter !== 'normal') {
-        ctx.filter = video.style.filter || 'none';
+    function timelinePercent(years) {
+        return Math.min((years / 14) * 100, 100);
     }
 
-    ctx.drawImage(video, 0, 0);
-    ctx.filter = 'none';
-
-    capturedPhotoData = canvas.toDataURL('image/png');
-    stopWebcam();
-    if (DOM.photoScreen) DOM.photoScreen.style.display = 'none';
-
-    if (isDatabaseFriend) {
-        showFriendFound();
-    } else {
-        showNewFriend();
+    function hideAllScreens() {
+        [DOM.photoScreen, DOM.foundScreen, DOM.newFriendScreen, DOM.detailsScreen]
+            .forEach(function (el) { if (el) el.hidden = true; });
     }
-}
 
-// ============================================
-// FRIEND FOUND / NEW FRIEND
-// ============================================
-function showFriendFound() {
-    if (DOM.foundAvatar) {
-        DOM.foundAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
+    function showScreen(el) {
+        if (!el) return;
+        hideAllScreens();
+        el.hidden = false;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    if (DOM.foundName) DOM.foundName.textContent = currentFriend.firstName;
-    if (DOM.foundTag) DOM.foundTag.textContent = currentFriend.tag || 'Friend';
-    updateTimeline('found');
-    if (DOM.foundScreen) DOM.foundScreen.style.display = 'block';
-}
 
-function showNewFriend() {
-    if (DOM.newFriendAvatar) {
-        DOM.newFriendAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
-    }
-    if (DOM.newFriendName) DOM.newFriendName.textContent = currentFriend.firstName;
-    if (DOM.newFriendScreen) DOM.newFriendScreen.style.display = 'block';
-    launchConfetti();
-}
+    /* ======================================================================
+       6. SEARCH + SUGGESTIONS
+       ====================================================================== */
+    function openSuggestions(query) {
+        if (!DOM.suggestionsList) return;
 
-// ============================================
-// TIMELINE
-// ============================================
-function updateTimeline(prefix) {
-    if (!currentFriend || currentFriend.sinceClass === 'new') return;
+        const q = String(query || '').trim().toLowerCase();
 
-    const currentYear = 2026;
-    let startYear;
-    if (currentFriend.sinceClass <= 5) startYear = 2013;
-    else if (currentFriend.sinceClass <= 10) startYear = 2019;
-    else startYear = 2024;
-
-    const years = currentYear - startYear;
-    const maxYears = 14;
-    const percent = Math.min((years / maxYears) * 100, 100);
-
-    const barId = prefix === 'found' ? 'timelineBar' : 'detailsTimelineBar';
-    const textId = prefix === 'found' ? 'timelineText' : 'detailsTimelineText';
-
-    const bar = document.getElementById(barId);
-    const text = document.getElementById(textId);
-    if (bar) bar.style.width = percent + '%';
-    if (text) text.textContent = 'Since Class ' + currentFriend.sinceClass + ' — ' + years + ' Years of Friendship';
-}
-
-// ============================================
-// CONFETTI
-// ============================================
-function launchConfetti() {
-    const container = DOM.confettiContainer;
-    if (!container) return;
-    container.innerHTML = '';
-
-    const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#a29bfe', '#ff69b4', '#00ff64', '#DAA520'];
-    const emojis = ['🎉', '🎊', '❤️', '🌟', '✨', '💫', '⭐', '🎈', '🎁'];
-
-    for (let i = 0; i < 80; i++) {
-        const piece = document.createElement('div');
-        piece.className = 'confetti-piece';
-        piece.style.left = Math.random() * 100 + '%';
-        piece.style.top = -(Math.random() * 50) + 'px';
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        piece.style.animationDelay = Math.random() * 0.5 + 's';
-        piece.style.width = (Math.random() * 10 + 8) + 'px';
-        piece.style.height = (Math.random() * 10 + 8) + 'px';
-        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-
-        if (i < 10) {
-            piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            piece.style.fontSize = '20px';
-            piece.style.backgroundColor = 'transparent';
+        if (!q) {
+            DOM.suggestionsList.hidden = true;
+            DOM.suggestionsList.innerHTML = '';
+            return;
         }
 
-        container.appendChild(piece);
+        const matches = friendsData
+            .filter(function (f) {
+                return f.firstName.toLowerCase().indexOf(q) !== -1;
+            })
+            .slice(0, CONFIG.maxSearchResults);
+
+        if (matches.length === 0) {
+            DOM.suggestionsList.innerHTML =
+                '<li class="sg-empty">' +
+                    'No friend found for "' + escapeHtml(query) + '" — press Enter to add as new.' +
+                '</li>';
+            DOM.suggestionsList.hidden = false;
+            return;
+        }
+
+        DOM.suggestionsList.innerHTML = matches.map(function (f) {
+            return (
+                '<li role="option" data-name="' + escapeHtml(f.firstName) + '" tabindex="-1">' +
+                    '<span class="sg-name">' + escapeHtml(f.firstName) + '</span>' +
+                    '<span class="sg-meta">' + escapeHtml(f.connection) + ' · ' + escapeHtml(f.tag) + '</span>' +
+                '</li>'
+            );
+        }).join('');
+
+        DOM.suggestionsList.hidden = false;
+    }
+
+    function closeSuggestions() {
+        if (!DOM.suggestionsList) return;
+        DOM.suggestionsList.hidden = true;
+        DOM.suggestionsList.innerHTML = '';
+    }
+
+    function onSuggestionClick(e) {
+        const li = e.target.closest('li[data-name]');
+        if (!li) return;
+        const name = li.getAttribute('data-name');
+        if (!name) return;
+        if (DOM.friendSearch) DOM.friendSearch.value = name;
+        closeSuggestions();
+        searchFriend();
+    }
+
+    /* ======================================================================
+       7. SEARCH FRIEND
+       ====================================================================== */
+    function searchFriend() {
+        const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
+
+        if (!input) {
+            openSuggestions('');
+            return;
+        }
+
+        const found = friendsData.find(function (f) {
+            return f.firstName.toLowerCase() === input.toLowerCase();
+        });
+
+        if (found) {
+            state.currentFriend = found;
+            state.isDatabaseFriend = true;
+        } else {
+            state.currentFriend = {
+                firstName: input,
+                connection: 'New Friend',
+                experience: '',
+                sinceClass: 'new',
+                tag: 'New Friend'
+            };
+            state.isDatabaseFriend = false;
+        }
+
+        closeSuggestions();
+
+        if (DOM.photoFriendName) {
+            DOM.photoFriendName.textContent = state.currentFriend.firstName;
+        }
+
+        showScreen(DOM.photoScreen);
+        startWebcam();
+    }
+
+    /* ======================================================================
+       8. WEBCAM
+       ====================================================================== */
+    async function startWebcam() {
+        try {
+            state.stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'user', width: 640, height: 480 },
+                audio: false
+            });
+
+            if (DOM.webcamVideo) {
+                DOM.webcamVideo.srcObject = state.stream;
+                await DOM.webcamVideo.play();
+            }
+            state.webcamActive = true;
+
+            if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'none';
+            if (DOM.permissionDenied) DOM.permissionDenied.hidden = true;
+            if (DOM.captureBtn) DOM.captureBtn.disabled = false;
+
+        } catch (err) {
+            state.webcamActive = false;
+            if (DOM.permissionDenied) DOM.permissionDenied.hidden = false;
+            if (DOM.permissionMessage) {
+                DOM.permissionMessage.textContent =
+                    'Allow camera access, or upload a photo, or skip.';
+            }
+            if (DOM.captureBtn) DOM.captureBtn.disabled = true;
+        }
+    }
+
+    function stopWebcam() {
+        if (state.stream) {
+            state.stream.getTracks().forEach(function (t) { t.stop(); });
+            state.stream = null;
+        }
+        if (DOM.webcamVideo) DOM.webcamVideo.srcObject = null;
+        state.webcamActive = false;
+    }
+
+    function retryCamera() {
+        if (DOM.permissionDenied) DOM.permissionDenied.hidden = true;
+        startWebcam();
+    }
+
+    function applyFilterToVideo(filter) {
+        state.currentFilter = filter;
+        const filters = {
+            normal:  'none',
+            bw:      'grayscale(100%)',
+            sepia:   'sepia(100%)',
+            vintage: 'sepia(50%) contrast(120%) brightness(90%)'
+        };
+        if (DOM.webcamVideo) {
+            DOM.webcamVideo.style.filter = filters[filter] || 'none';
+        }
+        $$('.filter-btn').forEach(function (btn) {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+    }
+
+    /* ======================================================================
+       9. CAPTURE / UPLOAD / SKIP
+       ====================================================================== */
+    function captureFriendPhoto() {
+        if (!state.webcamActive || !DOM.webcamVideo) return;
+
+        const video = DOM.webcamVideo;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+
+        if (state.currentFilter !== 'normal') {
+            ctx.filter = video.style.filter || 'none';
+        }
+        ctx.drawImage(video, 0, 0);
+
+        state.capturedPhoto = canvas.toDataURL('image/jpeg', 0.85);
+        stopWebcam();
+        proceedAfterPhoto();
+    }
+
+    function uploadPhoto() {
+        if (DOM.photoUploadInput) {
+            DOM.photoUploadInput.click();
+        }
+    }
+
+    function onPhotoUpload(e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            if (typeof showToast === 'function') showToast('Please choose an image file.', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            state.capturedPhoto = ev.target.result;
+            stopWebcam();
+            proceedAfterPhoto();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function skipPhoto() {
+        state.capturedPhoto = null;
+        stopWebcam();
+        proceedAfterPhoto();
+    }
+
+    function proceedAfterPhoto() {
+        if (DOM.photoScreen) DOM.photoScreen.hidden = true;
+
+        if (state.isDatabaseFriend) {
+            showFriendFound();
+        } else {
+            showNewFriend();
+        }
+    }
+
+    /* ======================================================================
+       10. FRIEND FOUND
+       ====================================================================== */
+    function avatarHtml(dataUrl) {
+        if (dataUrl) {
+            return '<img src="' + dataUrl + '" alt="" />';
+        }
+        return '<div class="avatar-placeholder" aria-hidden="true"></div>';
+    }
+
+    function showFriendFound() {
+        if (DOM.foundAvatar) DOM.foundAvatar.innerHTML = avatarHtml(state.capturedPhoto);
+        if (DOM.foundName)   DOM.foundName.textContent = state.currentFriend.firstName;
+        if (DOM.foundTag)    DOM.foundTag.textContent = state.currentFriend.tag || 'Friend';
+
+        updateTimeline('found');
+        showScreen(DOM.foundScreen);
+    }
+
+    function updateTimeline(prefix) {
+        if (!state.currentFriend || state.currentFriend.sinceClass === 'new') return;
+
+        const years = yearsSinceClass(state.currentFriend.sinceClass);
+        const percent = timelinePercent(years);
+
+        const barId  = prefix === 'found' ? 'timelineBar' : 'detailsTimelineBar';
+        const textId = prefix === 'found' ? 'timelineText' : 'detailsTimelineText';
+
+        const bar  = document.getElementById(barId);
+        const text = document.getElementById(textId);
+
+        if (bar)  bar.style.width = percent + '%';
+        if (text) text.textContent = 'Since Class ' + state.currentFriend.sinceClass + ' · ' + years + ' years of friendship';
+    }
+
+    /* ======================================================================
+       11. NEW FRIEND (request flow)
+       ====================================================================== */
+    function showNewFriend() {
+        if (DOM.newFriendName) DOM.newFriendName.textContent = state.currentFriend.firstName;
+        showScreen(DOM.newFriendScreen);
+        launchConfetti();
+    }
+
+    function showTemporaryCertificate() {
+        state.currentFriend = state.currentFriend || {
+            firstName: 'Friend',
+            connection: 'New Friend',
+            tag: 'New Friend',
+            sinceClass: 'new'
+        };
+        generateCertificate(true);
+    }
+
+    /* ======================================================================
+       12. DETAILS SCREEN
+       ====================================================================== */
+    function proceedToDetails() {
+        if (!state.currentFriend) return;
+
+        if (DOM.profileAvatar) DOM.profileAvatar.innerHTML = avatarHtml(state.capturedPhoto);
+        if (DOM.displayName)   DOM.displayName.textContent = state.currentFriend.firstName;
+        if (DOM.displayConnection) DOM.displayConnection.textContent = state.currentFriend.connection || 'Friend';
+        if (DOM.displayTag)    DOM.displayTag.textContent = state.currentFriend.tag || 'Friend';
+        if (DOM.displayExperience) DOM.displayExperience.textContent = state.currentFriend.experience || 'A new friendship begins.';
+
+        if (state.currentFriend.sinceClass === 'new') {
+            if (DOM.displaySince) DOM.displaySince.textContent = '—';
+            if (DOM.displayClass) DOM.displayClass.textContent = '—';
+            if (DOM.displayYears) DOM.displayYears.textContent = '—';
+        } else {
+            const years = yearsSinceClass(state.currentFriend.sinceClass);
+            if (DOM.displaySince) DOM.displaySince.textContent = 'Class ' + state.currentFriend.sinceClass;
+            if (DOM.displayClass) DOM.displayClass.textContent = state.currentFriend.sinceClass;
+            if (DOM.displayYears) DOM.displayYears.textContent = years + ' yrs';
+        }
+
+        updateTimeline('details');
+        showScreen(DOM.detailsScreen);
+    }
+
+    /* ======================================================================
+       13. RESET
+       ====================================================================== */
+    function resetSearch() {
+        stopWebcam();
+        hideAllScreens();
+
+        if (DOM.searchArea) DOM.searchArea.hidden = false;
+        if (DOM.friendSearch) {
+            DOM.friendSearch.value = '';
+            DOM.friendSearch.focus();
+        }
+        if (DOM.searchClear) DOM.searchClear.hidden = true;
+        closeSuggestions();
+
+        state.currentFriend = null;
+        state.capturedPhoto = null;
+        state.isDatabaseFriend = false;
+    }
+
+    /* ======================================================================
+       14. CONFETTI
+       ====================================================================== */
+    function launchConfetti() {
+        const container = DOM.confettiContainer;
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b', '#a29bfe', '#ff69b4'];
+        const COUNT = 60;
+
+        for (let i = 0; i < COUNT; i++) {
+            const piece = document.createElement('div');
+            const size = 6 + Math.random() * 8;
+            piece.style.cssText = [
+                'position:absolute',
+                'left:' + (Math.random() * 100) + '%',
+                'top:-20px',
+                'width:' + size + 'px',
+                'height:' + size + 'px',
+                'background:' + colors[Math.floor(Math.random() * colors.length)],
+                'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+                'animation:confettiFall ' + (2.4 + Math.random() * 1.8) + 's linear forwards',
+                'animation-delay:' + (Math.random() * 0.4) + 's'
+            ].join(';');
+            container.appendChild(piece);
+        }
+
+        if (!document.getElementById('confetti-style')) {
+            const style = document.createElement('style');
+            style.id = 'confetti-style';
+            style.textContent = '@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}';
+            document.head.appendChild(style);
+        }
 
         setTimeout(function () {
-            if (piece.parentNode) piece.remove();
-        }, 3500);
-    }
-}
-
-// ============================================
-// PROCEED TO DETAILS
-// ============================================
-function proceedToDetails() {
-    if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
-    if (DOM.detailsScreen) DOM.detailsScreen.style.display = 'block';
-
-    if (DOM.profileAvatar) {
-        DOM.profileAvatar.innerHTML = '<img src="' + capturedPhotoData + '" alt="Photo" style="width:100%;height:100%;object-fit:cover;">';
-    }
-    if (DOM.displayName) DOM.displayName.textContent = currentFriend.firstName;
-    if (DOM.displayConnection) DOM.displayConnection.textContent = currentFriend.connection || '';
-    if (DOM.displayExperience) DOM.displayExperience.textContent = currentFriend.experience || '';
-    if (DOM.displayAge) DOM.displayAge.textContent = currentFriend.age || '';
-    if (DOM.displaySchool) DOM.displaySchool.textContent = currentFriend.school || '';
-    if (DOM.displayHobby) DOM.displayHobby.textContent = currentFriend.hobby || '';
-    if (DOM.displayTag) DOM.displayTag.textContent = currentFriend.tag || 'Friend';
-    if (DOM.displaySince) DOM.displaySince.textContent = currentFriend.sinceClass !== 'new'
-        ? currentFriend.sinceClass + ' (Class)'
-        : 'New';
-    if (DOM.displayQuote) DOM.displayQuote.textContent = currentFriend.connection || 'Friend';
-
-    updateTimeline('details');
-}
-
-// ============================================
-// GENERATE FRIEND CARD PDF
-// ============================================
-function generateFriendCardPDF(isDBFriend) {
-    console.log('📄 Generating Certificate PDF...');
-
-    if (!capturedPhotoData) {
-        alert('❌ No photo captured! Please capture photo first.');
-        return;
+            if (container) container.innerHTML = '';
+        }, 4500);
     }
 
-    if (!currentFriend) {
-        alert('❌ No friend found! Please search first.');
-        return;
+    /* ======================================================================
+       15. CERTIFICATE GENERATION
+       ====================================================================== */
+    function loadCertificateLibraries() {
+        const libs = [
+            {
+                test: function () { return typeof html2canvas !== 'undefined'; },
+                src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+            },
+            {
+                test: function () { return typeof window.jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined'; },
+                src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+            }
+        ];
+
+        return Promise.all(libs.map(function (lib) {
+            if (lib.test()) return Promise.resolve(true);
+            return new Promise(function (resolve, reject) {
+                const script = document.createElement('script');
+                script.src = lib.src;
+                script.onload = function () { resolve(true); };
+                script.onerror = function () { reject(new Error('Failed: ' + lib.src)); };
+                document.head.appendChild(script);
+            });
+        }));
     }
 
-    if (typeof html2canvas === 'undefined' || (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined')) {
-        alert('⏳ Libraries loading... Please try again in 2 seconds.');
-        loadLibraries(function () {
-            setTimeout(function () {
-                generateFriendCardPDF(isDBFriend);
-            }, 500);
-        });
-        return;
-    }
+    async function generateCertificate(isTemporary) {
+        if (!state.currentFriend) return;
 
-    const certHTML = createCertificateHTML(isDBFriend);
-    renderCertificateToPDF(certHTML, isDBFriend);
-}
+        try {
+            await loadCertificateLibraries();
+        } catch (err) {
+            console.error(err);
+            if (typeof showToast === 'function') {
+                showToast('Could not load certificate tools. Check connection.', 'error');
+            }
+            return;
+        }
 
-// ============================================
-// CREATE CERTIFICATE HTML (Sample ke jaisa)
-// ============================================
-function createCertificateHTML(isDBFriend) {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-IN', {
-        day: 'numeric', month: 'short', year: 'numeric'
-    });
-    const friendName = (currentFriend.firstName || 'Friend').toUpperCase();
-    const tag = currentFriend.tag || 'New Friend';
+        const container = document.createElement('div');
+        container.innerHTML = buildCertificateHtml(isTemporary);
+        container.style.cssText = [
+            'position:fixed',
+            'left:-99999px',
+            'top:0',
+            'width:210mm',
+            'background:#ffffff',
+            'padding:0',
+            'margin:0'
+        ].join(';');
+        document.body.appendChild(container);
 
-    const issuerPhoto = 'assets/images/casual.jpg';
+        // Wait for images inside
+        const imgs = Array.prototype.slice.call(container.querySelectorAll('img'));
+        await Promise.all(imgs.map(function (img) {
+            if (img.complete) return Promise.resolve();
+            return new Promise(function (r) {
+                img.onload = img.onerror = function () { r(); };
+            });
+        }));
 
-    return `
-        <div id="certificate-container" style="
-            width: 210mm;
-            min-height: 297mm;
-            padding: 25mm 20mm;
-            background: #ffffff;
-            font-family: 'Georgia', 'Times New Roman', serif;
-            color: #1a1a1a;
-            box-sizing: border-box;
-            position: relative;
-        ">
+        // Small breather
+        await new Promise(function (r) { setTimeout(r, 150); });
 
-            <div style="text-align:center; margin-bottom: 20px;">
-                <span style="
-                    display: inline-block;
-                    background: #DAA520;
-                    color: #ffffff;
-                    padding: 6px 24px;
-                    border-radius: 20px;
-                    font-size: 12px;
-                    font-weight: 700;
-                    letter-spacing: 3px;
-                    font-family: 'Arial', sans-serif;
-                ">FRIENDS CORNER</span>
-            </div>
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            });
 
-            <h1 style="
-                text-align: center;
-                font-size: 26px;
-                letter-spacing: 3px;
-                color: #1a1a1a;
-                font-weight: 700;
-                margin: 0 0 8px 0;
-                font-family: 'Georgia', serif;
-            ">CERTIFICATE OF FRIENDSHIP</h1>
+            if (container.parentNode) container.parentNode.removeChild(container);
 
-            <div style="
-                width: 80px;
-                height: 2px;
-                background: #DAA520;
-                margin: 0 auto 35px auto;
-            "></div>
+            const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+            const pdf = new jsPDFCtor('p', 'mm', 'a4');
 
-            <div style="
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                gap: 50px;
-                margin-bottom: 30px;
-            ">
-
-                <div style="text-align:center;">
-                    <div style="
-                        width: 100px;
-                        height: 100px;
-                        border-radius: 50%;
-                        border: 3px solid #DAA520;
-                        overflow: hidden;
-                        margin: 0 auto 10px auto;
-                        background: #f5f5f5;
-                    ">
-                        <img src="${issuerPhoto}" alt="Ravi Raj"
-                             style="width:100%;height:100%;object-fit:cover;"
-                             onerror="this.style.display='none'; this.parentNode.style.background='#DAA520'; this.parentNode.innerHTML='<div style=&quot;color:#fff;font-size:36px;line-height:100px;text-align:center;font-weight:bold;&quot;>R</div>';">
-                    </div>
-                    <div style="
-                        font-size: 13px;
-                        font-weight: 700;
-                        color: #DAA520;
-                        letter-spacing: 1.5px;
-                    ">RAVI RAJ</div>
-                    <div style="
-                        font-size: 10px;
-                        color: #888;
-                        margin-top: 2px;
-                    ">Certificate Issuer</div>
-                </div>
-
-                <div style="text-align:center; padding-top: 20px;">
-                    <div style="
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 50%;
-                        background: #DAA520;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin: 0 auto 8px auto;
-                        font-size: 22px;
-                    ">🤝</div>
-                    <div style="
-                        font-size: 10px;
-                        font-weight: 700;
-                        color: #DAA520;
-                        letter-spacing: 2px;
-                    ">CONNECTED</div>
-                </div>
-
-                <div style="text-align:center;">
-                    <div style="
-                        width: 100px;
-                        height: 100px;
-                        border-radius: 50%;
-                        border: 3px solid #7c3aed;
-                        overflow: hidden;
-                        margin: 0 auto 10px auto;
-                        background: #f5f5f5;
-                    ">
-                        <img src="${capturedPhotoData}" alt="${friendName}"
-                             style="width:100%;height:100%;object-fit:cover;">
-                    </div>
-                    <div style="
-                        font-size: 13px;
-                        font-weight: 700;
-                        color: #7c3aed;
-                        letter-spacing: 1.5px;
-                    ">${friendName}</div>
-                    <div style="
-                        font-size: 10px;
-                        color: #888;
-                        margin-top: 2px;
-                    ">Verified Friend</div>
-                </div>
-
-            </div>
-
-            <p style="
-                text-align: center;
-                font-size: 15px;
-                color: #333;
-                line-height: 1.8;
-                margin: 40px auto 50px auto;
-                max-width: 500px;
-            ">
-                This is to certify that the above person is a verified friend of <strong>Ravi Raj</strong>.<br>
-                Their friendship has been officially recognized and recorded.
-            </p>
-
-            <div style="
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-end;
-                margin-top: 60px;
-                padding: 0 10px;
-            ">
-
-                <div style="
-                    font-size: 11px;
-                    color: #555;
-                    line-height: 1.8;
-                    font-family: 'Arial', sans-serif;
-                ">
-                    <div><strong>Issued on:</strong> ${dateStr}</div>
-                    <div><strong>Location:</strong> Begusarai, Bihar, India</div>
-                    <div><strong>Tag:</strong> ${tag}</div>
-                </div>
-
-                <div style="text-align:center;">
-                    <div style="
-                        width: 120px;
-                        height: 45px;
-                        margin: 0 auto 5px auto;
-                    ">
-                        <img src="assets/images/signature.jpg" alt="Signature"
-                             style="width:100%;height:100%;object-fit:contain;"
-                             onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-family:cursive;font-size:26px;color:#1a1a1a;&quot;>Ravi Raj</div>';">
-                    </div>
-                    <div style="
-                        font-size: 13px;
-                        font-weight: 700;
-                        color: #1a1a1a;
-                    ">Ravi Raj</div>
-                    <div style="
-                        font-size: 10px;
-                        color: #888;
-                    ">Founder, Friends Corner</div>
-                </div>
-
-            </div>
-
-            <div style="
-                width: 100%;
-                height: 1px;
-                background: #DAA520;
-                margin: 25px 0 15px 0;
-            "></div>
-
-            <div style="
-                text-align: center;
-                font-size: 10px;
-                color: #999;
-                letter-spacing: 1px;
-                font-family: 'Arial', sans-serif;
-            ">
-                © 2026 Ravi Raj · All Rights Reserved
-            </div>
-
-        </div>
-    `;
-}
-
-// ============================================
-// RENDER CERTIFICATE TO PDF
-// ============================================
-function renderCertificateToPDF(certHTML, isDBFriend) {
-    console.log('📄 Generating certificate PDF...');
-
-    const container = document.createElement('div');
-    container.innerHTML = certHTML;
-    container.style.cssText = `
-        position: fixed;
-        left: -9999px;
-        top: 0;
-        width: 210mm;
-        background: #ffffff;
-        padding: 0;
-        margin: 0;
-    `;
-    document.body.appendChild(container);
-
-    setTimeout(function () {
-        html2canvas(container, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            logging: false
-        }).then(function (canvas) {
-            document.body.removeChild(container);
-
-            const jsPDF = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
-            const pdf = new jsPDF('p', 'mm', 'a4');
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const imgData = canvas.toDataURL('image/jpeg', 0.92);
             const pdfWidth = 210;
             const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
 
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save('Friendship_Certificate_' + (currentFriend.firstName || 'Friend') + '.pdf');
 
-            console.log('✅ PDF downloaded!');
+            const filename = CONFIG.certificateFilename + '_' + (state.currentFriend.firstName || 'Friend') + (isTemporary ? '_Temp' : '') + '.pdf';
+            pdf.save(filename);
+
             if (typeof showToast === 'function') {
-                showToast('🎉 Certificate Downloaded!', 'success');
+                showToast('Certificate downloaded.', 'success');
             }
-        }).catch(function (error) {
-            console.error('❌ Error:', error);
-            document.body.removeChild(container);
-            alert('PDF generation failed: ' + error.message);
+        } catch (err) {
+            console.error('Certificate failed:', err);
+            if (container.parentNode) container.parentNode.removeChild(container);
+            if (typeof showToast === 'function') {
+                showToast('Could not generate certificate.', 'error');
+            }
+        }
+    }
+
+    function buildCertificateHtml(isTemporary) {
+        const friendName = escapeHtml((state.currentFriend.firstName || 'Friend').toUpperCase());
+        const tag = escapeHtml(state.currentFriend.tag || (isTemporary ? 'New Friend' : 'Friend'));
+        const connection = escapeHtml(state.currentFriend.connection || 'Friend');
+        const issuerPhoto = 'assets/images/casual.jpg';
+        const friendPhoto = state.capturedPhoto || '';
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
         });
-    }, 800);
-}
 
-// ============================================
-// RESET
-// ============================================
-function resetSearch() {
-    hideAllScreens();
-    stopWebcam();
-    if (DOM.searchArea) DOM.searchArea.style.display = 'flex';
-    if (DOM.friendSearch) {
-        DOM.friendSearch.value = '';
-        DOM.friendSearch.focus();
+        const friendPhotoHtml = friendPhoto
+            ? '<img src="' + friendPhoto + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+            : '<div style="color:#7c3aed;font-size:42px;line-height:110px;text-align:center;font-family:Georgia,serif;">' + (friendName.charAt(0) || 'F') + '</div>';
+
+        const badgeText = isTemporary ? 'NEW FRIEND' : 'CONNECTED';
+        const footerText = isTemporary
+            ? 'A temporary certificate. Once Ravi adds your details, you get the full one.'
+            : 'Their friendship has been officially recognised and recorded.';
+
+        return (
+            '<div style="' +
+                'width:210mm;' +
+                'min-height:297mm;' +
+                'padding:25mm 20mm;' +
+                'background:#ffffff;' +
+                'font-family:Georgia,\'Times New Roman\',serif;' +
+                'color:#1a1a1a;' +
+                'box-sizing:border-box;' +
+                'position:relative;' +
+            '">' +
+
+                '<div style="text-align:center;margin-bottom:22px;">' +
+                    '<span style="' +
+                        'display:inline-block;' +
+                        'background:#b08d3f;' +
+                        'color:#ffffff;' +
+                        'padding:6px 22px;' +
+                        'border-radius:20px;' +
+                        'font-size:11px;' +
+                        'font-weight:700;' +
+                        'letter-spacing:3px;' +
+                        'font-family:Arial,sans-serif;' +
+                    '">FRIENDS CORNER</span>' +
+                '</div>' +
+
+                '<h1 style="' +
+                    'text-align:center;' +
+                    'font-size:26px;' +
+                    'letter-spacing:3px;' +
+                    'font-weight:700;' +
+                    'margin:0 0 8px 0;' +
+                    'font-family:Georgia,serif;' +
+                '">CERTIFICATE OF FRIENDSHIP</h1>' +
+
+                '<div style="width:80px;height:2px;background:#b08d3f;margin:0 auto 40px auto;"></div>' +
+
+                '<div style="display:flex;justify-content:center;align-items:flex-start;gap:48px;margin-bottom:36px;">' +
+
+                    '<div style="text-align:center;">' +
+                        '<div style="' +
+                            'width:110px;height:110px;' +
+                            'border-radius:50%;' +
+                            'border:3px solid #b08d3f;' +
+                            'overflow:hidden;' +
+                            'margin:0 auto 10px auto;' +
+                            'background:#f5f5f5;' +
+                        '">' +
+                            '<img src="' + issuerPhoto + '" alt="" style="width:100%;height:100%;object-fit:cover;">' +
+                        '</div>' +
+                        '<div style="font-size:13px;font-weight:700;color:#b08d3f;letter-spacing:1.5px;">RAVI RAJ</div>' +
+                        '<div style="font-size:10px;color:#888;margin-top:2px;">Issuer</div>' +
+                    '</div>' +
+
+                    '<div style="text-align:center;padding-top:24px;">' +
+                        '<div style="' +
+                            'width:48px;height:48px;' +
+                            'border-radius:50%;' +
+                            'background:#b08d3f;' +
+                            'display:flex;align-items:center;justify-content:center;' +
+                            'margin:0 auto 8px auto;' +
+                            'color:#ffffff;' +
+                            'font-size:18px;' +
+                            'font-family:Arial,sans-serif;' +
+                        '">&#10003;</div>' +
+                        '<div style="font-size:10px;font-weight:700;color:#b08d3f;letter-spacing:2px;">' + badgeText + '</div>' +
+                    '</div>' +
+
+                    '<div style="text-align:center;">' +
+                        '<div style="' +
+                            'width:110px;height:110px;' +
+                            'border-radius:50%;' +
+                            'border:3px solid #1f3a5f;' +
+                            'overflow:hidden;' +
+                            'margin:0 auto 10px auto;' +
+                            'background:#f5f5f5;' +
+                        '">' + friendPhotoHtml + '</div>' +
+                        '<div style="font-size:13px;font-weight:700;color:#1f3a5f;letter-spacing:1.5px;">' + friendName + '</div>' +
+                        '<div style="font-size:10px;color:#888;margin-top:2px;">' + connection + '</div>' +
+                    '</div>' +
+
+                '</div>' +
+
+                '<p style="' +
+                    'text-align:center;' +
+                    'font-size:15px;' +
+                    'line-height:1.85;' +
+                    'color:#333;' +
+                    'margin:44px auto 56px auto;' +
+                    'max-width:500px;' +
+                '">' +
+                    'This certificate celebrates the friendship between <strong>Ravi Raj</strong> and the above person. ' +
+                    footerText +
+                '</p>' +
+
+                '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:64px;padding:0 10px;">' +
+
+                    '<div style="font-size:11px;color:#555;line-height:1.9;font-family:Arial,sans-serif;">' +
+                        '<div><strong>Issued on:</strong> ' + dateStr + '</div>' +
+                        '<div><strong>Tag:</strong> ' + tag + '</div>' +
+                    '</div>' +
+
+                    '<div style="text-align:center;">' +
+                        '<div style="font-family:cursive;font-size:28px;color:#1a1a1a;margin-bottom:4px;">Ravi Raj</div>' +
+                        '<div style="font-size:10px;color:#888;">Founder, Friends Corner</div>' +
+                    '</div>' +
+
+                '</div>' +
+
+                '<div style="width:100%;height:1px;background:#b08d3f;margin:28px 0 16px 0;"></div>' +
+                '<div style="text-align:center;font-size:10px;color:#999;letter-spacing:1px;font-family:Arial,sans-serif;">' +
+                    '&copy; 2026 Ravi Raj &middot; All Rights Reserved' +
+                '</div>' +
+
+            '</div>'
+        );
     }
-    currentFriend = null;
-    capturedPhotoData = null;
-    isDatabaseFriend = false;
-}
 
-function hideAllScreens() {
-    if (DOM.photoScreen) DOM.photoScreen.style.display = 'none';
-    if (DOM.foundScreen) DOM.foundScreen.style.display = 'none';
-    if (DOM.newFriendScreen) DOM.newFriendScreen.style.display = 'none';
-    if (DOM.detailsScreen) DOM.detailsScreen.style.display = 'none';
-}
+    /* ======================================================================
+       16. TOAST (lightweight)
+       ====================================================================== */
+    function showToast(message, type) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.style.cssText = [
+                'position:fixed',
+                'left:50%',
+                'bottom:28px',
+                'transform:translateX(-50%) translateY(12px)',
+                'background:#1a1a24',
+                'color:#ffffff',
+                'padding:12px 20px',
+                'border-radius:8px',
+                'font-family:Inter,system-ui,sans-serif',
+                'font-size:13px',
+                'box-shadow:0 8px 24px rgba(0,0,0,0.18)',
+                'opacity:0',
+                'pointer-events:none',
+                'transition:opacity .25s ease, transform .25s ease',
+                'z-index:99999'
+            ].join(';');
+            document.body.appendChild(toast);
+        }
 
-// ============================================
-// DOWNLOAD FUNCTIONS
-// ============================================
-window.downloadFriendCard = function () {
-    console.log('⬇️ Download Friend Card clicked!');
-    generateFriendCardPDF(isDatabaseFriend);
-};
+        toast.textContent = message;
+        if (type === 'error') toast.style.background = '#dc2626';
+        else if (type === 'success') toast.style.background = '#16a34a';
+        else toast.style.background = '#1a1a24';
 
-window.downloadNewFriendCard = function () {
-    console.log('⬇️ Download New Friend Card clicked!');
-    generateFriendCardPDF(false);
-};
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
 
-// ============================================
-// VOICE SEARCH (Bonus)
-// ============================================
-function toggleVoiceSearch() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert('Voice search is not supported in this browser.');
-        return;
+        clearTimeout(window._friendToastTimer);
+        window._friendToastTimer = setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(12px)';
+        }, 2600);
     }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-IN';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
 
-    const voiceBtn = document.querySelector('.search-voice');
-    if (voiceBtn) voiceBtn.classList.add('listening');
+    /* ======================================================================
+       17. INIT
+       ====================================================================== */
+    function init() {
+        // --- Search input ---
+        if (DOM.friendSearch) {
+            DOM.friendSearch.addEventListener('input', function (e) {
+                if (DOM.searchClear) DOM.searchClear.hidden = !e.target.value;
+                openSuggestions(e.target.value);
+            });
 
-    recognition.onresult = function (event) {
-        const transcript = event.results[0][0].transcript;
-        if (DOM.friendSearch) DOM.friendSearch.value = transcript;
-        searchFriend();
-    };
-    recognition.onerror = function () {
-        if (voiceBtn) voiceBtn.classList.remove('listening');
-    };
-    recognition.onend = function () {
-        if (voiceBtn) voiceBtn.classList.remove('listening');
-    };
-    recognition.start();
-}
+            DOM.friendSearch.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchFriend();
+                } else if (e.key === 'Escape') {
+                    closeSuggestions();
+                }
+            });
 
-// ============================================
-// TOAST NOTIFICATION
-// ============================================
-function showToast(message, type) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.className = 'toast show ' + (type || 'info');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(function () {
-        toast.classList.remove('show');
-    }, 3000);
-}
+            DOM.friendSearch.addEventListener('focus', function () {
+                if (DOM.friendSearch.value.trim()) {
+                    openSuggestions(DOM.friendSearch.value);
+                }
+            });
+        }
 
-// ============================================
-// INIT ON PAGE LOAD
-// ============================================
-document.addEventListener('DOMContentLoaded', function () {
-    init();
-});
+        // --- Suggestion click ---
+        if (DOM.suggestionsList) {
+            DOM.suggestionsList.addEventListener('click', onSuggestionClick);
+        }
 
-// ============================================
-// EXPOSE FUNCTIONS TO GLOBAL SCOPE
-// ============================================
-window.searchFriend = searchFriend;
-window.captureFriendPhoto = captureFriendPhoto;
-window.retryCamera = retryCamera;
-window.applyFilterToVideo = applyFilterToVideo;
-window.proceedToDetails = proceedToDetails;
-window.resetSearch = resetSearch;
-window.generateFriendCardPDF = generateFriendCardPDF;
-window.downloadFriendCard = downloadFriendCard;
-window.downloadNewFriendCard = downloadNewFriendCard;
-window.toggleVoiceSearch = toggleVoiceSearch;
-window.showToast = showToast;
+        // --- Clear button ---
+        if (DOM.searchClear) {
+            DOM.searchClear.addEventListener('click', function () {
+                if (DOM.friendSearch) {
+                    DOM.friendSearch.value = '';
+                    DOM.friendSearch.focus();
+                }
+                DOM.searchClear.hidden = true;
+                closeSuggestions();
+            });
+        }
 
-console.log('✅ Friends Corner JS Loaded Successfully!');
+        // --- Click outside closes suggestions ---
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('#searchArea')) {
+                closeSuggestions();
+            }
+        });
+
+        // --- Photo upload input ---
+        if (DOM.photoUploadInput) {
+            DOM.photoUploadInput.addEventListener('change', onPhotoUpload);
+        }
+
+        // --- Filter buttons (also on inline onclick, but bind here) ---
+        $$('.filter-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                applyFilterToVideo(btn.dataset.filter);
+            });
+        });
+
+        console.log('✅ friends.js loaded — ' + friendsData.length + ' friends in database');
+    }
+
+    /* ======================================================================
+       18. PUBLIC API (used by inline onclick in HTML)
+       ====================================================================== */
+    window.searchFriend = searchFriend;
+    window.resetSearch = resetSearch;
+    window.captureFriendPhoto = captureFriendPhoto;
+    window.uploadPhoto = uploadPhoto;
+    window.skipPhoto = skipPhoto;
+    window.applyFilterToVideo = applyFilterToVideo;
+    window.retryCamera = retryCamera;
+    window.proceedToDetails = proceedToDetails;
+    window.showTemporaryCertificate = showTemporaryCertificate;
+    window.downloadFriendCard = function () { generateCertificate(false); };
+    window.showToast = showToast;
+
+    /* ======================================================================
+       19. BOOT
+       ====================================================================== */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
