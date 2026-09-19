@@ -1,9 +1,10 @@
 /* ==========================================================================
    RAVI RAJ — SITE SCRIPT
-   Version: 3.0
+   Version: 3.1 (Error-Free)
    Handles: Year · Mobile Menu · Command Palette (K) · Smooth Scroll
-            Copy Email · Active Nav · Scroll Cue · Reduced Motion
-   No dependencies. No frameworks. ~230 lines.
+            Copy Email · Active Nav · Header Adaptive · Scroll Cue
+            External Links · Console Greeting · Reduced Motion
+   No dependencies. No frameworks. ~260 lines.
    ========================================================================== */
 
 (function () {
@@ -14,7 +15,15 @@
        ====================================================================== */
     const $  = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const prefersReduced = (() => {
+        try {
+            return window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
+        }
+    })();
 
     const focusableSelector = [
         'a[href]',
@@ -26,90 +35,60 @@
     ].join(',');
 
     /* ======================================================================
-       1. YEAR IN FOOTER
+       1. SAFE STORAGE WRAPPERS
        ====================================================================== */
-    const yearEl = $('#year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    const safeStorage = {
+        get(key) {
+            try { return localStorage.getItem(key); }
+            catch (e) { return null; }
+        },
+        set(key, value) {
+            try { localStorage.setItem(key, value); return true; }
+            catch (e) { return false; }
+        },
+        sessionGet(key) {
+            try { return sessionStorage.getItem(key); }
+            catch (e) { return null; }
+        },
+        sessionSet(key, value) {
+            try { sessionStorage.setItem(key, value); return true; }
+            catch (e) { return false; }
+        }
+    };
 
     /* ======================================================================
-       2. MOBILE MENU
+       2. COMMAND PALETTE ELEMENTS — declared early for ESC handler
+       ====================================================================== */
+    const cmdPalette = $('#cmdPalette');
+    const cmdOverlay = $('#cmdOverlay');
+    const cmdInput   = $('#cmdInput');
+    const cmdList    = $('#cmdList');
+
+    /* ======================================================================
+       3. MOBILE MENU ELEMENTS — declared early too
        ====================================================================== */
     const menuBtn       = $('#menuBtn');
     const mobileNav     = $('#mobileNav');
     const mobileOverlay = $('#mobileOverlay');
     const mobileClose   = $('#mobileNavClose');
 
-    let lastFocused = null;
-
-    function openMenu() {
-        if (!mobileNav || !mobileOverlay) return;
-        lastFocused = document.activeElement;
-
-        mobileNav.hidden = false;
-        mobileOverlay.hidden = false;
-
-        // force reflow for transition
-        requestAnimationFrame(() => {
-            mobileNav.dataset.open = 'true';
-            mobileOverlay.dataset.open = 'true';
-        });
-
-        document.body.style.overflow = 'hidden';
-        menuBtn?.setAttribute('aria-expanded', 'true');
-
-        // Focus first link
-        requestAnimationFrame(() => {
-            const firstLink = $('a', mobileNav);
-            firstLink?.focus();
-        });
-
-        trapFocus(mobileNav);
+    /* ======================================================================
+       4. YEAR IN FOOTER
+       ====================================================================== */
+    const yearEl = $('#year');
+    if (yearEl) {
+        yearEl.textContent = String(new Date().getFullYear());
     }
-
-    function closeMenu() {
-        if (!mobileNav || !mobileOverlay) return;
-
-        mobileNav.dataset.open = 'false';
-        mobileOverlay.dataset.open = 'false';
-        menuBtn?.setAttribute('aria-expanded', 'false');
-
-        document.body.style.overflow = '';
-
-        setTimeout(() => {
-            mobileNav.hidden = true;
-            mobileOverlay.hidden = true;
-        }, 400);
-
-        releaseFocus();
-
-        if (lastFocused && typeof lastFocused.focus === 'function') {
-            lastFocused.focus();
-        }
-    }
-
-    menuBtn?.addEventListener('click', () => {
-        const isOpen = mobileNav?.dataset.open === 'true';
-        isOpen ? closeMenu() : openMenu();
-    });
-
-    mobileClose?.addEventListener('click', closeMenu);
-    mobileOverlay?.addEventListener('click', closeMenu);
-
-    // Close on link click
-    $$('#mobileNav a').forEach((link) => {
-        link.addEventListener('click', () => {
-            setTimeout(closeMenu, 50);
-        });
-    });
 
     /* ======================================================================
-       3. FOCUS TRAP (for mobile nav & command palette)
+       5. FOCUS TRAP (shared between mobile nav & command palette)
        ====================================================================== */
     let activeTrap = null;
 
     function trapFocus(container) {
+        // Release any prior trap first
+        releaseFocus();
         activeTrap = container;
-
         container.addEventListener('keydown', handleTrapKey);
         document.addEventListener('keydown', handleGlobalEscape);
     }
@@ -126,7 +105,7 @@
         if (e.key !== 'Tab' || !activeTrap) return;
 
         const focusables = $$(focusableSelector, activeTrap).filter(
-            (el) => el.offsetParent !== null
+            (el) => el.offsetParent !== null || el === document.activeElement
         );
         if (!focusables.length) return;
 
@@ -144,22 +123,95 @@
 
     function handleGlobalEscape(e) {
         if (e.key !== 'Escape') return;
-        if (mobileNav?.dataset.open === 'true') {
+
+        if (mobileNav && mobileNav.dataset.open === 'true') {
             closeMenu();
+            return;
         }
-        if (cmdPalette?.dataset.open === 'true') {
+        if (cmdPalette && cmdPalette.dataset.open === 'true') {
             closeCmd();
         }
     }
 
     /* ======================================================================
-       4. COMMAND PALETTE (K key)
+       6. MOBILE MENU
        ====================================================================== */
-    const cmdPalette = $('#cmdPalette');
-    const cmdOverlay = $('#cmdOverlay');
-    const cmdInput   = $('#cmdInput');
-    const cmdList    = $('#cmdList');
+    let lastFocusedMenu = null;
 
+    function openMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+        lastFocusedMenu = document.activeElement;
+
+        mobileNav.hidden = false;
+        mobileOverlay.hidden = false;
+
+        requestAnimationFrame(() => {
+            mobileNav.dataset.open = 'true';
+            mobileOverlay.dataset.open = 'true';
+        });
+
+        document.body.style.overflow = 'hidden';
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        mobileOverlay.setAttribute('aria-hidden', 'false');
+
+        requestAnimationFrame(() => {
+            const firstLink = $('a', mobileNav);
+            if (firstLink && typeof firstLink.focus === 'function') {
+                firstLink.focus();
+            }
+        });
+
+        trapFocus(mobileNav);
+    }
+
+    function closeMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+
+        mobileNav.dataset.open = 'false';
+        mobileOverlay.dataset.open = 'false';
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        mobileOverlay.setAttribute('aria-hidden', 'true');
+
+        document.body.style.overflow = '';
+
+        setTimeout(() => {
+            mobileNav.hidden = true;
+            mobileOverlay.hidden = true;
+        }, 400);
+
+        releaseFocus();
+
+        if (lastFocusedMenu && typeof lastFocusedMenu.focus === 'function') {
+            try { lastFocusedMenu.focus(); } catch (e) { /* noop */ }
+        }
+    }
+
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            const isOpen = mobileNav && mobileNav.dataset.open === 'true';
+            if (isOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+    }
+
+    if (mobileClose) mobileClose.addEventListener('click', closeMenu);
+    if (mobileOverlay) mobileOverlay.addEventListener('click', closeMenu);
+
+    // Close on link click (with slight delay for visual feedback)
+    $$('#mobileNav a').forEach((link) => {
+        link.addEventListener('click', () => {
+            setTimeout(closeMenu, 60);
+        });
+    });
+
+    /* ======================================================================
+       7. COMMAND PALETTE (K key)
+       ====================================================================== */
     let cmdItems = [];
     let activeIndex = 0;
     let lastFocusedCmd = null;
@@ -181,8 +233,11 @@
 
         if (cmdInput) {
             cmdInput.value = '';
-            setTimeout(() => cmdInput.focus(), 80);
+            setTimeout(() => {
+                if (typeof cmdInput.focus === 'function') cmdInput.focus();
+            }, 80);
         }
+
         setActiveCmd(0);
         filterCmd('');
         trapFocus(cmdPalette);
@@ -201,30 +256,33 @@
         releaseFocus();
 
         if (lastFocusedCmd && typeof lastFocusedCmd.focus === 'function') {
-            lastFocusedCmd.focus();
+            try { lastFocusedCmd.focus(); } catch (e) { /* noop */ }
         }
     }
 
     function setActiveCmd(index) {
         if (!cmdItems.length) return;
         activeIndex = (index + cmdItems.length) % cmdItems.length;
+
         cmdItems.forEach((el, i) => {
-            el.classList.toggle('is-active', i === activeIndex);
-            el.setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
+            const isActive = i === activeIndex;
+            el.classList.toggle('is-active', isActive);
+            el.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
+
         const active = cmdItems[activeIndex];
-        if (active) {
+        if (active && typeof active.scrollIntoView === 'function') {
             active.scrollIntoView({ block: 'nearest' });
         }
     }
 
     function filterCmd(query) {
-        const q = query.trim().toLowerCase();
+        const q = String(query || '').trim().toLowerCase();
         let firstVisible = -1;
 
         cmdItems.forEach((el, i) => {
-            const text = el.textContent.toLowerCase();
-            const match = !q || text.includes(q);
+            const text = (el.textContent || '').toLowerCase();
+            const match = !q || text.indexOf(q) !== -1;
             el.style.display = match ? '' : 'none';
             if (match && firstVisible === -1) firstVisible = i;
         });
@@ -239,7 +297,7 @@
         closeCmd();
 
         setTimeout(() => {
-            if (target.startsWith('#')) {
+            if (target.charAt(0) === '#') {
                 const el = document.querySelector(target);
                 if (el) {
                     const offset = 100;
@@ -249,7 +307,7 @@
                         behavior: prefersReduced ? 'auto' : 'smooth'
                     });
                     el.setAttribute('tabindex', '-1');
-                    el.focus({ preventScroll: true });
+                    try { el.focus({ preventScroll: true }); } catch (e) { /* noop */ }
                 }
             } else {
                 window.location.href = target;
@@ -259,12 +317,15 @@
 
     // Open palette with K
     document.addEventListener('keydown', (e) => {
-        const tag = (document.activeElement?.tagName || '').toLowerCase();
-        const isTyping = tag === 'input' || tag === 'textarea' || document.activeElement?.isContentEditable;
+        const active = document.activeElement;
+        const tag = ((active && active.tagName) || '').toLowerCase();
+        const isTyping = tag === 'input' ||
+                         tag === 'textarea' ||
+                         (active && active.isContentEditable);
 
         if (e.key === 'k' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
             e.preventDefault();
-            if (cmdPalette?.dataset.open === 'true') {
+            if (cmdPalette && cmdPalette.dataset.open === 'true') {
                 closeCmd();
             } else {
                 openCmd();
@@ -272,42 +333,47 @@
         }
     });
 
-    // Kbd hint button
-    $('#kbdHint')?.addEventListener('click', openCmd);
+    // Kbd hint button opens palette
+    const kbdHint = $('#kbdHint');
+    if (kbdHint) kbdHint.addEventListener('click', openCmd);
 
     // Overlay close
-    cmdOverlay?.addEventListener('click', closeCmd);
+    if (cmdOverlay) cmdOverlay.addEventListener('click', closeCmd);
 
     // Input filter
-    cmdInput?.addEventListener('input', (e) => {
-        filterCmd(e.target.value);
-    });
+    if (cmdInput) {
+        cmdInput.addEventListener('input', (e) => {
+            filterCmd(e.target.value);
+        });
 
-    // Keyboard nav inside palette
-    cmdInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            setActiveCmd(activeIndex + 1);
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            setActiveCmd(activeIndex - 1);
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            const active = cmdItems[activeIndex];
-            if (active) {
-                runCmd(active.dataset.target);
+        // Keyboard nav inside palette
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setActiveCmd(activeIndex + 1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setActiveCmd(activeIndex - 1);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                const active = cmdItems[activeIndex];
+                if (active && active.dataset) {
+                    runCmd(active.dataset.target);
+                }
             }
-        }
-    });
+        });
+    }
 
-    // Item click
+    // Item mouse + click events
     cmdItems.forEach((el, i) => {
         el.addEventListener('mouseenter', () => setActiveCmd(i));
-        el.addEventListener('click', () => runCmd(el.dataset.target));
+        el.addEventListener('click', () => {
+            if (el.dataset) runCmd(el.dataset.target);
+        });
     });
 
     /* ======================================================================
-       5. SMOOTH SCROLL (internal anchors, respects header height)
+       8. SMOOTH SCROLL (internal anchors)
        ====================================================================== */
     $$('a[href^="#"]').forEach((link) => {
         link.addEventListener('click', (e) => {
@@ -325,13 +391,16 @@
                 behavior: prefersReduced ? 'auto' : 'smooth'
             });
 
-            // Update URL without jump
-            history.pushState(null, '', href);
+            try {
+                history.pushState(null, '', href);
+            } catch (err) {
+                // Sandboxed iframe or file:// — ignore
+            }
         });
     });
 
     /* ======================================================================
-       6. COPY EMAIL TO CLIPBOARD
+       9. COPY EMAIL TO CLIPBOARD
        ====================================================================== */
     const copyBtn  = $('#copyEmail');
     const emailTxt = $('#emailText');
@@ -362,25 +431,18 @@
     }
 
     function showCopyState(label) {
-        if (!copyBtn) return;
-        const original = copyBtn.getAttribute('data-label') || emailTxt?.textContent || '';
-        copyBtn.setAttribute('data-label', original);
-
-        // Replace visual text briefly
-        const span = $('#emailText');
-        if (span) {
-            const prev = span.textContent;
-            span.textContent = label;
-            setTimeout(() => {
-                span.textContent = prev;
-            }, 1600);
-        }
+        if (!copyBtn || !emailTxt) return;
+        const prev = emailTxt.textContent;
+        emailTxt.textContent = label;
+        setTimeout(() => {
+            emailTxt.textContent = prev;
+        }, 1600);
     }
 
-    copyBtn?.addEventListener('click', copyEmail);
+    if (copyBtn) copyBtn.addEventListener('click', copyEmail);
 
     /* ======================================================================
-       7. ACTIVE NAV ON SCROLL
+       10. ACTIVE NAV ON SCROLL
        ====================================================================== */
     const sections = $$('section[id]');
     const navLinks = $$('.primary-nav a[href^="#"]');
@@ -412,23 +474,19 @@
     }
 
     let navScrollRaf = null;
-    window.addEventListener(
-        'scroll',
-        () => {
-            if (navScrollRaf) return;
-            navScrollRaf = requestAnimationFrame(() => {
-                updateActiveNav();
-                navScrollRaf = null;
-            });
-        },
-        { passive: true }
-    );
+    window.addEventListener('scroll', () => {
+        if (navScrollRaf) return;
+        navScrollRaf = requestAnimationFrame(() => {
+            updateActiveNav();
+            navScrollRaf = null;
+        });
+    }, { passive: true });
 
     window.addEventListener('load', updateActiveNav);
     updateActiveNav();
 
     /* ======================================================================
-       8. HEADER TRANSITION ON SCROLL (dark → adapts when light section visible)
+       11. HEADER ADAPTIVE (dark → light when over light sections)
        ====================================================================== */
     const header = $('#siteHeader');
     const lightSections = $$('.section-light, .site-footer');
@@ -436,7 +494,8 @@
     function updateHeaderTheme() {
         if (!header || !lightSections.length) return;
 
-        const headerBottom = header.getBoundingClientRect().bottom;
+        const headerRect = header.getBoundingClientRect();
+        const headerBottom = headerRect.bottom;
         let overLight = false;
 
         lightSections.forEach((section) => {
@@ -450,23 +509,19 @@
     }
 
     let headerRaf = null;
-    window.addEventListener(
-        'scroll',
-        () => {
-            if (headerRaf) return;
-            headerRaf = requestAnimationFrame(() => {
-                updateHeaderTheme();
-                headerRaf = null;
-            });
-        },
-        { passive: true }
-    );
+    window.addEventListener('scroll', () => {
+        if (headerRaf) return;
+        headerRaf = requestAnimationFrame(() => {
+            updateHeaderTheme();
+            headerRaf = null;
+        });
+    }, { passive: true });
 
     window.addEventListener('load', updateHeaderTheme);
     updateHeaderTheme();
 
     /* ======================================================================
-       9. SCROLL CUE FADE
+       12. SCROLL CUE FADE
        ====================================================================== */
     const scrollCue = $('.scroll-cue');
     if (scrollCue) {
@@ -481,18 +536,19 @@
     }
 
     /* ======================================================================
-       10. EXTERNAL LINKS — Security + A11y
+       13. EXTERNAL LINKS — Security
        ====================================================================== */
     $$('a[target="_blank"]').forEach((link) => {
-        if (!link.hasAttribute('rel')) {
-            link.setAttribute('rel', 'noopener noreferrer');
+        const rel = link.getAttribute('rel') || '';
+        if (rel.indexOf('noopener') === -1) {
+            link.setAttribute('rel', (rel + ' noopener noreferrer').trim());
         }
     });
 
     /* ======================================================================
-       11. CONSOLE GREETING (Once, tasteful)
+       14. CONSOLE GREETING (Once per session, tasteful)
        ====================================================================== */
-    const hasGreeted = sessionStorage.getItem('rr-greeted');
+    const hasGreeted = safeStorage.sessionGet('rr-greeted');
     if (!hasGreeted) {
         const accent = 'color:#b45309;font-weight:600;';
         const soft   = 'color:#737373;';
@@ -502,7 +558,7 @@
         console.log('%cCode: https://github.com/ravirajhere', `font-size:12px;${soft}`);
         console.log('%cPress K anywhere to jump around the site.', `font-size:12px;${accent}`);
 
-        try { sessionStorage.setItem('rr-greeted', '1'); } catch (e) {}
+        safeStorage.sessionSet('rr-greeted', '1');
     }
 
 })();
