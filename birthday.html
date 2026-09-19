@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-beej-version="15.0-photo-journey">
+<html lang="en" data-beej-version="16.0-final">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -51,7 +51,7 @@
   <!-- ========== 00. LANGUAGE SELECT ========== -->
   <section class="scene scene--active" id="scene-language" data-scene="-1" aria-labelledby="lang-title">
     <header>
-      <h1 id="lang-title" class="title">🌐 Choose Language</h1>
+      <h1 id="lang-title" class="title" data-i18n="lang.title">🌐 Choose Language</h1>
       <p class="subtitle" data-i18n="lang.subtitle">Apni bhasha chuno</p>
     </header>
 
@@ -59,12 +59,12 @@
       <button type="button" class="lang-btn" data-lang="english" aria-pressed="false">
         <span class="lang-flag">🇬🇧</span>
         <span class="lang-name">English</span>
-        <span class="lang-desc">Formal • Elegant</span>
+        <span class="lang-desc" data-i18n="lang.descEn">Formal • Elegant</span>
       </button>
       <button type="button" class="lang-btn" data-lang="hinglish" aria-pressed="true">
         <span class="lang-flag">🇮🇳</span>
         <span class="lang-name">Hinglish</span>
-        <span class="lang-desc">Dost-friendly • Fun</span>
+        <span class="lang-desc" data-i18n="lang.descHi">Dost-friendly • Fun</span>
       </button>
     </div>
 
@@ -239,7 +239,7 @@
         <div id="cert-zone"></div>
       </div>
 
-      <!-- ============ STEP 3: PHOTO WITH RAVIRAJ (🆕 NAYA CHAPTER) ============ -->
+      <!-- ============ STEP 3: PHOTO WITH RAVIRAJ ============ -->
       <div class="step" data-step="3" data-chapter="3" hidden>
         <h2 class="section-title" data-i18n="photoframe.title">📸 Photo With RaviRaj</h2>
         <p class="subtitle" data-i18n="photoframe.subtitle">
@@ -247,23 +247,19 @@
         </p>
 
         <div class="photoframe-zone">
-          <!-- Webcam preview -->
           <div class="photoframe-webcam" id="photoframe-webcam">
             <video id="photoframe-video" autoplay playsinline muted disablepictureinpicture></video>
             <canvas id="photoframe-canvas" hidden></canvas>
           </div>
 
-          <!-- Preview result -->
           <div class="photoframe-preview" id="photoframe-preview" hidden>
             <canvas id="photoframe-composite"></canvas>
           </div>
 
-          <!-- Status -->
           <p id="photoframe-status" class="subtitle" data-i18n="photoframe.status">
             Camera on karo, phir click karo
           </p>
 
-          <!-- Actions -->
           <div class="photoframe-actions">
             <button type="button" class="btn" id="photoframe-start" data-i18n="photoframe.start">
               📸 Camera On Karo
@@ -276,7 +272,6 @@
             </button>
           </div>
 
-          <!-- Download actions (only show after capture) -->
           <div class="photoframe-downloads" id="photoframe-downloads" hidden>
             <button type="button" class="btn" id="photoframe-download-png" data-i18n="photoframe.downloadPng">
               📥 Download PNG
@@ -517,6 +512,9 @@
         <h2 class="section-title" data-i18n="theme.title">🎨 Theme Chuno</h2>
         <div id="theme-picker-container"></div>
 
+        <h2 class="section-title" data-i18n="lang.changeTitle">🌐 Change Language</h2>
+        <div id="lang-change-container"></div>
+
         <footer class="main-footer">
           <button type="button" class="btn btn--icon" id="music-toggle" aria-label="Toggle music">
             🔇
@@ -525,7 +523,7 @@
             🔄 Naya Dost
           </button>
           <p class="mono tiny">
-            BEEJ v15 • Chain: <span id="footer-hash">GENESIS</span> •
+            BEEJ v16 • Chain: <span id="footer-hash">GENESIS</span> •
             <span data-i18n="footer.offline">Fully Offline</span>
           </p>
         </footer>
