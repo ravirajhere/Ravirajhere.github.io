@@ -4,124 +4,265 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- ====== PRIMARY META ====== -->
     <title>Ravi Raj Singh — Author of "A Boy Who Never Thought"</title>
-
     <meta name="description" content="Ravi Raj Singh is a writer based in Patna, India. Author of 'A Boy Who Never Thought' — an 18-year journey from 2008 to 2026." />
     <meta name="author" content="Ravi Raj Singh" />
     <meta name="theme-color" content="#F7F4EE" />
+    <link rel="canonical" href="https://ravirajhere.github.io/author.html" />
 
+    <!-- ====== INDEXING ====== -->
+    <meta name="robots" content="index, follow" />
+    <meta name="geo.region" content="IN-BR" />
+    <meta name="geo.placename" content="Patna, Bihar, India" />
+
+    <!-- ====== OPEN GRAPH ====== -->
+    <meta property="og:title" content="Ravi Raj Singh — Author" />
+    <meta property="og:description" content="Author of 'A Boy Who Never Thought' — an 18-year journey from 2008 to 2026." />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://ravirajhere.github.io/author.html" />
+    <meta property="og:image" content="https://ravirajhere.github.io/assets/images/bookcover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ravi Raj Singh — Author" />
+    <meta name="twitter:description" content="Author of 'A Boy Who Never Thought'." />
+
+    <!-- ====== FAVICON ====== -->
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/favicon.png" />
 
-    <meta property="og:title" content="Ravi Raj Singh — Author" />
-    <meta property="og:description" content="Author of 'A Boy Who Never Thought' — Safar Se Safar Tak." />
-    <meta property="og:image" content="assets/images/bookcover.jpg" />
-    <meta property="og:type" content="profile" />
-
+    <!-- ====== FONTS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
+    <!-- ====== CSS ====== -->
     <link rel="stylesheet" href="css/author.css" />
+
+    <!-- ====== STRUCTURED DATA ====== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ravi Raj Singh",
+      "url": "https://ravirajhere.github.io/author.html",
+      "image": "https://ravirajhere.github.io/assets/images/casual.jpg",
+      "jobTitle": "Author",
+      "description": "Writer based in Patna, India. Author of 'A Boy Who Never Thought'.",
+      "email": "mailto:raviraj2k09@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Patna",
+        "addressRegion": "Bihar",
+        "addressCountry": "India"
+      },
+      "knowsAbout": ["Writing", "Memoir", "Autobiography"],
+      "author": {
+        "@type": "Book",
+        "name": "A Boy Who Never Thought",
+        "inLanguage": ["en", "hi"],
+        "datePublished": "2024",
+        "author": {
+          "@type": "Person",
+          "name": "Ravi Raj Singh"
+        }
+      }
+    }
+    </script>
 </head>
 <body>
 
-    <a href="#mainContent" class="skip-link">Skip to main content</a>
+    <!-- ============================================================
+         SKIP LINK
+    ============================================================ -->
+    <a href="#main" class="skip-link">Skip to content</a>
 
-    <!-- ═══════════════ HEADER ═══════════════ -->
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
-            <a href="author.html" class="brand">Ravi Raj Singh</a>
+            <a href="author.html" class="brand" aria-label="Ravi Raj Singh — Home">
+                <span class="brand-text">
+                    <strong>Ravi Raj Singh</strong>
+                    <em>Author</em>
+                </span>
+            </a>
 
-            <nav class="primary-nav" aria-label="Primary navigation">
+            <nav class="primary-nav" aria-label="Primary">
                 <a href="#book">Book</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
             </nav>
 
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav" type="button">
+                <span class="menu-lines" aria-hidden="true">
+                    <span></span><span></span>
+                </span>
+                <span class="menu-label">Menu</span>
             </button>
         </div>
-
-        <nav class="mobile-nav" id="mobileMenu" aria-label="Mobile navigation">
-            <a href="#book">Book</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
     </header>
 
-    <main id="mainContent">
+    <!-- ============================================================
+         MOBILE NAV
+    ============================================================ -->
+    <div class="mobile-overlay" id="mobileOverlay" hidden aria-hidden="true"></div>
 
-        <!-- ═══════════════ SECTION 1 — HERO ═══════════════ -->
-        <section class="hero" aria-labelledby="heroTitle">
-            <div class="hero-inner">
+    <nav class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden aria-hidden="true">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        </button>
+        <ul>
+            <li><a href="#book"><span>01</span>Book</a></li>
+            <li><a href="#about"><span>02</span>About</a></li>
+            <li><a href="#contact"><span>03</span>Contact</a></li>
+        </ul>
+        <div class="mobile-nav-foot">
+            <p>Patna, India</p>
+            <p>raviraj2k09@gmail.com</p>
+        </div>
+    </nav>
 
-                <div class="hero-text">
-                    <img src="assets/images/casual.jpg" alt="Ravi Raj Singh" class="author-photo" />
+    <!-- ============================================================
+         MAIN
+    ============================================================ -->
+    <main id="main" tabindex="-1">
 
-                    <p class="hero-label">Author · Patna, India</p>
+        <!-- ========================================================
+             HERO
+        ======================================================= -->
+        <section class="hero" id="hero" aria-labelledby="hero-heading">
+            <div class="hero-grid">
 
-                    <h1 id="heroTitle" class="hero-title">"A Boy Who Never Thought"</h1>
+                <div class="hero-content">
+                    <img src="assets/images/casual.jpg" alt="Ravi Raj Singh" class="author-photo" width="120" height="120" loading="eager" />
+
+                    <p class="hero-eyebrow">
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
+                        Author · Patna, India
+                    </p>
+
+                    <h1 id="hero-heading" class="hero-title">
+                        "A Boy Who Never Thought"
+                    </h1>
 
                     <p class="hero-tagline">
                         Safar Se Safar Tak — <span class="devanagari">गुंजते सन्नाटे</span>
                     </p>
 
-                    <p class="hero-intro">
-                        An 18-year journey from 2008 to 2026 — told through the eyes of a boy growing up in Begusarai, and the quiet ways a person learns to understand himself.
+                    <p class="hero-hook">
+                        <em>Some stories are not written to be told. They are written to be understood.</em>
+                    </p>
+
+                    <p class="hero-lede">
+                        An 18-year journey from 2008 to 2026 — told through the eyes of a boy growing up in a small home in Begusarai, and the quiet ways a person learns to understand himself.
                     </p>
 
                     <div class="hero-actions">
-                        <a href="book.html" class="btn btn-primary">Read free <span aria-hidden="true">→</span></a>
-                        <a href="#about" class="btn btn-ghost">About the author</a>
+                        <a href="book.html" class="btn btn-primary btn-lg">
+                            Read free
+                            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                        </a>
+                        <a href="#about" class="btn btn-quiet btn-lg">About the author</a>
                     </div>
+
+                    <dl class="hero-meta" aria-label="Book details">
+                        <div>
+                            <dt>Written</dt>
+                            <dd>11 chapters</dd>
+                        </div>
+                        <div>
+                            <dt>Languages</dt>
+                            <dd>English &amp; Hinglish</dd>
+                        </div>
+                        <div>
+                            <dt>Access</dt>
+                            <dd>Free to read</dd>
+                        </div>
+                    </dl>
                 </div>
 
-                <div class="hero-visual">
+                <aside class="hero-visual" aria-label="Book cover">
                     <div class="book-cover-frame">
-                        <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought' by Ravi Raj Singh" class="book-cover" />
+                        <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought' by Ravi Raj Singh" class="book-cover" width="480" height="720" loading="eager" />
                     </div>
-                </div>
+                </aside>
 
+            </div>
+
+            <div class="scroll-cue" aria-hidden="true">
+                <span>Scroll — the story begins</span>
+                <span class="scroll-line"></span>
             </div>
         </section>
 
-        <!-- ═══════════════ SECTION 2 — ABOUT ═══════════════ -->
-        <section class="about" id="about" aria-labelledby="aboutTitle">
-            <div class="about-inner">
-                <p class="section-label">About</p>
-                <h2 id="aboutTitle" class="section-title">About the Author</h2>
-                <div class="section-rule" aria-hidden="true"></div>
+        <!-- ========================================================
+             01 / FROM THE BOOK
+        ======================================================== -->
+        <section class="section section-quote" id="from-the-book" aria-labelledby="frombook-heading">
+            <header class="section-head">
+                <span class="section-num">01 / From the Book</span>
+                <h2 id="frombook-heading" class="sr-only">From the Book</h2>
+            </header>
 
-                <div class="about-body">
-                    <p>
-                        Ravi Raj Singh is a writer based in Patna, India. He has kept a personal diary since childhood, and began writing online around 2023–24. <em>"A Boy Who Never Thought"</em> — his first book — grew out of that habit.
-                    </p>
-                    <p>
-                        The book is written in both English and Hinglish, and remains in progress. His writing focuses on ordinary lives, small moments, and the quiet ways a person grows.
-                    </p>
-                </div>
+            <blockquote class="pull-quote">
+                <p>
+                    "The story begins in March 2008 — the day I was born. It was a Wednesday. On the 6th day, Mummy decided to name me with a letter — 'R'. But her mind wasn't made up yet. So people around started suggesting names. Nishant. Chinmay. Blah blah. Days passed. And everyone started calling me 'Ghantee'."
+                </p>
+                <footer class="pull-quote-footer">
+                    <cite>— Chapter 1: The Beginning</cite>
+                    <a href="book.html" class="pull-quote-link">
+                        Continue reading
+                        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                    </a>
+                </footer>
+            </blockquote>
+        </section>
+
+        <!-- ========================================================
+             02 / ABOUT THE AUTHOR
+        ======================================================== -->
+        <section class="section section-about" id="about" aria-labelledby="about-heading">
+            <header class="section-head section-head--center">
+                <span class="section-num">02 / About</span>
+                <h2 id="about-heading">About the <em>Author</em></h2>
+            </header>
+
+            <div class="about-body">
+                <p>
+                    Ravi Raj Singh is a writer based in Patna, India. He has kept a personal diary since childhood, and began writing online around 2023–24. <em>"A Boy Who Never Thought"</em> — his first book — grew out of that habit.
+                </p>
+                <p>
+                    The book is written in both English and Hinglish, and remains in progress. His writing focuses on ordinary lives, small moments, and the quiet ways a person grows.
+                </p>
+
+                <figure class="signature-figure">
+                    <img src="assets/images/signature.jpg" alt="Signature of Ravi Raj Singh" class="signature-image" loading="lazy" />
+                    <figcaption class="signature-meta">Patna, India · 2026</figcaption>
+                </figure>
             </div>
         </section>
 
-        <!-- ═══════════════ SECTION 3 — THE BOOK ═══════════════ -->
-        <section class="book-section" id="book" aria-labelledby="bookTitle">
-            <div class="book-inner">
+        <!-- ========================================================
+             03 / THE BOOK
+        ======================================================== -->
+        <section class="section section-book" id="book" aria-labelledby="book-heading">
+            <header class="section-head">
+                <span class="section-num">03 / The Book</span>
+                <h2 id="book-heading">A Boy Who <em>Never Thought</em></h2>
+            </header>
 
-                <div class="book-visual">
+            <div class="book-grid">
+
+                <aside class="book-visual" aria-hidden="true">
                     <div class="book-cover-frame book-cover-frame--large">
-                        <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought'" class="book-cover" />
+                        <img src="assets/images/bookcover.jpg" alt="" class="book-cover" loading="lazy" />
                     </div>
-                </div>
+                </aside>
 
                 <div class="book-content">
-                    <p class="section-label">The Book</p>
-                    <h2 id="bookTitle" class="section-title">A Boy Who Never Thought</h2>
-                    <div class="section-rule section-rule--left" aria-hidden="true"></div>
-
                     <div class="book-synopsis">
                         <p>
                             <em>"A Boy Who Never Thought"</em> is an 18-year journey — from 2008 to 2026. Told through the eyes of a boy growing up in a small home in Begusarai, it moves through loss, family division, changing schools, and financial struggle — while a boy keeps walking forward without quite knowing why.
@@ -135,59 +276,113 @@
                     </div>
 
                     <dl class="book-details">
-                        <div class="detail">
+                        <div>
                             <dt>Chapters</dt>
                             <dd>11 written</dd>
                         </div>
-                        <div class="detail">
+                        <div>
                             <dt>Languages</dt>
                             <dd>English &amp; Hinglish</dd>
                         </div>
-                        <div class="detail">
+                        <div>
                             <dt>Published</dt>
                             <dd>Self-published, 2024</dd>
                         </div>
-                        <div class="detail">
+                        <div>
                             <dt>Access</dt>
                             <dd>Free to read</dd>
                         </div>
                     </dl>
 
                     <div class="book-actions">
-                        <a href="book.html" class="btn btn-primary">Start reading <span aria-hidden="true">→</span></a>
+                        <a href="book.html" class="btn btn-primary btn-lg">
+                            Start reading
+                            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                        </a>
+                        <a href="book.html#download" class="btn btn-quiet btn-lg">Download PDF</a>
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- ═══════════════ SECTION 4 — CONTACT ═══════════════ -->
-        <section class="contact" id="contact" aria-labelledby="contactTitle">
-            <div class="contact-inner">
-                <p class="section-label">Contact</p>
-                <h2 id="contactTitle" class="section-title">Get in Touch</h2>
-                <div class="section-rule" aria-hidden="true"></div>
+        <!-- ========================================================
+             04 / CONTACT
+        ======================================================== -->
+        <section class="section section-contact" id="contact" aria-labelledby="contact-heading">
+            <header class="section-head section-head--center">
+                <span class="section-num">04 / Contact</span>
+                <h2 id="contact-heading">Get in <em>Touch</em></h2>
+            </header>
 
-                <p class="contact-line">
-                    For readers, publishers, or anyone who wants to talk about the book.
-                </p>
+            <p class="contact-lede">
+                For readers, publishers, or anyone who wants to talk about the book.
+            </p>
 
-                <div class="contact-actions">
-                    <a href="emailjs.html" class="btn btn-primary">Send a message <span aria-hidden="true">→</span></a>
-                </div>
+            <div class="contact-email">
+                <a href="mailto:raviraj2k09@gmail.com" class="email-link">raviraj2k09@gmail.com</a>
+                <p class="contact-note">Patna, India · Replies within a few days</p>
+            </div>
+
+            <div class="contact-cta">
+                <a href="emailjs.html" class="btn btn-dark btn-lg">
+                    Send a message
+                    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                </a>
             </div>
         </section>
 
     </main>
 
-    <!-- ═══════════════ FOOTER ═══════════════ -->
-    <footer class="site-footer">
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <footer class="site-footer" role="contentinfo">
         <div class="footer-inner">
-            <p class="footer-name">Ravi Raj Singh</p>
-            <p class="footer-meta">© 2026 · Patna, India</p>
+
+            <div class="footer-col footer-brand-col">
+                <p class="footer-brand">Ravi Raj Singh</p>
+                <p class="footer-tag">Stories from Patna, India.</p>
+            </div>
+
+            <div class="footer-col">
+                <p class="footer-label">Navigate</p>
+                <ul>
+                    <li><a href="#book">Book</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <p class="footer-label">The Book</p>
+                <ul>
+                    <li><a href="book.html">Read online</a></li>
+                    <li><a href="book.html#download">Download PDF</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <p class="footer-label">Details</p>
+                <ul>
+                    <li>Patna, India</li>
+                    <li>2026</li>
+                    <li><a href="mailto:raviraj2k09@gmail.com">Email</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© <span id="year">2026</span> Ravi Raj Singh. Written by hand.</p>
+            <p class="footer-note">Built without frameworks.</p>
         </div>
     </footer>
 
+    <!-- ============================================================
+         SCRIPTS
+    ============================================================ -->
     <script src="js/author.js" defer></script>
+
 </body>
 </html>
