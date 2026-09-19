@@ -1,7 +1,7 @@
 /* ==========================================================================
    FRIENDS CORNER — friends.js
    Search + Photo + Certificate + New friend request flow
-   v3: Normal webcam (no mirror) · Landscape certificate
+   v4: Grid certificate · Normal webcam · Landscape · Seal
    Companion: friends.html · friends.css
    ========================================================================== */
 
@@ -16,7 +16,8 @@
         minSearchChars: 3,
         certificateFilename: 'Friendship_Certificate',
         signatureImage: 'assets/images/signature.jpg',
-        issuerImage: 'assets/images/casual.jpg'
+        issuerImage: 'assets/images/casual.jpg',
+        sealImage: 'assets/favicon.png'
     };
 
     /* ======================================================================
@@ -76,6 +77,8 @@
         foundAvatar:       $('#foundAvatar'),
         foundName:         $('#foundName'),
         foundTag:          $('#foundTag'),
+        timelineBar:       $('#timelineBar'),
+        timelineText:      $('#timelineText'),
 
         newFriendScreen:   $('#newFriendScreen'),
         newFriendName:     $('#newFriendName'),
@@ -89,6 +92,8 @@
         displayClass:      $('#displayClass'),
         displayYears:      $('#displayYears'),
         displayExperience: $('#displayExperience'),
+        detailsTimelineBar:  $('#detailsTimelineBar'),
+        detailsTimelineText: $('#detailsTimelineText'),
 
         confettiContainer: $('#confettiContainer')
     };
@@ -489,7 +494,7 @@
     }
 
     /* ======================================================================
-       14. CERTIFICATE (LANDSCAPE)
+       14. CERTIFICATE (LANDSCAPE — GRID LAYOUT)
        ====================================================================== */
     function loadCertificateLibraries() {
         const libs = [
@@ -597,21 +602,32 @@
             year: 'numeric'
         });
 
+        const years = state.currentFriend.sinceClass && state.currentFriend.sinceClass !== 'new'
+            ? yearsSinceClass(state.currentFriend.sinceClass)
+            : null;
+        const sinceClass = state.currentFriend.sinceClass && state.currentFriend.sinceClass !== 'new'
+            ? 'Class ' + state.currentFriend.sinceClass
+            : '—';
+        const yearsText = years !== null ? years + ' years' : '—';
+
         const friendPhotoHtml = friendPhoto
             ? '<img src="' + friendPhoto + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-            : '<div style="color:#1f3a5f;font-size:48px;line-height:120px;text-align:center;font-family:Georgia,serif;font-weight:700;">' + (friendName.charAt(0) || 'F') + '</div>';
+            : '<div style="color:#1f3a5f;font-size:52px;line-height:128px;text-align:center;font-family:Georgia,serif;font-weight:700;">' + (friendName.charAt(0) || 'F') + '</div>';
 
         const badgeText = isTemporary ? 'NEW FRIEND' : 'CONNECTED';
         const footerText = isTemporary
             ? 'A temporary certificate. Once Ravi adds your details, you receive the full one.'
             : 'Their friendship is hereby recognized and celebrated.';
 
+        const quote = 'Baharon ko bhi naaz jis phool par tha, wahi phool humne chuna gulsita se. Aur wahi phool tum ho, mere dost.';
+
+        // Landscape A4: 297mm x 210mm
         return (
             '<div style="' +
                 'width:297mm;' +
                 'height:210mm;' +
-                'padding:18mm 22mm;' +
-                'background:#ffffff;' +
+                'padding:14mm 18mm;' +
+                'background:#fdfbf6;' +
                 'font-family:Georgia,\'Times New Roman\',serif;' +
                 'color:#1a1a1a;' +
                 'box-sizing:border-box;' +
@@ -621,108 +637,174 @@
                 'border:3px double #b08d3f;' +
             '">' +
 
-                '<div style="text-align:center;margin-bottom:8px;">' +
+                /* Corner ornaments */
+                '<div style="position:absolute;top:8mm;left:10mm;font-size:22px;color:#b08d3f;font-family:Georgia,serif;">&#10086;</div>' +
+                '<div style="position:absolute;top:8mm;right:10mm;font-size:22px;color:#b08d3f;font-family:Georgia,serif;">&#10086;</div>' +
+                '<div style="position:absolute;bottom:8mm;left:10mm;font-size:22px;color:#b08d3f;font-family:Georgia,serif;">&#10086;</div>' +
+                '<div style="position:absolute;bottom:8mm;right:10mm;font-size:22px;color:#b08d3f;font-family:Georgia,serif;">&#10086;</div>' +
+
+                /* Inner border */
+                '<div style="position:absolute;top:12mm;left:14mm;right:14mm;bottom:12mm;border:1px solid #d9c78a;pointer-events:none;"></div>' +
+
+                /* Top badge */
+                '<div style="text-align:center;position:relative;z-index:1;margin-bottom:6px;">' +
                     '<span style="' +
                         'display:inline-block;' +
                         'background:#b08d3f;' +
                         'color:#ffffff;' +
-                        'padding:5px 22px;' +
+                        'padding:5px 26px;' +
                         'border-radius:20px;' +
                         'font-size:10px;' +
                         'font-weight:700;' +
-                        'letter-spacing:3px;' +
+                        'letter-spacing:4px;' +
                         'font-family:Arial,sans-serif;' +
                     '">FRIENDS CORNER</span>' +
                 '</div>' +
 
+                /* Title */
                 '<h1 style="' +
                     'text-align:center;' +
-                    'font-size:30px;' +
-                    'letter-spacing:5px;' +
+                    'font-size:34px;' +
+                    'letter-spacing:6px;' +
                     'font-weight:700;' +
-                    'margin:0 0 6px 0;' +
+                    'margin:4px 0 6px 0;' +
                     'font-family:Georgia,serif;' +
                     'color:#1a1a1a;' +
+                    'position:relative;' +
+                    'z-index:1;' +
                 '">CERTIFICATE OF FRIENDSHIP</h1>' +
 
-                '<div style="width:100px;height:2px;background:#b08d3f;margin:0 auto 20px auto;"></div>' +
+                '<div style="width:120px;height:2px;background:#b08d3f;margin:0 auto 18px auto;position:relative;z-index:1;"></div>' +
 
-                '<div style="display:flex;justify-content:center;align-items:flex-start;gap:50px;margin-bottom:14px;">' +
+                /* 3-column grid: issuer | badge | friend */
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:flex-start;margin-bottom:18px;position:relative;z-index:1;">' +
 
+                    /* Left: Issuer */
                     '<div style="text-align:center;">' +
+                        '<div style="font-size:9px;font-weight:700;color:#8a6f2a;letter-spacing:3px;font-family:Arial,sans-serif;margin-bottom:10px;">ISSUER</div>' +
                         '<div style="' +
-                            'width:90px;height:90px;' +
+                            'width:100px;height:100px;' +
                             'border-radius:50%;' +
                             'border:3px solid #b08d3f;' +
                             'overflow:hidden;' +
-                            'margin:0 auto 8px auto;' +
+                            'margin:0 auto 10px auto;' +
                             'background:#f5f5f5;' +
+                            'box-shadow:0 4px 12px rgba(176,141,63,0.25);' +
                         '">' +
                             '<img src="' + CONFIG.issuerImage + '" alt="" style="width:100%;height:100%;object-fit:cover;">' +
                         '</div>' +
-                        '<div style="font-size:12px;font-weight:700;color:#b08d3f;letter-spacing:1.5px;">RAVI RAJ</div>' +
-                        '<div style="font-size:9px;color:#888;margin-top:2px;">Issuer</div>' +
+                        '<div style="font-size:15px;font-weight:700;color:#b08d3f;letter-spacing:2px;">RAVI RAJ</div>' +
+                        '<div style="font-size:10px;color:#888;margin-top:3px;font-style:italic;">Friends Corner</div>' +
                     '</div>' +
 
-                    '<div style="text-align:center;padding-top:20px;">' +
+                    /* Center: Badge */
+                    '<div style="text-align:center;padding-top:30px;">' +
                         '<div style="' +
-                            'width:46px;height:46px;' +
+                            'width:70px;height:70px;' +
                             'border-radius:50%;' +
                             'background:#b08d3f;' +
                             'display:flex;align-items:center;justify-content:center;' +
-                            'margin:0 auto 6px auto;' +
+                            'margin:0 auto 10px auto;' +
                             'color:#ffffff;' +
-                            'font-size:20px;' +
+                            'font-size:32px;' +
                             'font-family:Arial,sans-serif;' +
+                            'box-shadow:0 6px 20px rgba(176,141,63,0.4);' +
                         '">&#10003;</div>' +
-                        '<div style="font-size:10px;font-weight:700;color:#b08d3f;letter-spacing:2px;">' + badgeText + '</div>' +
+                        '<div style="font-size:12px;font-weight:700;color:#b08d3f;letter-spacing:3px;">' + badgeText + '</div>' +
                     '</div>' +
 
+                    /* Right: Friend */
                     '<div style="text-align:center;">' +
+                        '<div style="font-size:9px;font-weight:700;color:#1f3a5f;letter-spacing:3px;font-family:Arial,sans-serif;margin-bottom:10px;">RECIPIENT</div>' +
                         '<div style="' +
-                            'width:90px;height:90px;' +
+                            'width:100px;height:100px;' +
                             'border-radius:50%;' +
                             'border:3px solid #1f3a5f;' +
                             'overflow:hidden;' +
-                            'margin:0 auto 8px auto;' +
+                            'margin:0 auto 10px auto;' +
                             'background:#f5f5f5;' +
+                            'box-shadow:0 4px 12px rgba(31,58,95,0.25);' +
                         '">' + friendPhotoHtml + '</div>' +
-                        '<div style="font-size:12px;font-weight:700;color:#1f3a5f;letter-spacing:1.5px;">' + friendNameUpper + '</div>' +
-                        '<div style="font-size:9px;color:#888;margin-top:2px;">' + connection + '</div>' +
+                        '<div style="font-size:15px;font-weight:700;color:#1f3a5f;letter-spacing:2px;">' + friendNameUpper + '</div>' +
+                        '<div style="font-size:10px;color:#888;margin-top:3px;font-style:italic;">' + connection + '</div>' +
                     '</div>' +
 
                 '</div>' +
 
+                /* Paragraph */
                 '<p style="' +
                     'text-align:center;' +
                     'font-size:15px;' +
-                    'line-height:1.8;' +
+                    'line-height:1.75;' +
                     'color:#333;' +
-                    'margin:16px auto 22px auto;' +
-                    'max-width:600px;' +
+                    'margin:6px auto 12px auto;' +
+                    'max-width:640px;' +
+                    'position:relative;' +
+                    'z-index:1;' +
                 '">' +
                     'This certificate celebrates the friendship between <strong>Ravi Raj</strong> and <strong>' + friendName + '</strong>. ' +
                     footerText +
                 '</p>' +
 
-                '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;padding:0 12px 4px 12px;">' +
+                /* Quote with ornaments */
+                '<div style="text-align:center;margin:6px auto 14px auto;position:relative;z-index:1;">' +
+                    '<div style="font-size:14px;color:#b08d3f;letter-spacing:12px;margin-bottom:4px;">&#10086; &#10087; &#10086;</div>' +
+                    '<p style="' +
+                        'font-style:italic;' +
+                        'font-size:14px;' +
+                        'line-height:1.7;' +
+                        'color:#4a423c;' +
+                        'margin:0 auto;' +
+                        'max-width:620px;' +
+                        'font-family:Georgia,serif;' +
+                    '">' +
+                        '&ldquo;' + quote + '&rdquo;' +
+                    '</p>' +
+                '</div>' +
 
-                    '<div style="font-size:11px;color:#555;line-height:1.9;font-family:Arial,sans-serif;">' +
-                        '<div><strong>Issued on:</strong> ' + dateStr + '</div>' +
-                        '<div><strong>Tag:</strong> ' + tag + '</div>' +
+                /* Bottom: details | signature | seal */
+                '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:end;margin-top:auto;position:relative;z-index:1;">' +
+
+                    /* Details */
+                    '<div style="font-size:10px;color:#555;line-height:1.9;font-family:Arial,sans-serif;">' +
+                        '<div><strong style="color:#1a1a1a;">Issued on:</strong> ' + dateStr + '</div>' +
+                        '<div><strong style="color:#1a1a1a;">Tag:</strong> ' + tag + '</div>' +
+                        '<div><strong style="color:#1a1a1a;">Since:</strong> ' + sinceClass + '</div>' +
+                        '<div><strong style="color:#1a1a1a;">Friendship:</strong> ' + yearsText + '</div>' +
                     '</div>' +
 
+                    /* Signature (center) */
                     '<div style="text-align:center;">' +
-                        '<img src="' + CONFIG.signatureImage + '" alt="Signature" style="width:130px;height:auto;display:block;margin:0 auto 4px auto;">' +
-                        '<div style="font-size:11px;font-weight:700;color:#1a1a1a;">Ravi Raj</div>' +
-                        '<div style="font-size:9px;color:#888;">Founder, Friends Corner</div>' +
+                        '<img src="' + CONFIG.signatureImage + '" alt="Signature" style="width:140px;height:auto;display:block;margin:0 auto 4px auto;">' +
+                        '<div style="width:120px;height:1px;background:#1a1a1a;margin:0 auto 4px auto;"></div>' +
+                        '<div style="font-size:12px;font-weight:700;color:#1a1a1a;">Ravi Raj</div>' +
+                        '<div style="font-size:9px;color:#888;letter-spacing:1px;">Founder, Friends Corner</div>' +
+                    '</div>' +
+
+                    /* Seal (favicon) */
+                    '<div style="text-align:right;">' +
+                        '<div style="' +
+                            'width:80px;height:80px;' +
+                            'border-radius:50%;' +
+                            'border:2px solid #b08d3f;' +
+                            'overflow:hidden;' +
+                            'margin:0 0 0 auto;' +
+                            'background:#ffffff;' +
+                            'display:flex;align-items:center;justify-content:center;' +
+                            'padding:6px;' +
+                            'box-sizing:border-box;' +
+                        '">' +
+                            '<img src="' + CONFIG.sealImage + '" alt="Seal" style="max-width:100%;max-height:100%;object-fit:contain;">' +
+                        '</div>' +
+                        '<div style="font-size:8px;color:#888;letter-spacing:1px;margin-top:4px;font-family:Arial,sans-serif;">OFFICIAL SEAL</div>' +
                     '</div>' +
 
                 '</div>' +
 
-                '<div style="width:100%;height:1px;background:#b08d3f;margin:14px 0 8px 0;"></div>' +
-                '<div style="text-align:center;font-size:9px;color:#999;letter-spacing:1px;font-family:Arial,sans-serif;">' +
-                    '&copy; 2026 Ravi Raj &middot; All Rights Reserved' +
+                /* Footer line */
+                '<div style="width:100%;height:1px;background:#d9c78a;margin:12px 0 6px 0;position:relative;z-index:1;"></div>' +
+                '<div style="text-align:center;font-size:8px;color:#999;letter-spacing:2px;font-family:Arial,sans-serif;position:relative;z-index:1;">' +
+                    '&copy; 2026 Ravi Raj &middot; All Rights Reserved &middot; friends-corner' +
                 '</div>' +
 
             '</div>'
@@ -829,7 +911,7 @@
             });
         });
 
-        console.log('✅ friends.js v3 loaded — ' + friendsData.length + ' friends');
+        console.log('✅ friends.js v4 loaded — ' + friendsData.length + ' friends · grid certificate');
     }
 
     /* ======================================================================
