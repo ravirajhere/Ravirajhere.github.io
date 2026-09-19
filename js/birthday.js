@@ -1,20 +1,23 @@
 /* ============================================================
-   PROJECT BEEJ — birthday.js (v10 Phase 1)
-   + Voice Wish, Vibration, Confetti, Sounds, Theme,
-     Compliment, Countdown
+   PROJECT BEEJ — birthday.js (v11 Phase 2)
+   + Photo Filters, Wheel, Gifts, Quiz, Wish Wall,
+     Memory Match, Fortune, Timeline
    ============================================================ */
 
 /* ---------- CONFIG ---------- */
 const BEEJ_CONFIG = {
   secretPassword: 'dost',
-  storageKey: 'beej_chain_v10',
-  hueKey: 'beej_hue_v10',
-  themeKey: 'beej_theme_v10',
+  storageKey: 'beej_chain_v11',
+  hueKey: 'beej_hue_v11',
+  themeKey: 'beej_theme_v11',
+  wishKey: 'beej_wishes_v11',
   userName: 'RaviRaj',
   maxChainLength: 50,
   balloonCount: 6,
   photoCount: 4,
   micThreshold: 65,
+  quizCount: 5,
+  memoryPairs: 6,
 };
 
 /* ---------- STATE ---------- */
@@ -30,6 +33,14 @@ const state = {
   balloonScore: 0,
   photoStripCount: 0,
   currentTheme: 'dark',
+  currentFilter: 'none',
+  memoryFlipped: [],
+  memoryMatched: 0,
+  memoryMoves: 0,
+  memoryLock: false,
+  quizIndex: 0,
+  quizScore: 0,
+  wheelSpinning: false,
 };
 
 /* ---------- HELPERS ---------- */
@@ -76,11 +87,8 @@ function saveChain() {
    ============================================================ */
 async function sha256(str) {
   try {
-    const buf = await crypto.subtle.digest(
-      'SHA-256', new TextEncoder().encode(str)
-    );
-    return [...new Uint8Array(buf)]
-      .map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
   } catch {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -92,7 +100,7 @@ async function sha256(str) {
 }
 
 /* ============================================================
-   ⭐ NEW: VOICE WISH (Text-to-Speech)
+   04. VOICE WISH
    ============================================================ */
 function speakWish(name, gender) {
   if (!('speechSynthesis' in window)) return;
@@ -106,16 +114,14 @@ function speakWish(name, gender) {
 }
 
 /* ============================================================
-   ⭐ NEW: VIBRATION
+   05. VIBRATION
    ============================================================ */
 function vibrate(pattern = 50) {
-  if ('vibrate' in navigator) {
-    try { navigator.vibrate(pattern); } catch {}
-  }
+  if ('vibrate' in navigator) { try { navigator.vibrate(pattern); } catch {} }
 }
 
 /* ============================================================
-   ⭐ NEW: SOUND EFFECTS (Web Audio)
+   06. SOUND EFFECTS
    ============================================================ */
 function playTone(freq, duration, type = 'sine', volume = 0.15) {
   try {
@@ -134,7 +140,6 @@ function playTone(freq, duration, type = 'sine', volume = 0.15) {
     setTimeout(() => ctx.close(), (duration + 0.1) * 1000);
   } catch {}
 }
-
 function sfxClick() { playTone(800, 0.08, 'square', 0.08); }
 function sfxPop() { playTone(600, 0.15, 'sine', 0.15); }
 function sfxSuccess() {
@@ -143,9 +148,14 @@ function sfxSuccess() {
   setTimeout(() => playTone(784, 0.25), 200);
 }
 function sfxWhoosh() { playTone(300, 0.3, 'sawtooth', 0.06); }
+function sfxError() { playTone(200, 0.2, 'sawtooth', 0.1); }
+function sfxReveal() {
+  playTone(440, 0.1);
+  setTimeout(() => playTone(660, 0.15), 100);
+}
 
 /* ============================================================
-   ⭐ NEW: CONFETTI (Reusable)
+   07. CONFETTI
    ============================================================ */
 function fireConfetti(count = 60) {
   const colors = ['#d4af37', '#f3e6b5', '#ff6b9d', '#4ade80', '#60a5fa', '#fbbf24'];
@@ -154,16 +164,12 @@ function fireConfetti(count = 60) {
     const p = document.createElement('div');
     const isEmoji = Math.random() > 0.7;
     p.style.cssText = `
-      position:fixed;
-      top:-20px;
-      left:${Math.random() * 100}vw;
+      position:fixed; top:-20px; left:${Math.random() * 100}vw;
       font-size:${isEmoji ? '20px' : '10px'};
       color:${colors[Math.floor(Math.random() * colors.length)]};
-      pointer-events:none;
-      z-index:9999;
+      pointer-events:none; z-index:9999;
       animation: confettiFall ${2 + Math.random() * 2}s linear forwards;
-      ${isEmoji ? '' : `background:${colors[Math.floor(Math.random() * colors.length)]};
-        width:8px;height:8px;border-radius:50%;`}
+      ${isEmoji ? '' : `background:${colors[Math.floor(Math.random() * colors.length)]}; width:8px;height:8px;border-radius:50%;`}
     `;
     if (isEmoji) p.textContent = shapes[Math.floor(Math.random() * shapes.length)];
     document.body.appendChild(p);
@@ -172,18 +178,13 @@ function fireConfetti(count = 60) {
   if (!document.getElementById('confetti-style')) {
     const style = document.createElement('style');
     style.id = 'confetti-style';
-    style.textContent = `
-      @keyframes confettiFall {
-        0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
-      }
-    `;
+    style.textContent = `@keyframes confettiFall { 0%{transform:translateY(0) rotate(0);opacity:1} 100%{transform:translateY(105vh) rotate(720deg);opacity:0} }`;
     document.head.appendChild(style);
   }
 }
 
 /* ============================================================
-   ⭐ NEW: THEME SWITCHER
+   08. THEME SWITCHER
    ============================================================ */
 const THEMES = {
   dark:   { '--bg': '#0a0f1e', '--bg-soft': '#121a32', '--gold': '#d4af37', '--gold-soft': '#f3e6b5', '--text': '#eef2ff', '--muted': '#9aa4c7' },
@@ -197,9 +198,7 @@ const THEMES = {
 function applyTheme(name) {
   const theme = THEMES[name];
   if (!theme) return;
-  Object.entries(theme).forEach(([k, v]) => {
-    document.documentElement.style.setProperty(k, v);
-  });
+  Object.entries(theme).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
   state.currentTheme = name;
   localStorage.setItem(BEEJ_CONFIG.themeKey, name);
 }
@@ -208,7 +207,6 @@ function initThemeSwitcher() {
   const saved = localStorage.getItem(BEEJ_CONFIG.themeKey);
   if (saved) applyTheme(saved);
 
-  // Create theme picker UI (in main scene footer)
   const footer = document.querySelector('.main-footer');
   if (!footer || document.getElementById('theme-picker')) return;
 
@@ -219,32 +217,26 @@ function initThemeSwitcher() {
     <p class="label" style="text-align:center;margin:16px 0 8px">🎨 Theme Chuno</p>
     <div class="theme-dots">
       ${Object.keys(THEMES).map(t => `
-        <button class="theme-dot" data-theme="${t}" 
-                style="background:${THEMES[t]['--gold']}"
-                title="${t}" aria-label="${t} theme"></button>
+        <button class="theme-dot" data-theme="${t}" style="background:${THEMES[t]['--gold']}" title="${t}" aria-label="${t} theme"></button>
       `).join('')}
     </div>
   `;
-
   footer.insertBefore(picker, footer.firstChild);
 
   picker.querySelectorAll('.theme-dot').forEach(dot => {
     dot.addEventListener('click', () => {
       applyTheme(dot.dataset.theme);
-      sfxClick();
-      vibrate(30);
+      sfxClick(); vibrate(30);
       picker.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
       dot.classList.add('active');
     });
   });
-
-  // Mark active
   const activeDot = picker.querySelector(`[data-theme="${state.currentTheme}"]`);
   if (activeDot) activeDot.classList.add('active');
 }
 
 /* ============================================================
-   ⭐ NEW: COMPLIMENT GENERATOR
+   09. COMPLIMENT GENERATOR
    ============================================================ */
 const COMPLIMENTS = [
   "Tu sabse funny insaan hai jise main jaanta hun 😄",
@@ -263,10 +255,7 @@ const COMPLIMENTS = [
   "Tu wakai sabse loyal dost hai 🎯",
   "Teri honesty meri favourite cheez hai 💯",
 ];
-
-function getCompliment() {
-  return COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
-}
+function getCompliment() { return COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)]; }
 
 function initComplimentGenerator() {
   const mainScene = $('#scene-main');
@@ -278,30 +267,22 @@ function initComplimentGenerator() {
     <h2 class="section-title">💬 Compliment Machine</h2>
     <div class="compliment-box">
       <p id="compliment-text">Button dabao → ek sach sunao 💛</p>
-      <button type="button" class="btn" id="compliment-btn">
-        🎁 Ek Sach Sunao
-      </button>
+      <button type="button" class="btn" id="compliment-btn">🎁 Ek Sach Sunao</button>
     </div>
   `;
-
   const footer = document.querySelector('.main-footer');
   mainScene.insertBefore(section, footer);
 
   $('#compliment-btn').addEventListener('click', () => {
     const el = $('#compliment-text');
     el.style.opacity = '0';
-    setTimeout(() => {
-      el.textContent = getCompliment();
-      el.style.opacity = '1';
-    }, 200);
-    sfxPop();
-    vibrate([30, 50, 30]);
-    fireConfetti(20);
+    setTimeout(() => { el.textContent = getCompliment(); el.style.opacity = '1'; }, 200);
+    sfxPop(); vibrate([30, 50, 30]); fireConfetti(20);
   });
 }
 
 /* ============================================================
-   ⭐ NEW: BIRTHDAY COUNTDOWN
+   10. COUNTDOWN
    ============================================================ */
 function initCountdown() {
   const mainScene = $('#scene-main');
@@ -314,53 +295,434 @@ function initCountdown() {
     <div class="countdown-box">
       <p id="countdown-text">-- din -- ghante -- minute</p>
       <input type="date" id="bday-date" class="input" style="margin-top:10px" />
-      <p class="tiny mono" style="margin-top:6px;color:var(--muted)">
-        Apna birthday date daalo → countdown start
-      </p>
     </div>
   `;
-
   const footer = document.querySelector('.main-footer');
   mainScene.insertBefore(section, footer);
 
   const dateInput = $('#bday-date');
   const textEl = $('#countdown-text');
-
   const savedDate = localStorage.getItem('beej_bday');
   if (savedDate) dateInput.value = savedDate;
 
-  function updateCountdown() {
+  function update() {
     const val = dateInput.value;
-    if (!val) {
-      textEl.textContent = '-- din -- ghante -- minute';
-      return;
-    }
+    if (!val) { textEl.textContent = '-- din -- ghante -- minute'; return; }
     localStorage.setItem('beej_bday', val);
-
     const now = new Date();
     const bday = new Date(val);
     bday.setFullYear(now.getFullYear());
     if (bday < now) bday.setFullYear(now.getFullYear() + 1);
-
     const diff = bday - now;
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const mins = Math.floor((diff / (1000 * 60)) % 60);
-
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff / 3600000) % 24);
+    const mins = Math.floor((diff / 60000) % 60);
     textEl.textContent = `${days} din • ${hours} ghante • ${mins} minute`;
   }
-
-  dateInput.addEventListener('change', () => {
-    updateCountdown();
-    sfxClick();
-  });
-
-  updateCountdown();
-  setInterval(updateCountdown, 60000);
+  dateInput.addEventListener('change', () => { update(); sfxClick(); });
+  update();
+  setInterval(update, 60000);
 }
 
 /* ============================================================
-   04. GATE
+   11. PHOTO FILTERS
+   ============================================================ */
+const FILTERS = {
+  none: 'none',
+  retro: 'sepia(0.7) contrast(1.2) saturate(1.4)',
+  bw: 'grayscale(1) contrast(1.3)',
+  vintage: 'sepia(0.4) hue-rotate(-20deg) saturate(1.3)',
+  warm: 'saturate(1.4) hue-rotate(-10deg) brightness(1.05)',
+  cool: 'saturate(1.3) hue-rotate(20deg) brightness(0.95)',
+};
+
+function initPhotoFilters() {
+  const startBtn = $('#booth-start');
+  if (!startBtn || document.getElementById('filter-bar')) return;
+
+  const bar = document.createElement('div');
+  bar.id = 'filter-bar';
+  bar.className = 'filter-bar';
+  bar.innerHTML = Object.keys(FILTERS).map(f =>
+    `<button type="button" class="filter-btn ${f === 'none' ? 'active' : ''}" data-filter="${f}">${f}</button>`
+  ).join('');
+
+  const videoWrap = document.querySelector('.video-wrap');
+  if (videoWrap) videoWrap.insertAdjacentElement('afterend', bar);
+
+  bar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.currentFilter = btn.dataset.filter;
+      const video = $('#video');
+      if (video) video.style.filter = FILTERS[state.currentFilter];
+      bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sfxClick();
+    });
+  });
+}
+
+/* ============================================================
+   12. SPIN THE WHEEL
+   ============================================================ */
+const WHEEL_SEGMENTS = [
+  "Sabse funny 😄", "Sabse loyal 🎯", "Sabse smart 🧠",
+  "Sabse pyara 💛", "Sabse strong 💪", "Sabse honest 💯",
+  "Sabse caring 🤗", "Sabse legend 🏆",
+];
+
+function initWheel() {
+  const wheelSpin = $('#wheel-spin');
+  const btn = $('#wheel-btn');
+  const result = $('#wheel-result');
+  if (!wheelSpin || !btn) return;
+
+  const colors = ['#d4af37', '#f472b6', '#60a5fa', '#4ade80', '#fbbf24', '#a78bfa', '#fb7185', '#38bdf8'];
+  const segAngle = 360 / WHEEL_SEGMENTS.length;
+
+  wheelSpin.innerHTML = WHEEL_SEGMENTS.map((seg, i) => {
+    const angle = i * segAngle;
+    return `<div class="wheel-segment" style="
+      transform: rotate(${angle}deg);
+      background: conic-gradient(from ${angle}deg, ${colors[i]} 0deg ${segAngle}deg, transparent ${segAngle}deg);
+    "></div>`;
+  }).join('');
+
+  wheelSpin.innerHTML += WHEEL_SEGMENTS.map((seg, i) => {
+    const angle = i * segAngle + segAngle / 2;
+    return `<div class="wheel-label" style="transform: rotate(${angle}deg) translateY(-85px)">
+      <span>${seg}</span>
+    </div>`;
+  }).join('');
+
+  btn.addEventListener('click', () => {
+    if (state.wheelSpinning) return;
+    state.wheelSpinning = true;
+
+    const spins = 5 + Math.floor(Math.random() * 3);
+    const finalAngle = Math.random() * 360;
+    const totalRotation = spins * 360 + finalAngle;
+
+    wheelSpin.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    wheelSpin.style.transform = `rotate(${totalRotation}deg)`;
+
+    playTone(300, 0.1, 'square', 0.05);
+    vibrate(20);
+
+    setTimeout(() => {
+      const normalized = ((finalAngle % 360) + 360) % 360;
+      const index = Math.floor((360 - normalized) / segAngle) % WHEEL_SEGMENTS.length;
+      result.textContent = `🎯 ${WHEEL_SEGMENTS[index]}`;
+      state.wheelSpinning = false;
+      sfxSuccess();
+      vibrate([30, 50, 30]);
+      fireConfetti(30);
+    }, 4100);
+  });
+}
+
+/* ============================================================
+   13. GIFT BOXES
+   ============================================================ */
+const GIFT_MESSAGES = [
+  "🎁 Ek warm hug — kabhi bhi maang lo!",
+  "🎁 Ek sachi dua — teri har khwahish poori ho!",
+  "🎁 Ek promise — main hamesha rahunga.",
+  "🎁 Ek secret — tu meri zindagi ka best hissa hai.",
+  "🎁 Ek treat — agli baar meri taraf se!",
+  "🎁 Ek memory — humari pehli mulaqat yaad hai?",
+];
+
+function initGiftBoxes() {
+  const zone = $('#gift-zone');
+  if (!zone || zone.children.length > 0) return;
+
+  const messages = [...GIFT_MESSAGES].sort(() => Math.random() - 0.5).slice(0, 3);
+
+  zone.innerHTML = messages.map((msg, i) => `
+    <div class="gift-box" data-msg="${msg}" data-index="${i}">
+      <div class="gift-lid">🎁</div>
+      <div class="gift-content">
+        <p>${msg}</p>
+      </div>
+    </div>
+  `).join('');
+
+  zone.querySelectorAll('.gift-box').forEach(box => {
+    box.addEventListener('click', () => {
+      if (box.classList.contains('opened')) return;
+      box.classList.add('opened');
+      sfxReveal();
+      vibrate([40, 60, 40]);
+      fireConfetti(25);
+    });
+  });
+}
+
+/* ============================================================
+   14. QUIZ
+   ============================================================ */
+const QUIZ_QUESTIONS = [
+  { q: "Sabse pehle hum kahan mile the?", a: ["School", "College", "Online", "Kisi aur jagah"] },
+  { q: "Meri favourite cheez kaunsi hai?", a: ["Chai", "Coffee", "Cold Drink", "Juice"] },
+  { q: "Main sabse zyada kya karta hun?", a: ["Padhta hun", "Khelta hun", "Bakchodi", "Sota hun"] },
+  { q: "Mera nature kaisa hai?", a: ["Shant", "Funny", "Serious", "Emotional"] },
+  { q: "Agar main ek superpower choose karun?", a: ["Uddna", "Time travel", "Invisible", "Super strength"] },
+  { q: "Meri sabse badi weakness?", a: ["Late utna", "Phone", "Khana", "Neend"] },
+  { q: "Sabse accha dost kaun hai?", a: ["Tu", "Tu", "Tu", "Tu"] },
+];
+
+function initQuiz() {
+  const zone = $('#quiz-content');
+  const container = $('#quiz-zone');
+  if (!zone || !container) return;
+
+  state.quizIndex = 0;
+  state.quizScore = 0;
+  const total = Math.min(BEEJ_CONFIG.quizCount, QUIZ_QUESTIONS.length);
+  const questions = [...QUIZ_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, total);
+
+  function renderQuestion() {
+    if (state.quizIndex >= questions.length) {
+      const percent = Math.round((state.quizScore / questions.length) * 100);
+      let grade = percent >= 80 ? "🏆 Tu toh mera asli dost hai!" :
+                  percent >= 50 ? "😊 Achha dost hai tu!" :
+                  "😅 Thoda aur jaanna padega!";
+      zone.innerHTML = `
+        <div class="quiz-result">
+          <h3>${state.quizScore}/${questions.length}</h3>
+          <p>${percent}% • ${grade}</p>
+          <button type="button" class="btn" id="quiz-restart">🔄 Dobara Try</button>
+        </div>
+      `;
+      sfxSuccess();
+      fireConfetti(50);
+      vibrate([50, 100, 50]);
+      $('#quiz-restart')?.addEventListener('click', () => initQuiz());
+      return;
+    }
+
+    const q = questions[state.quizIndex];
+    zone.innerHTML = `
+      <div class="quiz-progress">Sawaal ${state.quizIndex + 1}/${questions.length} • Score: ${state.quizScore}</div>
+      <p class="quiz-question">${q.q}</p>
+      <div class="quiz-options">
+        ${q.a.map((opt, i) => `<button type="button" class="quiz-opt" data-i="${i}">${opt}</button>`).join('')}
+      </div>
+    `;
+
+    zone.querySelectorAll('.quiz-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = parseInt(btn.dataset.i);
+        const correct = i === 0 || q.a[i] === "Tu";
+        if (correct) { state.quizScore++; sfxSuccess(); fireConfetti(15); }
+        else sfxError();
+        vibrate(30);
+        state.quizIndex++;
+        setTimeout(renderQuestion, 400);
+      });
+    });
+  }
+
+  renderQuestion();
+}
+
+/* ============================================================
+   15. WISH WALL
+   ============================================================ */
+function loadWishes() {
+  try {
+    return JSON.parse(localStorage.getItem(BEEJ_CONFIG.wishKey) || '[]');
+  } catch { return []; }
+}
+function saveWishes(w) {
+  try { localStorage.setItem(BEEJ_CONFIG.wishKey, JSON.stringify(w)); } catch {}
+}
+
+function initWishWall() {
+  const listEl = $('#wish-list');
+  const addBtn = $('#wish-add-btn');
+  const input = $('#wish-input');
+  if (!listEl || !addBtn) return;
+
+  function render() {
+    const wishes = loadWishes();
+    if (wishes.length === 0) {
+      listEl.innerHTML = '<p class="tiny mono" style="opacity:0.6;text-align:center">Abhi koi wish nahi — pehli wish tum likho!</p>';
+      return;
+    }
+    listEl.innerHTML = wishes.slice(-10).reverse().map((w, i) => `
+      <div class="wish-item">
+        <p><strong>${escapeHtml(w.name)}</strong> — ${escapeHtml(w.text)}</p>
+        <span class="tiny mono">${w.time}</span>
+      </div>
+    `).join('');
+  }
+
+  addBtn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) { sfxError(); return; }
+    const wishes = loadWishes();
+    wishes.push({
+      name: state.friend.name || 'Anonymous',
+      text,
+      time: new Date().toLocaleString('en-IN'),
+    });
+    saveWishes(wishes);
+    input.value = '';
+    render();
+    sfxSuccess();
+    fireConfetti(20);
+    vibrate([30, 50, 30]);
+  });
+
+  render();
+}
+
+/* ============================================================
+   16. MEMORY MATCH
+   ============================================================ */
+const MEMORY_EMOJIS = ['🎂', '🎈', '🎉', '🎁', '💝', '⭐', '🌱', '🎵', '🏆', '🎨', '💎', '🌈'];
+
+function initMemoryMatch() {
+  const grid = $('#memory-grid');
+  const scoreEl = $('#memory-score');
+  const movesEl = $('#memory-moves');
+  const restartBtn = $('#memory-restart');
+  if (!grid) return;
+
+  function reset() {
+    state.memoryFlipped = [];
+    state.memoryMatched = 0;
+    state.memoryMoves = 0;
+    state.memoryLock = false;
+    if (scoreEl) scoreEl.textContent = '0';
+    if (movesEl) movesEl.textContent = '0';
+
+    const pairs = MEMORY_EMOJIS.slice(0, BEEJ_CONFIG.memoryPairs);
+    const deck = [...pairs, ...pairs].sort(() => Math.random() - 0.5);
+
+    grid.innerHTML = deck.map((emoji, i) => `
+      <button type="button" class="memory-card" data-emoji="${emoji}" data-index="${i}">
+        <div class="memory-face memory-front">?</div>
+        <div class="memory-face memory-back">${emoji}</div>
+      </button>
+    `).join('');
+
+    grid.querySelectorAll('.memory-card').forEach(card => {
+      card.addEventListener('click', () => flipCard(card));
+    });
+  }
+
+  function flipCard(card) {
+    if (state.memoryLock) return;
+    if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+    card.classList.add('flipped');
+    state.memoryFlipped.push(card);
+    sfxClick();
+    vibrate(20);
+
+    if (state.memoryFlipped.length === 2) {
+      state.memoryMoves++;
+      if (movesEl) movesEl.textContent = state.memoryMoves;
+      state.memoryLock = true;
+
+      const [a, b] = state.memoryFlipped;
+      if (a.dataset.emoji === b.dataset.emoji) {
+        a.classList.add('matched');
+        b.classList.add('matched');
+        state.memoryMatched++;
+        if (scoreEl) scoreEl.textContent = state.memoryMatched;
+        sfxSuccess();
+        fireConfetti(15);
+        state.memoryFlipped = [];
+        state.memoryLock = false;
+
+        if (state.memoryMatched === BEEJ_CONFIG.memoryPairs) {
+          setTimeout(() => {
+            fireConfetti(80);
+            sfxSuccess();
+            vibrate([50, 100, 50, 100, 50]);
+          }, 400);
+        }
+      } else {
+        sfxError();
+        setTimeout(() => {
+          a.classList.remove('flipped');
+          b.classList.remove('flipped');
+          state.memoryFlipped = [];
+          state.memoryLock = false;
+        }, 800);
+      }
+    }
+  }
+
+  restartBtn?.addEventListener('click', () => { reset(); sfxClick(); });
+  reset();
+}
+
+/* ============================================================
+   17. FORTUNE COOKIE
+   ============================================================ */
+const FORTUNES = [
+  "Aaj teri izzat badhegi 🌟",
+  "Ek purana dost aaj yaad karega 💭",
+  "Kal ka din tera lucky day hai 🍀",
+  "Jo tune chaha, wo milega — thoda sabr 🤲",
+  "Aaj kuch aisa hoga jo tujhe hamesha yaad rahega ✨",
+  "Teri smile kisi ka din bana degi 😊",
+  "Ek badi khushkhabri aane wali hai 📩",
+  "Aaj koi tujhe surprise dega 🎁",
+  "Teri mehnat rang layegi 💪",
+  "Kisi ne tujhe miss kiya hai aaj 💛",
+];
+
+function initFortune() {
+  const btn = $('#fortune-btn');
+  const cookie = $('#fortune-cookie');
+  const textEl = $('#fortune-text');
+  if (!btn || !cookie) return;
+
+  btn.addEventListener('click', () => {
+    if (cookie.classList.contains('opened')) return;
+    cookie.classList.add('opened');
+    cookie.textContent = '💫';
+    textEl.textContent = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+    sfxReveal();
+    vibrate([40, 60, 40]);
+    fireConfetti(25);
+  });
+}
+
+/* ============================================================
+   18. TIMELINE
+   ============================================================ */
+const TIMELINE_DATA = [
+  { year: 'Pehli mulaqat', text: 'Jab hum mile, tab pata nahi tha ye safar itna accha hoga.' },
+  { year: 'Pehli baat', text: 'Pehla message, pehli hansi — sab yaad hai mujhe.' },
+  { year: 'Pehli ladai', text: 'Chhoti si ladai, badi si maafi.' },
+  { year: 'Best memory', text: 'Wo din jo hum dono kabhi nahi bhoolenge.' },
+  { year: 'Aaj', text: 'Aur aaj, tera birthday. Ye yaad hamesha rahegi.' },
+];
+
+function initTimeline() {
+  const zone = $('#timeline-zone');
+  if (!zone || zone.children.length > 0) return;
+
+  zone.innerHTML = TIMELINE_DATA.map((item, i) => `
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>${item.year}</h4>
+        <p>${item.text}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   19. GATE
    ============================================================ */
 function initGate() {
   loadChain();
@@ -379,9 +741,7 @@ function initGate() {
     if (val === BEEJ_CONFIG.secretPassword) {
       errorEl.textContent = '';
       box.classList.remove('error');
-      sfxSuccess();
-      vibrate(50);
-      fireConfetti(30);
+      sfxSuccess(); vibrate(50); fireConfetti(30);
       showScene('#scene-id');
       setTimeout(() => $('#friend-name')?.focus(), 300);
     } else {
@@ -396,7 +756,7 @@ function initGate() {
 }
 
 /* ============================================================
-   05. SOUL ID
+   20. SOUL ID
    ============================================================ */
 function initSoulId() {
   const nameInput = $('#friend-name');
@@ -426,8 +786,7 @@ function initSoulId() {
       btn.classList.add('selected');
       btn.setAttribute('aria-pressed', 'true');
       state.selectedGender = btn.dataset.gender;
-      sfxClick();
-      vibrate(20);
+      sfxClick(); vibrate(20);
       updateNextButton();
     });
   });
@@ -448,8 +807,7 @@ function initSoulId() {
 
     state.friend = { name, gender: state.selectedGender, hue };
 
-    const prevHash = state.chain.length > 0
-      ? state.chain[state.chain.length - 1].hash : 'GENESIS';
+    const prevHash = state.chain.length > 0 ? state.chain[state.chain.length - 1].hash : 'GENESIS';
     const data = `${name}|${state.selectedGender}|${prevHash}|${Date.now()}`;
     const hash = await sha256(data);
 
@@ -457,14 +815,12 @@ function initSoulId() {
       name, gender: state.selectedGender, hash, prev: prevHash,
       time: new Date().toLocaleString('en-IN'), hue,
     };
-
     state.friend.hash = hash;
     state.chain.push(block);
     saveChain();
 
     errorEl.textContent = '';
-    sfxWhoosh();
-    vibrate(40);
+    sfxWhoosh(); vibrate(40);
     startHackSequence(name);
   });
 }
@@ -476,7 +832,7 @@ function computeHue(name) {
 }
 
 /* ============================================================
-   06. BOOTH
+   21. BOOTH
    ============================================================ */
 function initBooth() {
   const startBtn = $('#booth-start');
@@ -494,6 +850,7 @@ function initBooth() {
       });
       video.srcObject = stream;
       await video.play();
+      video.style.filter = FILTERS[state.currentFilter] || 'none';
       status.textContent = 'Camera ready • Muskurao 📸';
       startBtn.textContent = '📸 Click Photo';
       startBtn.onclick = capturePhoto;
@@ -520,6 +877,7 @@ function initBooth() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
+    ctx.filter = FILTERS[state.currentFilter] || 'none';
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0);
@@ -533,9 +891,7 @@ function initBooth() {
 
     state.photoStripCount++;
     status.textContent = `📸 ${state.photoStripCount}/${BEEJ_CONFIG.photoCount} photos!`;
-    sfxClick();
-    vibrate(40);
-    fireConfetti(15);
+    sfxClick(); vibrate(40); fireConfetti(15);
 
     if (state.photoStripCount >= BEEJ_CONFIG.photoCount) {
       startBtn.textContent = '✅ Done →';
@@ -548,11 +904,10 @@ function initBooth() {
 }
 
 /* ============================================================
-   07. HACK TERMINAL
+   22. HACK TERMINAL
    ============================================================ */
 async function startHackSequence(name) {
   showScene('#scene-hack');
-
   const terminal = $('#terminal');
   const bar = $('#hack-bar');
   const progressBar = $('#hack-progress');
@@ -560,17 +915,16 @@ async function startHackSequence(name) {
   if (!terminal) return;
 
   terminal.innerHTML = '';
-
   const hash = await sha256(`${name}-${Date.now()}`);
   const lines = [
-    `> Initializing Beej Protocol v10...`,
+    `> Initializing Beej Protocol v11...`,
     `> Fetching memories of ${name}...`,
     `> Decoding Dosti Chain [${state.chain.length} blocks]`,
-    `> Hue: ${state.friend.hue}° assigned to soul`,
-    `> Compiling frequency...`,
-    `> Voice synthesis ready 🔊`,
+    `> Hue: ${state.friend.hue}° assigned`,
+    `> Loading 15 features...`,
+    `> Voice + Confetti ready`,
     `> SHA256: ${hash}`,
-    `> Done. Welcome to Civilization. 🌱`,
+    `> Done. Welcome. 🌱`,
   ];
 
   let i = 0;
@@ -592,11 +946,10 @@ async function startHackSequence(name) {
 }
 
 /* ============================================================
-   08. MAIN
+   23. MAIN LAUNCH
    ============================================================ */
 function launchMain() {
   showScene('#scene-main');
-
   const { name, gender, hash } = state.friend;
 
   $('#wish-title').textContent = `Happy Birthday, ${name} 🎂`;
@@ -615,11 +968,23 @@ function launchMain() {
   initLetterDownloads();
   initMusic();
   initRestart();
+
+  // Phase 1
   initThemeSwitcher();
   initComplimentGenerator();
   initCountdown();
 
-  // 🎤 Voice Wish + 🎉 Confetti Welcome
+  // Phase 2
+  initPhotoFilters();
+  initWheel();
+  initGiftBoxes();
+  initQuiz();
+  initWishWall();
+  initMemoryMatch();
+  initFortune();
+  initTimeline();
+
+  // Welcome
   speakWish(name, gender);
   setTimeout(() => fireConfetti(80), 1200);
   setTimeout(() => vibrate([50, 100, 50, 100, 50]), 1200);
@@ -669,10 +1034,7 @@ function renderChain() {
   if (!view) return;
   const recent = state.chain.slice(-5);
   view.innerHTML = recent.map((b, idx) =>
-    `<div class="chain-block">
-      <strong>${escapeHtml(b.name)}</strong> → ${b.hash}
-      ${idx === recent.length - 1 ? ' ← you' : ''}
-    </div>`
+    `<div class="chain-block"><strong>${escapeHtml(b.name)}</strong> → ${b.hash} ${idx === recent.length - 1 ? ' ← you' : ''}</div>`
   ).join('');
 }
 
@@ -683,7 +1045,7 @@ function escapeHtml(str) {
 }
 
 /* ============================================================
-   09. BALLOON GAME
+   24. BALLOON GAME
    ============================================================ */
 function initBalloons() {
   const zone = $('#balloon-zone');
@@ -706,22 +1068,19 @@ function initBalloons() {
       b.classList.add('popped');
       state.balloonScore++;
       if (scoreEl) scoreEl.textContent = state.balloonScore;
-      sfxPop();
-      vibrate(30);
-      fireConfetti(10);
+      sfxPop(); vibrate(30); fireConfetti(10);
     };
 
     b.addEventListener('click', pop);
     b.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pop(); }
     });
-
     zone.appendChild(b);
   }
 }
 
 /* ============================================================
-   10. CAKE + MIC
+   25. CAKE
    ============================================================ */
 function initCake() {
   const micBtn = $('#mic-enable');
@@ -776,24 +1135,20 @@ function detectBlow(candles, dbMeter, micBtn) {
 }
 
 function cleanupMic() {
-  if (state.audioCtx && state.audioCtx.state !== 'closed') {
-    state.audioCtx.close().catch(() => {});
-  }
+  if (state.audioCtx && state.audioCtx.state !== 'closed') state.audioCtx.close().catch(() => {});
   if (state.micStream) state.micStream.getTracks().forEach((t) => t.stop());
   state.analyser = null;
 }
 
 /* ============================================================
-   11. CERTIFICATE
+   26. CERTIFICATE
    ============================================================ */
 function renderCertificate() {
   const zone = $('#cert-zone');
   if (!zone) return;
   const { name, hash } = state.friend;
   const chainLen = state.chain.length;
-  const date = new Date().toLocaleDateString('en-IN', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  });
+  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
   zone.innerHTML = `
     <div class="cert" id="cert-card">
@@ -804,19 +1159,13 @@ function renderCertificate() {
       <p class="cert-hash">SHA256: ${hash}</p>
       <p style="font-size:11px;margin-top:8px;font-style:italic">— Signed, ${BEEJ_CONFIG.userName}</p>
     </div>
-    <button type="button" class="btn" id="cert-download" style="margin-top:12px">
-      📥 Certificate Download
-    </button>
+    <button type="button" class="btn" id="cert-download" style="margin-top:12px">📥 Certificate Download</button>
   `;
 
-  const btn = $('#cert-download');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      downloadCertificateAsPNG();
-      sfxClick();
-      vibrate(30);
-    });
-  }
+  $('#cert-download')?.addEventListener('click', () => {
+    downloadCertificateAsPNG();
+    sfxClick(); vibrate(30);
+  });
 }
 
 function downloadCertificateAsPNG() {
@@ -856,14 +1205,11 @@ function downloadCertificateAsPNG() {
   ctx.font = '20px Georgia, serif';
   ctx.fillText(`is the ${state.chain.length}${getOrdinalSuffix(state.chain.length)} block`, 450, 320);
   ctx.fillText('of the Dosti Chain', 450, 350);
-
   ctx.font = '18px Georgia, serif';
   ctx.fillText(new Date().toLocaleDateString('en-IN'), 450, 430);
-
   ctx.font = '13px monospace';
   ctx.fillStyle = '#666';
   ctx.fillText(`SHA256: ${hash}`, 450, 480);
-
   ctx.font = 'italic 18px Georgia, serif';
   ctx.fillStyle = '#0a0f1e';
   ctx.fillText(`— ${BEEJ_CONFIG.userName}`, 450, 530);
@@ -879,18 +1225,14 @@ function downloadCertificateAsPNG() {
 }
 
 /* ============================================================
-   12. LETTER DOWNLOADS
+   27. LETTER DOWNLOADS
    ============================================================ */
 function initLetterDownloads() {
   $('#letter-download-png')?.addEventListener('click', () => {
-    downloadLetterAsPNG();
-    sfxClick();
-    vibrate(30);
+    downloadLetterAsPNG(); sfxClick(); vibrate(30);
   });
   $('#letter-download-txt')?.addEventListener('click', () => {
-    downloadLetterAsTXT();
-    sfxClick();
-    vibrate(30);
+    downloadLetterAsTXT(); sfxClick(); vibrate(30);
   });
 }
 
@@ -909,7 +1251,6 @@ function downloadLetterAsTXT() {
 function downloadLetterAsPNG() {
   const { name } = state.friend;
   const text = $('#letter-text')?.textContent || '';
-
   const canvas = document.createElement('canvas');
   const scale = 2;
   canvas.width = 800 * scale;
@@ -941,10 +1282,7 @@ function downloadLetterAsPNG() {
 
   const lines = wrapText(ctx, text, 700);
   let y = 240;
-  lines.forEach((line) => {
-    ctx.fillText(line, 60, y);
-    y += 34;
-  });
+  lines.forEach((line) => { ctx.fillText(line, 60, y); y += 34; });
 
   ctx.fillStyle = '#9aa4c7';
   ctx.font = '16px Georgia, serif';
@@ -981,7 +1319,7 @@ function wrapText(ctx, text, maxWidth) {
 }
 
 /* ============================================================
-   13. MUSIC
+   28. MUSIC
    ============================================================ */
 function initMusic() {
   const btn = $('#music-toggle');
@@ -989,8 +1327,7 @@ function initMusic() {
   btn.addEventListener('click', () => {
     if (state.musicPlaying) { stopMusic(); btn.textContent = '🔇'; }
     else { startMusic(); btn.textContent = '🔊'; }
-    sfxClick();
-    vibrate(20);
+    sfxClick(); vibrate(20);
   });
 }
 
@@ -1000,14 +1337,12 @@ function startMusic() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     state.audioCtx = ctx;
     state.musicPlaying = true;
-
     const notes = [
       [264, .3], [264, .2], [297, .5], [264, .5], [352, .5], [330, 1],
       [264, .3], [264, .2], [297, .5], [264, .5], [396, .5], [352, 1],
       [264, .3], [264, .2], [528, .5], [440, .5], [352, .5], [330, .5], [297, 1],
       [470, .3], [470, .2], [440, .5], [352, .5], [396, .5], [352, 1],
     ];
-
     let time = ctx.currentTime;
     notes.forEach(([freq, dur]) => {
       const osc = ctx.createOscillator();
@@ -1027,24 +1362,26 @@ function startMusic() {
 }
 
 function stopMusic() {
-  if (state.audioCtx && state.audioCtx.state !== 'closed') {
-    state.audioCtx.close().catch(() => {});
-  }
+  if (state.audioCtx && state.audioCtx.state !== 'closed') state.audioCtx.close().catch(() => {});
   state.musicPlaying = false;
 }
 
 /* ============================================================
-   14. RESTART
+   29. RESTART
    ============================================================ */
 function initRestart() {
   const btn = $('#restart-btn');
   if (!btn) return;
-
   btn.addEventListener('click', () => {
     state.selectedGender = '';
     state.photoStripCount = 0;
     state.blowDetected = false;
     state.balloonScore = 0;
+    state.memoryMatched = 0;
+    state.memoryMoves = 0;
+    state.memoryFlipped = [];
+    state.quizIndex = 0;
+    state.quizScore = 0;
 
     const nameInput = $('#friend-name');
     const gatePass = $('#gate-pass');
@@ -1070,7 +1407,7 @@ function initRestart() {
 }
 
 /* ============================================================
-   15. RESTORE HUE
+   30. RESTORE HUE
    ============================================================ */
 function restoreHue() {
   const saved = localStorage.getItem(BEEJ_CONFIG.hueKey);
@@ -1078,7 +1415,7 @@ function restoreHue() {
 }
 
 /* ============================================================
-   16. BOOT
+   31. BOOT
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   restoreHue();
