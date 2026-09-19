@@ -1,9 +1,9 @@
 /* ==========================================================================
-   RAVI RAJ — SITE SCRIPT
-   Version: 3.3 (Final · Carefully Reviewed)
+   RAVI RAJ — PORTFOLIO SCRIPT
+   Version: 4.0 (Portfolio Only · Error-Free)
    Handles: Year · Mobile Menu · Command Palette (K) · Smooth Scroll
-            Copy Email · Active Nav · Header Adaptive · Scroll Cue
-            External Links · Console Greeting · Reduced Motion
+            Copy Email · Active Nav · Scroll Cue · External Links
+            Console Greeting · Reduced Motion
    No dependencies. No frameworks.
    ========================================================================== */
 
@@ -37,14 +37,6 @@
     ].join(',');
 
     /* Safe storage (works in private mode / file://) */
-    function storageGet(key) {
-        try { return localStorage.getItem(key); }
-        catch (e) { return null; }
-    }
-    function storageSet(key, value) {
-        try { localStorage.setItem(key, value); return true; }
-        catch (e) { return false; }
-    }
     function sessionGet(key) {
         try { return sessionStorage.getItem(key); }
         catch (e) { return null; }
@@ -55,7 +47,7 @@
     }
 
     /* ======================================================================
-       2. ELEMENT REFERENCES (declared early)
+       2. ELEMENT REFERENCES
        ====================================================================== */
     const cmdPalette    = $('#cmdPalette');
     const cmdOverlay    = $('#cmdOverlay');
@@ -75,8 +67,7 @@
     const scrollCue     = $('.scroll-cue');
 
     const sections      = $$('section[id]');
-    const navLinks      = $$('.primary-nav a[href^="#"]');
-    const lightSections = $$('.section-light, .site-footer');
+    const navLinks      = $$('.primary-nav a[data-nav]');
 
     /* ======================================================================
        3. YEAR IN FOOTER
@@ -149,7 +140,7 @@
         mobileNav.hidden = false;
         mobileOverlay.hidden = false;
 
-        /* FIX: Force reflow so browser computes initial state */
+        /* Force reflow so browser computes initial state */
         void mobileNav.offsetHeight;
 
         mobileNav.dataset.open = 'true';
@@ -160,7 +151,6 @@
         mobileNav.setAttribute('aria-hidden', 'false');
         mobileOverlay.setAttribute('aria-hidden', 'false');
 
-        /* Focus first link after transition starts */
         setTimeout(function () {
             const firstLink = $('a', mobileNav);
             if (firstLink && typeof firstLink.focus === 'function') {
@@ -185,7 +175,7 @@
         setTimeout(function () {
             mobileNav.hidden = true;
             mobileOverlay.hidden = true;
-        }, 400);
+        }, 500);
 
         releaseFocus();
 
@@ -208,7 +198,6 @@
     if (mobileClose) mobileClose.addEventListener('click', closeMenu);
     if (mobileOverlay) mobileOverlay.addEventListener('click', closeMenu);
 
-    /* Close on nav link click */
     $$('#mobileNav a').forEach(function (link) {
         link.addEventListener('click', function () {
             setTimeout(closeMenu, 60);
@@ -227,10 +216,7 @@
         lastFocusedCmd = document.activeElement;
 
         cmdPalette.hidden = false;
-
-        /* FIX: Force reflow */
         void cmdPalette.offsetHeight;
-
         cmdPalette.dataset.open = 'true';
 
         document.body.style.overflow = 'hidden';
@@ -329,11 +315,9 @@
                          tag === 'textarea' ||
                          (active && active.isContentEditable);
 
-        /* FIX: handle both 'k' and 'K' */
         const key = String(e.key || '').toLowerCase();
 
         if (key === 'k' && !isTyping && !e.metaKey && !e.ctrlKey && !e.altKey) {
-            /* FIX: ignore K if mobile nav is open */
             if (mobileNav && mobileNav.dataset.open === 'true') {
                 return;
             }
@@ -462,8 +446,8 @@
         }
 
         navLinks.forEach(function (link) {
-            const href = link.getAttribute('href') || '';
-            const isActive = href === '#' + currentId;
+            const navKey = link.getAttribute('data-nav') || '';
+            const isActive = navKey === currentId;
             link.classList.toggle('is-active', isActive);
             if (isActive) {
                 link.setAttribute('aria-current', 'true');
@@ -486,39 +470,7 @@
     updateActiveNav();
 
     /* ======================================================================
-       10. HEADER ADAPTIVE
-       ====================================================================== */
-    function updateHeaderTheme() {
-        if (!header || !lightSections.length) return;
-
-        const headerBottom = header.getBoundingClientRect().bottom;
-        let overLight = false;
-
-        for (let i = 0; i < lightSections.length; i++) {
-            const rect = lightSections[i].getBoundingClientRect();
-            if (rect.top <= headerBottom && rect.bottom >= 0) {
-                overLight = true;
-                break;
-            }
-        }
-
-        header.classList.toggle('is-over-light', overLight);
-    }
-
-    let headerRaf = null;
-    window.addEventListener('scroll', function () {
-        if (headerRaf) return;
-        headerRaf = requestAnimationFrame(function () {
-            updateHeaderTheme();
-            headerRaf = null;
-        });
-    }, { passive: true });
-
-    window.addEventListener('load', updateHeaderTheme);
-    updateHeaderTheme();
-
-    /* ======================================================================
-       11. SCROLL CUE FADE
+       10. SCROLL CUE FADE
        ====================================================================== */
     if (scrollCue) {
         let cueRaf = null;
@@ -541,7 +493,7 @@
     }
 
     /* ======================================================================
-       12. EXTERNAL LINKS SECURITY
+       11. EXTERNAL LINKS SECURITY
        ====================================================================== */
     $$('a[target="_blank"]').forEach(function (link) {
         const rel = link.getAttribute('rel') || '';
@@ -551,7 +503,7 @@
     });
 
     /* ======================================================================
-       13. CONSOLE GREETING
+       12. CONSOLE GREETING
        ====================================================================== */
     const hasGreeted = sessionGet('rr-greeted');
     if (!hasGreeted) {
