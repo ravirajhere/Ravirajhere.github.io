@@ -3,75 +3,27 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ravi Raj — Professional CV</title>
+    <title>Ravi Raj — Resume</title>
 
-    <!-- Favicon -->
+    <!-- ====== SEO ====== -->
+    <meta name="description" content="Ravi Raj — Frontend developer from Patna, India. Resume for internships." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- ====== FAVICON ====== -->
     <link rel="icon" type="image/png" href="assets/favicon.png" />
 
-    <!-- Google Fonts: Inter (Professional) -->
+    <!-- ====== FONTS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <style>
         /* ============================================================
-           RESUME-PDF.HTML — Professional Slate/Navy Theme
-           All styles inline — no external CSS needed
+           RESUME — SINGLE COLUMN · ATS-FRIENDLY · PRINT-OPTIMIZED
            ============================================================ */
 
-        /* ============================================================
-           1. ROOT VARIABLES (Light Default)
-           ============================================================ */
-        :root {
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --text: #0f172a;
-            --text2: #334155;
-            --text3: #64748b;
-            --border: #e2e8f0;
-            --border2: #e2e8f0;
-            --shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-            --accent: #1e40af;
-            --accent2: #1e3a8a;
-            --accent-soft: #eff6ff;
-            --btn-bg: #1e40af;
-            --btn-text: #ffffff;
-            --icon-bg: #f1f5f9;
-            --highlight: #f1f5f9;
-            --connect-bg: #f8fafc;
-            --footer: #94a3b8;
-            --transition: 0.25s ease;
-        }
-
-        /* ============================================================
-           2. DARK THEME
-           ============================================================ */
-        [data-theme="dark"] {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text: #f1f5f9;
-            --text2: #cbd5e1;
-            --text3: #94a3b8;
-            --border: #334155;
-            --border2: #334155;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            --accent: #60a5fa;
-            --accent2: #93c5fd;
-            --accent-soft: rgba(96, 165, 250, 0.1);
-            --btn-bg: #60a5fa;
-            --btn-text: #0f172a;
-            --icon-bg: #334155;
-            --highlight: #334155;
-            --connect-bg: #334155;
-            --footer: #64748b;
-        }
-
-        /* ============================================================
-           3. RESET + BASE
-           ============================================================ */
+        /* ---------- RESET ---------- */
         *, *::before, *::after {
             margin: 0;
             padding: 0;
@@ -79,1057 +31,720 @@
         }
 
         html {
-            scroll-behavior: smooth;
             -webkit-text-size-adjust: 100%;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-body);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding: 30px 20px;
-            transition: background var(--transition), color var(--transition);
+            font-size: 14px;
+            line-height: 1.5;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 32px 16px 64px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
-        button { font-family: inherit; }
 
-        ::selection {
-            background: var(--accent);
-            color: #ffffff;
-        }
-
-        /* ============================================================
-           4. THEME TOGGLE (Fixed top-right)
-           ============================================================ */
-        .theme-toggle-wrapper {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        /* ---------- ACTION BAR ---------- */
+        .action-bar {
+            max-width: 800px;
+            margin: 0 auto 24px;
             display: flex;
-            align-items: center;
+            justify-content: flex-end;
             gap: 10px;
-            z-index: 999;
-            background: var(--bg-card);
-            padding: 8px 14px;
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text2);
-            transition: background 0.25s ease, border-color 0.25s ease;
         }
 
-        [data-theme="dark"] .theme-toggle-wrapper {
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-        }
-
-        .switch {
-            position: relative;
-            width: 48px;
-            height: 26px;
-            background: var(--icon-bg);
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            display: flex;
+        .btn {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 5px;
-            transition: background 0.25s ease;
-            user-select: none;
-            outline: none;
-        }
-
-        .switch:focus-visible {
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
-        }
-
-        .switch-icon {
-            font-size: 11px;
-            z-index: 2;
-            line-height: 1;
-            transition: opacity 0.25s ease;
-        }
-
-        .switch .sun { opacity: 1; }
-        .switch .moon { opacity: 0.35; }
-
-        [data-theme="dark"] .switch .sun { opacity: 0.35; }
-        [data-theme="dark"] .switch .moon { opacity: 1; }
-
-        .switch .slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: var(--accent);
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.3);
-            z-index: 1;
-        }
-
-        [data-theme="dark"] .switch .slider {
-            transform: translateX(22px);
-        }
-
-        /* ============================================================
-           5. TOAST
-           ============================================================ */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--text);
-            color: var(--bg-card);
-            padding: 12px 22px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10000;
-            white-space: nowrap;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.2);
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ============================================================
-           6. DOWNLOAD BUTTON
-           ============================================================ */
-        .download-btn-wrapper {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .download-btn {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border: none;
-            padding: 12px 32px;
-            font-size: 14px;
-            font-weight: 700;
+            gap: 8px;
+            padding: 10px 18px;
+            font-size: 13.5px;
+            font-weight: 600;
             font-family: inherit;
-            border-radius: 8px;
+            border-radius: 6px;
+            border: 1px solid transparent;
             cursor: pointer;
-            letter-spacing: 0.3px;
-            transition: all var(--transition);
-            box-shadow: 0 4px 14px rgba(30, 64, 175, 0.2);
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        .download-btn:hover {
-            background: var(--accent2);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.3);
+        .btn-primary {
+            background: #1e40af;
+            color: #fff;
+            border-color: #1e40af;
         }
 
-        [data-theme="dark"] .download-btn:hover {
-            background: var(--accent2);
+        .btn-primary:hover {
+            background: #1e3a8a;
+            border-color: #1e3a8a;
         }
 
-        /* ============================================================
-           7. RESUME CONTAINER
-           ============================================================ */
+        .btn-quiet {
+            background: #fff;
+            color: #334155;
+            border-color: #cbd5e1;
+        }
+
+        .btn-quiet:hover {
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        /* ---------- RESUME SHEET ---------- */
         .resume {
-            max-width: 900px;
-            width: 100%;
-            background: var(--bg-card);
-            padding: 45px 50px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            transition: background var(--transition), border var(--transition), box-shadow var(--transition);
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 48px 52px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.04);
+            border-radius: 4px;
         }
 
-        /* ============================================================
-           8. HEADER
-           ============================================================ */
+        /* ---------- HEADER ---------- */
         .header {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #0f172a;
+            margin-bottom: 22px;
         }
 
-        .profile-photo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .header-right {
-            flex: 1;
-        }
-
-        .header-right h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: -0.3px;
+        .name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
             margin-bottom: 4px;
         }
 
-        .header-right .title {
+        .role {
             font-size: 14px;
-            color: var(--accent);
             font-weight: 600;
-            margin-bottom: 4px;
+            color: #1e40af;
+            margin-bottom: 10px;
         }
 
-        .header-right .location {
+        .contact-line {
             font-size: 13px;
-            color: var(--text3);
-            margin-bottom: 8px;
-        }
-
-        .header-right .contact-links {
-            font-size: 12.5px;
-            color: var(--text2);
+            color: #334155;
             display: flex;
             flex-wrap: wrap;
-            gap: 4px 16px;
+            gap: 4px 14px;
         }
 
-        .header-right .contact-links a {
-            color: var(--text);
-            border-bottom: 1px dotted var(--border);
-            transition: all var(--transition);
+        .contact-line a {
+            border-bottom: 1px dotted #94a3b8;
         }
 
-        .header-right .contact-links a:hover {
-            border-bottom-color: var(--accent);
-            color: var(--accent);
+        .contact-line a:hover {
+            border-bottom-color: #1e40af;
+            color: #1e40af;
         }
 
-        /* ============================================================
-           9. SECTIONS
-           ============================================================ */
+        /* ---------- SECTION ---------- */
         .section {
             margin-bottom: 22px;
         }
 
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
         .section-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 6px;
-            margin-bottom: 12px;
-        }
-
-        .section p,
-        .section li {
-            font-size: 13.5px;
-            line-height: 1.65;
-            color: var(--text2);
-            font-weight: 400;
-        }
-
-        .section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .section ul li {
-            padding: 3px 0;
-        }
-
-        .section ul li::before {
-            content: "▸ ";
-            color: var(--accent);
+            font-size: 11px;
             font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        /* ============================================================
-           10. SUMMARY HIGHLIGHTS
-           ============================================================ */
-        .summary-grid {
+        .section p {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.65;
+        }
+
+        /* ---------- SKILLS ---------- */
+        .skills-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            margin-top: 10px;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .summary-grid .highlight-item {
+        .skill-row {
+            display: grid;
+            grid-template-columns: 200px 90px 70px;
+            gap: 12px;
+            align-items: baseline;
+            font-size: 13.5px;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .skill-level {
+            color: #334155;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
-            color: var(--text2);
-            background: var(--highlight);
-            padding: 4px 12px;
-            border-radius: 6px;
-            border-left: 3px solid var(--accent);
         }
 
-        /* ============================================================
-           11. EXPERIENCE / PROJECTS
-           ============================================================ */
-        .exp-item {
+        .skill-since {
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* ---------- PROJECT ---------- */
+        .project {
             margin-bottom: 14px;
         }
 
-        .exp-item .exp-header {
+        .project:last-child {
+            margin-bottom: 0;
+        }
+
+        .project-head {
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
             align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .project-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .project-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: #64748b;
+        }
+
+        .project-tag {
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
             margin-bottom: 4px;
         }
 
-        .exp-item .exp-title {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text);
+        .project-desc {
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 4px;
         }
 
-        .exp-item .exp-org {
-            font-weight: 600;
-            color: var(--accent);
-            font-size: 13.5px;
-        }
-
-        .exp-item .exp-date {
+        .project-links {
             font-size: 12.5px;
-            color: var(--text3);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .project-links a {
+            color: #1e40af;
             font-weight: 500;
+            border-bottom: 1px dotted #93c5fd;
         }
 
-        .exp-item .exp-desc {
-            font-size: 13px;
-            color: var(--text2);
-            margin-top: 2px;
-            padding-left: 2px;
-            line-height: 1.65;
-        }
-
-        .exp-item .exp-desc ul {
-            padding-left: 16px;
-        }
-
-        .exp-item .exp-desc ul li {
-            font-size: 13px;
-            color: var(--text2);
-            padding: 2px 0;
-            font-weight: 400;
-        }
-
-        .exp-item .exp-desc ul li::before {
-            content: "• ";
-            color: var(--accent);
-        }
-
-        .exp-item .exp-links {
-            font-size: 12px;
-            margin-top: 6px;
-        }
-
-        .exp-item .exp-links a {
-            color: var(--accent);
-            border-bottom: 1px dotted var(--accent);
-            margin-right: 14px;
-            font-weight: 500;
-            transition: all var(--transition);
-        }
-
-        .exp-item .exp-links a:hover {
+        .project-links a:hover {
             border-bottom-style: solid;
         }
 
-        /* ============================================================
-           12. SKILLS
-           ============================================================ */
-        .skills-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 28px;
-        }
-
-        .skills-grid > div {
-            font-size: 13.5px;
-            line-height: 1.6;
-        }
-
-        .skills-grid .skill-cat {
-            font-weight: 700;
-            color: var(--text);
-            margin-right: 6px;
-            font-size: 13.5px;
-        }
-
-        .skills-grid .skill-list {
-            color: var(--text2);
-            font-size: 13.5px;
-            font-weight: 400;
-        }
-
-        /* ============================================================
-           13. ACHIEVEMENTS / CERTIFICATIONS
-           ============================================================ */
-        .achievement-list li::before {
-            content: "✦ ";
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        /* ============================================================
-           14. LANGUAGES
-           ============================================================ */
-        .inline-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 28px;
-            font-size: 13.5px;
-            color: var(--text2);
-        }
-
-        .inline-list .label {
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        /* ============================================================
-           15. EDUCATION
-           ============================================================ */
+        /* ---------- EDUCATION ---------- */
         .edu-item {
             margin-bottom: 10px;
         }
 
-        .edu-item .school {
+        .edu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .edu-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .edu-title {
+            font-size: 13.5px;
             font-weight: 700;
-            color: var(--text);
-            font-size: 14px;
+            color: #0f172a;
         }
 
-        .edu-item .board {
-            font-size: 12.5px;
-            color: var(--accent);
-            font-weight: 600;
+        .edu-year {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: #64748b;
         }
 
-        .edu-item .detail {
-            font-size: 12.5px;
-            color: var(--text2);
+        .edu-school {
+            font-size: 13px;
+            color: #334155;
             margin-top: 1px;
         }
 
-        /* ============================================================
-           16. CONNECT — Icon Links
-           ============================================================ */
-        .connect-grid {
+        .edu-note {
+            font-size: 12px;
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 1px;
+        }
+
+        /* ---------- MILESTONES ---------- */
+        .milestone-list {
+            list-style: none;
+        }
+
+        .milestone-list li {
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.6;
+            padding-left: 16px;
+            position: relative;
+            margin-bottom: 3px;
+        }
+
+        .milestone-list li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        .milestone-list li strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* ---------- LANGUAGES ---------- */
+        .languages {
+            font-size: 13.5px;
+            color: #334155;
+        }
+
+        .lang-item {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .lang-level {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        /* ---------- CONNECT ---------- */
+        .connect-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 14px;
+            gap: 6px 24px;
+            font-size: 13px;
         }
 
-        .connect-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text);
+        .connect-list a {
+            color: #0f172a;
             font-weight: 500;
-            font-size: 13px;
-            padding: 8px 16px 8px 10px;
-            border-radius: 8px;
-            background: var(--connect-bg);
-            border: 1px solid var(--border);
-            transition: all var(--transition);
+            border-bottom: 1px dotted #94a3b8;
+            padding-bottom: 1px;
         }
 
-        .connect-link:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent);
-            background: var(--bg-card);
-            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+        .connect-list a:hover {
+            color: #1e40af;
+            border-bottom-color: #1e40af;
         }
 
-        .connect-link .icon-bg {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--icon-bg);
-            transition: all var(--transition);
-            color: var(--text2);
-            font-size: 15px;
-        }
-
-        .connect-link:hover .icon-bg {
-            background: var(--accent);
-            color: #ffffff;
-        }
-
-        /* ============================================================
-           17. REFERENCES
-           ============================================================ */
-        .ref-text {
-            font-size: 13px;
-            color: var(--text3);
-            font-style: italic;
-        }
-
-        /* ============================================================
-           18. FOOTER
-           ============================================================ */
+        /* ---------- FOOTER ---------- */
         .footer {
+            margin-top: 26px;
+            padding-top: 14px;
+            border-top: 1px solid #e2e8f0;
             text-align: center;
             font-size: 11px;
-            color: var(--footer);
-            border-top: 1px solid var(--border);
-            padding-top: 14px;
-            margin-top: 10px;
-            letter-spacing: 0.3px;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.02em;
         }
 
         /* ============================================================
-           19. PHONE NUMBER (Hidden on website, shown on print)
+           RESPONSIVE — MOBILE
            ============================================================ */
-        .phone-number {
-            display: none;
-        }
-
-        /* ============================================================
-           20. RESPONSIVE
-           ============================================================ */
-        @media (max-width: 600px) {
-            .resume {
-                padding: 24px 18px;
-                border-radius: 8px;
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 12px 40px;
             }
 
-            .header {
+            .action-bar {
                 flex-direction: column;
-                text-align: center;
-                gap: 14px;
+                align-items: stretch;
+                margin-bottom: 16px;
             }
 
-            .header-right h1 {
+            .btn {
+                justify-content: center;
+            }
+
+            .resume {
+                padding: 28px 22px;
+                border-radius: 0;
+            }
+
+            .name {
                 font-size: 22px;
             }
 
-            .header-right .contact-links {
-                flex-direction: column;
-                gap: 3px;
-                align-items: center;
+            .skill-row {
+                grid-template-columns: 1fr auto;
+                gap: 4px 12px;
             }
 
-            .skills-grid {
-                flex-direction: column;
-                gap: 3px;
+            .skill-name {
+                grid-column: 1;
             }
 
-            .connect-grid {
-                flex-direction: column;
-                gap: 8px;
+            .skill-level {
+                grid-column: 2;
+                text-align: right;
             }
 
-            .connect-link {
-                justify-content: center;
+            .skill-since {
+                grid-column: 1 / -1;
+                font-size: 11px;
             }
 
-            .inline-list {
-                flex-direction: column;
-                gap: 3px;
-                align-items: center;
-            }
-
-            .summary-grid {
-                justify-content: center;
-            }
-
-            .profile-photo {
-                width: 90px;
-                height: 90px;
-            }
-
-            .download-btn {
-                padding: 10px 24px;
-                font-size: 13px;
-            }
-
-            .exp-item .exp-header {
+            .project-head {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
             }
 
-            .theme-toggle-wrapper {
-                top: 14px;
-                right: 14px;
-                padding: 6px 10px;
-                font-size: 11.5px;
+            .edu-head {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
             }
 
-            .switch {
-                width: 44px;
-                height: 24px;
+            .contact-line {
+                flex-direction: column;
+                gap: 3px;
             }
 
-            .switch .slider {
-                width: 18px;
-                height: 18px;
-            }
-
-            [data-theme="dark"] .switch .slider {
-                transform: translateX(20px);
+            .connect-list {
+                flex-direction: column;
+                gap: 4px;
             }
         }
 
         /* ============================================================
-           21. PRINT STYLES
+           PRINT — FORCE LIGHT, COMPACT, 1 PAGE
            ============================================================ */
         @media print {
+            @page {
+                size: A4;
+                margin: 14mm 16mm;
+            }
+
             body {
-                background: #fff;
-                padding: 0;
-                margin: 0;
-                display: block;
+                background: #fff !important;
+                color: #000 !important;
+                padding: 0 !important;
+                font-size: 11pt !important;
+                line-height: 1.4 !important;
             }
 
-            .resume {
-                box-shadow: none;
-                border: none;
-                border-radius: 0;
-                padding: 30px 40px;
-                max-width: 100%;
-                background: #fff;
-            }
-
-            .download-btn-wrapper,
-            .theme-toggle-wrapper,
+            .action-bar,
+            .btn,
             .toast {
                 display: none !important;
             }
 
-            .phone-number {
-                display: inline !important;
-            }
-
-            .connect-link {
-                background: #fff;
-                border: 1px solid #ddd;
+            .resume {
+                max-width: 100% !important;
                 box-shadow: none !important;
-                padding: 4px 10px;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: #fff !important;
             }
 
-            .connect-link:hover {
-                transform: none !important;
-                box-shadow: none !important;
+            a {
+                color: #000 !important;
+                text-decoration: none !important;
+                border-bottom: none !important;
             }
 
-            .connect-link .icon-bg {
-                background: #f5f5f5;
-                color: #1a1a1a !important;
+            .project-links a,
+            .contact-line a,
+            .connect-list a {
+                border-bottom: none !important;
             }
 
             .section {
                 page-break-inside: avoid;
+                margin-bottom: 14px !important;
+            }
+
+            .header {
+                margin-bottom: 14px !important;
+                padding-bottom: 10px !important;
+            }
+
+            .name {
+                font-size: 20pt !important;
+            }
+
+            .section-title {
+                font-size: 9pt !important;
+                margin-bottom: 6px !important;
+            }
+
+            .section p,
+            .skill-row,
+            .project-desc,
+            .edu-title,
+            .milestone-list li,
+            .languages,
+            .connect-list {
+                font-size: 10pt !important;
+            }
+
+            .footer {
+                margin-top: 16px !important;
+                padding-top: 10px !important;
+                font-size: 9pt !important;
             }
         }
 
         /* ============================================================
-           22. REDUCED MOTION
+           REDUCED MOTION
            ============================================================ */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== THEME TOGGLE ===== -->
-    <div class="theme-toggle-wrapper">
-        <span id="themeLabel">Light</span>
-        <div class="switch" id="themeSwitch" role="button" tabindex="0" aria-label="Toggle theme">
-            <span class="switch-icon sun">☀️</span>
-            <span class="switch-icon moon">🌙</span>
-            <div class="slider"></div>
-        </div>
-    </div>
-
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast"></div>
-
-    <!-- ===== DOWNLOAD BUTTON ===== -->
-    <div class="download-btn-wrapper">
-        <button class="download-btn" id="downloadBtn">
-            📄 Download CV (PDF)
+    <!-- ============================================================
+         ACTION BAR (hidden on print)
+    ============================================================ -->
+    <div class="action-bar">
+        <a href="index.html" class="btn btn-quiet">
+            ← Back to portfolio
+        </a>
+        <button class="btn btn-primary" id="printBtn" type="button">
+            Print / Save as PDF
         </button>
     </div>
 
-    <!-- ===== RESUME ===== -->
-    <div class="resume">
+    <!-- ============================================================
+         RESUME
+    ============================================================ -->
+    <main class="resume" role="main">
 
-        <!-- ================================ -->
-        <!-- HEADER                           -->
-        <!-- ================================ -->
-        <div class="header">
-            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="profile-photo" />
-            <div class="header-right">
-                <h1>RAVI RAJ SINGH</h1>
-                <div class="title">Student · Author · Web Developer</div>
-                <div class="location">Patna, India</div>
-                <div class="contact-links">
-                    <a href="mailto:raviraj2k09@gmail.com">✉️ raviraj2k09@gmail.com</a>
-                    <span class="phone-number">📱 +91 91022 24871</span>
-                    <a href="https://ravirajhere.github.io" target="_blank" rel="noopener">🌐 ravirajhere.github.io</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================================ -->
-        <!-- SUMMARY                          -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Summary</div>
-            <p>
-                Passionate web developer with 3+ years of self-learning journey.
-                Building responsive, modern websites with clean, maintainable code.
-                Currently exploring full-stack development. Open to freelance
-                opportunities and collaborations.
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <h1 class="name">Ravi Raj</h1>
+            <p class="role">Frontend Developer</p>
+            <p class="contact-line">
+                <span>Patna, India</span>
+                <span>·</span>
+                <a href="mailto:raviraj2k09@gmail.com">raviraj2k09@gmail.com</a>
+                <span>·</span>
+                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener noreferrer">ravirajhere.github.io</a>
             </p>
-            <div class="summary-grid">
-                <span class="highlight-item"><strong>3+</strong> Years Experience</span>
-                <span class="highlight-item"><strong>4+</strong> Projects Delivered</span>
-                <span class="highlight-item">Self-Taught &amp; Learning</span>
-                <span class="highlight-item">Open for Freelance</span>
-            </div>
-        </div>
+        </header>
 
-        <!-- ================================ -->
-        <!-- EXPERIENCE                       -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Experience</div>
+        <!-- ===== SUMMARY ===== -->
+        <section class="section">
+            <h2 class="section-title">Summary</h2>
+            <p>
+                Self-taught frontend developer (since 2024). Hand-wrote two complete
+                projects — an 11-chapter reader and a print-optimized resume page.
+                Currently learning React and Python. Open to internships.
+            </p>
+        </section>
 
-            <div class="exp-item">
-                <div class="exp-header">
-                    <span class="exp-title">Freelance Web Developer</span>
-                    <span class="exp-date">2024 – Present</span>
+        <!-- ===== SKILLS ===== -->
+        <section class="section">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-list">
+                <div class="skill-row">
+                    <span class="skill-name">HTML5</span>
+                    <span class="skill-level">Working</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
-                <div class="exp-desc">
-                    <ul>
-                        <li>Built 4+ complete websites from scratch</li>
-                        <li>Created responsive, mobile-first designs</li>
-                        <li>Delivered projects with clean, maintainable code</li>
-                    </ul>
+                <div class="skill-row">
+                    <span class="skill-name">CSS3</span>
+                    <span class="skill-level">Working</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
-            </div>
-
-            <div class="exp-item">
-                <div class="exp-header">
-                    <span class="exp-title">Personal Projects</span>
-                    <span class="exp-date">2023 – Present</span>
+                <div class="skill-row">
+                    <span class="skill-name">JavaScript</span>
+                    <span class="skill-level">Working</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
-                <div class="exp-desc">
-                    <ul>
-                        <li>Developed Autobiography website (10 chapters, 2 languages)</li>
-                        <li>Created Friends Gallery with lightbox &amp; category filters</li>
-                        <li>Designed Portfolio website with modern UI</li>
-                    </ul>
+                <div class="skill-row">
+                    <span class="skill-name">Python</span>
+                    <span class="skill-level">Learning</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- ================================ -->
-        <!-- PROJECTS                         -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Projects</div>
-
-            <div class="exp-item">
-                <div class="exp-header">
-                    <span class="exp-title">📖 My Autobiography</span>
+                <div class="skill-row">
+                    <span class="skill-name">Git &amp; GitHub</span>
+                    <span class="skill-level">Working</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
-                <div class="exp-desc">
-                    10 Chapters | 2 Languages (English/Hinglish)
-                    <br />Personal life story with childhood memories
-                    <div class="exp-links">
-                        <a href="https://ravirajhere.github.io/autobiography.html" target="_blank" rel="noopener">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/autobiography.html" target="_blank" rel="noopener">Source</a>
-                    </div>
+                <div class="skill-row">
+                    <span class="skill-name">Responsive design</span>
+                    <span class="skill-level">Working</span>
+                    <span class="skill-since">since 2024</span>
                 </div>
             </div>
+        </section>
 
+        <!-- ===== PROJECTS ===== -->
+        <section class="section">
+            <h2 class="section-title">Projects</h2>
 
-            <div class="exp-item">
-                <div class="exp-header">
-                    <span class="exp-title">👥 Friends Gallery</span>
+            <article class="project">
+                <div class="project-head">
+                    <span class="project-name">Autobiography Reader</span>
+                    <span class="project-year">2024 — Now</span>
                 </div>
-                <div class="exp-desc">
-                    Lightbox view | Category filters | Smooth animations
-                    <br />Photo gallery with memory showcase
-                    <div class="exp-links">
-                        <a href="https://ravirajhere.github.io/friends.html" target="_blank" rel="noopener">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io/blob/main/friends.html" target="_blank" rel="noopener">Source</a>
-                    </div>
+                <p class="project-tag">HTML · CSS · JS only · No frameworks</p>
+                <p class="project-desc">
+                    Personal archive with 11 chapters, audio narration, and PDF export.
+                    Every line written by hand.
+                </p>
+                <div class="project-links">
+                    <a href="autobiography.html">Live →</a>
+                    <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">Source →</a>
                 </div>
-            </div>
+            </article>
 
-            <div class="exp-item">
-                <div class="exp-header">
-                    <span class="exp-title">📄 Portfolio Website</span>
+            <article class="project">
+                <div class="project-head">
+                    <span class="project-name">Resume that prints</span>
+                    <span class="project-year">2024</span>
                 </div>
-                <div class="exp-desc">
-                    Responsive design | Project showcase | Contact form
-                    <br />Live on GitHub Pages
-                    <div class="exp-links">
-                        <a href="https://ravirajhere.github.io" target="_blank" rel="noopener">Live Demo</a>
-                        <a href="https://github.com/ravirajhere/ravirajhere.github.io" target="_blank" rel="noopener">Source</a>
-                    </div>
+                <p class="project-tag">Semantic HTML · Print CSS · ATS-friendly</p>
+                <p class="project-desc">
+                    Single-page resume that renders identically on screen, on paper,
+                    and inside applicant tracking systems.
+                </p>
+                <div class="project-links">
+                    <a href="resume-pdf.html">Live →</a>
+                    <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">Source →</a>
                 </div>
-            </div>
-        </div>
+            </article>
 
-        <!-- ================================ -->
-        <!-- SKILLS                           -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Technical Skills</div>
-            <div class="skills-grid">
-                <div>
-                    <span class="skill-cat">Frontend:</span>
-                    <span class="skill-list">HTML5, CSS3, JavaScript, Responsive Design</span>
-                </div>
-                <div>
-                    <span class="skill-cat">Backend:</span>
-                    <span class="skill-list">Python, Node.js (Learning)</span>
-                </div>
-                <div>
-                    <span class="skill-cat">Tools:</span>
-                    <span class="skill-list">VS Code, Git/GitHub, Chrome DevTools</span>
-                </div>
-                <div>
-                    <span class="skill-cat">Soft:</span>
-                    <span class="skill-list">Problem Solving, Quick Learner, Adaptable</span>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- ================================ -->
-        <!-- EDUCATION                        -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Education</div>
+        <!-- ===== EDUCATION ===== -->
+        <section class="section">
+            <h2 class="section-title">Education</h2>
 
             <div class="edu-item">
-                <div class="school">Senior Secondary (Class 12) | 2026</div>
-                <div class="board">CBSE Board</div>
-                <div class="detail">Udaan International School, Begusarai</div>
-                <div class="detail">Physics, Chemistry, Mathematics</div>
+                <div class="edu-head">
+                    <span class="edu-title">Senior Secondary (Class 12)</span>
+                    <span class="edu-year">Completed Feb 2026</span>
+                </div>
+                <p class="edu-school">Udaan International School, Begusarai · CBSE</p>
+                <p class="edu-note">Physics · Chemistry · Mathematics</p>
             </div>
 
             <div class="edu-item">
-                <div class="school">Secondary (Class 10) | 2024</div>
-                <div class="board">CBSE Board</div>
-                <div class="detail">Mother's Pride International Sr. Sec. Anglo Public School, Begusarai</div>
+                <div class="edu-head">
+                    <span class="edu-title">Secondary (Class 10)</span>
+                    <span class="edu-year">Completed 2024</span>
+                </div>
+                <p class="edu-school">Mother's Pride International Sr. Sec. Anglo Public School, Begusarai · CBSE</p>
             </div>
-        </div>
+        </section>
 
-        <!-- ================================ -->
-        <!-- CERTIFICATIONS                   -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Certifications</div>
-            <ul class="achievement-list">
-                <li>Self-Learning Web Development (2023-2026)</li>
-                <li>JavaScript Fundamentals (In Progress)</li>
-                <li>Python Basics (Completed)</li>
+        <!-- ===== MILESTONES ===== -->
+        <section class="section">
+            <h2 class="section-title">Milestones</h2>
+            <ul class="milestone-list">
+                <li><strong>Autobiography</strong> — 11 chapters written and self-published (2024)</li>
+                <li><strong>Portfolio</strong> — rebuilt from scratch, live on GitHub Pages (2026)</li>
+                <li><strong>500+ commits</strong> — in 3 months, on a single repo (2026)</li>
             </ul>
-        </div>
+        </section>
 
-        <!-- ================================ -->
-        <!-- ACHIEVEMENTS                     -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Achievements</div>
-            <ul class="achievement-list">
-                <li>3+ Years of Self-Learning in Web Development</li>
-                <li>Built 4+ Complete Projects from Scratch</li>
-                <li>Portfolio Live on GitHub Pages</li>
-                <li>Self-Taught 5+ Technologies</li>
-            </ul>
-        </div>
+        <!-- ===== LANGUAGES ===== -->
+        <section class="section">
+            <h2 class="section-title">Languages</h2>
+            <p class="languages">
+                <span class="lang-item">Hindi</span> <span class="lang-level">(Native)</span>
+                &nbsp;·&nbsp;
+                <span class="lang-item">English</span> <span class="lang-level">(Professional)</span>
+                &nbsp;·&nbsp;
+                <span class="lang-item">Maithili (Angika)</span> <span class="lang-level">(Conversational)</span>
+            </p>
+        </section>
 
-        <!-- ================================ -->
-        <!-- LANGUAGES                        -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Languages</div>
-            <div class="inline-list">
-                <span><span class="label">Hindi</span> (Bilingual)</span>
-                <span><span class="label">English</span> (Professional)</span>
-                <span><span class="label">Northern Maithili (Angika)</span> (Native)</span>
+        <!-- ===== CONNECT ===== -->
+        <section class="section">
+            <h2 class="section-title">Connect</h2>
+            <div class="connect-list">
+                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener noreferrer">Website ↗</a>
             </div>
-        </div>
+        </section>
 
-        <!-- ================================ -->
-        <!-- CONNECT                          -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">Connect</div>
-            <div class="connect-grid">
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            © <span id="year">2026</span> Ravi Raj · Updated September 2026
+        </footer>
 
-                <a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener" class="connect-link">
-                    <span class="icon-bg"><i class="fab fa-linkedin-in"></i></span>
-                    LinkedIn
-                </a>
-
-                <a href="https://twitter.com/Raviraj2k09" target="_blank" rel="noopener" class="connect-link">
-                    <span class="icon-bg"><i class="fab fa-x-twitter"></i></span>
-                    Twitter/X
-                </a>
-
-                <a href="https://github.com/ravirajhere" target="_blank" rel="noopener" class="connect-link">
-                    <span class="icon-bg"><i class="fab fa-github"></i></span>
-                    GitHub
-                </a>
-
-                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener" class="connect-link">
-                    <span class="icon-bg"><i class="fas fa-globe"></i></span>
-                    Website
-                </a>
-
-            </div>
-        </div>
-
-        <!-- ================================ -->
-        <!-- REFERENCES                       -->
-        <!-- ================================ -->
-        <div class="section">
-            <div class="section-title">References</div>
-            <p class="ref-text">Available upon request</p>
-        </div>
-
-        <!-- ================================ -->
-        <!-- FOOTER                           -->
-        <!-- ================================ -->
-        <div class="footer">
-            © 2026 Ravi Raj &nbsp;·&nbsp; Updated: June 2026
-        </div>
-
-    </div>
+    </main>
 
     <!-- ============================================================
-         INLINE JAVASCRIPT (Theme toggle, print, toast)
-         ============================================================ -->
+         SCRIPTS
+    ============================================================ -->
     <script>
         (function () {
             'use strict';
 
-            // ============================================================
-            // 1. THEME TOGGLE
-            // ============================================================
-            const root = document.documentElement;
-            const THEME_KEY = 'raviraj-theme';
-
-            // Apply saved theme or default to light
-            const savedTheme = (() => {
-                try { return localStorage.getItem(THEME_KEY); } catch { return null; }
-            })();
-
-            if (savedTheme === 'light' || savedTheme === 'dark') {
-                root.setAttribute('data-theme', savedTheme);
-            } else {
-                root.setAttribute('data-theme', 'light');
+            /* ===== YEAR ===== */
+            const yearEl = document.getElementById('year');
+            if (yearEl) {
+                yearEl.textContent = String(new Date().getFullYear());
             }
 
-            function updateLabel() {
-                const label = document.getElementById('themeLabel');
-                if (!label) return;
-                const t = root.getAttribute('data-theme') || 'light';
-                label.textContent = t === 'dark' ? 'Dark' : 'Light';
-            }
-
-            updateLabel();
-
-            // Wire up theme switch
-            const themeSwitch = document.getElementById('themeSwitch');
-            if (themeSwitch) {
-                const toggleTheme = () => {
-                    const current = root.getAttribute('data-theme') || 'light';
-                    const next = current === 'light' ? 'dark' : 'light';
-                    root.setAttribute('data-theme', next);
-                    try { localStorage.setItem(THEME_KEY, next); } catch { /* silent */ }
-                    updateLabel();
-                };
-
-                themeSwitch.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleTheme();
-                });
-
-                themeSwitch.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleTheme();
-                    }
-                });
-            }
-
-            // ============================================================
-            // 2. DOWNLOAD BUTTON (Print)
-            // ============================================================
-            const downloadBtn = document.getElementById('downloadBtn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', () => {
+            /* ===== PRINT BUTTON ===== */
+            const printBtn = document.getElementById('printBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', function () {
                     window.print();
                 });
             }
 
-            // ============================================================
-            // 3. TOAST (for future use)
-            // ============================================================
-            const toastEl = document.getElementById('toast');
-            let toastTimer = null;
-
-            window.showToast = function (msg, duration = 2400) {
-                if (!toastEl) return;
-                toastEl.textContent = msg;
-                toastEl.classList.add('show');
-                clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => {
-                    toastEl.classList.remove('show');
-                }, duration);
-            };
-
-            // ============================================================
-            // 4. EASTER EGG — Console
-            // ============================================================
-            const navy = 'color:#1e40af;font-weight:600;';
-            const slate = 'color:#334155;';
-            console.log('%c 👋 Hey there, fellow developer!', `font-size:18px;font-weight:700;${navy}`);
-            console.log('%c Thanks for peeking under the hood. Built with ❤️ by Ravi Raj', `font-size:13px;${slate}`);
-            console.log('%c 📖 https://github.com/ravirajhere', `font-size:13px;${navy}`);
-            console.log('%c ✅ Resume page loaded successfully.', `font-size:12px;${slate}`);
+            /* ===== KEYBOARD SHORTCUT — Ctrl/Cmd + P ===== */
+            document.addEventListener('keydown', function (e) {
+                if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'p') {
+                    // Let default browser print happen — no need to preventDefault
+                }
+            });
 
         })();
     </script>
