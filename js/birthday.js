@@ -17,7 +17,7 @@ const BEEJ_CONFIG = {
   stepKey: 'beej_step_v15',
   photoKey: 'beej_photo_v15',
   userName: 'RaviRaj',
-  casualPhoto: './assets/casual.jpg',
+  casualPhoto: './assets/images/casual.jpg',
   maxChainLength: 50,
   balloonCount: 6,
   photoCount: 4,
