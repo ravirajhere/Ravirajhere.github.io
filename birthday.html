@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-beej-version="11.0-phase2">
+<html lang="en" data-beej-version="12.0-phase3">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -303,7 +303,115 @@
     <h2 class="section-title">📜 Memory Lane</h2>
     <div id="timeline-zone" class="timeline"></div>
 
-    <!-- ========== 5.14 FOOTER ========== -->
+    <!-- ============================================ -->
+    <!-- 5.14 NAME TO MUSIC (Phase 3) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🎵 Tumhara Naam Ek Tune Me</h2>
+    <div id="nametune-zone">
+      <p class="subtitle">Tumhare naam ke letters se ek unique dhun banti hai</p>
+      <div class="nametune-visual" id="nametune-visual"></div>
+      <button type="button" class="btn" id="nametune-play">
+        🎼 Meri Dhun Baja
+      </button>
+      <button type="button" class="btn btn--ghost" id="nametune-stop">
+        ⏹️ Stop
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.15 TIME CAPSULE (Phase 3) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">⏳ Time Capsule</h2>
+    <div id="capsule-zone">
+      <p class="subtitle">Apna message likho — ek saal baad khulega</p>
+      <textarea
+        id="capsule-input"
+        class="input"
+        placeholder="Apne future self ko kya kehna chahte ho?"
+        rows="4"
+        maxlength="500"
+      ></textarea>
+      <input
+        type="date"
+        id="capsule-date"
+        class="input"
+        aria-label="Unlock date"
+      />
+      <p class="tiny mono" style="color:var(--muted);margin-top:6px">
+        Default: 1 saal baad unlock hoga
+      </p>
+      <button type="button" class="btn" id="capsule-save">
+        🔒 Capsule Lock Karo
+      </button>
+      <div id="capsule-list" class="capsule-list"></div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.16 VOICE COMMAND (Phase 3) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🎤 Voice Command</h2>
+    <div id="voicecmd-zone">
+      <p class="subtitle">
+        Bolo: <strong>"Happy Birthday"</strong> → candles bujho
+      </p>
+      <div class="voice-visual" id="voice-visual">
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+        <div class="voice-bar"></div>
+      </div>
+      <p id="voice-status" class="tiny mono">Mic band hai</p>
+      <button type="button" class="btn" id="voice-start">
+        🎤 Voice On Karo
+      </button>
+      <button type="button" class="btn btn--ghost" id="voice-stop">
+        ⏹️ Band Karo
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.17 URL SHARING (Phase 3) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🔗 Experience Share Karo</h2>
+    <div id="share-zone">
+      <p class="subtitle">
+        Tumhara experience ek link me encode karo — dost ko bhejo
+      </p>
+      <input
+        type="text"
+        id="share-link"
+        class="input"
+        readonly
+        placeholder="Link generate karo..."
+        aria-label="Share link"
+      />
+      <div class="share-actions">
+        <button type="button" class="btn" id="share-generate">
+          🔗 Link Banao
+        </button>
+        <button type="button" class="btn btn--ghost" id="share-copy">
+          📋 Copy
+        </button>
+      </div>
+      <button type="button" class="btn btn--ghost" id="share-whatsapp">
+        💬 WhatsApp Pe Bhejo
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.18 QR CODE (Phase 3) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">📱 QR Code</h2>
+    <div id="qr-zone">
+      <p class="subtitle">Scan karo → certificate verify karo</p>
+      <div id="qr-code" class="qr-code"></div>
+      <button type="button" class="btn btn--ghost" id="qr-download">
+        📥 QR Download
+      </button>
+    </div>
+
+    <!-- ========== 5.19 FOOTER ========== -->
     <footer class="main-footer">
       <button type="button" class="btn btn--icon" id="music-toggle" aria-label="Toggle music">
         🔇
@@ -312,7 +420,7 @@
         🔄 Naya Dost
       </button>
       <p class="mono tiny">
-        BEEJ v11 • Chain: <span id="footer-hash">GENESIS</span> • Fully Offline
+        BEEJ v12 • Chain: <span id="footer-hash">GENESIS</span> • Fully Offline
       </p>
     </footer>
 
