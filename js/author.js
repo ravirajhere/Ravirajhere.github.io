@@ -1,30 +1,83 @@
-/* ============================================================
-   author.js — Ravi Raj Singh · Author Website
-   Handles: Header scroll state, Mobile menu, Smooth scroll
-   ============================================================ */
+/* ==========================================================================
+   RAVI RAJ SINGH — AUTHOR WEBSITE SCRIPT
+   Version: 1.0
+   Handles: Year · Header scroll state · Mobile menu · Smooth scroll
+            External link security · Console greeting
+   No dependencies. No frameworks.
+   ========================================================================== */
 
 (function () {
     'use strict';
 
-    const $ = (sel, ctx = document) => ctx.querySelector(sel);
-    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+    /* ======================================================================
+       1. HELPERS
+       ====================================================================== */
+    const $  = (sel, ctx) => (ctx || document).querySelector(sel);
+    const $$ = (sel, ctx) => Array.prototype.slice.call(
+        (ctx || document).querySelectorAll(sel)
+    );
 
-    /* ------------------------------------------------------------
-       1. HEADER — solid on scroll
-       ------------------------------------------------------------ */
-    function initHeader() {
-        const header = $('#siteHeader');
+    const prefersReduced = (function () {
+        try {
+            return window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
+        }
+    })();
+
+    const FOCUSABLE = [
+        'a[href]',
+        'button:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    /* Safe sessionStorage (works in private mode / file://) */
+    function sessionGet(key) {
+        try { return sessionStorage.getItem(key); }
+        catch (e) { return null; }
+    }
+    function sessionSet(key, value) {
+        try { sessionStorage.setItem(key, value); return true; }
+        catch (e) { return false; }
+    }
+
+    /* ======================================================================
+       2. ELEMENT REFERENCES
+       ====================================================================== */
+    const header        = $('#siteHeader');
+    const menuBtn       = $('#menuBtn');
+    const mobileNav     = $('#mobileNav');
+    const mobileOverlay = $('#mobileOverlay');
+    const mobileClose   = $('#mobileNavClose');
+    const yearEl        = $('#year');
+    const scrollCue     = $('.scroll-cue');
+
+    /* ======================================================================
+       3. YEAR IN FOOTER
+       ====================================================================== */
+    if (yearEl) {
+        yearEl.textContent = String(new Date().getFullYear());
+    }
+
+    /* ======================================================================
+       4. HEADER — solid on scroll
+       ====================================================================== */
+    (function initHeader() {
         if (!header) return;
 
         let ticking = false;
 
-        const update = () => {
-            const scrolled = window.scrollY > 40;
+        function update() {
+            const scrolled = window.scrollY > 24;
             header.classList.toggle('is-scrolled', scrolled);
             ticking = false;
-        };
+        }
 
-        window.addEventListener('scroll', () => {
+        window.addEventListener('scroll', function () {
             if (!ticking) {
                 window.requestAnimationFrame(update);
                 ticking = true;
@@ -32,120 +85,220 @@
         }, { passive: true });
 
         update();
+    })();
+
+    /* ======================================================================
+       5. FOCUS TRAP (for mobile menu)
+       ====================================================================== */
+    let activeTrap = null;
+
+    function handleTrapKey(e) {
+        if (e.key !== 'Tab' || !activeTrap) return;
+
+        const focusables = $$(FOCUSABLE, activeTrap).filter(function (el) {
+            return el.offsetParent !== null || el === document.activeElement;
+        });
+        if (!focusables.length) return;
+
+        const first = focusables[0];
+        const last  = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
     }
 
-    /* ------------------------------------------------------------
-       2. MOBILE MENU
-       ------------------------------------------------------------ */
-    function initMobileMenu() {
-        const toggle = $('#menuToggle');
-        const menu = $('#mobileMenu');
-        if (!toggle || !menu) return;
+    function handleGlobalEscape(e) {
+        if (e.key !== 'Escape') return;
 
-        const open = () => {
-            toggle.setAttribute('aria-expanded', 'true');
-            toggle.setAttribute('aria-label', 'Close menu');
-            menu.classList.add('is-open');
-            document.body.classList.add('menu-open');
-        };
+        if (mobileNav && mobileNav.dataset.open === 'true') {
+            closeMenu();
+        }
+    }
 
-        const close = () => {
-            toggle.setAttribute('aria-expanded', 'false');
-            toggle.setAttribute('aria-label', 'Open menu');
-            menu.classList.remove('is-open');
-            document.body.classList.remove('menu-open');
-        };
+    function trapFocus(container) {
+        releaseFocus();
+        activeTrap = container;
+        container.addEventListener('keydown', handleTrapKey);
+        document.addEventListener('keydown', handleGlobalEscape);
+    }
 
-        toggle.addEventListener('click', () => {
-            const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-            isOpen ? close() : open();
-        });
+    function releaseFocus() {
+        if (activeTrap) {
+            activeTrap.removeEventListener('keydown', handleTrapKey);
+            activeTrap = null;
+        }
+        document.removeEventListener('keydown', handleGlobalEscape);
+    }
 
-        // Close on link click
-        $$('#mobileMenu a').forEach(link => {
-            link.addEventListener('click', close);
-        });
+    /* ======================================================================
+       6. MOBILE MENU
+       ====================================================================== */
+    let lastFocusedMenu = null;
 
-        // Close on Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && menu.classList.contains('is-open')) {
-                close();
-                toggle.focus();
+    function openMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+        lastFocusedMenu = document.activeElement;
+
+        mobileNav.hidden = false;
+        mobileOverlay.hidden = false;
+
+        /* Force reflow so browser computes initial state */
+        void mobileNav.offsetHeight;
+
+        mobileNav.dataset.open = 'true';
+        mobileOverlay.dataset.open = 'true';
+
+        document.body.style.overflow = 'hidden';
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        mobileOverlay.setAttribute('aria-hidden', 'false');
+
+        setTimeout(function () {
+            const firstLink = $('a', mobileNav);
+            if (firstLink && typeof firstLink.focus === 'function') {
+                try { firstLink.focus(); } catch (e) {}
+            }
+        }, 100);
+
+        trapFocus(mobileNav);
+    }
+
+    function closeMenu() {
+        if (!mobileNav || !mobileOverlay) return;
+
+        mobileNav.dataset.open = 'false';
+        mobileOverlay.dataset.open = 'false';
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        mobileOverlay.setAttribute('aria-hidden', 'true');
+
+        document.body.style.overflow = '';
+
+        setTimeout(function () {
+            mobileNav.hidden = true;
+            mobileOverlay.hidden = true;
+        }, 500);
+
+        releaseFocus();
+
+        if (lastFocusedMenu && typeof lastFocusedMenu.focus === 'function') {
+            try { lastFocusedMenu.focus(); } catch (e) {}
+        }
+    }
+
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function () {
+            const isOpen = mobileNav && mobileNav.dataset.open === 'true';
+            if (isOpen) {
+                closeMenu();
+            } else {
+                openMenu();
             }
         });
-
-        // Close on resize to desktop
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                if (window.innerWidth > 640) close();
-            }, 150);
-        });
     }
 
-    /* ------------------------------------------------------------
-       3. SMOOTH SCROLL for nav links
-       (native CSS handles most; this fixes iOS + focus)
-       ------------------------------------------------------------ */
-    function initSmoothScroll() {
-        $$('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                if (!href || href === '#' || href.length < 2) return;
+    if (mobileClose)   mobileClose.addEventListener('click', closeMenu);
+    if (mobileOverlay) mobileOverlay.addEventListener('click', closeMenu);
 
-                const target = document.querySelector(href);
-                if (!target) return;
+    $$('#mobileNav a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            setTimeout(closeMenu, 60);
+        });
+    });
 
-                e.preventDefault();
+    /* ======================================================================
+       7. SMOOTH SCROLL (anchor links)
+       ====================================================================== */
+    $$('a[href^="#"]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            const href = link.getAttribute('href');
+            if (!href || href === '#' || href.length < 2) return;
 
-                const header = $('#siteHeader');
-                const offset = header ? header.offsetHeight + 8 : 0;
+            const target = document.querySelector(href);
+            if (!target) return;
 
-                const targetTop = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            e.preventDefault();
 
-                window.scrollTo({
-                    top: targetTop,
-                    behavior: 'smooth'
-                });
+            const offset = header ? header.offsetHeight + 8 : 0;
+            const top = target.getBoundingClientRect().top + window.scrollY - offset;
 
-                // Update URL without jumping
-                if (history.replaceState) {
-                    history.replaceState(null, '', href);
-                }
+            window.scrollTo({
+                top: top,
+                behavior: prefersReduced ? 'auto' : 'smooth'
+            });
 
-                // Move focus for accessibility
-                target.setAttribute('tabindex', '-1');
-                target.focus({ preventScroll: true });
-                target.addEventListener('blur', function onBlur() {
-                    target.removeAttribute('tabindex');
-                    target.removeEventListener('blur', onBlur);
-                });
+            /* Update URL without jumping */
+            try { history.replaceState(null, '', href); } catch (err) {}
+
+            /* Move focus for accessibility */
+            target.setAttribute('tabindex', '-1');
+            try { target.focus({ preventScroll: true }); } catch (err) {}
+
+            target.addEventListener('blur', function onBlur() {
+                target.removeAttribute('tabindex');
+                target.removeEventListener('blur', onBlur);
             });
         });
-    }
+    });
 
-    /* ------------------------------------------------------------
-       4. INIT
-       ------------------------------------------------------------ */
-    function init() {
-        const safe = (name, fn) => {
-            try { fn(); }
-            catch (e) { console.warn('[author.js] ' + name + ' failed:', e); }
-        };
+    /* ======================================================================
+       8. SCROLL CUE FADE
+       ====================================================================== */
+    (function initScrollCue() {
+        if (!scrollCue) return;
 
-        safe('initHeader',       initHeader);
-        safe('initMobileMenu',   initMobileMenu);
-        safe('initSmoothScroll', initSmoothScroll);
+        let cueRaf = null;
 
-        document.body.classList.add('js-ready');
-        console.log('✅ author.js loaded');
-    }
+        function fadeCue() {
+            const opacity = Math.max(0, 1 - window.scrollY / 300);
+            scrollCue.style.opacity = String(opacity);
+            scrollCue.style.pointerEvents = opacity < 0.1 ? 'none' : 'auto';
+        }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+        window.addEventListener('scroll', function () {
+            if (cueRaf) return;
+            cueRaf = window.requestAnimationFrame(function () {
+                fadeCue();
+                cueRaf = null;
+            });
+        }, { passive: true });
+
+        fadeCue();
+    })();
+
+    /* ======================================================================
+       9. EXTERNAL LINKS SECURITY
+       ====================================================================== */
+    $$('a[target="_blank"]').forEach(function (link) {
+        const rel = link.getAttribute('rel') || '';
+        if (rel.indexOf('noopener') === -1) {
+            link.setAttribute('rel', (rel + ' noopener noreferrer').trim());
+        }
+    });
+
+    /* ======================================================================
+       10. CONSOLE GREETING (once per session)
+       ====================================================================== */
+    (function greet() {
+        const hasGreeted = sessionGet('rrs-author-greeted');
+        if (hasGreeted) return;
+
+        const accent = 'color:#8B6F3F;font-weight:600;';
+        const soft   = 'color:#7A7068;';
+
+        try {
+            console.log('%cRavi Raj Singh — Author', 'font-size:14px;font-weight:700;' + accent);
+            console.log('%c"A Boy Who Never Thought" — an 18-year journey.', 'font-size:12px;' + soft);
+            console.log('%cRead the book: /book.html', 'font-size:12px;' + soft);
+            console.log('%cWritten by hand. No frameworks.', 'font-size:12px;' + accent);
+
+            sessionSet('rrs-author-greeted', '1');
+        } catch (e) {}
+    })();
 
 })();
