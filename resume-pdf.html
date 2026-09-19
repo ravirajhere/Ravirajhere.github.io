@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,6 +21,7 @@
     <style>
         /* ============================================================
            RESUME — SINGLE COLUMN · ATS-FRIENDLY · PRINT-OPTIMIZED
+           Level 2 polish · Deeper navy · Rhythm · Active voice
            ============================================================ */
 
         /* ---------- RESET ---------- */
@@ -37,10 +38,10 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.55;
             color: #0f172a;
             background: #f1f5f9;
-            padding: 32px 16px 64px;
+            padding: 40px 16px 72px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -50,8 +51,8 @@
 
         /* ---------- ACTION BAR ---------- */
         .action-bar {
-            max-width: 800px;
-            margin: 0 auto 24px;
+            max-width: 820px;
+            margin: 0 auto 28px;
             display: flex;
             justify-content: flex-end;
             gap: 10px;
@@ -73,14 +74,14 @@
         }
 
         .btn-primary {
-            background: #1e40af;
+            background: #0f2e5c;
             color: #fff;
-            border-color: #1e40af;
+            border-color: #0f2e5c;
         }
 
         .btn-primary:hover {
-            background: #1e3a8a;
-            border-color: #1e3a8a;
+            background: #0a2346;
+            border-color: #0a2346;
         }
 
         .btn-quiet {
@@ -96,35 +97,39 @@
 
         /* ---------- RESUME SHEET ---------- */
         .resume {
-            max-width: 800px;
+            max-width: 820px;
             margin: 0 auto;
             background: #fff;
-            padding: 48px 52px;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.04);
+            padding: 56px 60px;
+            box-shadow:
+                0 1px 2px rgba(15, 23, 42, 0.04),
+                0 12px 32px rgba(15, 23, 42, 0.05);
             border-radius: 4px;
         }
 
         /* ---------- HEADER ---------- */
         .header {
-            padding-bottom: 18px;
+            padding-bottom: 22px;
             border-bottom: 2px solid #0f172a;
-            margin-bottom: 22px;
+            margin-bottom: 28px;
         }
 
         .name {
-            font-size: 26px;
+            font-size: 32px;
             font-weight: 700;
             color: #0f172a;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin-bottom: 4px;
+            letter-spacing: -0.025em;
+            line-height: 1.15;
+            margin-bottom: 6px;
         }
 
         .role {
             font-size: 14px;
             font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 10px;
+            color: #0f2e5c;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
         }
 
         .contact-line {
@@ -133,20 +138,27 @@
             display: flex;
             flex-wrap: wrap;
             gap: 4px 14px;
+            align-items: baseline;
+        }
+
+        .contact-line .dot {
+            color: #cbd5e1;
         }
 
         .contact-line a {
             border-bottom: 1px dotted #94a3b8;
+            padding-bottom: 1px;
+            transition: border-color 0.15s ease, color 0.15s ease;
         }
 
         .contact-line a:hover {
-            border-bottom-color: #1e40af;
-            color: #1e40af;
+            border-bottom-color: #0f2e5c;
+            color: #0f2e5c;
         }
 
         /* ---------- SECTION ---------- */
         .section {
-            margin-bottom: 22px;
+            margin-bottom: 28px;
         }
 
         .section:last-child {
@@ -157,30 +169,30 @@
             font-size: 11px;
             font-weight: 700;
             color: #0f172a;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
+            margin-bottom: 14px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #e2e8f0;
         }
 
         .section p {
             font-size: 13.5px;
             color: #334155;
-            line-height: 1.65;
+            line-height: 1.7;
         }
 
         /* ---------- SKILLS ---------- */
         .skills-list {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
 
         .skill-row {
             display: grid;
-            grid-template-columns: 200px 90px 70px;
-            gap: 12px;
+            grid-template-columns: 210px 100px 90px;
+            gap: 14px;
             align-items: baseline;
             font-size: 13.5px;
         }
@@ -204,7 +216,7 @@
 
         /* ---------- PROJECT ---------- */
         .project {
-            margin-bottom: 14px;
+            margin-bottom: 20px;
         }
 
         .project:last-child {
@@ -217,11 +229,11 @@
             align-items: baseline;
             flex-wrap: wrap;
             gap: 6px;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .project-name {
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 700;
             color: #0f172a;
         }
@@ -230,33 +242,41 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 11.5px;
             color: #64748b;
+            white-space: nowrap;
         }
 
         .project-tag {
             font-size: 12px;
             color: #64748b;
             font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .project-desc {
             font-size: 13px;
             color: #334155;
-            line-height: 1.6;
-            margin-bottom: 4px;
+            line-height: 1.65;
+            margin-bottom: 6px;
+        }
+
+        .project-desc strong {
+            color: #0f172a;
+            font-weight: 600;
         }
 
         .project-links {
             font-size: 12.5px;
             display: flex;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 16px;
         }
 
         .project-links a {
-            color: #1e40af;
+            color: #0f2e5c;
             font-weight: 500;
-            border-bottom: 1px dotted #93c5fd;
+            border-bottom: 1px dotted #93b3d9;
+            padding-bottom: 1px;
+            transition: border-color 0.15s ease;
         }
 
         .project-links a:hover {
@@ -265,7 +285,7 @@
 
         /* ---------- EDUCATION ---------- */
         .edu-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .edu-item:last-child {
@@ -290,52 +310,29 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 11.5px;
             color: #64748b;
+            white-space: nowrap;
         }
 
         .edu-school {
             font-size: 13px;
             color: #334155;
-            margin-top: 1px;
+            margin-top: 2px;
         }
 
         .edu-note {
             font-size: 12px;
             color: #64748b;
             font-family: 'JetBrains Mono', monospace;
-            margin-top: 1px;
-        }
-
-        /* ---------- MILESTONES ---------- */
-        .milestone-list {
-            list-style: none;
-        }
-
-        .milestone-list li {
-            font-size: 13px;
-            color: #334155;
-            line-height: 1.6;
-            padding-left: 16px;
-            position: relative;
-            margin-bottom: 3px;
-        }
-
-        .milestone-list li::before {
-            content: "—";
-            position: absolute;
-            left: 0;
-            color: #1e40af;
-            font-weight: 700;
-        }
-
-        .milestone-list li strong {
-            color: #0f172a;
-            font-weight: 600;
+            margin-top: 3px;
         }
 
         /* ---------- LANGUAGES ---------- */
         .languages {
             font-size: 13.5px;
             color: #334155;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 20px;
         }
 
         .lang-item {
@@ -352,7 +349,7 @@
         .connect-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px 24px;
+            gap: 8px 28px;
             font-size: 13px;
         }
 
@@ -361,23 +358,24 @@
             font-weight: 500;
             border-bottom: 1px dotted #94a3b8;
             padding-bottom: 1px;
+            transition: color 0.15s ease, border-color 0.15s ease;
         }
 
         .connect-list a:hover {
-            color: #1e40af;
-            border-bottom-color: #1e40af;
+            color: #0f2e5c;
+            border-bottom-color: #0f2e5c;
         }
 
         /* ---------- FOOTER ---------- */
         .footer {
-            margin-top: 26px;
-            padding-top: 14px;
+            margin-top: 32px;
+            padding-top: 16px;
             border-top: 1px solid #e2e8f0;
             text-align: center;
             font-size: 11px;
             color: #94a3b8;
             font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
         }
 
         /* ============================================================
@@ -399,12 +397,16 @@
             }
 
             .resume {
-                padding: 28px 22px;
+                padding: 32px 24px;
                 border-radius: 0;
             }
 
             .name {
-                font-size: 22px;
+                font-size: 26px;
+            }
+
+            .role {
+                margin-bottom: 12px;
             }
 
             .skill-row {
@@ -426,12 +428,7 @@
                 font-size: 11px;
             }
 
-            .project-head {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px;
-            }
-
+            .project-head,
             .edu-head {
                 flex-direction: column;
                 align-items: flex-start;
@@ -440,92 +437,97 @@
 
             .contact-line {
                 flex-direction: column;
-                gap: 3px;
+                gap: 4px;
+            }
+
+            .contact-line .dot {
+                display: none;
             }
 
             .connect-list {
                 flex-direction: column;
-                gap: 4px;
+                gap: 6px;
             }
         }
 
         /* ============================================================
            PRINT — FORCE LIGHT, COMPACT, 1 PAGE
            ============================================================ */
+        @page {
+            size: A4;
+            margin: 14mm 16mm;
+        }
+
         @media print {
-            @page {
-                size: A4;
-                margin: 14mm 16mm;
-            }
-
             body {
-                background: #fff !important;
-                color: #000 !important;
-                padding: 0 !important;
-                font-size: 11pt !important;
-                line-height: 1.4 !important;
+                background: #fff;
+                color: #000;
+                padding: 0;
+                font-size: 11pt;
+                line-height: 1.4;
             }
 
-            .action-bar,
-            .btn,
-            .toast {
-                display: none !important;
+            .action-bar {
+                display: none;
             }
 
             .resume {
-                max-width: 100% !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                background: #fff !important;
+                max-width: 100%;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                margin: 0;
+                background: #fff;
             }
 
             a {
-                color: #000 !important;
-                text-decoration: none !important;
-                border-bottom: none !important;
+                color: #000;
+                text-decoration: none;
+                border-bottom: none;
             }
 
             .project-links a,
             .contact-line a,
             .connect-list a {
-                border-bottom: none !important;
+                border-bottom: none;
             }
 
             .section {
                 page-break-inside: avoid;
-                margin-bottom: 14px !important;
+                margin-bottom: 16px;
             }
 
             .header {
-                margin-bottom: 14px !important;
-                padding-bottom: 10px !important;
+                margin-bottom: 16px;
+                padding-bottom: 12px;
             }
 
             .name {
-                font-size: 20pt !important;
+                font-size: 22pt;
+            }
+
+            .role {
+                font-size: 11pt;
             }
 
             .section-title {
-                font-size: 9pt !important;
-                margin-bottom: 6px !important;
+                font-size: 9.5pt;
+                margin-bottom: 8px;
             }
 
             .section p,
             .skill-row,
             .project-desc,
             .edu-title,
-            .milestone-list li,
             .languages,
             .connect-list {
-                font-size: 10pt !important;
+                font-size: 10.5pt;
             }
 
             .footer {
-                margin-top: 16px !important;
-                padding-top: 10px !important;
-                font-size: 9pt !important;
+                margin-top: 20px;
+                padding-top: 12px;
+                font-size: 9pt;
             }
         }
 
@@ -534,8 +536,8 @@
            ============================================================ */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms;
+                transition-duration: 0.01ms;
             }
         }
     </style>
@@ -561,13 +563,13 @@
 
         <!-- ===== HEADER ===== -->
         <header class="header">
-            <h1 class="name">Ravi Raj</h1>
+            <h1 class="name">Ravi Raj Singh</h1>
             <p class="role">Frontend Developer</p>
             <p class="contact-line">
                 <span>Patna, India</span>
-                <span>·</span>
+                <span class="dot">·</span>
                 <a href="mailto:raviraj2k09@gmail.com">raviraj2k09@gmail.com</a>
-                <span>·</span>
+                <span class="dot">·</span>
                 <a href="https://ravirajhere.github.io" target="_blank" rel="noopener noreferrer">ravirajhere.github.io</a>
             </p>
         </header>
@@ -576,8 +578,8 @@
         <section class="section">
             <h2 class="section-title">Summary</h2>
             <p>
-                Self-taught frontend developer (since 2024). Hand-wrote two complete
-                projects — an 11-chapter reader and a print-optimized resume page.
+                Frontend developer from Patna, India. Built two complete projects —
+                an 11-chapter book reader and a print-optimized resume page.
                 Currently learning React and Python. Open to internships.
             </p>
         </section>
@@ -607,6 +609,11 @@
                     <span class="skill-since">since 2024</span>
                 </div>
                 <div class="skill-row">
+                    <span class="skill-name">React</span>
+                    <span class="skill-level">Learning</span>
+                    <span class="skill-since">since 2026</span>
+                </div>
+                <div class="skill-row">
                     <span class="skill-name">Git &amp; GitHub</span>
                     <span class="skill-level">Working</span>
                     <span class="skill-since">since 2024</span>
@@ -619,22 +626,23 @@
             </div>
         </section>
 
-        <!-- ===== PROJECTS ===== -->
+        <!-- ===== PROJECTS (with milestones merged) ===== -->
         <section class="section">
             <h2 class="section-title">Projects</h2>
 
             <article class="project">
                 <div class="project-head">
-                    <span class="project-name">Autobiography Reader</span>
+                    <span class="project-name">"A Boy Who Never Thought" — Book Reader</span>
                     <span class="project-year">2024 — Now</span>
                 </div>
                 <p class="project-tag">HTML · CSS · JS only · No frameworks</p>
                 <p class="project-desc">
-                    Personal archive with 11 chapters, audio narration, and PDF export.
-                    Every line written by hand.
+                    Personal archive with <strong>11 chapters</strong> and PDF export.
+                    Every line written by hand. <strong>500+ commits in 3 months</strong> on this repository.
                 </p>
                 <div class="project-links">
-                    <a href="autobiography.html">Live →</a>
+                    <a href="book.html">Live →</a>
+                    <a href="author.html">Author site →</a>
                     <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">Source →</a>
                 </div>
             </article>
@@ -654,7 +662,6 @@
                     <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">Source →</a>
                 </div>
             </article>
-
         </section>
 
         <!-- ===== EDUCATION ===== -->
@@ -664,7 +671,7 @@
             <div class="edu-item">
                 <div class="edu-head">
                     <span class="edu-title">Senior Secondary (Class 12)</span>
-                    <span class="edu-year">Completed Feb 2026</span>
+                    <span class="edu-year">Completed 2026</span>
                 </div>
                 <p class="edu-school">Udaan International School, Begusarai · CBSE</p>
                 <p class="edu-note">Physics · Chemistry · Mathematics</p>
@@ -679,25 +686,13 @@
             </div>
         </section>
 
-        <!-- ===== MILESTONES ===== -->
-        <section class="section">
-            <h2 class="section-title">Milestones</h2>
-            <ul class="milestone-list">
-                <li><strong>Autobiography</strong> — 11 chapters written and self-published (2024)</li>
-                <li><strong>Portfolio</strong> — rebuilt from scratch, live on GitHub Pages (2026)</li>
-                <li><strong>500+ commits</strong> — in 3 months, on a single repo (2026)</li>
-            </ul>
-        </section>
-
-        <!-- ===== LANGUAGES ===== -->
+        <!-- ===== LANGUAGES (compact) ===== -->
         <section class="section">
             <h2 class="section-title">Languages</h2>
             <p class="languages">
-                <span class="lang-item">Hindi</span> <span class="lang-level">(Native)</span>
-                &nbsp;·&nbsp;
-                <span class="lang-item">English</span> <span class="lang-level">(Professional)</span>
-                &nbsp;·&nbsp;
-                <span class="lang-item">Maithili (Angika)</span> <span class="lang-level">(Conversational)</span>
+                <span><span class="lang-item">Hindi</span> <span class="lang-level">(Native)</span></span>
+                <span><span class="lang-item">English</span> <span class="lang-level">(Professional)</span></span>
+                <span><span class="lang-item">Maithili (Angika)</span> <span class="lang-level">(Conversational)</span></span>
             </p>
         </section>
 
@@ -713,7 +708,7 @@
 
         <!-- ===== FOOTER ===== -->
         <footer class="footer">
-            © <span id="year">2026</span> Ravi Raj · Updated September 2026
+            © <span id="year">2026</span> Ravi Raj Singh · Updated 2026
         </footer>
 
     </main>
@@ -738,13 +733,6 @@
                     window.print();
                 });
             }
-
-            /* ===== KEYBOARD SHORTCUT — Ctrl/Cmd + P ===== */
-            document.addEventListener('keydown', function (e) {
-                if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'p') {
-                    // Let default browser print happen — no need to preventDefault
-                }
-            });
 
         })();
     </script>
