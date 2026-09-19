@@ -1,0 +1,703 @@
+/* ============================================================
+   author.css — Ravi Raj Singh · Author Website
+   Palette: Warm off-white · Charcoal · Antique gold
+   Typography: Playfair Display (headings) + Lora (body)
+   ============================================================ */
+
+/* ---------- RESET ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------- TOKENS ---------- */
+:root {
+    --bg:          #F7F4EE;
+    --bg-alt:      #F1ECE3;
+    --text:        #1C1A17;
+    --text-muted:  #5A544C;
+    --text-soft:   #8A8377;
+    --accent:      #8B6F3F;
+    --accent-dark: #6E5630;
+    --line:        #E5DED2;
+    --line-strong: #D6CCBA;
+
+    --font-serif:  'Playfair Display', 'Georgia', 'Times New Roman', serif;
+    --font-body:   'Lora', 'Georgia', 'Times New Roman', serif;
+
+    --max-width:   1120px;
+    --reading-width: 640px;
+
+    --space-sm:    clamp(0.75rem, 1.5vw, 1rem);
+    --space-md:    clamp(1.5rem, 3vw, 2rem);
+    --space-lg:    clamp(3rem, 6vw, 5rem);
+    --space-xl:    clamp(5rem, 10vw, 8rem);
+}
+
+/* ---------- BASE ---------- */
+body {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-optical-sizing: auto;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+::selection {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ---------- SKIP LINK ---------- */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    background: var(--text);
+    color: var(--bg);
+    padding: 0.5rem 1rem;
+    z-index: 9999;
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+}
+.skip-link:focus {
+    top: 1rem;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: transparent;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.site-header.is-scrolled {
+    background: rgba(247, 244, 238, 0.94);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom-color: var(--line);
+}
+
+.header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1.25rem clamp(1.25rem, 4vw, 2rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.brand {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.3px;
+    color: var(--text);
+}
+
+.primary-nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.primary-nav a {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    position: relative;
+    transition: color 0.2s ease;
+    padding: 0.25rem 0;
+}
+
+.primary-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+}
+
+.primary-nav a:hover {
+    color: var(--text);
+}
+.primary-nav a:hover::after {
+    width: 100%;
+}
+
+/* Menu toggle — mobile */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--text);
+    transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+}
+.menu-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+}
+
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    padding: 1rem 1.25rem 1.5rem;
+    gap: 0.25rem;
+}
+
+.mobile-nav a {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+}
+.mobile-nav a:last-child {
+    border-bottom: none;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 0.85rem 1.6rem;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+}
+.btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--line-strong);
+}
+.btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ============================================================
+   SECTION SHARED
+   ============================================================ */
+.section-label {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    color: var(--text);
+}
+
+.section-rule {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin: 1.5rem auto 0;
+}
+.section-rule--left {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 0 4rem;
+    position: relative;
+}
+
+.hero-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+    width: 100%;
+}
+
+.hero-text {
+    max-width: 560px;
+}
+
+.author-photo {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.hero-label {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+}
+
+.hero-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+}
+
+.hero-tagline {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+}
+
+.hero-tagline .devanagari {
+    font-family: 'Lora', serif;
+    font-style: normal;
+    color: var(--accent);
+}
+
+.hero-intro {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin-bottom: 2.25rem;
+    max-width: 520px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Book cover visual */
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.book-cover-frame {
+    position: relative;
+    max-width: 340px;
+    width: 100%;
+}
+
+.book-cover-frame::before {
+    content: '';
+    position: absolute;
+    inset: 12px -12px -12px 12px;
+    border: 1px solid var(--line-strong);
+    z-index: -1;
+    transition: inset 0.3s ease;
+}
+
+.book-cover {
+    width: 100%;
+    height: auto;
+    box-shadow:
+        0 4px 12px rgba(28, 26, 23, 0.08),
+        0 20px 45px rgba(28, 26, 23, 0.12);
+}
+
+.book-cover-frame--large {
+    max-width: 380px;
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about {
+    padding: var(--space-xl) 0;
+    background: var(--bg-alt);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.about-inner {
+    max-width: var(--reading-width);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    text-align: center;
+}
+
+.about .section-rule {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.about-body {
+    margin-top: 2.5rem;
+    text-align: left;
+}
+
+.about-body p {
+    font-size: 1.075rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+}
+.about-body p:last-child {
+    margin-bottom: 0;
+}
+.about-body em {
+    font-style: italic;
+    color: var(--accent);
+}
+
+/* ============================================================
+   THE BOOK
+   ============================================================ */
+.book-section {
+    padding: var(--space-xl) 0;
+}
+
+.book-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+}
+
+.book-visual {
+    display: flex;
+    justify-content: center;
+}
+
+.book-content {
+    max-width: 560px;
+}
+
+.book-synopsis {
+    margin-top: 2rem;
+}
+
+.book-synopsis p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+}
+.book-synopsis p:last-child {
+    margin-bottom: 0;
+}
+.book-synopsis em {
+    font-style: italic;
+}
+
+.book-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 2rem;
+    margin-top: 2.25rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--line);
+}
+
+.detail dt {
+    font-family: var(--font-serif);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 0.35rem;
+}
+
+.detail dd {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.book-actions {
+    margin-top: 2.25rem;
+}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact {
+    padding: var(--space-xl) 0;
+    background: var(--bg-alt);
+    border-top: 1px solid var(--line);
+}
+
+.contact-inner {
+    max-width: var(--reading-width);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    text-align: center;
+}
+
+.contact .section-rule {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-line {
+    font-size: 1.075rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin: 2rem auto 2.25rem;
+    max-width: 480px;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+    padding: 2.5rem 0;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+}
+
+.footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer-name {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.footer-meta {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+    .hero-inner,
+    .book-inner {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .hero-visual {
+        order: -1;
+    }
+
+    .book-visual {
+        order: -1;
+    }
+
+    .hero-text,
+    .book-content {
+        max-width: 100%;
+    }
+
+    .hero {
+        padding: 7rem 0 4rem;
+        min-height: auto;
+    }
+
+    .book-cover-frame {
+        max-width: 280px;
+    }
+
+    .book-cover-frame--large {
+        max-width: 300px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    body {
+        font-size: 16px;
+    }
+
+    .primary-nav {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .mobile-nav.is-open {
+        display: flex;
+    }
+
+    .header-inner {
+        padding: 1rem 1.25rem;
+    }
+
+    .brand {
+        font-size: 1rem;
+    }
+
+    .hero {
+        padding: 6rem 0 3rem;
+    }
+
+    .author-photo {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 1.25rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .book-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .book-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .contact-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .about-body p,
+    .book-synopsis p {
+        font-size: 1rem;
+    }
+}
