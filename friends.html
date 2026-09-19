@@ -2,293 +2,229 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Gallery — Ravi Raj</title>
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/friends.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Friends — Ravi Raj</title>
+
+    <meta name="description" content="A small collection of friends who shaped my story. Search, meet, celebrate." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/friends.css" />
 </head>
 <body>
-
-    <!-- ============================================================
-    SIDEBAR OVERLAY
-    ============================================================ -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- ============================================================
-    SIDEBAR / HAMBURGER MENU
-    ============================================================ -->
-    <aside class="sidebar" id="sidebar">
-        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
-        
-        <div class="sidebar-profile">
-            <img src="assets/images/formal.jpg" alt="Ravi Raj" class="sp-avatar" />
-            <div class="sp-name">Ravi Raj</div>
-            <div class="sp-title">Student · Author · Developer</div>
-        </div>
-        
-        <div class="sidebar-section-label">🔹 Quick Links</div>
-        <ul class="sidebar-menu">
-            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="autobiography.html"><i class="fas fa-book-open"></i> My Autobiography</a></li>
-            <li><a href="resume-pdf.html"><i class="fas fa-file-pdf"></i> Resume (PDF)</a></li>
-        </ul>
-        
-        <div class="sidebar-section-label">👥 Friends</div>
-        <ul class="sidebar-menu">
-            <li><a href="#searchArea" onclick="setTimeout(closeSidebar, 300)"><i class="fas fa-search"></i> Search Friend</a></li>
-            <li><a href="#photoScreen" onclick="setTimeout(closeSidebar, 300)"><i class="fas fa-camera"></i> Capture Photo</a></li>
-            <li><a href="#"><i class="fas fa-users"></i> All Friends (14)</a></li>
-            <li><a href="#"><i class="fas fa-tags"></i> Filter by Tag</a></li>
-        </ul>
-        
-        <div class="sidebar-actions">
-            <button class="sidebar-action-btn primary" onclick="downloadFriendCard(); setTimeout(closeSidebar, 400);">
-                <i class="fas fa-award"></i> Friend Certificate
-            </button>
-            <button class="sidebar-action-btn secondary" onclick="location.href='emailjs.html'">
-                <i class="fas fa-envelope"></i> Report Issue
-            </button>
-        </div>
-        
-        <div class="sidebar-footer">
-            <p class="sf-motto">Made with <i>❤️</i> &amp; Curiosity</p>
-        </div>
-    </aside>
 
     <div class="friends-container">
 
         <!-- ============================================
-        TOP NAVBAR
+        TOP NAV
         ============================================ -->
-        <nav class="top-nav">
+        <nav class="top-nav" aria-label="Primary">
             <div class="nav-left">
-                <div class="nav-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
-                <div>
-                    <div class="nav-brand">Friends <span>Gallery</span></div>
-                    <span class="nav-brand-sub">✦ Premium Edition</span>
-                </div>
+                <a href="index.html" class="nav-brand-link">
+                    <div class="nav-brand">Friends <span>Corner</span></div>
+                    <span class="nav-brand-sub">A small collection by Ravi Raj</span>
+                </a>
             </div>
             <div class="nav-right">
-                <div class="theme-toggle-nav">
-                    <div class="switch" id="themeSwitchNav" role="button" tabindex="0" aria-label="Toggle theme">
-                        <span class="switch-icon sun">☀️</span>
-                        <span class="switch-icon moon">🌙</span>
-                        <div class="slider"></div>
-                    </div>
-                </div>
-                <img src="assets/images/formal.jpg" alt="Ravi Raj" class="nav-avatar" />
+                <a href="index.html" class="nav-back">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <path d="M11 7H3M3 7L7 3M3 7L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Home</span>
+                </a>
             </div>
         </nav>
 
         <!-- ============================================
         MAIN CONTENT
         ============================================ -->
-        <div class="main-content">
+        <main class="main-content" id="main">
 
-            <!-- SEARCH BAR -->
+            <!-- ===== SEARCH AREA ===== -->
             <div class="search-area" id="searchArea">
-                <i class="fas fa-search search-icon-left"></i>
-                <input type="text" id="friendSearch" placeholder="Search your friend..." autocomplete="off" aria-label="Search friend name">
-                <button class="search-voice" onclick="toggleVoiceSearch()" title="Voice Search"><i class="fas fa-microphone"></i></button>
-                <button class="search-btn" onclick="searchFriend()"><i class="fas fa-arrow-right"></i></button>
+                <div class="search-box">
+                    <svg class="search-icon-left" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <input
+                        type="text"
+                        id="friendSearch"
+                        placeholder="Search a friend by name…"
+                        autocomplete="off"
+                        aria-label="Search friend"
+                        aria-autocomplete="list"
+                        aria-controls="suggestionsList"
+                    />
+                    <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                            <path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Suggestion list -->
+                <ul class="suggestions" id="suggestionsList" role="listbox" hidden></ul>
             </div>
 
             <!-- ============================================
             CAMERA SCREEN
             ============================================ -->
-            <div class="photo-screen" id="photoScreen">
+            <div class="screen photo-screen" id="photoScreen" hidden>
                 <div class="section-header">
-                    <h3><i class="fas fa-camera"></i> Live Capture</h3>
-                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                    <h3>Live Capture</h3>
+                    <button class="section-action" type="button" onclick="resetSearch()">Cancel</button>
                 </div>
 
                 <div class="photo-header">
-                    <span class="lock-icon">🔒</span>
-                    <h3>📸 <span id="photoFriendName">Friend</span>, capture your live photo!</h3>
-                    <p class="warning">⚠️ Photo required — No Skip!</p>
+                    <h3>Hi <span id="photoFriendName">friend</span> — add a photo</h3>
+                    <p class="subtle">Optional. Your photo stays on your device.</p>
                 </div>
 
-                <!-- FILTER CONTROLS -->
+                <!-- Filter controls -->
                 <div class="filter-controls" id="filterControls">
-                    <button class="filter-btn active" data-filter="normal" onclick="applyFilterToVideo('normal')">Normal</button>
-                    <button class="filter-btn" data-filter="bw" onclick="applyFilterToVideo('bw')">B&W</button>
-                    <button class="filter-btn" data-filter="sepia" onclick="applyFilterToVideo('sepia')">Sepia</button>
-                    <button class="filter-btn" data-filter="vintage" onclick="applyFilterToVideo('vintage')">Vintage</button>
+                    <button class="filter-btn active" type="button" data-filter="normal" onclick="applyFilterToVideo('normal')">Normal</button>
+                    <button class="filter-btn" type="button" data-filter="bw" onclick="applyFilterToVideo('bw')">B&amp;W</button>
+                    <button class="filter-btn" type="button" data-filter="sepia" onclick="applyFilterToVideo('sepia')">Sepia</button>
+                    <button class="filter-btn" type="button" data-filter="vintage" onclick="applyFilterToVideo('vintage')">Vintage</button>
                 </div>
 
                 <div class="webcam-box">
                     <video id="webcamVideo" autoplay playsinline muted></video>
                     <div class="webcam-placeholder" id="webcamPlaceholder">
-                        <i class="fas fa-camera"></i>
                         <p>Camera will appear here</p>
                     </div>
                 </div>
 
-                <div class="capture-wrapper">
-                    <button class="capture-btn" id="captureBtn" onclick="captureFriendPhoto()">
-                        <i class="fas fa-camera"></i> Capture Photo
-                    </button>
+                <!-- Actions: capture, upload, skip -->
+                <div class="photo-actions">
+                    <button class="btn btn-primary" id="captureBtn" type="button" onclick="captureFriendPhoto()">Capture Photo</button>
+                    <button class="btn btn-quiet" type="button" onclick="uploadPhoto()">Upload Photo</button>
+                    <button class="btn btn-ghost" type="button" onclick="skipPhoto()">Skip</button>
                 </div>
 
-                <div class="permission-denied" id="permissionDenied">
-                    <div style="font-size:50px;">🚫</div>
-                    <h3>Camera Permission Required!</h3>
-                    <p id="permissionMessage">Please allow camera access in browser settings.</p>
-                    <button class="retry-btn" onclick="retryCamera()">🔄 Try Again</button>
+                <input type="file" id="photoUploadInput" accept="image/*" hidden />
+
+                <div class="permission-denied" id="permissionDenied" hidden>
+                    <h3>Camera permission required</h3>
+                    <p id="permissionMessage">Please allow camera access in browser settings, or upload a photo.</p>
+                    <button class="btn btn-quiet" type="button" onclick="retryCamera()">Try again</button>
                 </div>
             </div>
 
             <!-- ============================================
             FRIEND FOUND SCREEN
             ============================================ -->
-            <div class="found-screen" id="foundScreen">
+            <div class="screen found-screen" id="foundScreen" hidden>
                 <div class="section-header">
-                    <h3><i class="fas fa-check-circle" style="color:#4caf50;"></i> Friend Found!</h3>
-                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                    <h3>Friend found</h3>
+                    <button class="section-action" type="button" onclick="resetSearch()">Cancel</button>
                 </div>
 
-                <div class="found-card">
-                    <div class="found-card-inner">
-                        <div class="found-avatar" id="foundAvatar">
-                            <div class="found-avatar-placeholder">👤</div>
+                <div class="card found-card">
+                    <div class="found-avatar" id="foundAvatar">
+                        <div class="avatar-placeholder" aria-hidden="true"></div>
+                    </div>
+                    <div class="found-info">
+                        <div class="found-name" id="foundName">Friend</div>
+                        <div class="found-tag"><span id="foundTag">Best Friend</span></div>
+                        <div class="found-timeline">
+                            <div class="tl-label">Friendship timeline</div>
+                            <div class="tl-bar"><div class="tl-fill" id="timelineBar" style="width:0%;"></div></div>
+                            <div class="tl-text" id="timelineText">—</div>
                         </div>
-                        <div class="found-info">
-                            <div class="found-badge">✦ Verified Friend</div>
-                            <div class="found-name" id="foundName">Friend</div>
-                            <div class="found-tag"><i class="fas fa-tag"></i> <span id="foundTag">Best Friend</span></div>
-                            <div class="found-timeline">
-                                <div class="tl-label">📅 Friendship Timeline</div>
-                                <div class="tl-bar">
-                                    <div class="tl-fill" id="timelineBar" style="width: 85%;"></div>
-                                </div>
-                                <div class="tl-text" id="timelineText">Since Class 7 — 7 Years ❤️</div>
-                            </div>
-                            <div class="found-actions">
-                                <button class="found-btn primary" onclick="proceedToDetails()"><i class="fas fa-user"></i> View Profile</button>
-                                <button class="found-btn secondary" onclick="downloadFriendCard()"><i class="fas fa-award"></i> Certificate</button>
-                            </div>
+                        <div class="found-actions">
+                            <button class="btn btn-primary" type="button" onclick="proceedToDetails()">View profile</button>
+                            <button class="btn btn-quiet" type="button" onclick="downloadFriendCard()">Certificate</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- ============================================
-            NEW FRIEND SCREEN
+            NEW FRIEND SCREEN (request flow)
             ============================================ -->
-            <div class="new-friend-screen" id="newFriendScreen">
+            <div class="screen new-friend-screen" id="newFriendScreen" hidden>
                 <div class="section-header">
-                    <h3><i class="fas fa-handshake" style="color:#ffd93d;"></i> New Friend!</h3>
-                    <span class="section-action" onclick="resetSearch()">✕ Cancel</span>
+                    <h3>New here</h3>
+                    <button class="section-action" type="button" onclick="resetSearch()">Cancel</button>
                 </div>
 
-                <div class="new-friend-card">
-                    <div class="nf-icon">🤝</div>
-                    <div class="nf-title">NEW FRIEND!</div>
-                    <p style="color:var(--text2);margin-bottom:4px;">You're now a Friend of Ravi!</p>
-                    <div class="found-avatar" style="margin:12px auto;width:80px;height:80px;" id="newFriendAvatar">
-                        <div class="found-avatar-placeholder">👤</div>
+                <div class="card new-friend-card">
+                    <div class="nf-icon" aria-hidden="true">
+                        <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+                            <circle cx="15" cy="15" r="6" stroke="currentColor" stroke-width="2"/>
+                            <path d="M5 35C5 28 9 24 15 24C21 24 25 28 25 35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M30 15V25M25 20H35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
                     </div>
-                    <div class="nf-name" id="newFriendName">Friend</div>
-
-                    <div style="margin-top:16px;display:flex;gap:10px;flex-direction:column;">
-                        <button class="found-btn primary" onclick="downloadNewFriendCard()"><i class="fas fa-award"></i> Get Certificate</button>
-                        <button class="found-btn secondary" onclick="resetSearch()"><i class="fas fa-search"></i> Search Another</button>
+                    <div class="nf-title" id="newFriendName">Friend</div>
+                    <p class="nf-text">You're not in the list yet. Send a request to Ravi — once added, you'll get a full certificate.</p>
+                    <div class="nf-actions">
+                        <a class="btn btn-primary" href="emailjs.html">Send request</a>
+                        <button class="btn btn-quiet" type="button" onclick="showTemporaryCertificate()">Get temporary certificate</button>
                     </div>
                 </div>
             </div>
 
             <!-- ============================================
-            DETAILS / PROFILE SCREEN
+            DETAILS SCREEN
             ============================================ -->
-            <div class="details-screen" id="detailsScreen">
+            <div class="screen details-screen" id="detailsScreen" hidden>
                 <div class="section-header">
-                    <h3><i class="fas fa-id-card" style="color:var(--gold);"></i> Friend Profile</h3>
-                    <span class="section-action" onclick="resetSearch()">✕ Close</span>
+                    <h3>Profile</h3>
+                    <button class="section-action" type="button" onclick="resetSearch()">Close</button>
                 </div>
 
-                <div class="profile-card">
-                    <!-- Profile Top -->
+                <div class="card profile-card">
                     <div class="profile-top">
                         <div class="profile-avatar" id="profileAvatar">
-                            <div class="profile-avatar-placeholder">👤</div>
+                            <div class="avatar-placeholder" aria-hidden="true"></div>
                         </div>
                         <div class="profile-info">
-                            <div class="profile-name" id="displayName">Sudhanshu</div>
-                            <div class="profile-connection" id="displayConnection">🤝 Best Friend</div>
-                            <div class="profile-location"><i class="fas fa-map-marker-alt"></i> Begusarai, Bihar</div>
-                            <div class="profile-rating">⭐ ⭐ ⭐ ⭐ ☆ <span class="rating-num">4.8</span></div>
+                            <div class="profile-name" id="displayName">Friend</div>
+                            <div class="profile-connection" id="displayConnection">Friend</div>
+                            <div class="profile-rating" id="displayTag">Tag</div>
                         </div>
                     </div>
 
-                    <!-- Stats Grid -->
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <span class="stat-icon">🏷️</span>
-                            <span class="stat-value" id="displayTag">Best Friend</span>
-                            <span class="stat-label">Tag</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-icon">🤝</span>
-                            <span class="stat-value" id="displaySince">7 Years</span>
                             <span class="stat-label">Since</span>
+                            <span class="stat-value" id="displaySince">—</span>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-icon">🎂</span>
-                            <span class="stat-value" id="displayAge">18</span>
-                            <span class="stat-label">Age</span>
+                            <span class="stat-label">Class</span>
+                            <span class="stat-value" id="displayClass">—</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Friendship</span>
+                            <span class="stat-value" id="displayYears">—</span>
                         </div>
                     </div>
 
-                    <!-- Info Grid -->
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <span class="info-icon">🏫</span>
-                            <span class="info-value" id="displaySchool">Mother's Pride</span>
-                            <span class="info-label">School</span>
-                        </div>
-                        <div class="info-card">
-                            <span class="info-icon">🎯</span>
-                            <span class="info-value" id="displayHobby">🏏 💻</span>
-                            <span class="info-label">Hobby</span>
-                        </div>
-                        <div class="info-card">
-                            <span class="info-icon">💬</span>
-                            <span class="info-value" id="displayQuote">Loyal</span>
-                            <span class="info-label">Quote</span>
-                        </div>
-                    </div>
-
-                    <!-- Experience -->
                     <div class="experience-card">
-                        <span class="exp-icon">💬</span>
-                        <span class="exp-text" id="displayExperience">We grew up together, played cricket every evening, and copied each other's homework 😂 He's the most loyal friend I have.</span>
+                        <p class="exp-text" id="displayExperience">—</p>
                     </div>
 
-                    <!-- Timeline inside details -->
-                    <div style="margin-bottom:14px;">
-                        <div class="found-timeline">
-                            <div class="tl-label">📅 Friendship Timeline</div>
-                            <div class="tl-bar">
-                                <div class="tl-fill" id="detailsTimelineBar" style="width: 85%;"></div>
-                            </div>
-                            <div class="tl-text" id="detailsTimelineText">Since Class 7 — 7 Years ❤️</div>
-                        </div>
+                    <div class="found-timeline">
+                        <div class="tl-label">Friendship timeline</div>
+                        <div class="tl-bar"><div class="tl-fill" id="detailsTimelineBar" style="width:0%;"></div></div>
+                        <div class="tl-text" id="detailsTimelineText">—</div>
                     </div>
 
-                    <!-- Certificate Button -->
-                    <button class="cert-btn" onclick="downloadFriendCard()">
-                        <i class="fas fa-award"></i> Download Friendship Certificate
+                    <button class="btn btn-primary btn-full" type="button" onclick="downloadFriendCard()">
+                        Download certificate
                     </button>
-
-                    <!-- Search Again -->
-                    <button class="search-again-btn" onclick="resetSearch()">
-                        <i class="fas fa-search"></i> Search Another Friend
+                    <button class="btn btn-quiet btn-full" type="button" onclick="resetSearch()">
+                        Search another friend
                     </button>
                 </div>
             </div>
@@ -297,25 +233,19 @@
             FOOTER
             ============================================ -->
             <footer class="friends-footer">
-                <div class="footer-left">
-                    <p class="footer-motto">Made with <i>❤️</i> &amp; Curiosity</p>
-                    <p class="footer-init">An initiative by <span>Ravi Raj</span></p>
-                </div>
-                <div class="footer-right">
-                    <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
-                </div>
+                <p class="footer-note">Made by Ravi Raj · 2026</p>
+                <a href="index.html" class="footer-link">Back to home</a>
             </footer>
 
-        </div>
+        </main>
 
-        <!-- CONFETTI CONTAINER -->
-        <div id="confettiContainer"></div>
+        <!-- Confetti container -->
+        <div id="confettiContainer" aria-hidden="true"></div>
 
     </div>
 
-    <!-- ===== JAVASCRIPT ===== -->
-    <script src="js/global.js"></script>
-    <script src="js/friends.js"></script>
+    <!-- ===== JS ===== -->
+    <script src="js/friends.js" defer></script>
 
 </body>
 </html>
