@@ -26,6 +26,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ravirajhere.github.io/" />
     <meta property="og:image" content="https://ravirajhere.github.io/assets/images/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Ravi Raj — Developer who writes, Author who builds." />
     <meta name="twitter:description" content="Clean code. Clear stories. Built by hand." />
@@ -35,9 +37,9 @@
     <link rel="apple-touch-icon" href="assets/favicon.png" />
 
     <!-- ====== RSS (Blog) ====== -->
-    <link rel="alternate" type="application/rss+xml" title="Ravi Raj — Thoughts" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Ravi Raj — Thoughts" href="./feed.xml" />
 
-    <!-- ====== FONTS (2 families + mono) ====== -->
+    <!-- ====== FONTS ====== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -105,7 +107,7 @@
     ============================================================ -->
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
-            <a href="#" class="brand" aria-label="Ravi Raj — Home">
+            <a href="#hero" class="brand" aria-label="Ravi Raj — Home">
                 <span class="brand-mark" aria-hidden="true">
                     <span class="bm-dot"></span>
                     RR
@@ -143,8 +145,8 @@
     <!-- ============================================================
          MOBILE NAV
     ============================================================ -->
-    <div class="mobile-overlay" id="mobileOverlay" hidden></div>
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile" hidden>
+    <div class="mobile-overlay" id="mobileOverlay" hidden aria-hidden="true"></div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile" hidden aria-hidden="true">
         <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
         </button>
@@ -165,7 +167,7 @@
     <!-- ============================================================
          MAIN
     ============================================================ -->
-    <main id="main">
+    <main id="main" tabindex="-1">
 
         <!-- ========================================================
              HERO
@@ -218,19 +220,19 @@
                 </div>
 
                 <aside class="hero-side" aria-label="Positioning">
-                    <div class="dual-card dual-card-dev">
+                    <a href="#work" class="dual-card dual-card-dev">
                         <span class="dc-label">01 — As a developer</span>
                         <strong class="dc-title">I build accessible, fast websites.</strong>
                         <p class="dc-note">5+ shipped. Zero frameworks. Hand-written.</p>
                         <span class="dc-arrow" aria-hidden="true">↘</span>
-                    </div>
+                    </a>
 
-                    <div class="dual-card dual-card-author">
+                    <a href="autobiography.html" class="dual-card dual-card-author">
                         <span class="dc-label">02 — As an author</span>
                         <strong class="dc-title">I document a life in progress.</strong>
                         <p class="dc-note">Autobiography. 11 chapters. Audio narrated.</p>
                         <span class="dc-arrow" aria-hidden="true">↘</span>
-                    </div>
+                    </a>
 
                     <figure class="hero-portrait">
                         <img src="assets/images/formal.jpg" alt="Ravi Raj, photographed in Begusarai" width="280" height="280" loading="eager" />
@@ -281,7 +283,7 @@
                         </div>
                     </dl>
                     <footer class="work-foot">
-                        <a href="autobiography.html" target="_blank" rel="noopener">
+                        <a href="autobiography.html" target="_blank" rel="noopener noreferrer">
                             Read the book
                             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                         </a>
@@ -310,7 +312,7 @@
                         </div>
                     </dl>
                     <footer class="work-foot">
-                        <a href="resume-pdf.html" target="_blank" rel="noopener">
+                        <a href="resume-pdf.html" target="_blank" rel="noopener noreferrer">
                             Live
                             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                         </a>
@@ -339,7 +341,7 @@
                         </div>
                     </dl>
                     <footer class="work-foot">
-                        <a href="friends.html" target="_blank" rel="noopener">
+                        <a href="friends.html" target="_blank" rel="noopener noreferrer">
                             Live
                             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                         </a>
@@ -349,13 +351,12 @@
 
             </div>
 
-            <!-- ===== WORK FOOT — Press Kit + Last Updated ===== -->
             <div class="work-extra">
                 <p class="work-updated">
                     <span class="dot dot-mini"></span>
                     Last updated: <time datetime="2026-01">January 2026</time>
                 </p>
-                <a href="/press-kit.zip" class="work-presskit" download>
+                <a href="./press-kit.zip" class="work-presskit" download>
                     Download Press Kit (logos, bio, photos)
                     <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2v6M3 6l3 3 3-3M2 10h8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                 </a>
@@ -423,7 +424,7 @@
         </section>
 
         <!-- ========================================================
-             TRANSITION — The bridge
+             TRANSITION
         ======================================================= -->
         <section class="transition" aria-label="Transition">
             <div class="transition-inner">
@@ -445,14 +446,13 @@
                 <h2 id="writing-heading">I write because <em>code can't explain why.</em></h2>
             </header>
 
-            <!-- ===== FEATURED BOOK — With cover ===== -->
             <article class="book-feature">
                 <figure class="book-cover">
-                    <img src="assets/images/bookcover.jpg" alt="A Boy Who Never Thought" width="360" height="540" loading="lazy" />
+                    <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought' — Ravi Raj's autobiography, 2024" width="360" height="540" loading="lazy" />
                 </figure>
                 <div class="book-meta">
                     <p class="book-label">Book · 2024</p>
-                    <h3 class="book-title">Autobiography — growing up in Begusarai</h3>
+                    <h3 class="book-title">A Boy Who Never Thought</h3>
                     <p class="book-blurb">
                         An honest account of a first speech on Independence Day, a Rank 4
                         that taught more than Rank 1, and the day I wrote my first
@@ -468,12 +468,11 @@
                             Read the book
                             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                         </a>
-                        <a href="/press-kit.zip" class="btn btn-quiet" download>Press kit</a>
+                        <a href="./press-kit.zip" class="btn btn-quiet" download>Press kit</a>
                     </div>
                 </div>
             </article>
 
-            <!-- ===== ESSAYS LIST ===== -->
             <div class="writing-list">
                 <a href="blog.html" class="writing-row">
                     <span class="writing-type">Essays</span>
@@ -487,7 +486,7 @@
                     <span class="writing-meta">Drafting</span>
                     <span class="writing-arrow" aria-hidden="true">·</span>
                 </div>
-                <a href="/feed.xml" class="writing-row writing-rss">
+                <a href="./feed.xml" class="writing-row writing-rss">
                     <span class="writing-type">RSS</span>
                     <span class="writing-title">Subscribe to new essays</span>
                     <span class="writing-meta">/feed.xml</span>
@@ -612,7 +611,7 @@
 
                 <div class="contact-cta">
                     <a href="mailto:rravirajhere@gmail.com" class="btn btn-dark">Send email</a>
-                    <a href="https://cal.com/raviraj/15min" target="_blank" rel="noopener" class="btn btn-quiet">
+                    <a href="https://cal.com/raviraj/15min" target="_blank" rel="noopener noreferrer" class="btn btn-quiet">
                         Book a 15-min call
                         <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                     </a>
@@ -622,10 +621,10 @@
             <div class="contact-channels">
                 <h3>Other channels</h3>
                 <ul>
-                    <li><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
-                    <li><a href="https://github.com/ravirajhere" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
-                    <li><a href="https://instagram.com/rravirajhere" target="_blank" rel="noopener">Instagram <span aria-hidden="true">↗</span></a></li>
-                    <li><a href="https://youtube.com/@Ravirajhere" target="_blank" rel="noopener">YouTube <span aria-hidden="true">↗</span></a></li>
+                    <li><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></li>
+                    <li><a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></li>
+                    <li><a href="https://instagram.com/rravirajhere" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a></li>
+                    <li><a href="https://youtube.com/@Ravirajhere" target="_blank" rel="noopener noreferrer">YouTube <span aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
@@ -662,10 +661,10 @@
             <div class="footer-col">
                 <p class="footer-label">Elsewhere</p>
                 <ul>
-                    <li><a href="https://github.com/ravirajhere" target="_blank" rel="noopener">GitHub</a></li>
-                    <li><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener">LinkedIn</a></li>
-                    <li><a href="https://instagram.com/rravirajhere" target="_blank" rel="noopener">Instagram</a></li>
-                    <li><a href="https://youtube.com/@Ravirajhere" target="_blank" rel="noopener">YouTube</a></li>
+                    <li><a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                    <li><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                    <li><a href="https://instagram.com/rravirajhere" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                    <li><a href="https://youtube.com/@Ravirajhere" target="_blank" rel="noopener noreferrer">YouTube</a></li>
                 </ul>
             </div>
 
@@ -675,7 +674,7 @@
                     <li>Begusarai, Bihar</li>
                     <li>IST (UTC+5:30)</li>
                     <li>Replies within 24h</li>
-                    <li><a href="/feed.xml">RSS</a> · <a href="/press-kit.zip" download>Press kit</a></li>
+                    <li><a href="./feed.xml">RSS</a> · <a href="./press-kit.zip" download>Press kit</a></li>
                 </ul>
             </div>
 
@@ -690,20 +689,20 @@
     <!-- ============================================================
          COMMAND PALETTE
     ============================================================ -->
-    <div class="cmd-palette" id="cmdPalette" hidden>
+    <div class="cmd-palette" id="cmdPalette" hidden role="dialog" aria-modal="true" aria-labelledby="cmdLabel">
         <div class="cmd-overlay" id="cmdOverlay"></div>
-        <div class="cmd-box" role="dialog" aria-modal="true" aria-labelledby="cmdLabel">
+        <div class="cmd-box">
             <label for="cmdInput" id="cmdLabel" class="sr-only">Jump to section</label>
             <input id="cmdInput" type="text" placeholder="Jump to… (work, writing, story, contact)" autocomplete="off" spellcheck="false" />
             <ul class="cmd-list" id="cmdList" role="listbox">
-                <li role="option" data-target="#work"><span>01</span>Work</li>
-                <li role="option" data-target="#writing"><span>02</span>Writing</li>
-                <li role="option" data-target="#story"><span>03</span>Story</li>
-                <li role="option" data-target="#process"><span>04</span>Process</li>
-                <li role="option" data-target="#clarity"><span>05</span>Clarity</li>
-                <li role="option" data-target="#contact"><span>06</span>Contact</li>
-                <li role="option" data-target="resume-pdf.html"><span>07</span>Resume</li>
-                <li role="option" data-target="autobiography.html"><span>08</span>Autobiography</li>
+                <li role="option" data-target="#work" tabindex="-1"><span>01</span>Work</li>
+                <li role="option" data-target="#writing" tabindex="-1"><span>02</span>Writing</li>
+                <li role="option" data-target="#story" tabindex="-1"><span>03</span>Story</li>
+                <li role="option" data-target="#process" tabindex="-1"><span>04</span>Process</li>
+                <li role="option" data-target="#clarity" tabindex="-1"><span>05</span>Clarity</li>
+                <li role="option" data-target="#contact" tabindex="-1"><span>06</span>Contact</li>
+                <li role="option" data-target="resume-pdf.html" tabindex="-1"><span>07</span>Resume</li>
+                <li role="option" data-target="autobiography.html" tabindex="-1"><span>08</span>Autobiography</li>
             </ul>
             <div class="cmd-foot">
                 <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
