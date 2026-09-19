@@ -1,670 +1,523 @@
-/* ============================================================
-   autobiography.js  —  v2 (Conflict-Free with ebook.js)
-   My Autobiography — Ravi Raj
-   Handles: Theme, Sidebar, Language, Chapters, Reader Wizard,
-            Webcam, Footnotes, Audio Narration, Progress Bar,
-            TOC, Back-to-Top, Font Controls, Reading Time
-   NOTE: Does NOT override ebook.js globals
-         (closeModal, showToast, downloadEnglishEbook,
-          downloadHinglishEbook, cancelEbookGeneration)
-   ============================================================ */
+/* ==========================================================================
+   RAVI RAJ SINGH — BOOK READER SCRIPT
+   Version: 1.0
+   Handles: Header state · Sidebar drawer · Language switch
+            Chapter navigation · Reading progress · Hash sync
+            Footnotes · Keyboard nav · External links · Console greeting
+   No dependencies. No frameworks.
+   ========================================================================== */
 
 (function () {
     'use strict';
 
-    /* ============================================================
-       1. CONFIG & STATE
-       ============================================================ */
-    const TOTAL_CHAPTERS = 11;
-    const CHAPTER_ORDER = ['1','2','3','4','5','6','7','8','9','10','11'];
+    /* ======================================================================
+       1. HELPERS
+       ====================================================================== */
+    const $  = (sel, ctx) => (ctx || document).querySelector(sel);
+    const $$ = (sel, ctx) => Array.prototype.slice.call(
+        (ctx || document).querySelectorAll(sel)
+    );
 
+    const prefersReduced = (function () {
+        try {
+            return window.matchMedia &&
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (e) {
+            return false;
+        }
+    })();
+
+    const FOCUSABLE = [
+        'a[href]',
+        'button:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        '[tabindex]:not([tabindex="-1"])'
+    ].join(',');
+
+    function sessionGet(key) {
+        try { return sessionStorage.getItem(key); }
+        catch (e) { return null; }
+    }
+    function sessionSet(key, value) {
+        try { sessionStorage.setItem(key, value); return true; }
+        catch (e) { return false; }
+    }
+
+    const TOTAL_CHAPTERS = 11;
+
+    /* ======================================================================
+       2. STATE
+       ====================================================================== */
     const state = {
-        currentChapter: '1',
         currentLang: 'en',
-        theme: 'light',
-        fontSize: 100 // percentage
+        currentChapter: '1'
     };
 
-    /* ============================================================
-       2. DOM HELPERS
-       ============================================================ */
-    const $  = (sel, ctx = document) => ctx.querySelector(sel);
-    const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+    /* ======================================================================
+       3. ELEMENT REFERENCES
+       ====================================================================== */
+    const header       = $('#siteHeader');
+    const sidebar      = $('#sidebar');
+    const sidebarOverlay = $('#sidebarOverlay');
+    const sidebarClose = $('#sidebarClose');
+    const menuBtn      = $('#menuBtn');
 
-    /* ============================================================
-       3. TOAST — internal, safe (does NOT override window.showToast)
-       ============================================================ */
-    let toastTimer = null;
-    function localToast(message, duration = 2500) {
-        const toast = $('#toast');
-        if (!toast) return;
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+    const chaptersEn   = $('#chaptersEn');
+    const chaptersHi   = $('#chaptersHi');
+
+    const tocLinks     = $$('#toc a[data-chapter]');
+    const langBtns     = $$('.lang-btn');
+
+    const progressFill    = $('#progressFill');
+    const progressPercent = $('#progressPercent');
+    const progressBar     = $('.progress-bar');
+
+    const downloadEn   = $('#downloadEn');
+    const downloadHi   = $('#downloadHi');
+
+    const yearEl       = $('#year');
+
+    /* ======================================================================
+       4. YEAR IN FOOTER (safe — may not exist)
+       ====================================================================== */
+    if (yearEl) {
+        yearEl.textContent = String(new Date().getFullYear());
     }
 
-    // Safe public shim — only defines if ebook.js hasn't already
-    function publicToast(message, type) {
-        if (typeof window.showToast === 'function' && window.showToast !== publicToast) {
-            try { window.showToast(message, type); return; } catch (e) {}
-        }
-        localToast(message);
-    }
+    /* ======================================================================
+       5. HEADER — subtle shadow on scroll
+       ====================================================================== */
+    (function initHeader() {
+        if (!header) return;
 
-    /* ============================================================
-       4. THEME
-       ============================================================ */
-    function applyTheme(theme) {
-        state.theme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.classList.toggle('dark-mode', theme === 'dark');
+        let ticking = false;
 
-        const label = $('#themeLabel');
-        if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
-
-        $$('.switch').forEach(sw => {
-            sw.classList.toggle('active', theme === 'dark');
-            sw.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-        });
-
-        try { localStorage.setItem('autobio-theme', theme); } catch (e) {}
-    }
-
-    function toggleTheme() {
-        applyTheme(state.theme === 'dark' ? 'light' : 'dark');
-    }
-
-    function initTheme() {
-        let saved = null;
-        try { saved = localStorage.getItem('autobio-theme'); } catch (e) {}
-        if (!saved) {
-            const prefersDark = window.matchMedia &&
-                window.matchMedia('(prefers-color-scheme: dark)').matches;
-            saved = prefersDark ? 'dark' : 'light';
-        }
-        applyTheme(saved);
-
-        ['#themeSwitch', '#themeSwitchNav'].forEach(id => {
-            const sw = $(id);
-            if (!sw) return;
-            sw.addEventListener('click', toggleTheme);
-            sw.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleTheme();
-                }
-            });
-        });
-    }
-
-    /* ============================================================
-       5. SIDEBAR
-       ============================================================ */
-    function openSidebar() {
-        const s = $('#sidebar'), o = $('#sidebarOverlay');
-        if (s) s.classList.add('open');
-        if (o) o.classList.add('active');
-        document.body.classList.add('sidebar-open');
-    }
-    function closeSidebar() {
-        const s = $('#sidebar'), o = $('#sidebarOverlay');
-        if (s) s.classList.remove('open');
-        if (o) o.classList.remove('active');
-        document.body.classList.remove('sidebar-open');
-    }
-    function initSidebar() {
-        const h = $('#hamburgerBtn'), c = $('#sidebarClose'), o = $('#sidebarOverlay');
-        if (h) h.addEventListener('click', openSidebar);
-        if (c) c.addEventListener('click', closeSidebar);
-        if (o) o.addEventListener('click', closeSidebar);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeSidebar();
-        });
-    }
-
-    /* ============================================================
-       6. LANGUAGE SWITCH
-       ============================================================ */
-    function switchLang(lang) {
-        if (lang !== 'en' && lang !== 'hi') return;
-        state.currentLang = lang;
-
-        const btnEn = $('#btnEn'), btnHi = $('#btnHi');
-        if (btnEn) { btnEn.classList.toggle('active', lang === 'en'); btnEn.setAttribute('aria-pressed', lang === 'en'); }
-        if (btnHi) { btnHi.classList.toggle('active', lang === 'hi'); btnHi.setAttribute('aria-pressed', lang === 'hi'); }
-
-        const enBox = $('#chaptersEn'), hiBox = $('#chaptersHi');
-        if (enBox) enBox.style.display = lang === 'en' ? '' : 'none';
-        if (hiBox) hiBox.style.display = lang === 'hi' ? '' : 'none';
-
-        showChapter(state.currentChapter, false);
-
-        try { localStorage.setItem('autobio-lang', lang); } catch (e) {}
-
-        localToast(lang === 'en' ? '🇬🇧 English' : '🗣️ Hinglish');
-    }
-
-    /* ============================================================
-       7. CHAPTERS
-       ============================================================ */
-    function getActiveContainer() {
-        return state.currentLang === 'en' ? $('#chaptersEn') : $('#chaptersHi');
-    }
-
-    function showChapter(chapterId, scroll = true) {
-        chapterId = String(chapterId);
-        state.currentChapter = chapterId;
-
-        stopAudioIfPlaying();
-
-        const container = getActiveContainer();
-        if (!container) return;
-
-        $$('.chapter', container).forEach(ch => {
-            const match = ch.dataset.chapter === chapterId;
-            ch.classList.toggle('active', match);
-            ch.style.display = match ? '' : 'none';
-        });
-
-        const otherContainer = state.currentLang === 'en' ? $('#chaptersHi') : $('#chaptersEn');
-        if (otherContainer) {
-            $$('.chapter', otherContainer).forEach(ch => {
-                ch.classList.remove('active');
-                ch.style.display = 'none';
-            });
+        function update() {
+            const scrolled = window.scrollY > 8;
+            header.classList.toggle('is-scrolled', scrolled);
+            ticking = false;
         }
 
-        updateNavButtons(chapterId);
-        updateProgress(chapterId);
-        highlightSidebar(chapterId);
-
-        if (scroll) {
-            const activeCh = $('.chapter.active', container);
-            if (activeCh) {
-                requestAnimationFrame(() => {
-                    const topNavHeight = 70, extraGap = 12;
-                    const rect = activeCh.getBoundingClientRect();
-                    const absoluteTop = rect.top + window.pageYOffset;
-                    window.scrollTo({ top: absoluteTop - topNavHeight - extraGap, behavior: 'smooth' });
-                });
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                window.requestAnimationFrame(update);
+                ticking = true;
             }
+        }, { passive: true });
+
+        update();
+    })();
+
+    /* ======================================================================
+       6. FOCUS TRAP (for mobile sidebar)
+       ====================================================================== */
+    let activeTrap = null;
+
+    function handleTrapKey(e) {
+        if (e.key !== 'Tab' || !activeTrap) return;
+
+        const focusables = $$(FOCUSABLE, activeTrap).filter(function (el) {
+            return el.offsetParent !== null || el === document.activeElement;
+        });
+        if (!focusables.length) return;
+
+        const first = focusables[0];
+        const last  = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+
+    function handleGlobalEscape(e) {
+        if (e.key !== 'Escape') return;
+
+        if (isMobile() && sidebar && sidebar.dataset.open === 'true') {
+            closeSidebar();
         }
 
-        try { localStorage.setItem('autobio-chapter', chapterId); } catch (e) {}
-    }
-
-    function updateNavButtons(chapterId) {
-        const container = getActiveContainer();
-        if (!container) return;
-        const idx = CHAPTER_ORDER.indexOf(chapterId);
-        const activeCh = $('.chapter.active', container);
-        if (!activeCh) return;
-        const prevBtn = $('.prev-btn', activeCh);
-        const nextBtn = $('.next-btn', activeCh);
-        if (prevBtn) prevBtn.disabled = idx <= 0;
-        if (nextBtn) nextBtn.disabled = idx >= CHAPTER_ORDER.length - 1;
-    }
-
-    function prevChapter() {
-        const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
-        if (idx > 0) showChapter(CHAPTER_ORDER[idx - 1]);
-    }
-    function nextChapter() {
-        const idx = CHAPTER_ORDER.indexOf(state.currentChapter);
-        if (idx < CHAPTER_ORDER.length - 1) showChapter(CHAPTER_ORDER[idx + 1]);
-    }
-
-    function updateProgress(chapterId) {
-        const idx = CHAPTER_ORDER.indexOf(chapterId);
-        const numDisplay = $('#chapterNumDisplay');
-        const pctDisplay = $('#chapterPercentDisplay');
-
-        if (numDisplay) numDisplay.textContent = `Chapter ${idx + 1} of ${TOTAL_CHAPTERS}`;
-        if (pctDisplay) {
-            const pct = Math.round(((idx + 1) / TOTAL_CHAPTERS) * 100);
-            pctDisplay.textContent = `${pct}% complete`;
+        if (typeof window.closeFootnoteSheet === 'function') {
+            window.closeFootnoteSheet();
         }
-
-        $$('#progressDots .dot').forEach(dot => {
-            const dotId = dot.dataset.dot;
-            const dotIdx = CHAPTER_ORDER.indexOf(dotId);
-            dot.classList.toggle('active', dotId === chapterId);
-            dot.classList.toggle('done', dotIdx < idx);
-        });
     }
 
-    function highlightSidebar(chapterId) {
-        $$('#chapterSidebarMenu a').forEach(a => {
-            a.classList.toggle('active', a.dataset.chapter === chapterId);
-        });
+    function trapFocus(container) {
+        releaseFocus();
+        activeTrap = container;
+        container.addEventListener('keydown', handleTrapKey);
+        document.addEventListener('keydown', handleGlobalEscape);
     }
 
-    function initChapterClicks() {
-        // Remove inline onclick handlers from HTML to avoid double-firing
-        $$('.nav-btn').forEach(el => {
-            el.removeAttribute('onclick');
-        });
-
-        // Sidebar chapter links
-        $$('#chapterSidebarMenu a').forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                const ch = a.dataset.chapter;
-                if (ch) { showChapter(ch); closeSidebar(); }
-            });
-        });
-
-        // Progress dots
-        $$('#progressDots .dot').forEach(dot => {
-            dot.addEventListener('click', () => {
-                const ch = dot.dataset.dot;
-                if (ch) showChapter(ch);
-            });
-        });
-
-        // Nav buttons (prev / next) — event delegation
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('.nav-btn');
-            if (!btn) return;
-            if (btn.classList.contains('prev-btn')) prevChapter();
-            else if (btn.classList.contains('next-btn')) nextChapter();
-        });
-
-        // Keyboard arrows
-        document.addEventListener('keydown', (e) => {
-            if (document.body.classList.contains('sidebar-open')) return;
-            const modal = $('#downloadModal');
-            if (modal && modal.classList.contains('active')) return;
-            const tag = (document.activeElement && document.activeElement.tagName) || '';
-            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-
-            if (e.key === 'ArrowLeft')  prevChapter();
-            if (e.key === 'ArrowRight') nextChapter();
-        });
+    function releaseFocus() {
+        if (activeTrap) {
+            activeTrap.removeEventListener('keydown', handleTrapKey);
+            activeTrap = null;
+        }
+        document.removeEventListener('keydown', handleGlobalEscape);
     }
 
-    /* ============================================================
-       8. MODAL OPEN/CLOSE (Wizard)
-       ============================================================ */
-    function openModal() {
-        const modal = $('#downloadModal');
-        if (!modal) return;
-        modal.classList.add('active');
-        document.body.classList.add('modal-open');
+    function isMobile() {
+        try {
+            return window.matchMedia('(max-width: 860px)').matches;
+        } catch (e) {
+            return window.innerWidth <= 860;
+        }
+    }
+
+    /* ======================================================================
+       7. SIDEBAR (mobile drawer)
+       ====================================================================== */
+    let lastFocusedSidebar = null;
+
+    function openSidebar() {
+        if (!sidebar || !sidebarOverlay) return;
+
+        lastFocusedSidebar = document.activeElement;
+
+        sidebarOverlay.hidden = false;
+
+        /* Force reflow so transition applies */
+        void sidebar.offsetHeight;
+
+        sidebar.dataset.open = 'true';
+        sidebarOverlay.dataset.open = 'true';
+
         document.body.style.overflow = 'hidden';
 
-        resetWizard();
-        goToStep(1);
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+        sidebar.setAttribute('aria-hidden', 'false');
+        sidebarOverlay.setAttribute('aria-hidden', 'false');
+
+        setTimeout(function () {
+            const focusable = $('a, button', sidebar);
+            if (focusable && typeof focusable.focus === 'function') {
+                try { focusable.focus(); } catch (e) {}
+            }
+        }, 100);
+
+        trapFocus(sidebar);
     }
 
-    // 🚨 DO NOT expose as window.closeModal — ebook.js owns it
-    function closeModalInternal() {
-        const modal = $('#downloadModal');
-        if (!modal) return;
-        modal.classList.remove('active');
-        document.body.classList.remove('modal-open');
+    function closeSidebar() {
+        if (!sidebar || !sidebarOverlay) return;
+
+        sidebar.dataset.open = 'false';
+        sidebarOverlay.dataset.open = 'false';
+
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        sidebar.setAttribute('aria-hidden', 'true');
+        sidebarOverlay.setAttribute('aria-hidden', 'true');
+
         document.body.style.overflow = '';
-    }
 
-    function initModal() {
-        const modal = $('#downloadModal');
-        if (!modal) return;
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModalInternal();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModalInternal();
-        });
-
-        // Modal close X button (uses onclick="closeModal()" in HTML)
-        // ebook.js exposes window.closeModal — we just make sure
-        // that one also closes internal state via its own ModalManager.
-    }
-
-    /* ============================================================
-       9. READER WIZARD
-       ============================================================ */
-    const readerData = {
-        name: '',
-        gender: 'neutral',
-        photo: null,
-        language: 'en'
-    };
-
-    let webcamStream = null;
-    let webcamActive = false;
-
-    function goToStep(stepNum) {
-        $$('.modal-step').forEach(step => step.classList.remove('active'));
-        const targetId = 'step' + stepNum;
-        const target = $('#' + targetId);
-        if (target) target.classList.add('active');
-
-        if (stepNum === 2) {
-            setTimeout(() => {
-                const nameInput = $('#readerName');
-                if (nameInput) nameInput.focus();
-            }, 300);
-        }
-    }
-
-    function selectLanguage(lang) {
-        readerData.language = lang;
-        goToStep(2);
-    }
-
-    function goToStep3() {
-        const nameInput = $('#readerName');
-        const name = nameInput ? nameInput.value.trim() : '';
-
-        if (!name) {
-            publicToast('Please enter your name');
-            if (nameInput) nameInput.focus();
-            return;
-        }
-        if (name.length < 2) {
-            publicToast('Name must be at least 2 characters');
-            if (nameInput) nameInput.focus();
-            return;
-        }
-
-        readerData.name = name;
-        const genderRadio = document.querySelector('input[name="gender"]:checked');
-        readerData.gender = genderRadio ? genderRadio.value : 'neutral';
-
-        goToStep(3);
-    }
-
-    function triggerUpload() {
-        const input = $('#uploadInput');
-        if (input) input.click();
-    }
-
-    function handlePhotoSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        if (!file.type.startsWith('image/')) {
-            publicToast('Please select an image file');
-            return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-            publicToast('Image too large. Please select under 5MB');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const base64 = e.target.result;
-            readerData.photo = base64;
-            const previewBox = $('#photoPreviewBox');
-            if (previewBox) {
-                previewBox.innerHTML = `<img src="${base64}" alt="Reader photo" />`;
-                previewBox.classList.add('has-photo');
+        setTimeout(function () {
+            if (sidebar.dataset.open !== 'true') {
+                sidebarOverlay.hidden = true;
             }
-        };
-        reader.readAsDataURL(file);
+        }, 500);
+
+        releaseFocus();
+
+        if (lastFocusedSidebar && typeof lastFocusedSidebar.focus === 'function') {
+            try { lastFocusedSidebar.focus(); } catch (e) {}
+        }
     }
 
-    function initPhotoInputs() {
-        const uploadInput = $('#uploadInput');
-        if (uploadInput) uploadInput.addEventListener('change', handlePhotoSelect);
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function () {
+            const isOpen = sidebar && sidebar.dataset.open === 'true';
+            if (isOpen) closeSidebar();
+            else openSidebar();
+        });
+    }
 
-        const nameInput = $('#readerName');
-        if (nameInput) {
-            nameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    goToStep3();
+    if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+    /* Auto-close sidebar on desktop resize */
+    (function initResizeWatcher() {
+        let resizeTimer = null;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                if (!isMobile() && sidebar && sidebar.dataset.open === 'true') {
+                    closeSidebar();
                 }
+            }, 150);
+        }, { passive: true });
+    })();
+
+    /* ======================================================================
+       8. LANGUAGE SWITCH
+       ====================================================================== */
+    function setLang(lang) {
+        if (lang !== 'en' && lang !== 'hi') return;
+        if (state.currentLang === lang) return;
+
+        state.currentLang = lang;
+
+        /* Update buttons */
+        langBtns.forEach(function (btn) {
+            const isActive = btn.dataset.lang === lang;
+            btn.classList.toggle('is-active', isActive);
+            btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        /* Toggle containers */
+        if (chaptersEn) chaptersEn.hidden = (lang !== 'en');
+        if (chaptersHi) chaptersHi.hidden = (lang !== 'hi');
+
+        /* Re-apply chapter visibility within new language */
+        applyChapterVisibility(state.currentChapter);
+
+        /* Update hash to match new language */
+        const newId = 'chapter-' + state.currentChapter + (lang === 'hi' ? '-hi' : '');
+        if (history.replaceState) {
+            try { history.replaceState(null, '', '#' + newId); } catch (e) {}
+        }
+
+        /* Persist */
+        try { localStorage.setItem('book-lang', lang); } catch (e) {}
+
+        /* Update progress & TOC active state */
+        updateProgress(state.currentChapter);
+        highlightToc(state.currentChapter);
+    }
+
+    langBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            setLang(btn.dataset.lang);
+        });
+    });
+
+    /* Restore language from storage */
+    (function restoreLang() {
+        let saved = null;
+        try { saved = localStorage.getItem('book-lang'); } catch (e) {}
+        if (saved === 'en' || saved === 'hi') {
+            state.currentLang = saved;
+        }
+        /* Apply initial language without early-return guard */
+        const initial = state.currentLang;
+        state.currentLang = null;
+        setLang(initial);
+    })();
+
+    /* ======================================================================
+       9. CHAPTER VISIBILITY (hide all except current)
+       ====================================================================== */
+    function applyChapterVisibility(chapterId) {
+        const container = state.currentLang === 'hi' ? chaptersHi : chaptersEn;
+        if (!container) return;
+
+        const allChapters = $$('.chapter', container);
+        allChapters.forEach(function (ch) {
+            const match = ch.dataset.chapter === String(chapterId);
+            ch.hidden = !match;
+        });
+    }
+
+    /* ======================================================================
+       10. CHAPTER NAVIGATION
+       ====================================================================== */
+    function goToChapter(chapterId, opts) {
+        opts = opts || {};
+        const id = String(chapterId);
+
+        if (!/^\d+$/.test(id)) return;
+        const n = parseInt(id, 10);
+        if (n < 1 || n > TOTAL_CHAPTERS) return;
+
+        state.currentChapter = id;
+
+        /* If on mobile, close sidebar */
+        if (isMobile() && sidebar && sidebar.dataset.open === 'true') {
+            closeSidebar();
+        }
+
+        /* Set visibility */
+        applyChapterVisibility(id);
+
+        /* Update UI */
+        highlightToc(id);
+        updateProgress(id);
+
+        /* Update hash without triggering scroll jump */
+        const newId = 'chapter-' + id + (state.currentLang === 'hi' ? '-hi' : '');
+        if (history.replaceState) {
+            try { history.replaceState(null, '', '#' + newId); } catch (e) {}
+        }
+
+        /* Persist */
+        try { localStorage.setItem('book-chapter', id); } catch (e) {}
+
+        /* Scroll to top */
+        if (opts.scroll !== false) {
+            const topOffset = header ? header.offsetHeight : 0;
+            window.scrollTo({
+                top: 0,
+                behavior: prefersReduced ? 'auto' : 'smooth'
             });
+            /* Alternative: scroll to chapter head */
+            void topOffset;
         }
     }
 
-    /* ============================================================
-       10. WEBCAM
-       ============================================================ */
-    async function openWebcam() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            publicToast('Camera not supported on this browser');
-            triggerUpload();
-            return;
-        }
-
-        goToStep('Camera');
-
-        const video = $('#webcamVideo');
-        const loading = $('#webcamLoading');
-        const error = $('#webcamError');
-        const controls = $('#webcamControls');
-        const fallback = $('#webcamFallback');
-        const captureBtn = $('#captureBtn');
-
-        if (loading) loading.style.display = 'flex';
-        if (error) error.style.display = 'none';
-        if (controls) controls.style.display = 'flex';
-        if (fallback) fallback.style.display = 'none';
-        if (captureBtn) captureBtn.disabled = true;
-
-        try {
-            webcamStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: { ideal: 720 }, height: { ideal: 720 } },
-                audio: false
-            });
-
-            if (video) {
-                video.srcObject = webcamStream;
-                video.onloadedmetadata = () => {
-                    video.play();
-                    webcamActive = true;
-                    if (loading) loading.style.display = 'none';
-                    if (captureBtn) captureBtn.disabled = false;
-                };
+    function highlightToc(chapterId) {
+        tocLinks.forEach(function (link) {
+            const match = link.dataset.chapter === String(chapterId);
+            link.classList.toggle('is-active', match);
+            if (match) {
+                link.setAttribute('aria-current', 'true');
+            } else {
+                link.removeAttribute('aria-current');
             }
-        } catch (err) {
-            console.warn('Webcam error:', err);
-            showWebcamError(err);
+        });
+    }
+
+    /* --- TOC clicks --- */
+    tocLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = link.dataset.chapter;
+            if (id) goToChapter(id);
+        });
+    });
+
+    /* --- Prev/Next buttons (event delegation, works across both languages) --- */
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.nav-btn');
+        if (!btn) return;
+        if (btn.classList.contains('is-disabled')) return;
+
+        const href = btn.getAttribute('href');
+        if (href && href.indexOf('#') === 0) {
+            e.preventDefault();
+            /* Extract chapter number from id */
+            const match = href.match(/#chapter-(\d+)/);
+            if (match && match[1]) {
+                goToChapter(match[1]);
+            }
+        }
+    });
+
+    /* --- Keyboard arrows (left/right) --- */
+    document.addEventListener('keydown', function (e) {
+        /* Skip if user is typing */
+        const tag = (document.activeElement && document.activeElement.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+        /* Skip if sidebar open on mobile */
+        if (isMobile() && sidebar && sidebar.dataset.open === 'true') return;
+
+        if (e.key === 'ArrowRight' && !e.metaKey && !e.ctrlKey) {
+            const next = Math.min(TOTAL_CHAPTERS, parseInt(state.currentChapter, 10) + 1);
+            if (next !== parseInt(state.currentChapter, 10)) {
+                e.preventDefault();
+                goToChapter(String(next));
+            }
+        } else if (e.key === 'ArrowLeft' && !e.metaKey && !e.ctrlKey) {
+            const prev = Math.max(1, parseInt(state.currentChapter, 10) - 1);
+            if (prev !== parseInt(state.currentChapter, 10)) {
+                e.preventDefault();
+                goToChapter(String(prev));
+            }
+        }
+    });
+
+    /* ======================================================================
+       11. READING PROGRESS
+       ====================================================================== */
+    function updateProgress(chapterId) {
+        const n = parseInt(chapterId, 10);
+        if (isNaN(n) || n < 1 || n > TOTAL_CHAPTERS) return;
+
+        const pct = Math.round((n / TOTAL_CHAPTERS) * 100);
+
+        if (progressFill) {
+            progressFill.style.width = pct + '%';
+        }
+        if (progressPercent) {
+            progressPercent.textContent = pct + '%';
+        }
+        if (progressBar) {
+            progressBar.setAttribute('aria-valuenow', String(pct));
         }
     }
 
-    function showWebcamError(err) {
-        const loading = $('#webcamLoading');
-        const error = $('#webcamError');
-        const errorMsg = $('#webcamErrorMsg');
-        const controls = $('#webcamControls');
-        const fallback = $('#webcamFallback');
+    /* ======================================================================
+       12. RESTORE STATE FROM STORAGE / HASH
+       ====================================================================== */
+    function restoreChapter() {
+        /* Priority 1: hash */
+        let chapterId = null;
+        const hashMatch = (window.location.hash || '').match(/#chapter-(\d+)/);
+        if (hashMatch && hashMatch[1]) {
+            chapterId = hashMatch[1];
+        }
 
-        if (loading) loading.style.display = 'none';
-        if (error) error.style.display = 'flex';
-        if (controls) controls.style.display = 'none';
-        if (fallback) fallback.style.display = 'flex';
+        /* Priority 2: localStorage */
+        if (!chapterId) {
+            try {
+                const saved = localStorage.getItem('book-chapter');
+                if (saved && /^\d+$/.test(saved)) {
+                    chapterId = saved;
+                }
+            } catch (e) {}
+        }
 
-        let msg = 'Please allow camera access or use Gallery instead.';
-        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
-            msg = 'Camera permission was denied. Please allow access in browser settings.';
-        else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError')
-            msg = 'No camera found on this device. Please use Gallery instead.';
-        else if (err.name === 'NotReadableError')
-            msg = 'Camera is in use by another app. Close it and try again.';
-        else if (err.name === 'OverconstrainedError')
-            msg = 'Camera does not meet requirements. Please use Gallery instead.';
+        /* Default */
+        if (!chapterId) chapterId = '1';
 
-        if (errorMsg) errorMsg.textContent = msg;
+        /* Validate */
+        const n = parseInt(chapterId, 10);
+        if (isNaN(n) || n < 1 || n > TOTAL_CHAPTERS) {
+            chapterId = '1';
+        }
+
+        state.currentChapter = chapterId;
+        applyChapterVisibility(chapterId);
+        highlightToc(chapterId);
+        updateProgress(chapterId);
     }
 
-    function capturePhoto() {
-        if (!webcamActive) return;
-        const video = $('#webcamVideo');
-        if (!video) return;
-
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 720;
-        canvas.height = video.videoHeight || 720;
-
-        const ctx = canvas.getContext('2d');
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        readerData.photo = dataUrl;
-
-        const previewBox = $('#photoPreviewBox');
-        if (previewBox) {
-            previewBox.innerHTML = `<img src="${dataUrl}" alt="Reader photo" />`;
-            previewBox.classList.add('has-photo');
+    /* React to browser back/forward */
+    window.addEventListener('hashchange', function () {
+        const match = (window.location.hash || '').match(/#chapter-(\d+)/);
+        if (match && match[1]) {
+            const id = match[1];
+            if (id !== state.currentChapter) {
+                state.currentChapter = id;
+                applyChapterVisibility(id);
+                highlightToc(id);
+                updateProgress(id);
+            }
         }
+    });
 
-        setTimeout(() => {
-            closeWebcam();
-            goToStep(3);
-            publicToast('📸 Photo captured!');
-        }, 300);
-    }
+    /* ======================================================================
+       13. FOOTNOTES — desktop tooltip + mobile bottom sheet
+       ====================================================================== */
+    (function initFootnotes() {
+        const footnotes = $$('.footnote');
+        if (!footnotes.length) return;
 
-    function closeWebcam() {
-        if (webcamStream) {
-            webcamStream.getTracks().forEach(t => t.stop());
-            webcamStream = null;
-        }
-        const video = $('#webcamVideo');
-        if (video) video.srcObject = null;
-        webcamActive = false;
-
-        const loading = $('#webcamLoading');
-        const error = $('#webcamError');
-        const controls = $('#webcamControls');
-        const fallback = $('#webcamFallback');
-        const captureBtn = $('#captureBtn');
-
-        if (loading) loading.style.display = 'flex';
-        if (error) error.style.display = 'none';
-        if (controls) controls.style.display = 'flex';
-        if (fallback) fallback.style.display = 'none';
-        if (captureBtn) captureBtn.disabled = true;
-
-        goToStep(3);
-    }
-
-    function resetWizard() {
-        if (webcamStream) {
-            webcamStream.getTracks().forEach(t => t.stop());
-            webcamStream = null;
-        }
-        webcamActive = false;
-
-        readerData.name = '';
-        readerData.gender = 'neutral';
-        readerData.photo = null;
-        readerData.language = 'en';
-
-        const previewBox = $('#photoPreviewBox');
-        if (previewBox) {
-            previewBox.classList.remove('has-photo');
-            previewBox.innerHTML = `
-                <span class="photo-placeholder-icon">📷</span>
-                <span class="photo-placeholder-text">No photo selected</span>
-            `;
-        }
-
-        const nameInput = $('#readerName');
-        if (nameInput) nameInput.value = '';
-
-        const neutralRadio = document.querySelector('input[name="gender"][value="neutral"]');
-        if (neutralRadio) neutralRadio.checked = true;
-
-        const uploadInput = $('#uploadInput');
-        if (uploadInput) uploadInput.value = '';
-    }
-
-    /* ============================================================
-       11. READER MESSAGE (exposed for ebook.js to use)
-       ============================================================ */
-    function buildReaderMessage(name, gender) {
-        let pronoun, possessive, objectPronoun;
-        if (gender === 'male')       { pronoun = 'he';   possessive = 'his';   objectPronoun = 'him'; }
-        else if (gender === 'female'){ pronoun = 'she';  possessive = 'her';   objectPronoun = 'her'; }
-        else                         { pronoun = 'they'; possessive = 'their'; objectPronoun = 'them'; }
-
-        return `${name} is someone who is easy to write about, because there is no pretence at all.
-
-Less talk, more action — that's who ${pronoun} is. Even in a crowd, ${pronoun} stands out, not because of clothes or style, but because of ${possessive} nature.
-
-The best thing about ${name} is that ${pronoun} understands. Without being told, ${pronoun} knows when to be there and when to stay quiet. People like this are rare these days.
-
-Hardworking and determined — once ${pronoun} sets ${possessive} mind on something, ${pronoun} gets it done. ${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} has a pure heart, which is why it feels safe to be around ${objectPronoun}.
-
-Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
-    }
-
-    /* ============================================================
-       12. PDF GENERATION — delegates to ebook.js
-       ============================================================ */
-    async function startPDFGeneration() {
-        if (!readerData.name) {
-            publicToast('Name is missing. Please go back.');
-            goToStep(2);
-            return;
-        }
-        if (!readerData.photo) {
-            publicToast('Please select a photo first');
-            return;
-        }
-
-        // Check ebook.js is ready
-        if (typeof window.generateEbookWithReader !== 'function') {
-            publicToast('❌ Ebook generator not ready. Please refresh the page.');
-            console.error('window.generateEbookWithReader is not defined — ebook.js may have failed to load.');
-            return;
-        }
-
-        goToStep(4);
-        updateModalProgress(0, 'Preparing ebook...');
-
-        try {
-            await window.generateEbookWithReader(readerData, (percent, message) => {
-                updateModalProgress(percent, message);
-            });
-
-            updateModalProgress(100, '✅ Your ebook is ready!');
-
-            setTimeout(() => {
-                closeModalInternal();
-                publicToast('Ebook downloaded successfully! 🎉');
-            }, 1200);
-
-        } catch (error) {
-            console.error('PDF generation failed:', error);
-            updateModalProgress(0, '❌ Something went wrong');
-            publicToast('PDF generation failed. Please try again.');
-            setTimeout(() => goToStep(3), 2000);
-        }
-    }
-
-    function updateModalProgress(percent, message) {
-        const fill = $('#modalProgressFill');
-        const text = $('#modalProgressText');
-        const hint = $('#modalHint');
-
-        if (fill) fill.style.width = percent + '%';
-        if (text) text.textContent = Math.round(percent) + '%';
-        if (hint && message) hint.textContent = message;
-    }
-
-    /* ============================================================
-       13. FOOTNOTES
-       ============================================================ */
-    function initFootnotes() {
+        /* Create tooltip (desktop) */
         let tooltip = document.querySelector('.footnote-tooltip');
         if (!tooltip) {
             tooltip = document.createElement('div');
             tooltip.className = 'footnote-tooltip';
+            tooltip.setAttribute('role', 'tooltip');
             document.body.appendChild(tooltip);
         }
 
+        /* Create sheet (mobile) */
         let sheet = document.querySelector('.footnote-sheet');
         let overlay = document.querySelector('.footnote-sheet-overlay');
 
@@ -675,59 +528,80 @@ Some people come into life and leave, some become a memory. ${name} is one of th
 
             sheet = document.createElement('div');
             sheet.className = 'footnote-sheet';
-            sheet.innerHTML = `
-                <div class="footnote-sheet-header">
-                    <div class="footnote-sheet-label" id="footnoteSheetLabel"></div>
-                    <button class="footnote-sheet-close" id="footnoteSheetClose" aria-label="Close">✕</button>
-                </div>
-                <div class="footnote-sheet-text" id="footnoteSheetText"></div>
-            `;
+            sheet.setAttribute('role', 'dialog');
+            sheet.setAttribute('aria-modal', 'true');
+            sheet.innerHTML =
+                '<div class="footnote-sheet-header">' +
+                    '<p class="footnote-sheet-label" id="footnoteSheetLabel"></p>' +
+                    '<button type="button" class="footnote-sheet-close" id="footnoteSheetClose" aria-label="Close">✕</button>' +
+                '</div>' +
+                '<p class="footnote-sheet-text" id="footnoteSheetText"></p>';
             document.body.appendChild(sheet);
 
-            const closeSheet = () => {
-                sheet.classList.remove('active');
-                overlay.classList.remove('active');
-            };
-            overlay.addEventListener('click', closeSheet);
-            sheet.querySelector('#footnoteSheetClose').addEventListener('click', closeSheet);
+            overlay.addEventListener('click', closeFootnoteSheet);
+            const closeBtn = sheet.querySelector('#footnoteSheetClose');
+            if (closeBtn) closeBtn.addEventListener('click', closeFootnoteSheet);
         }
 
-        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+        function closeFootnoteSheet() {
+            if (sheet) sheet.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+        }
 
-        const showTooltipAt = (el) => {
+        /* Expose for global escape handler */
+        window.closeFootnoteSheet = closeFootnoteSheet;
+
+        function showTooltipAt(el) {
             const note = el.dataset.note;
             if (!note) return;
+
             tooltip.textContent = note;
             tooltip.classList.add('visible');
+
+            /* Position after content is set */
             const rect = el.getBoundingClientRect();
-            const tooltipRect = tooltip.getBoundingClientRect();
-            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-            let top = rect.top - tooltipRect.height - 10;
+            const tr = tooltip.getBoundingClientRect();
+
+            let left = rect.left + (rect.width / 2) - (tr.width / 2);
+            let top = rect.top - tr.height - 10;
+
             if (left < 10) left = 10;
-            if (left + tooltipRect.width > window.innerWidth - 10)
-                left = window.innerWidth - tooltipRect.width - 10;
-            if (top < 10) top = rect.bottom + 10;
+            if (left + tr.width > window.innerWidth - 10) {
+                left = window.innerWidth - tr.width - 10;
+            }
+            if (top < 10) {
+                top = rect.bottom + 10;
+            }
+
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
-        };
+        }
 
-        document.addEventListener('mouseover', (e) => {
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        /* Hover (desktop) */
+        document.addEventListener('mouseover', function (e) {
             const el = e.target.closest('.footnote');
             if (!el || isMobile()) return;
             showTooltipAt(el);
         });
 
-        document.addEventListener('mouseout', (e) => {
+        document.addEventListener('mouseout', function (e) {
             const el = e.target.closest('.footnote');
             if (!el || isMobile()) return;
-            tooltip.classList.remove('visible');
+            hideTooltip();
         });
 
-        document.addEventListener('click', (e) => {
+        /* Click / tap */
+        document.addEventListener('click', function (e) {
             const el = e.target.closest('.footnote');
             if (!el) return;
+
             const note = el.dataset.note;
             if (!note) return;
+
             e.preventDefault();
 
             if (isMobile()) {
@@ -737,411 +611,108 @@ Some people come into life and leave, some become a memory. ${name} is one of th
                 if (labelEl) labelEl.textContent = label;
                 if (textEl) textEl.textContent = note;
                 sheet.classList.add('active');
-                overlay.classList.add('active');
+                if (overlay) overlay.classList.add('active');
             } else {
                 showTooltipAt(el);
                 clearTimeout(window._footnoteTimeout);
-                window._footnoteTimeout = setTimeout(() => tooltip.classList.remove('visible'), 4000);
+                window._footnoteTimeout = setTimeout(hideTooltip, 4000);
             }
         });
 
-        document.addEventListener('keydown', (e) => {
+        /* Keyboard access */
+        footnotes.forEach(function (el) {
+            if (!el.hasAttribute('tabindex')) {
+                el.setAttribute('tabindex', '0');
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
             if (e.key !== 'Enter' && e.key !== ' ') return;
             const el = document.activeElement;
             if (!el || !el.classList.contains('footnote')) return;
             e.preventDefault();
             el.click();
         });
+    })();
 
-        document.querySelectorAll('.footnote').forEach(el => {
-            if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
-        });
-    }
-
-    /* ============================================================
-       14. AUDIO NARRATION (SpeechSynthesis)
-       ============================================================ */
-    let currentUtterance = null;
-    let currentAudioBtn = null;
-    let currentChapterEl = null;
-    let currentSpeed = 1;
-
-    function getBestVoice(lang) {
-        if (!('speechSynthesis' in window)) return null;
-        const voices = window.speechSynthesis.getVoices();
-        if (!voices.length) return null;
-        if (lang === 'hi') {
-            return voices.find(v => v.lang === 'hi-IN')
-                || voices.find(v => v.lang.startsWith('hi'))
-                || voices.find(v => v.lang === 'en-IN')
-                || voices.find(v => v.lang.startsWith('en'))
-                || voices[0];
-        }
-        return voices.find(v => v.lang === 'en-IN')
-            || voices.find(v => v.lang.startsWith('en-IN'))
-            || voices.find(v => v.lang === 'en-GB')
-            || voices.find(v => v.lang.startsWith('en'))
-            || voices[0];
-    }
-
-    function extractChapterText(chapterEl) {
-        const paragraphs = chapterEl.querySelectorAll('p');
-        const texts = [];
-        paragraphs.forEach(p => {
-            const t = p.textContent.trim();
-            if (t.length > 5) texts.push(t);
-        });
-        return texts.join('. ');
-    }
-
-    function toggleChapterAudio(btn) {
-        if (!('speechSynthesis' in window)) {
-            publicToast('Audio not supported on this browser');
-            return;
-        }
-        const chapterEl = btn.closest('.chapter');
-        if (!chapterEl) return;
-        const player = btn.closest('.audio-player');
-        if (!player) return;
-
-        const progressArea = player.querySelector('.audio-player-progress');
-        const progressFill = player.querySelector('.audio-progress-fill');
-        const statusEl = player.querySelector('.audio-status');
-        const lang = player.dataset.lang || 'en';
-
-        // Pause
-        if (currentAudioBtn === btn && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-            window.speechSynthesis.pause();
-            btn.innerHTML = '▶ Resume';
-            btn.classList.remove('playing');
-            if (statusEl) statusEl.textContent = 'Paused';
-            return;
-        }
-        // Resume
-        if (currentAudioBtn === btn && window.speechSynthesis.paused) {
-            window.speechSynthesis.resume();
-            btn.innerHTML = '⏸ Pause';
-            btn.classList.add('playing');
-            if (statusEl) statusEl.textContent = 'Playing...';
-            return;
-        }
-
-        if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-
-        if (currentAudioBtn && currentAudioBtn !== btn) {
-            currentAudioBtn.innerHTML = '▶ Play';
-            currentAudioBtn.classList.remove('playing');
-            const prevPlayer = currentAudioBtn.closest('.audio-player');
-            if (prevPlayer) {
-                const prevProgress = prevPlayer.querySelector('.audio-player-progress');
-                if (prevProgress) prevProgress.style.display = 'none';
-            }
-        }
-
-        const text = extractChapterText(chapterEl);
-        if (!text) { publicToast('No text to read'); return; }
-
-        currentUtterance = new SpeechSynthesisUtterance(text);
-        currentUtterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
-        currentUtterance.rate = currentSpeed;
-        currentUtterance.pitch = 1;
-        currentUtterance.volume = 1;
-
-        const voice = getBestVoice(lang);
-        if (voice) currentUtterance.voice = voice;
-
-        const words = text.split(/\s+/).length;
-        const estimatedDuration = (words / 150) * 60 / currentSpeed;
-        const startTime = Date.now();
-
-        btn.innerHTML = '⏸ Pause';
-        btn.classList.add('playing');
-        if (progressArea) progressArea.style.display = 'block';
-        if (statusEl) statusEl.textContent = `Playing... (~${Math.ceil(estimatedDuration / 60)} min)`;
-        if (progressFill) progressFill.style.width = '0%';
-
-        currentAudioBtn = btn;
-        currentChapterEl = chapterEl;
-
-        const progressInterval = setInterval(() => {
-            if (!window.speechSynthesis.speaking || window.speechSynthesis.paused) return;
-            const elapsed = (Date.now() - startTime) / 1000;
-            const percent = Math.min((elapsed / estimatedDuration) * 100, 99);
-            if (progressFill) progressFill.style.width = percent + '%';
-        }, 500);
-
-        currentUtterance.onend = () => {
-            clearInterval(progressInterval);
-            btn.innerHTML = '▶ Play';
-            btn.classList.remove('playing');
-            if (progressFill) progressFill.style.width = '100%';
-            if (statusEl) statusEl.textContent = 'Finished';
-            setTimeout(() => {
-                if (progressArea) progressArea.style.display = 'none';
-                if (progressFill) progressFill.style.width = '0%';
-            }, 2000);
-            currentAudioBtn = null;
-            currentUtterance = null;
-        };
-
-        currentUtterance.onerror = (e) => {
-            clearInterval(progressInterval);
-            console.warn('Speech error:', e);
-            btn.innerHTML = '▶ Play';
-            btn.classList.remove('playing');
-            if (progressArea) progressArea.style.display = 'none';
-            if (statusEl) statusEl.textContent = 'Error';
-            currentAudioBtn = null;
-            currentUtterance = null;
-        };
-
-        window.speechSynthesis.speak(currentUtterance);
-    }
-
-    function initAudioControls() {
-        // Preload voices (Chrome quirk)
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.getVoices();
-            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-        }
-
-        document.addEventListener('click', (e) => {
-            const speedBtn = e.target.closest('.audio-speed-btn');
-            if (!speedBtn) return;
-            const speed = parseFloat(speedBtn.dataset.speed);
-            if (!speed) return;
-            const controls = speedBtn.closest('.audio-speed-controls');
-            if (controls) {
-                controls.querySelectorAll('.audio-speed-btn').forEach(b => b.classList.remove('active'));
-                speedBtn.classList.add('active');
-            }
-            currentSpeed = speed;
-            if (window.speechSynthesis.speaking && currentChapterEl) {
-                const wasBtn = currentAudioBtn;
-                window.speechSynthesis.cancel();
-                if (wasBtn) {
-                    wasBtn.innerHTML = '▶ Play';
-                    wasBtn.classList.remove('playing');
+    /* ======================================================================
+       14. DOWNLOAD BUTTONS
+       ====================================================================== */
+    if (downloadEn) {
+        downloadEn.addEventListener('click', function () {
+            if (typeof window.downloadEnglishEbook === 'function') {
+                try {
+                    window.downloadEnglishEbook();
+                } catch (err) {
+                    console.error('Download English failed:', err);
                 }
-                setTimeout(() => { if (wasBtn) toggleChapterAudio(wasBtn); }, 100);
+            } else {
+                console.warn('ebook.js not loaded — downloadEnglishEbook unavailable');
             }
-            publicToast(`Speed: ${speed}x`);
         });
     }
 
-    function stopAudioIfPlaying() {
-        if (window.speechSynthesis && window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-            if (currentAudioBtn) {
-                currentAudioBtn.innerHTML = '▶ Play';
-                currentAudioBtn.classList.remove('playing');
-                const player = currentAudioBtn.closest('.audio-player');
-                const progressArea = player ? player.querySelector('.audio-player-progress') : null;
-                if (progressArea) progressArea.style.display = 'none';
+    if (downloadHi) {
+        downloadHi.addEventListener('click', function () {
+            if (typeof window.downloadHinglishEbook === 'function') {
+                try {
+                    window.downloadHinglishEbook();
+                } catch (err) {
+                    console.error('Download Hinglish failed:', err);
+                }
+            } else {
+                console.warn('ebook.js not loaded — downloadHinglishEbook unavailable');
             }
-            currentAudioBtn = null;
-            currentUtterance = null;
+        });
+    }
+
+    /* ======================================================================
+       15. EXTERNAL LINKS SECURITY
+       ====================================================================== */
+    $$('a[target="_blank"]').forEach(function (link) {
+        const rel = link.getAttribute('rel') || '';
+        if (rel.indexOf('noopener') === -1) {
+            link.setAttribute('rel', (rel + ' noopener noreferrer').trim());
         }
-    }
+    });
 
-    /* ============================================================
-       15. READING PROGRESS BAR (top of page)
-       ============================================================ */
-    function initReadingProgressBar() {
-        const bar = $('#readingProgressBar');
-        const fill = $('#readingProgressFill');
-        if (!bar || !fill) return;
+    /* ======================================================================
+       16. CONSOLE GREETING (once per session)
+       ====================================================================== */
+    (function greet() {
+        const hasGreeted = sessionGet('rrs-book-greeted');
+        if (hasGreeted) return;
 
-        const update = () => {
-            const doc = document.documentElement;
-            const scrollTop = window.pageYOffset || doc.scrollTop;
-            const scrollHeight = doc.scrollHeight - window.innerHeight;
-            const pct = scrollHeight > 0 ? Math.min(100, (scrollTop / scrollHeight) * 100) : 0;
-            fill.style.width = pct + '%';
-            bar.setAttribute('aria-valuenow', Math.round(pct));
-        };
-
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update);
-        update();
-    }
-
-    /* ============================================================
-       16. BACK TO TOP
-       ============================================================ */
-    function initBackToTop() {
-        const btn = $('#backToTop');
-        if (!btn) return;
-
-        const toggle = () => {
-            btn.classList.toggle('visible', window.pageYOffset > 400);
-        };
-        window.addEventListener('scroll', toggle, { passive: true });
-        toggle();
-
-        btn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-
-    /* ============================================================
-       17. TOC CLICKS
-       ============================================================ */
-    function initTOC() {
-        const tocList = $('#tocList');
-        if (!tocList) return;
-        tocList.addEventListener('click', (e) => {
-            const a = e.target.closest('a[data-toc]');
-            if (!a) return;
-            e.preventDefault();
-            const ch = a.dataset.toc;
-            if (ch) showChapter(ch);
-        });
-    }
-
-    /* ============================================================
-       18. FONT SIZE CONTROLS
-       ============================================================ */
-    function applyFontSize(pct) {
-        state.fontSize = Math.max(80, Math.min(140, pct));
-        const wrapper = $('.autobio-wrapper');
-        if (wrapper) wrapper.style.fontSize = state.fontSize + '%';
-        try { localStorage.setItem('autobio-fontsize', String(state.fontSize)); } catch (e) {}
-    }
-
-    function initFontControls() {
-        let saved = 100;
-        try {
-            const s = localStorage.getItem('autobio-fontsize');
-            if (s) saved = parseInt(s, 10) || 100;
-        } catch (e) {}
-
-        applyFontSize(saved);
-
-        const dec = $('#fontDecrease');
-        const res = $('#fontReset');
-        const inc = $('#fontIncrease');
-
-        if (dec) dec.addEventListener('click', () => applyFontSize(state.fontSize - 10));
-        if (res) res.addEventListener('click', () => applyFontSize(100));
-        if (inc) inc.addEventListener('click', () => applyFontSize(state.fontSize + 10));
-    }
-
-    /* ============================================================
-       19. READING TIME ESTIMATE
-       ============================================================ */
-    function initReadingTime() {
-        const el = $('#readingTimeEstimate');
-        if (!el) return;
-
-        const container = getActiveContainer();
-        if (!container) return;
-
-        let words = 0;
-        $$('.chapter p', container).forEach(p => {
-            words += p.textContent.trim().split(/\s+/).length;
-        });
-
-        const minutes = Math.max(1, Math.round(words / 200));
-        el.textContent = `~${minutes} min read`;
-    }
-
-    /* ============================================================
-       20. RESTORE STATE
-       ============================================================ */
-    function restoreState() {
-        try {
-            const savedLang = localStorage.getItem('autobio-lang');
-            if (savedLang === 'hi' || savedLang === 'en') state.currentLang = savedLang;
-        } catch (e) {}
+        const accent = 'color:#8B6F3F;font-weight:600;';
+        const soft   = 'color:#7A7068;';
 
         try {
-            const savedCh = localStorage.getItem('autobio-chapter');
-            if (savedCh && CHAPTER_ORDER.includes(String(savedCh))) {
-                state.currentChapter = String(savedCh);
-            }
+            console.log('%c"A Boy Who Never Thought"', 'font-size:14px;font-weight:700;' + accent);
+            console.log('%c11 chapters · English & Hinglish', 'font-size:12px;' + soft);
+            console.log('%c← → to navigate · Back to author: /author.html', 'font-size:12px;' + soft);
+
+            sessionSet('rrs-book-greeted', '1');
         } catch (e) {}
-    }
+    })();
 
-    /* ============================================================
-       21. EXPOSE GLOBALS — ONLY WHAT HTML NEEDS
-       ============================================================
-       NOTE: We do NOT touch:
-         window.closeModal
-         window.showToast
-         window.downloadEnglishEbook
-         window.downloadHinglishEbook
-         window.cancelEbookGeneration
-       Those belong to ebook.js.
-       ============================================================ */
-    window.openModal            = openModal;
-    window.switchLang           = switchLang;
-    window.showChapter          = showChapter;
-    window.prevChapter          = prevChapter;
-    window.nextChapter          = nextChapter;
-    window.toggleChapterAudio   = toggleChapterAudio;
-    window.toggleTheme          = toggleTheme;
-
-    // Wizard steps (used by HTML onclick)
-    window.goToStep             = goToStep;
-    window.selectLanguage       = selectLanguage;
-    window.goToStep3            = goToStep3;
-    window.triggerUpload        = triggerUpload;
-
-    // Webcam (used by HTML onclick)
-    window.openWebcam           = openWebcam;
-    window.closeWebcam          = closeWebcam;
-    window.capturePhoto         = capturePhoto;
-
-    // PDF trigger (used by HTML onclick)
-    window.startPDFGeneration   = startPDFGeneration;
-
-    // Reader message builder (used by ebook.js)
-    window.buildReaderMessage   = buildReaderMessage;
-
-    // Safe fallback toast for internal use
-    if (typeof window.showToast !== 'function') {
-        window.showToast = publicToast;
-    }
-    // Safe fallback closeModal for HTML's onclick="closeModal()"
-    // ebook.js will override this with its own — that's fine.
-    if (typeof window.closeModal !== 'function') {
-        window.closeModal = closeModalInternal;
-    }
-
-    /* ============================================================
-       22. INIT — each module wrapped in try/catch
-       ============================================================ */
+    /* ======================================================================
+       17. INIT
+       ====================================================================== */
     function init() {
-        const safe = (name, fn) => {
+        const safe = function (name, fn) {
             try { fn(); }
-            catch (e) { console.warn('[autobiography.js] ' + name + ' failed:', e); }
+            catch (e) { console.warn('[book.js] ' + name + ' failed:', e); }
         };
 
-        safe('restoreState',      restoreState);
-        safe('initTheme',         initTheme);
-        safe('initSidebar',       initSidebar);
-        safe('initModal',         initModal);
-        safe('initChapterClicks', initChapterClicks);
-        safe('initPhotoInputs',   initPhotoInputs);
-        safe('initFootnotes',     initFootnotes);
-        safe('initAudioControls', initAudioControls);
-        safe('initReadingProgressBar', initReadingProgressBar);
-        safe('initBackToTop',     initBackToTop);
-        safe('initTOC',           initTOC);
-        safe('initFontControls',  initFontControls);
-
-        safe('switchLang',        () => switchLang(state.currentLang));
-        safe('showChapter',       () => showChapter(state.currentChapter, false));
-        safe('initReadingTime',   initReadingTime);
-
-        // Re-bind language buttons (in case switchLang didn't get to them)
-        const btnEn = $('#btnEn'), btnHi = $('#btnHi');
-        if (btnEn) btnEn.onclick = () => switchLang('en');
-        if (btnHi) btnHi.onclick = () => switchLang('hi');
+        safe('restoreChapter', restoreChapter);
+        safe('highlightToc',  function () { highlightToc(state.currentChapter); });
+        safe('updateProgress', function () { updateProgress(state.currentChapter); });
 
         document.body.classList.add('js-ready');
-        console.log('✅ autobiography.js v2 loaded — conflict-free');
+
+        try {
+            console.log('✅ book.js loaded');
+        } catch (e) {}
     }
 
     if (document.readyState === 'loading') {
