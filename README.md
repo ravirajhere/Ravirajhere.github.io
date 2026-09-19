@@ -303,4 +303,4 @@ The **code structure** may be used as a reference for learning. Please don't cop
 
 ---
 
-*Written by hand in Begusarai.*
+*Made with ❤️ & Curiosity by Ravi Raj Singh*
