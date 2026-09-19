@@ -2,14 +2,13 @@
    RAVI RAJ SINGH — BOOK READER STYLESHEET
    Design: Editorial Book · Warm Paper + Antique Gold
    Companion: book.html · book.js
-   Version: 1.0
+   Version: 1.1 — Sidebar layout fix
    ========================================================================== */
 
 /* ==========================================================================
    1. DESIGN TOKENS
    ========================================================================== */
 :root {
-    /* --- COLOR: PAPER --- */
     --paper:              #FAFAF7;
     --paper-soft:         #F4F1EA;
     --paper-elev:         #FFFFFF;
@@ -17,20 +16,16 @@
     --paper-border-soft:  rgba(28, 26, 23, 0.06);
     --paper-border-strong:rgba(28, 26, 23, 0.18);
 
-    /* --- COLOR: TEXT --- */
     --text:               #1A1A1A;
     --text-soft:          #4A423C;
     --text-muted:         #7A7068;
 
-    /* --- ACCENT --- */
     --accent:             #8B6F3F;
     --accent-dark:        #6E5630;
     --accent-soft:        rgba(139, 111, 63, 0.08);
 
-    /* --- INK --- */
     --ink:                #1A1A1A;
 
-    /* --- TYPOGRAPHY --- */
     --font-serif:         'Playfair Display', 'Georgia', 'Times New Roman', serif;
     --font-body:          'Lora', 'Georgia', 'Times New Roman', serif;
     --font-mono:          'Inter', system-ui, -apple-system, sans-serif;
@@ -45,7 +40,6 @@
     --fs-3xl:             2.25rem;
     --fs-4xl:             clamp(2rem, 4.5vw, 3rem);
 
-    /* --- SPACING --- */
     --space-1:            0.25rem;
     --space-2:            0.5rem;
     --space-3:            0.75rem;
@@ -59,18 +53,15 @@
     --space-20:           5rem;
     --space-24:           6rem;
 
-    /* --- LAYOUT --- */
     --sidebar-w:          280px;
     --header-h:           64px;
     --reading-max:        68ch;
 
-    /* --- RADII --- */
     --r-sm:               2px;
     --r-md:               4px;
     --r-lg:               6px;
     --r-full:             999px;
 
-    /* --- TRANSITIONS --- */
     --ease:               cubic-bezier(0.4, 0, 0.2, 1);
     --ease-out:           cubic-bezier(0.16, 1, 0.3, 1);
     --t-fast:             150ms;
@@ -217,7 +208,6 @@ em {
     gap: var(--space-6);
 }
 
-/* --- BACK LINK --- */
 .back-link {
     display: inline-flex;
     align-items: center;
@@ -247,7 +237,6 @@ em {
     transform: translateX(-2px);
 }
 
-/* --- HEADER TITLE --- */
 .header-title {
     font-family: var(--font-serif);
     font-size: var(--fs-sm);
@@ -263,7 +252,6 @@ em {
     max-width: 100%;
 }
 
-/* --- HEADER ACTIONS --- */
 .header-actions {
     display: flex;
     align-items: center;
@@ -271,7 +259,6 @@ em {
     justify-self: end;
 }
 
-/* --- LANG SWITCH --- */
 .lang-switch {
     display: inline-flex;
     align-items: center;
@@ -306,7 +293,6 @@ em {
     background: var(--ink);
 }
 
-/* --- MENU BUTTON --- */
 .menu-btn {
     display: none;
     align-items: center;
@@ -404,7 +390,7 @@ em {
 }
 
 /* ==========================================================================
-   6. SIDEBAR
+   6. SIDEBAR — FIXED LAYOUT
    ========================================================================== */
 .sidebar-overlay {
     position: fixed;
@@ -422,23 +408,34 @@ em {
 .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
     bottom: 0;
+    left: 0;
     width: var(--sidebar-w);
     background: var(--paper);
     border-right: 1px solid var(--paper-border);
     z-index: 95;
+
+    /* Sidebar layout — flex, no scroll */
     display: flex;
     flex-direction: column;
+    height: 100dvh;
     padding: var(--space-6) var(--space-5);
-    padding-top: calc(var(--header-h) + var(--space-6));
-    overflow-y: auto;
+    overflow: hidden;
+
     transition: transform var(--t-slow) var(--ease-out);
     will-change: transform;
 }
 
+/* Desktop: header ke neeche se start */
+@media (min-width: 861px) {
+    .sidebar {
+        padding-top: calc(var(--header-h) + var(--space-6));
+    }
+}
+
 /* --- SIDEBAR HEAD --- */
 .sidebar-head {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -473,10 +470,33 @@ em {
     background: var(--paper-soft);
 }
 
-/* --- TOC --- */
+/* --- TOC (SCROLLABLE) --- */
 .toc {
     flex: 1;
     min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-right: calc(var(--space-2) * -1);
+    padding-right: var(--space-2);
+    overscroll-behavior: contain;
+}
+
+/* TOC scrollbar — thin, subtle */
+.toc::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toc::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.toc::-webkit-scrollbar-thumb {
+    background: var(--paper-border-strong);
+    border-radius: var(--r-full);
+}
+
+.toc::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 .toc-list {
@@ -538,10 +558,11 @@ em {
     letter-spacing: 0.04em;
 }
 
-/* --- PROGRESS --- */
+/* --- PROGRESS (FIXED at bottom of TOC) --- */
 .sidebar-progress {
-    margin-top: var(--space-6);
-    padding-top: var(--space-5);
+    flex-shrink: 0;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--paper-border);
 }
 
@@ -552,7 +573,7 @@ em {
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
 }
 
 .progress-bar {
@@ -561,7 +582,7 @@ em {
     background: var(--paper-border);
     border-radius: var(--r-full);
     overflow: hidden;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
 }
 
 .progress-fill {
@@ -579,10 +600,11 @@ em {
     letter-spacing: 0.04em;
 }
 
-/* --- DOWNLOAD --- */
+/* --- DOWNLOAD (FIXED at bottom) --- */
 .sidebar-download {
-    margin-top: var(--space-6);
-    padding-top: var(--space-5);
+    flex-shrink: 0;
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
     border-top: 1px solid var(--paper-border);
 }
 
@@ -602,10 +624,11 @@ em {
     justify-content: center;
 }
 
-/* --- SIDEBAR FOOT --- */
+/* --- SIDEBAR FOOT (if present) --- */
 .sidebar-foot {
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
+    flex-shrink: 0;
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
     border-top: 1px solid var(--paper-border);
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -702,7 +725,6 @@ em {
     scroll-margin-top: calc(var(--header-h) + 24px);
 }
 
-/* --- CHAPTER HEAD --- */
 .chapter-head {
     margin-bottom: var(--space-12);
     text-align: center;
@@ -744,7 +766,6 @@ em {
     margin: 0 auto;
 }
 
-/* --- CHAPTER BODY --- */
 .chapter-body {
     font-size: var(--fs-md);
     line-height: 1.85;
@@ -771,7 +792,7 @@ em {
 }
 
 /* ==========================================================================
-   11. FIGURES (photos in chapters)
+   11. FIGURES
    ========================================================================== */
 .chapter-photo {
     margin: var(--space-12) auto;
@@ -848,7 +869,6 @@ em {
     font-size: 0.6em;
 }
 
-/* Footnote tooltip (desktop) — positioned via JS */
 .footnote-tooltip {
     position: fixed;
     max-width: 300px;
@@ -870,7 +890,6 @@ em {
     opacity: 1;
 }
 
-/* Footnote sheet (mobile) */
 .footnote-sheet-overlay {
     position: fixed;
     inset: 0;
@@ -1007,7 +1026,7 @@ em {
 }
 
 /* ==========================================================================
-   15. CHAPTER TEASER (epilogue end note)
+   15. CHAPTER TEASER
    ========================================================================== */
 .chapter-teaser {
     margin-top: var(--space-8);
@@ -1101,6 +1120,7 @@ em {
         transform: translateX(-100%);
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
         z-index: 96;
+        padding-top: var(--space-6);  /* mobile: no header offset */
     }
 
     .sidebar[data-open="true"] {
