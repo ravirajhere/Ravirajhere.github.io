@@ -1,162 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-formal="god-v8">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
 <meta name="theme-color" content="#0a0014" />
-<title>Ek Baat — For You</title>
+<meta name="description" content="Ek Baat — A private, on-device letter. No server, no tracking. Sirf tumhare liye." />
+<meta property="og:title" content="Ek Baat — For You" />
+<meta property="og:description" content="A private letter that lives in your browser only." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="./og-formal.png" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤</text></svg>" />
+<link rel="manifest" href="./formal.manifest.json" />
 
-<!-- CSS -->
-<link rel="stylesheet" href="css/formal.css" />
+<title>Ek Baat — For You ❤</title>
 
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
 
-<!-- ================= BACKGROUND LAYERS ================= -->
+<!-- Houdini - Naam se color badlega -->
+<style>
+@property --hue { syntax: "<number>"; inherits: true; initial-value: 320; }
+@property --glow { syntax: "<number>"; inherits: true; initial-value: 0; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.7s; }
+html { --hue: 320; --glow: 0; }
+</style>
+
+<link rel="stylesheet" href="css/formal.css" />
+</head>
+
+<body data-stage="opening" style="--hue:320; --glow:0;">
+
+<!-- GOD Layers -->
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 <div class="aurora" aria-hidden="true"></div>
 <canvas id="fx-canvas" aria-hidden="true"></canvas>
+<canvas id="heart-miner" width="1" height="1" hidden aria-hidden="true"></canvas>
 
-
-<!-- ================= MUSIC TOGGLE ================= -->
 <button id="music-toggle" class="music-toggle" aria-label="Toggle music" title="Music">
   <span class="music-icon">♪</span>
 </button>
 
-
-<!-- ================= LANGUAGE TOGGLE ================= -->
 <div id="lang-toggle" class="lang-toggle" role="group" aria-label="Language">
-  <button class="lang-btn" data-lang="hinglish">Hinglish</button>
-  <button class="lang-btn" data-lang="english">English</button>
+  <button class="lang-btn" data-lang="hinglish" aria-pressed="false">Hinglish</button>
+  <button class="lang-btn" data-lang="english" aria-pressed="false">English</button>
 </div>
 
+<main class="stage" id="stage" aria-live="polite">
 
-<!-- ================= MAIN STAGE ================= -->
-<main class="stage" id="stage">
-
-  <!-- ========== SCENE 0 : DARK OPENING ========== -->
+  <!-- 0 Opening -->
   <section class="scene scene--active" id="scene-opening" data-scene="0">
     <div class="scene-inner">
-      <p class="opening-line" id="opening-line"></p>
+      <p class="opening-line" id="opening-line" style="view-transition-name: prompt"></p>
       <p class="opening-sub" id="opening-sub"></p>
     </div>
   </section>
 
-
-  <!-- ========== SCENE 1 : LANGUAGE CHOICE ========== -->
-  <section class="scene" id="scene-language" data-scene="1">
+  <!-- 1 Language -->
+  <section class="scene" id="scene-language" data-scene="1" hidden>
     <div class="scene-inner">
-      <p class="prompt" id="lang-prompt"></p>
-      <div class="choice-row" id="lang-choices">
-        <button class="choice-btn choice-btn--primary" data-choose-lang="hinglish">
-          <span class="choice-emoji">💬</span>
-          <span class="choice-label">Hinglish</span>
+      <p class="prompt" id="lang-prompt" style="view-transition-name: prompt"></p>
+      <div class="choice-row" id="lang-choices" role="group" aria-label="Choose language">
+        <button class="choice-btn choice-btn--primary" data-choose-lang="hinglish" aria-pressed="false">
+          <span class="choice-emoji">💬</span><span class="choice-label">Hinglish</span>
         </button>
-        <button class="choice-btn choice-btn--primary" data-choose-lang="english">
-          <span class="choice-emoji">🌍</span>
-          <span class="choice-label">English</span>
+        <button class="choice-btn choice-btn--primary" data-choose-lang="english" aria-pressed="false">
+          <span class="choice-emoji">🌍</span><span class="choice-label">English</span>
         </button>
       </div>
     </div>
   </section>
 
-
-  <!-- ========== SCENE 2 : NAME INPUT ========== -->
-  <section class="scene" id="scene-name" data-scene="2">
+  <!-- 2 Name -->
+  <section class="scene" id="scene-name" data-scene="2" hidden>
     <div class="scene-inner">
-      <p class="prompt" id="name-prompt"></p>
-
-      <div class="input-wrap">
-        <input
-          type="text"
-          id="name-input"
-          class="text-input"
-          autocomplete="off"
-          spellcheck="false"
-          maxlength="24"
-          placeholder="..."
-        />
-        <span class="input-underline"></span>
-      </div>
-
-      <button class="next-btn" id="name-next" disabled>
-        <span class="next-arrow">→</span>
-      </button>
-    </div>
-  </section>
-
-
-  <!-- ========== SCENE 3 : NICKNAME INPUT ========== -->
-  <section class="scene" id="scene-nickname" data-scene="3">
-    <div class="scene-inner">
-      <p class="prompt" id="nick-prompt"></p>
-
-      <div class="input-wrap">
-        <input
-          type="text"
-          id="nick-input"
-          class="text-input"
-          autocomplete="off"
-          spellcheck="false"
-          maxlength="24"
-          placeholder="..."
-        />
-        <span class="input-underline"></span>
-      </div>
-
-      <div class="btn-row">
-        <button class="skip-btn" id="nick-skip">
-          <span id="nick-skip-label"></span>
-        </button>
-        <button class="next-btn" id="nick-next" disabled>
-          <span class="next-arrow">→</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ========== SCENE 4 : MOOD CHOICE ========== -->
-  <section class="scene" id="scene-mood" data-scene="4">
-    <div class="scene-inner">
-      <p class="prompt" id="mood-prompt"></p>
-
-      <div class="choice-row choice-row--mood" id="mood-choices">
-        <button class="choice-btn choice-btn--mood" data-mood="happy">
-          <span class="choice-emoji">😊</span>
-          <span class="choice-label" data-mood-label="happy"></span>
-        </button>
-        <button class="choice-btn choice-btn--mood" data-mood="normal">
-          <span class="choice-emoji">😐</span>
-          <span class="choice-label" data-mood-label="normal"></span>
-        </button>
-        <button class="choice-btn choice-btn--mood" data-mood="low">
-          <span class="choice-emoji">😔</span>
-          <span class="choice-label" data-mood-label="low"></span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ========== SCENE 5 : THE LETTER (Paper Unfold) ========== -->
-  <section class="scene" id="scene-letter" data-scene="5">
-    <div class="scene-inner">
-
-      <!-- Closed paper -->
-      <div class="paper paper--closed" id="paper-closed">
-        <div class="paper-seal">
-          <span class="seal-heart">❤</span>
+      <p class="prompt" id="name-prompt" style="view-transition-name: prompt"></p>
+      <form id="name-form" autocomplete="off">
+        <div class="input-wrap">
+          <input type="text" id="name-input" class="text-input" autocomplete="name" spellcheck="false" maxlength="24" placeholder="..." aria-label="Your name" />
+          <span class="input-underline"></span>
         </div>
+        <button type="submit" class="next-btn" id="name-next" disabled aria-label="Next"><span class="next-arrow">→</span></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 3 Nickname -->
+  <section class="scene" id="scene-nickname" data-scene="3" hidden>
+    <div class="scene-inner">
+      <p class="prompt" id="nick-prompt" style="view-transition-name: prompt"></p>
+      <form id="nick-form" autocomplete="off">
+        <div class="input-wrap">
+          <input type="text" id="nick-input" class="text-input" autocomplete="off" spellcheck="false" maxlength="24" placeholder="..." aria-label="Nickname" />
+          <span class="input-underline"></span>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="skip-btn" id="nick-skip"><span id="nick-skip-label"></span></button>
+          <button type="submit" class="next-btn" id="nick-next" disabled aria-label="Next"><span class="next-arrow">→</span></button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 4 Mood -->
+  <section class="scene" id="scene-mood" data-scene="4" hidden>
+    <div class="scene-inner">
+      <p class="prompt" id="mood-prompt" style="view-transition-name: prompt"></p>
+      <div class="choice-row choice-row--mood" id="mood-choices" role="group" aria-label="Mood">
+        <button class="choice-btn choice-btn--mood" data-mood="happy" aria-pressed="false"><span class="choice-emoji">😊</span><span class="choice-label" data-mood-label="happy"></span></button>
+        <button class="choice-btn choice-btn--mood" data-mood="normal" aria-pressed="false"><span class="choice-emoji">😐</span><span class="choice-label" data-mood-label="normal"></span></button>
+        <button class="choice-btn choice-btn--mood" data-mood="low" aria-pressed="false"><span class="choice-emoji">😔</span><span class="choice-label" data-mood-label="low"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Letter -->
+  <section class="scene" id="scene-letter" data-scene="5" hidden>
+    <div class="scene-inner">
+      <div class="paper paper--closed" id="paper-closed" role="button" tabindex="0" aria-label="Open letter">
+        <div class="paper-seal"><span class="seal-heart">❤</span></div>
         <p class="paper-hint" id="paper-hint"></p>
       </div>
-
-      <!-- Opened letter -->
-      <article class="letter letter--hidden" id="letter-open">
+      <article class="letter letter--hidden" id="letter-open" style="view-transition-name: letter">
         <div class="letter-inner">
           <p class="letter-salutation" id="letter-salutation"></p>
           <div class="letter-body" id="letter-body"></div>
@@ -164,65 +130,46 @@
         </div>
         <div class="letter-glow" aria-hidden="true"></div>
       </article>
-
     </div>
   </section>
 
-
-  <!-- ========== SCENE 6 : FINAL QUESTION ========== -->
-  <section class="scene" id="scene-question" data-scene="6">
+  <!-- 6 Question -->
+  <section class="scene" id="scene-question" data-scene="6" hidden>
     <div class="scene-inner">
-      <p class="prompt prompt--big" id="question-line"></p>
-
-      <div class="choice-row" id="question-choices">
-        <button class="choice-btn choice-btn--primary" data-answer="yes">
-          <span class="choice-emoji">💗</span>
-          <span class="choice-label" data-answer-label="yes"></span>
-        </button>
-        <button class="choice-btn choice-btn--ghost" data-answer="time">
-          <span class="choice-emoji">🕊</span>
-          <span class="choice-label" data-answer-label="time"></span>
-        </button>
+      <p class="prompt prompt--big" id="question-line" style="view-transition-name: prompt"></p>
+      <div class="choice-row" id="question-choices" role="group" aria-label="Answer">
+        <button class="choice-btn choice-btn--primary" data-answer="yes" aria-pressed="false"><span class="choice-emoji">💗</span><span class="choice-label" data-answer-label="yes"></span></button>
+        <button class="choice-btn choice-btn--ghost" data-answer="time" aria-pressed="false"><span class="choice-emoji">🕊</span><span class="choice-label" data-answer-label="time"></span></button>
       </div>
     </div>
   </section>
 
-
-  <!-- ========== SCENE 7 : RESPONSE ========== -->
-  <section class="scene" id="scene-response" data-scene="7">
-    <div class="scene-inner">
-      <p class="response-line" id="response-line"></p>
-    </div>
+  <!-- 7 Response -->
+  <section class="scene" id="scene-response" data-scene="7" hidden>
+    <div class="scene-inner"><p class="response-line" id="response-line" style="view-transition-name: prompt"></p></div>
   </section>
 
-
-  <!-- ========== SCENE 8 : ENDING ========== -->
-  <section class="scene" id="scene-ending" data-scene="8">
+  <!-- 8 Ending -->
+  <section class="scene" id="scene-ending" data-scene="8" hidden>
     <div class="scene-inner">
       <p class="ending-line" id="ending-line"></p>
       <div class="ending-heart" id="ending-heart">
-        <svg viewBox="0 0 100 100" class="heart-svg">
-          <path d="M50,88 C20,65 5,50 5,32 C5,18 16,8 30,8 C38,8 45,12 50,20 C55,12 62,8 70,8 C84,8 95,18 95,32 C95,50 80,65 50,88 Z"
-                class="heart-path" />
+        <svg viewBox="0 0 100 100" class="heart-svg" aria-hidden="true">
+          <path d="M50,88 C20,65 5,50 5,32 C5,18 16,8 30,8 C38,8 45,12 50,20 C55,12 62,8 70,8 C84,8 95,18 95,32 C95,50 80,65 50,88 Z" class="heart-path" />
         </svg>
       </div>
     </div>
   </section>
 
-
 </main>
 
-
-<!-- ================= AUDIO ELEMENTS (WebAudio fallback) ================= -->
 <div id="audio-primer" aria-hidden="true"></div>
-
-
-<!-- ================= HIDDEN EASTER EGG TRIGGER ================= -->
 <div id="easter-zone" aria-hidden="true"></div>
 
-
-<!-- ================= JS ================= -->
-<script src="js/formal.js"></script>
+<script type="module" src="js/formal.js"></script>
+<script>
+if('serviceWorker' in navigator){ addEventListener('load', ()=> navigator.serviceWorker.register('./formal-sw.js').catch(()=>{})); }
+</script>
 
 </body>
 </html>
