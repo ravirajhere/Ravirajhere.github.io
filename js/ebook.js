@@ -1,8 +1,8 @@
 /* ==========================================================================
-   RAVI RAJ SINGH — EBOOK GENERATOR v4
-   v3 + fixes: html2canvas dimensions, fonts preload, image preload, scale
+   RAVI RAJ SINGH — EBOOK GENERATOR v4.1
+   v4 + fix: drop cap position (float → position:absolute)
    Companion: book.html · book.js · book.css
-   Version: 4.0
+   Version: 4.1
    ========================================================================== */
 
 // ============================================================
@@ -26,8 +26,8 @@ const EBOOK_CONFIG = {
         size: 120
     },
     pdf: {
-        scale: 2.5,
-        quality: 0.92,
+        scale: 2,
+        quality: 0.85,
         format: 'a4',
         margin: 15,
         batchSize: 2
@@ -132,7 +132,7 @@ function showToast(message, type) {
 window.showToast = showToast;
 
 // ============================================================
-// 3. PRELOAD UTILITIES  ← NEW IN v4
+// 3. PRELOAD UTILITIES
 // ============================================================
 function preloadImage(src) {
     return new Promise(function (resolve) {
@@ -149,7 +149,6 @@ async function waitForFonts() {
         if (document.fonts && document.fonts.ready) {
             await document.fonts.ready;
         }
-        // Extra safety — Chrome sometimes resolves early
         await new Promise(function (r) { setTimeout(r, 200); });
     } catch (e) {}
 }
@@ -161,7 +160,6 @@ async function preloadAllImages() {
         EBOOK_CONFIG.images.signature
     ];
 
-    // Also preload any chapter photos in the DOM
     document.querySelectorAll('.chapter-photo img').forEach(function (img) {
         if (img.src) srcs.push(img.src);
     });
@@ -374,7 +372,6 @@ class EbookGenerator {
         report(0, 'Preparing…');
 
         try {
-            // v4: preload fonts + images FIRST
             report(3, 'Loading fonts…');
             await waitForFonts();
 
@@ -452,7 +449,6 @@ class EbookGenerator {
 
         const add = function (fn) { pages.push(fn()); };
 
-        // FRONT MATTER
         add(() => this.pageCover(images.cover));
         add(() => this.pageHalfTitle());
         add(() => this.pageFrontispiece(images.author));
@@ -463,12 +459,10 @@ class EbookGenerator {
         add(() => this.pageTOC(content.chapters));
         add(() => this.pageHowToRead());
 
-        // CHAPTERS
         content.chapters.forEach((ch, i) => {
             add(() => this.pageChapter(ch, i));
         });
 
-        // BACK MATTER
         add(() => this.pageStoryBehind());
         add(() => this.pageAboutAuthor(images.author, qrDataUrl));
         add(() => this.pageColophon());
@@ -654,6 +648,9 @@ class EbookGenerator {
         return div;
     }
 
+    // ========================================================
+    // ⭐ FIXED: Drop cap with position:absolute (not float)
+    // ========================================================
     pageChapter(chapterEl, index) {
         const div = document.createElement('div');
         div.style.cssText = [
@@ -701,16 +698,37 @@ class EbookGenerator {
             el.style.letterSpacing = '0.2px';
             el.style.background = 'transparent';
 
+            // ---- FIRST PARAGRAPH: drop cap via position:absolute ----
             if (i === 0 && el.textContent.trim().length > 0) {
                 const text = el.textContent.trim();
                 const firstChar = text.charAt(0);
                 const rest = text.slice(1);
 
+                // Make paragraph relative + add left padding for drop cap
+                el.style.position = 'relative';
+                el.style.paddingLeft = '52px';
+                el.style.minHeight = '56px';
+
+                // Drop cap positioned absolutely at top-left
                 el.innerHTML =
-                    '<span style="float:left;font-family:' + S.serifHead + ';font-size:48px;font-weight:700;color:' + S.gold + ';line-height:0.85;padding:6px 10px 0 0;margin-top:4px;">' +
+                    '<span style="' +
+                        'position:absolute;' +
+                        'top:-4px;' +
+                        'left:0;' +
+                        'width:44px;' +
+                        'height:56px;' +
+                        'font-family:' + S.serifHead + ';' +
+                        'font-size:52px;' +
+                        'font-weight:700;' +
+                        'color:' + S.gold + ';' +
+                        'line-height:56px;' +
+                        'text-align:left;' +
+                        'display:block;' +
+                        'overflow:visible;' +
+                    '">' +
                         firstChar +
                     '</span>' +
-                    rest;
+                    '<span style="display:inline;">' + rest + '</span>';
             }
         });
 
@@ -922,13 +940,12 @@ class EbookGenerator {
         const pageWidth  = 210;
         const pageHeight = 297;
         const margin = config.margin;
-        const contentWidth  = pageWidth  - (margin * 2);  // 180 mm
-        const contentHeight = pageHeight - (margin * 2);  // 267 mm
+        const contentWidth  = pageWidth  - (margin * 2);
+        const contentHeight = pageHeight - (margin * 2);
 
-        // Pixels (mm → px at 96dpi)
         const pxPerMm = 3.7795;
-        const contentWidthPx  = Math.round(contentWidth  * pxPerMm);  // ~680
-        const contentHeightPx = Math.round(contentHeight * pxPerMm);  // ~1009
+        const contentWidthPx  = Math.round(contentWidth  * pxPerMm);
+        const contentHeightPx = Math.round(contentHeight * pxPerMm);
 
         let isFirstPage = true;
         const batchSize = config.batchSize || 2;
@@ -968,7 +985,6 @@ class EbookGenerator {
     async renderPage(element, widthMm, heightMm, widthPx, heightPx) {
         let container = null;
         try {
-            // ---- Isolated container with fixed px dimensions ----
             container = document.createElement('div');
             container.style.cssText = [
                 'position:absolute',
@@ -992,7 +1008,6 @@ class EbookGenerator {
             container.appendChild(clone);
             document.body.appendChild(container);
 
-            // Wait for images inside this page to load
             const imgs = Array.prototype.slice.call(container.querySelectorAll('img'));
             await Promise.all(imgs.map(function (img) {
                 if (img.complete) return Promise.resolve();
@@ -1001,10 +1016,8 @@ class EbookGenerator {
                 });
             }));
 
-            // Small breather for layout
             await new Promise((r) => setTimeout(r, 80));
 
-            // ---- html2canvas with EXPLICIT dimensions ----
             const canvas = await html2canvas(container, {
                 scale: EBOOK_CONFIG.pdf.scale,
                 useCORS: true,
@@ -1119,4 +1132,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ============================================================
-console.log('✅ ebook.js v4 loaded — fixed dimensions, preloaded fonts & images, scale 2.5');
+console.log('✅ ebook.js v4.1 loaded — drop cap fixed, file size optimized');
