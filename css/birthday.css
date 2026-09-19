@@ -1,5 +1,5 @@
 /* ============================================================
-   PROJECT BEEJ — birthday.css (v15 Journey + Language + Photo)
+   PROJECT BEEJ — birthday.css (v16 Final)
    Pure Frontend • No Images • GitHub Pages Ready
    ============================================================ */
 
@@ -1471,7 +1471,7 @@ body {
 }
 
 /* ============================================================
-   v15 — LANGUAGE + JOURNEY + PHOTO FRAME
+   v16 — LANGUAGE + JOURNEY + PHOTO FRAME
    ============================================================ */
 
 /* --- LANGUAGE SELECT --- */
@@ -1769,6 +1769,35 @@ body {
 #photoframe-status {
   margin-top: 12px;
   color: var(--gold-soft);
+}
+
+/* ============================================================
+   LANGUAGE CHANGE (footer)
+   ============================================================ */
+#lang-change-container {
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+#lang-change-container .language-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+#lang-change-container .lang-btn {
+  padding: 14px 10px;
+}
+
+#lang-change-container .lang-flag {
+  font-size: 24px;
+}
+
+#lang-change-container .lang-name {
+  font-size: 14px;
+}
+
+#lang-change-container .lang-desc {
+  font-size: 10px;
 }
 
 /* ============================================================
