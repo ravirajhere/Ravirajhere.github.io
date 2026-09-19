@@ -1,9 +1,8 @@
 /* ==========================================================================
-   RAVI RAJ SINGH — EBOOK GENERATOR v3
-   "A Boy Who Never Thought" — Print-quality PDF with classic book design
+   RAVI RAJ SINGH — EBOOK GENERATOR v4
+   v3 + fixes: html2canvas dimensions, fonts preload, image preload, scale
    Companion: book.html · book.js · book.css
-   Version: 3.0
-   24 pages · drop caps · fleurons · running headers · dotted TOC
+   Version: 4.0
    ========================================================================== */
 
 // ============================================================
@@ -27,11 +26,11 @@ const EBOOK_CONFIG = {
         size: 120
     },
     pdf: {
-        scale: 1.5,
-        quality: 0.85,
+        scale: 2.5,
+        quality: 0.92,
         format: 'a4',
         margin: 15,
-        batchSize: 3
+        batchSize: 2
     }
 };
 
@@ -86,7 +85,7 @@ window.showPdfProgress = showPdfProgress;
 window.hidePdfProgress = hidePdfProgress;
 
 // ============================================================
-// 2. TOAST (fallback — uses console + creates its own)
+// 2. TOAST
 // ============================================================
 function showToast(message, type) {
     try {
@@ -133,7 +132,45 @@ function showToast(message, type) {
 window.showToast = showToast;
 
 // ============================================================
-// 3. RESOURCE VALIDATOR
+// 3. PRELOAD UTILITIES  ← NEW IN v4
+// ============================================================
+function preloadImage(src) {
+    return new Promise(function (resolve) {
+        if (!src) return resolve(false);
+        const img = new Image();
+        img.onload  = function () { resolve(true); };
+        img.onerror = function () { resolve(false); };
+        img.src = src;
+    });
+}
+
+async function waitForFonts() {
+    try {
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
+        }
+        // Extra safety — Chrome sometimes resolves early
+        await new Promise(function (r) { setTimeout(r, 200); });
+    } catch (e) {}
+}
+
+async function preloadAllImages() {
+    const srcs = [
+        EBOOK_CONFIG.images.cover,
+        EBOOK_CONFIG.images.author,
+        EBOOK_CONFIG.images.signature
+    ];
+
+    // Also preload any chapter photos in the DOM
+    document.querySelectorAll('.chapter-photo img').forEach(function (img) {
+        if (img.src) srcs.push(img.src);
+    });
+
+    await Promise.all(srcs.map(preloadImage));
+}
+
+// ============================================================
+// 4. RESOURCE VALIDATOR
 // ============================================================
 class ResourceValidator {
     static validateImage(src) {
@@ -174,7 +211,7 @@ class ResourceValidator {
 }
 
 // ============================================================
-// 4. LIBRARY LOADER
+// 5. LIBRARY LOADER
 // ============================================================
 class LibraryLoader {
     static loadScript(src, retries) {
@@ -213,7 +250,7 @@ class LibraryLoader {
 }
 
 // ============================================================
-// 5. QR GENERATOR
+// 6. QR GENERATOR
 // ============================================================
 class QRGenerator {
     static generate(data, size) {
@@ -256,7 +293,7 @@ class QRGenerator {
 }
 
 // ============================================================
-// 6. PAGE HELPERS
+// 7. PAGE HELPERS
 // ============================================================
 function makePage(extra) {
     const div = document.createElement('div');
@@ -312,7 +349,7 @@ function signature(author) {
 }
 
 // ============================================================
-// 7. MAIN EBOOK GENERATOR
+// 8. MAIN EBOOK GENERATOR
 // ============================================================
 class EbookGenerator {
     constructor() {
@@ -337,6 +374,13 @@ class EbookGenerator {
         report(0, 'Preparing…');
 
         try {
+            // v4: preload fonts + images FIRST
+            report(3, 'Loading fonts…');
+            await waitForFonts();
+
+            report(5, 'Loading images…');
+            await preloadAllImages();
+
             this.resources = await ResourceValidator.validateAll();
             await LibraryLoader.loadAll();
 
@@ -369,9 +413,6 @@ class EbookGenerator {
         }
     }
 
-    // --------------------------------------------------------
-    // getContent — clone .reading-main, pick language
-    // --------------------------------------------------------
     getContent(lang) {
         const wrapper = document.querySelector('.reading-main');
         if (!wrapper) return null;
@@ -401,9 +442,6 @@ class EbookGenerator {
         return { wrapper: clone, chapters: chapters };
     }
 
-    // --------------------------------------------------------
-    // buildPages — 24 pages
-    // --------------------------------------------------------
     async buildPages(content) {
         const pages = [];
         const images = this.resources;
@@ -414,7 +452,7 @@ class EbookGenerator {
 
         const add = function (fn) { pages.push(fn()); };
 
-        // FRONT MATTER (9 pages)
+        // FRONT MATTER
         add(() => this.pageCover(images.cover));
         add(() => this.pageHalfTitle());
         add(() => this.pageFrontispiece(images.author));
@@ -425,12 +463,12 @@ class EbookGenerator {
         add(() => this.pageTOC(content.chapters));
         add(() => this.pageHowToRead());
 
-        // MAIN CONTENT (11 chapters)
+        // CHAPTERS
         content.chapters.forEach((ch, i) => {
             add(() => this.pageChapter(ch, i));
         });
 
-        // BACK MATTER (4 pages)
+        // BACK MATTER
         add(() => this.pageStoryBehind());
         add(() => this.pageAboutAuthor(images.author, qrDataUrl));
         add(() => this.pageColophon());
@@ -439,9 +477,8 @@ class EbookGenerator {
         return pages;
     }
 
-    // ========================================================
-    // PAGE 1 — COVER
-    // ========================================================
+    // ---------- PAGES ----------
+
     pageCover(coverImage) {
         const div = document.createElement('div');
         div.style.cssText = 'padding:0;margin:0;background:#ffffff;width:100%;height:100%;display:flex;align-items:center;justify-content:center;';
@@ -449,9 +486,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 2 — HALF-TITLE
-    // ========================================================
     pageHalfTitle() {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -464,9 +498,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 3 — FRONTISPIECE
-    // ========================================================
     pageFrontispiece(authorImage) {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -485,9 +516,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 4 — TITLE
-    // ========================================================
     pageTitle() {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -515,9 +543,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 5 — COPYRIGHT
-    // ========================================================
     pageCopyright() {
         const div = makePage();
         div.innerHTML =
@@ -537,9 +562,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 6 — DEDICATION
-    // ========================================================
     pageDedication() {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -555,9 +577,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 7 — AUTHOR'S NOTE
-    // ========================================================
     pageAuthorsNote() {
         const div = makePage();
         div.innerHTML =
@@ -576,9 +595,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 8 — TABLE OF CONTENTS (dotted leaders)
-    // ========================================================
     pageTOC(chapters) {
         const div = makePage();
         let rows = '';
@@ -618,9 +634,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PAGE 9 — HOW TO READ
-    // ========================================================
     pageHowToRead() {
         const div = makePage();
         div.innerHTML =
@@ -641,9 +654,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // CHAPTER PAGE — with drop cap + fleuron
-    // ========================================================
     pageChapter(chapterEl, index) {
         const div = document.createElement('div');
         div.style.cssText = [
@@ -659,12 +669,10 @@ class EbookGenerator {
 
         const clone = chapterEl.cloneNode(true);
 
-        // Remove UI elements
         clone.querySelectorAll('.chapter-nav, .menu-btn, .back-link, .lang-switch').forEach(function (el) {
             el.remove();
         });
 
-        // Extract header info
         const numEl   = clone.querySelector('.chapter-num');
         const titleEl = clone.querySelector('.chapter-title');
         const yearEl  = clone.querySelector('.chapter-year');
@@ -681,7 +689,6 @@ class EbookGenerator {
 
         const bodyEl = clone.querySelector('.chapter-body') || clone;
 
-        // Process paragraphs
         const paragraphs = Array.prototype.slice.call(bodyEl.querySelectorAll('p'));
 
         paragraphs.forEach(function (el, i) {
@@ -694,7 +701,6 @@ class EbookGenerator {
             el.style.letterSpacing = '0.2px';
             el.style.background = 'transparent';
 
-            // Drop cap on first paragraph only
             if (i === 0 && el.textContent.trim().length > 0) {
                 const text = el.textContent.trim();
                 const firstChar = text.charAt(0);
@@ -708,7 +714,6 @@ class EbookGenerator {
             }
         });
 
-        // Process strong / em
         bodyEl.querySelectorAll('strong').forEach(function (el) {
             el.style.color = '#000000';
             el.style.fontWeight = '700';
@@ -718,7 +723,6 @@ class EbookGenerator {
             el.style.fontStyle = 'italic';
         });
 
-        // Process pull-quotes with fleurons
         bodyEl.querySelectorAll('.pull-quote').forEach(function (el) {
             el.style.border = 'none';
             el.style.padding = '8px 0';
@@ -753,7 +757,6 @@ class EbookGenerator {
             }
         });
 
-        // Process photos
         bodyEl.querySelectorAll('.chapter-photo').forEach(function (el) {
             el.style.margin = '22px auto';
             el.style.textAlign = 'center';
@@ -776,13 +779,11 @@ class EbookGenerator {
             }
         });
 
-        // Footnotes
         bodyEl.querySelectorAll('.footnote').forEach(function (el) {
             el.style.color = S.gold;
             el.style.borderBottom = 'none';
         });
 
-        // Header
         const displayNum = (index === 10) ? '—' : String(index + 1);
 
         const headerHTML =
@@ -821,9 +822,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // STORY BEHIND THE STORY
-    // ========================================================
     pageStoryBehind() {
         const div = makePage();
         div.innerHTML =
@@ -842,9 +840,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // ABOUT THE AUTHOR
-    // ========================================================
     pageAboutAuthor(authorImage, qrDataUrl) {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -878,9 +873,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // COLOPHON
-    // ========================================================
     pageColophon() {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -897,9 +889,6 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // BLANK PAGE
-    // ========================================================
     pageBlank() {
         const div = makePage();
         div.style.textAlign = 'center';
@@ -908,9 +897,7 @@ class EbookGenerator {
         return div;
     }
 
-    // ========================================================
-    // PDF RENDERING
-    // ========================================================
+    // ---------- PDF RENDERING ----------
     async generatePDF(langLabel, report) {
         const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
         if (!jsPDFCtor) throw new Error('jsPDF not available');
@@ -935,62 +922,114 @@ class EbookGenerator {
         const pageWidth  = 210;
         const pageHeight = 297;
         const margin = config.margin;
-        const contentWidth  = pageWidth  - (margin * 2);
-        const contentHeight = pageHeight - (margin * 2);
+        const contentWidth  = pageWidth  - (margin * 2);  // 180 mm
+        const contentHeight = pageHeight - (margin * 2);  // 267 mm
+
+        // Pixels (mm → px at 96dpi)
+        const pxPerMm = 3.7795;
+        const contentWidthPx  = Math.round(contentWidth  * pxPerMm);  // ~680
+        const contentHeightPx = Math.round(contentHeight * pxPerMm);  // ~1009
 
         let isFirstPage = true;
-        const batchSize = config.batchSize || 3;
+        const batchSize = config.batchSize || 2;
 
         for (let i = 0; i < this.pages.length; i += batchSize) {
             if (this.cancelled) break;
 
             const batch = this.pages.slice(i, i + batchSize);
             const results = await Promise.all(
-                batch.map((page) => this.renderPage(page, contentWidth, contentHeight))
+                batch.map((page) => this.renderPage(
+                    page,
+                    contentWidth, contentHeight,
+                    contentWidthPx, contentHeightPx
+                ))
             );
 
             results.forEach((dataUrl) => {
                 if (!dataUrl) return;
                 if (!isFirstPage) this.pdf.addPage();
                 isFirstPage = false;
-                this.pdf.addImage(dataUrl, 'JPEG', margin, margin, contentWidth, contentHeight, undefined, 'FAST');
+                this.pdf.addImage(
+                    dataUrl, 'JPEG',
+                    margin, margin,
+                    contentWidth, contentHeight,
+                    undefined, 'FAST'
+                );
             });
 
             const pct = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
             const visual = Math.max(45, 45 + Math.round((pct / 100) * 55));
             report(visual, 'Rendering PDF…');
 
-            await new Promise((r) => setTimeout(r, 40));
+            await new Promise((r) => setTimeout(r, 60));
         }
     }
 
-    async renderPage(element, width, height) {
+    async renderPage(element, widthMm, heightMm, widthPx, heightPx) {
+        let container = null;
         try {
-            const container = document.createElement('div');
-            container.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:' + width + 'mm;background:#ffffff;padding:0;margin:0;';
+            // ---- Isolated container with fixed px dimensions ----
+            container = document.createElement('div');
+            container.style.cssText = [
+                'position:absolute',
+                'left:-9999px',
+                'top:0',
+                'width:' + widthPx + 'px',
+                'height:' + heightPx + 'px',
+                'background:#ffffff',
+                'overflow:hidden',
+                'box-sizing:border-box',
+                'padding:0',
+                'margin:0'
+            ].join(';');
 
             const clone = element.cloneNode(true);
             clone.style.width = '100%';
             clone.style.height = '100%';
             clone.style.background = '#ffffff';
+            clone.style.boxSizing = 'border-box';
+
             container.appendChild(clone);
             document.body.appendChild(container);
 
-            await new Promise((r) => setTimeout(r, 60));
+            // Wait for images inside this page to load
+            const imgs = Array.prototype.slice.call(container.querySelectorAll('img'));
+            await Promise.all(imgs.map(function (img) {
+                if (img.complete) return Promise.resolve();
+                return new Promise(function (resolve) {
+                    img.onload = img.onerror = function () { resolve(); };
+                });
+            }));
 
+            // Small breather for layout
+            await new Promise((r) => setTimeout(r, 80));
+
+            // ---- html2canvas with EXPLICIT dimensions ----
             const canvas = await html2canvas(container, {
                 scale: EBOOK_CONFIG.pdf.scale,
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                logging: false
+                logging: false,
+                width: widthPx,
+                height: heightPx,
+                windowWidth: widthPx,
+                windowHeight: heightPx,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0
             });
 
             if (container.parentNode) container.parentNode.removeChild(container);
+            container = null;
 
-            if (canvas) return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
+            if (canvas) {
+                return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
+            }
             return null;
         } catch (error) {
             console.error('Page render failed:', error);
+            if (container && container.parentNode) container.parentNode.removeChild(container);
             return null;
         }
     }
@@ -1012,7 +1051,7 @@ class EbookGenerator {
 }
 
 // ============================================================
-// 8. PUBLIC API
+// 9. PUBLIC API
 // ============================================================
 const ebookGenerator = new EbookGenerator();
 
@@ -1029,7 +1068,7 @@ window.cancelEbookGeneration = function () {
 };
 
 // ============================================================
-// 9. KEYBOARD SHORTCUT
+// 10. KEYBOARD SHORTCUT
 // ============================================================
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && ebookGenerator && ebookGenerator.isGenerating) {
@@ -1038,7 +1077,7 @@ document.addEventListener('keydown', function (e) {
 });
 
 // ============================================================
-// 10. PROGRESS PILL — auto-inject
+// 11. PROGRESS PILL — auto-inject
 // ============================================================
 document.addEventListener('DOMContentLoaded', function () {
     if (!document.getElementById('pdfProgressPill')) {
@@ -1080,4 +1119,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ============================================================
-console.log('✅ ebook.js v3 loaded — 24 pages, classic book design');
+console.log('✅ ebook.js v4 loaded — fixed dimensions, preloaded fonts & images, scale 2.5');
