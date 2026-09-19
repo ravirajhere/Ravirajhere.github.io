@@ -36,7 +36,7 @@
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/favicon.png" />
 
-    <!-- ====== RSS (Blog) ====== -->
+    <!-- ====== RSS ====== -->
     <link rel="alternate" type="application/rss+xml" title="Ravi Raj — Thoughts" href="./feed.xml" />
 
     <!-- ====== FONTS ====== -->
@@ -86,14 +86,14 @@
     <a href="#main" class="skip-link">Skip to content</a>
 
     <!-- ============================================================
-         TOP BAR — Value Prop
+         TOP BAR
     ============================================================ -->
     <div class="top-bar" role="status" aria-live="polite">
         <div class="top-bar-inner">
-            <span class="tb-live"><span class="dot"></span> Available for internships</span>
-            <span class="tb-sep">·</span>
+            <span class="tb-live"><span class="dot" aria-hidden="true"></span> Available for internships</span>
+            <span class="tb-sep" aria-hidden="true">·</span>
             <span class="tb-item">Begusarai, Bihar (IST)</span>
-            <span class="tb-sep hide-m">·</span>
+            <span class="tb-sep hide-m" aria-hidden="true">·</span>
             <span class="tb-item hide-m">Replies within 4 hours</span>
             <span class="tb-spacer"></span>
             <button class="kbd-hint" id="kbdHint" type="button" aria-label="Press K for keyboard shortcuts">
@@ -119,9 +119,9 @@
             </a>
 
             <nav class="primary-nav" aria-label="Primary">
-                <a href="#work">Work</a>
-                <a href="#writing">Writing</a>
-                <a href="#story">Story</a>
+                <a href="#work" data-nav="work">Work</a>
+                <a href="#writing" data-nav="writing">Writing</a>
+                <a href="#story" data-nav="story">Story</a>
                 <a href="autobiography.html" class="nav-hl">Autobiography</a>
             </nav>
 
@@ -143,10 +143,11 @@
     </header>
 
     <!-- ============================================================
-         MOBILE NAV
+         MOBILE NAV (hidden by default)
     ============================================================ -->
     <div class="mobile-overlay" id="mobileOverlay" hidden aria-hidden="true"></div>
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile" hidden aria-hidden="true">
+
+    <nav class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden aria-hidden="true">
         <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
         </button>
@@ -177,7 +178,7 @@
 
                 <div class="hero-content">
                     <p class="hero-eyebrow">
-                        <span class="eyebrow-dot"></span>
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
                         Built by hand. Since 2023.
                     </p>
 
@@ -214,7 +215,7 @@
                         </div>
                         <div>
                             <dt>Honest level</dt>
-                            <dd>Learning <span class="arrow">→</span> Expert</dd>
+                            <dd>Learning <span class="arrow" aria-hidden="true">→</span> Expert</dd>
                         </div>
                     </dl>
                 </div>
@@ -237,7 +238,7 @@
                     <figure class="hero-portrait">
                         <img src="assets/images/formal.jpg" alt="Ravi Raj, photographed in Begusarai" width="280" height="280" loading="eager" />
                         <figcaption>
-                            <span class="photo-note">“Real afternoon. Real Begusarai. Not stock.”</span>
+                            <span class="photo-note">"Real afternoon. Real Begusarai. Not stock."</span>
                             <span class="photo-credit">— Ravi, 2026</span>
                         </figcaption>
                     </figure>
@@ -252,7 +253,7 @@
         </section>
 
         <!-- ========================================================
-             WORK — Case studies
+             WORK
         ======================================================= -->
         <section class="section" id="work" aria-labelledby="work-heading">
             <header class="section-head">
@@ -353,7 +354,7 @@
 
             <div class="work-extra">
                 <p class="work-updated">
-                    <span class="dot dot-mini"></span>
+                    <span class="dot dot-mini" aria-hidden="true"></span>
                     Last updated: <time datetime="2026-01">January 2026</time>
                 </p>
                 <a href="./press-kit.zip" class="work-presskit" download>
@@ -438,7 +439,7 @@
         </section>
 
         <!-- ========================================================
-             WRITING — Author world
+             WRITING
         ======================================================= -->
         <section class="section section-light" id="writing" aria-labelledby="writing-heading">
             <header class="section-head">
@@ -448,7 +449,7 @@
 
             <article class="book-feature">
                 <figure class="book-cover">
-                    <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought' — Ravi Raj's autobiography, 2024" width="360" height="540" loading="lazy" />
+                    <img src="assets/images/bookcover.jpg" alt="Cover of 'A Boy Who Never Thought' — Ravi Raj's autobiography, 2024" width="360" height="540" loading="eager" />
                 </figure>
                 <div class="book-meta">
                     <p class="book-label">Book · 2024</p>
@@ -600,7 +601,7 @@
             </p>
 
             <div class="contact-primary">
-                <button class="contact-email" id="copyEmail" type="button" aria-label="Copy email to clipboard">
+                <button class="contact-email" id="copyEmail" type="button" aria-label="Copy email to clipboard" data-label="rravirajhere@gmail.com">
                     <span id="emailText">rravirajhere@gmail.com</span>
                     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                         <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
@@ -645,7 +646,7 @@
             <div class="footer-col footer-brand-col">
                 <p class="footer-brand">Ravi Raj</p>
                 <p class="footer-tag">Developer who writes. Author who builds.</p>
-                <p class="footer-status"><span class="dot"></span> Open to work</p>
+                <p class="footer-status"><span class="dot" aria-hidden="true"></span> Open to work</p>
             </div>
 
             <div class="footer-col">
@@ -689,7 +690,7 @@
     <!-- ============================================================
          COMMAND PALETTE
     ============================================================ -->
-    <div class="cmd-palette" id="cmdPalette" hidden role="dialog" aria-modal="true" aria-labelledby="cmdLabel">
+    <div class="cmd-palette" id="cmdPalette" role="dialog" aria-modal="true" aria-labelledby="cmdLabel" hidden>
         <div class="cmd-overlay" id="cmdOverlay"></div>
         <div class="cmd-box">
             <label for="cmdInput" id="cmdLabel" class="sr-only">Jump to section</label>
