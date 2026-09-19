@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-beej-version="9.0-merged">
+<html lang="en" data-beej-version="11.0-phase2">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -33,7 +33,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet" />
 
 <!-- Styles -->
-<link rel="stylesheet" href="css/birthday.css" />
+<link rel="stylesheet" href="./css/birthday.css" />
 </head>
 
 <body data-stage="gate" style="--hue: 45; --chain-len: 0;">
@@ -222,7 +222,88 @@
     <h2 class="section-title">🏆 Certificate of Dosti</h2>
     <div id="cert-zone"></div>
 
-    <!-- 5.7 Footer -->
+    <!-- ============================================ -->
+    <!-- 5.7 SPIN WHEEL (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🎡 Compliment Wheel</h2>
+    <div id="wheel-zone">
+      <div class="wheel" id="wheel">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel-spin" id="wheel-spin"></div>
+        <button type="button" class="btn" id="wheel-btn">
+          🎯 Spin
+        </button>
+      </div>
+      <p id="wheel-result" class="wheel-result"></p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.8 GIFT BOXES (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🎁 Gift Boxes</h2>
+    <div id="gift-zone" class="gift-zone"></div>
+
+    <!-- ============================================ -->
+    <!-- 5.9 QUIZ (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🧠 Kitna Jaanta Hai Mujhe?</h2>
+    <div id="quiz-zone" class="quiz-zone">
+      <div id="quiz-content"></div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.10 WISH WALL (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">💌 Wish Wall</h2>
+    <div id="wish-wall-zone">
+      <textarea
+        id="wish-input"
+        class="input"
+        placeholder="Apni wish likho..."
+        rows="3"
+        maxlength="200"
+      ></textarea>
+      <button type="button" class="btn" id="wish-add-btn">
+        💛 Add Wish
+      </button>
+      <div id="wish-list" class="wish-list"></div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.11 MEMORY MATCH (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🃏 Memory Match</h2>
+    <div id="memory-zone">
+      <p class="subtitle">
+        Score: <span id="memory-score">0</span> • Moves: <span id="memory-moves">0</span>
+      </p>
+      <div id="memory-grid" class="memory-grid"></div>
+      <button type="button" class="btn btn--ghost" id="memory-restart">
+        🔄 Reset
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.12 FORTUNE COOKIE (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">🥠 Fortune Cookie</h2>
+    <div id="fortune-zone">
+      <div class="fortune-cookie" id="fortune-cookie">🥠</div>
+      <p id="fortune-text" class="fortune-text">
+        Cookie todo → kismat dekho
+      </p>
+      <button type="button" class="btn" id="fortune-btn">
+        🔮 Kholo
+      </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 5.13 TIMELINE (Phase 2) -->
+    <!-- ============================================ -->
+    <h2 class="section-title">📜 Memory Lane</h2>
+    <div id="timeline-zone" class="timeline"></div>
+
+    <!-- ========== 5.14 FOOTER ========== -->
     <footer class="main-footer">
       <button type="button" class="btn btn--icon" id="music-toggle" aria-label="Toggle music">
         🔇
@@ -231,7 +312,7 @@
         🔄 Naya Dost
       </button>
       <p class="mono tiny">
-        BEEJ v9 • Chain: <span id="footer-hash">GENESIS</span> • Fully Offline
+        BEEJ v11 • Chain: <span id="footer-hash">GENESIS</span> • Fully Offline
       </p>
     </footer>
 
