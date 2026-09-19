@@ -1,27 +1,28 @@
-// ============================================================
-// EBOOK.JS — PAGE-SPECIFIC LOGIC FOR AUTOBIOGRAPHY.HTML
-// (Ebook Generator, PDF Creation, QR Code, Resource Validator)
-// + Reader Personalization (About the Reader page)
-// ============================================================
+/* ==========================================================================
+   RAVI RAJ SINGH — EBOOK GENERATOR v2
+   Generates a print-quality PDF of "A Boy Who Never Thought"
+   Companion: book.html · book.js · book.css
+   Version: 2.0
+   No wizard. No fluff. Honest content only.
+   ========================================================================== */
 
 // ============================================================
 // CONFIGURATION
 // ============================================================
 const EBOOK_CONFIG = {
     author: 'Ravi Raj Singh',
-    title: 'My Autobiography',
-    subtitle: 'A Boy Who Never Thought',
+    title: 'A Boy Who Never Thought',
+    subtitle: 'Safar Se Safar Tak',
     birthYear: 2008,
     birthplace: 'Begusarai, Bihar',
     currentYear: new Date().getFullYear(),
     images: {
         cover: 'assets/images/bookcover.jpg',
-        author: 'assets/images/formal.jpg',
+        author: 'assets/images/casual.jpg',
         signature: 'assets/images/signature.jpg'
     },
-    social: {},
     qr: {
-        url: 'https://ravirajhere.github.io',
+        url: 'https://ravirajhere.github.io/author.html',
         size: 120
     },
     pdf: {
@@ -34,47 +35,33 @@ const EBOOK_CONFIG = {
 };
 
 // ============================================================
-// HELPER: number to word
-// ============================================================
-function numberToWord(num) {
-    const map = {
-        '1': 'One', '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five',
-        '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine', '10': 'Ten',
-        '11': 'Eleven', '12': 'Twelve', '13': 'Thirteen', '14': 'Fourteen',
-        '15': 'Fifteen'
-    };
-    return map[String(num)] || num;
-}
-
-// ============================================================
-// PDF PROGRESS PILL HELPERS
+// 1. PROGRESS PILL
 // ============================================================
 function showPdfProgress(percent, label) {
     const pill = document.getElementById('pdfProgressPill');
     const text = document.getElementById('pdfPillText');
-    const pct = document.getElementById('pdfPillPercent');
+    const pct  = document.getElementById('pdfPillPercent');
     const fill = document.getElementById('pdfPillFill');
-    
+
     if (!pill) return;
-    
+
     pill.classList.add('active');
-    
+
     const p = Math.max(0, Math.min(100, Math.round(percent)));
-    
     if (text && label) text.textContent = label;
-    if (pct) pct.textContent = p + '%';
+    if (pct)  pct.textContent = p + '%';
     if (fill) fill.style.width = p + '%';
 }
 
 function hidePdfProgress() {
     const pill = document.getElementById('pdfProgressPill');
     if (pill) pill.classList.remove('active');
-    
-    setTimeout(() => {
-        const pct = document.getElementById('pdfPillPercent');
+
+    setTimeout(function () {
+        const pct  = document.getElementById('pdfPillPercent');
         const fill = document.getElementById('pdfPillFill');
         const text = document.getElementById('pdfPillText');
-        if (pct) pct.textContent = '0%';
+        if (pct)  pct.textContent = '0%';
         if (fill) fill.style.width = '0%';
         if (text) text.textContent = 'Generating PDF';
     }, 400);
@@ -84,119 +71,92 @@ window.showPdfProgress = showPdfProgress;
 window.hidePdfProgress = hidePdfProgress;
 
 // ============================================================
-// 1. TOAST MANAGER
+// 2. TOAST (minimal — falls back to console)
 // ============================================================
-class ToastManager {
-    constructor() {
-        this.toast = document.getElementById('toast');
-        this.timeout = null;
-        this.queue = [];
-        this.isShowing = false;
+function showToast(message, type) {
+    if (typeof window.showToast === 'function' && window.showToast !== showToast) {
+        // avoid recursion
+    }
+    // Simple: use native alert-free approach — console only
+    try {
+        if (type === 'error') console.error('[ebook]', message);
+        else console.log('[ebook]', message);
+    } catch (e) {}
+
+    // Attempt to show a lightweight toast if container exists
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = [
+            'position:fixed',
+            'left:50%',
+            'bottom:32px',
+            'transform:translateX(-50%) translateY(16px)',
+            'background:#1A1A1A',
+            'color:#FAFAF7',
+            'padding:12px 20px',
+            'border-radius:4px',
+            'font-family:Inter,system-ui,sans-serif',
+            'font-size:13px',
+            'letter-spacing:0.02em',
+            'box-shadow:0 8px 24px rgba(0,0,0,0.18)',
+            'opacity:0',
+            'pointer-events:none',
+            'transition:opacity .25s ease, transform .25s ease',
+            'z-index:9999'
+        ].join(';');
+        document.body.appendChild(toast);
     }
 
-    show(message, type = 'info', duration = 3000) {
-        this.queue.push({ message, type, duration });
-        if (!this.isShowing) {
-            this.processQueue();
-        }
-    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
 
-    processQueue() {
-        if (this.queue.length === 0) {
-            this.isShowing = false;
-            return;
-        }
-
-        this.isShowing = true;
-        const { message, type, duration } = this.queue.shift();
-        
-        if (!this.toast) return;
-        
-        this.toast.textContent = message;
-        this.toast.className = 'toast';
-        if (type) this.toast.classList.add(type);
-        this.toast.classList.add('show');
-        
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-            this.toast.classList.remove('show');
-            setTimeout(() => this.processQueue(), 300);
-        }, duration);
-    }
-
-    error(message) { this.show('❌ ' + message, 'error', 4000); }
-    success(message) { this.show('✅ ' + message, 'success', 3000); }
-    info(message) { this.show('ℹ️ ' + message, 'info', 2500); }
-    warning(message) { this.show('⚠️ ' + message, 'warning', 3500); }
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(function () {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(16px)';
+    }, 2800);
 }
 
-const toast = new ToastManager();
-
-// ============================================================
-// 2. MODAL MANAGER
-// ============================================================
-class ModalManager {
-    constructor() {
-        this.modal = document.getElementById('downloadModal');
-        this.isOpen = false;
-    }
-
-    open() {
-        if (!this.modal) return;
-        this.modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        this.isOpen = true;
-    }
-
-    close() {
-        if (!this.modal) return;
-        this.modal.classList.remove('active');
-        document.body.style.overflow = '';
-        this.isOpen = false;
-    }
-}
-
-const modal = new ModalManager();
+window.showToast = showToast;
 
 // ============================================================
 // 3. RESOURCE VALIDATOR
 // ============================================================
 class ResourceValidator {
-    static async validateImage(src) {
-        return new Promise((resolve) => {
+    static validateImage(src) {
+        return new Promise(function (resolve) {
             const img = new Image();
-            img.onload = () => resolve(src);
-            img.onerror = () => {
+            img.onload  = function () { resolve(src); };
+            img.onerror = function () {
                 const canvas = document.createElement('canvas');
-                canvas.width = 400;
+                canvas.width  = 400;
                 canvas.height = 400;
                 const ctx = canvas.getContext('2d');
-                
-                const gradient = ctx.createLinearGradient(0, 0, 400, 400);
-                gradient.addColorStop(0, '#f0f0f0');
-                gradient.addColorStop(1, '#e0e0e0');
-                ctx.fillStyle = gradient;
+                ctx.fillStyle = '#f0f0f0';
                 ctx.fillRect(0, 0, 400, 400);
-                
                 ctx.fillStyle = '#999';
                 ctx.font = '60px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('📷', 200, 200);
-                
                 ctx.fillStyle = '#666';
                 ctx.font = '16px Arial';
                 ctx.fillText('Image not found', 200, 280);
-                
                 resolve(canvas.toDataURL('image/jpeg', 0.8));
             };
             img.src = src;
         });
     }
 
-    static async validateAllImages() {
+    static async validateAll() {
         const results = {};
-        for (const [key, src] of Object.entries(EBOOK_CONFIG.images)) {
+        const entries = Object.entries(EBOOK_CONFIG.images);
+        for (let i = 0; i < entries.length; i++) {
+            const key = entries[i][0];
+            const src = entries[i][1];
             results[key] = await this.validateImage(src);
         }
         return results;
@@ -204,75 +164,60 @@ class ResourceValidator {
 }
 
 // ============================================================
-// 4. LIBRARY LOADER WITH RETRY
+// 4. LIBRARY LOADER
 // ============================================================
 class LibraryLoader {
-    static async loadScript(src, retries = 3) {
-        if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
-        if (src.includes('jspdf') && typeof jspdf !== 'undefined') return true;
-        if (src.includes('qrcode') && typeof QRCode !== 'undefined') return true;
-
-        for (let attempt = 1; attempt <= retries; attempt++) {
-            try {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-                return true;
-            } catch (error) {
-                if (attempt === retries) {
-                    throw new Error(`Failed to load ${src} after ${retries} attempts`);
-                }
-                await new Promise(r => setTimeout(r, 1000 * attempt));
-            }
-        }
-        return false;
+    static loadScript(src, retries) {
+        retries = retries || 3;
+        return new Promise(function (resolve, reject) {
+            (function attempt(n) {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload  = function () { resolve(true); };
+                script.onerror = function () {
+                    if (n >= retries) reject(new Error('Failed to load ' + src));
+                    else setTimeout(function () { attempt(n + 1); }, 800 * n);
+                };
+                document.head.appendChild(script);
+            })(1);
+        });
     }
 
     static async loadAll() {
-        const libraries = [
-            'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+        const libs = [
+            { test: function () { return typeof html2canvas !== 'undefined'; },
+              src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js' },
+            { test: function () { return typeof window.jspdf !== 'undefined' || typeof jspdf !== 'undefined'; },
+              src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js' },
+            { test: function () { return typeof QRCode !== 'undefined'; },
+              src: 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js' }
         ];
 
-        const loaded = libraries.map(src => {
-            if (src.includes('html2canvas') && typeof html2canvas !== 'undefined') return true;
-            if (src.includes('jspdf') && typeof jspdf !== 'undefined') return true;
-            if (src.includes('qrcode') && typeof QRCode !== 'undefined') return true;
-            return false;
-        });
-
-        const toLoad = libraries.filter((_, i) => !loaded[i]);
-        
-        if (toLoad.length === 0) return true;
-
-        for (const src of toLoad) {
-            await this.loadScript(src);
+        for (let i = 0; i < libs.length; i++) {
+            if (!libs[i].test()) {
+                await this.loadScript(libs[i].src, 3);
+            }
         }
-        
         return true;
     }
 }
 
 // ============================================================
-// 5. QR CODE GENERATOR WITH RETRY
+// 5. QR GENERATOR
 // ============================================================
 class QRGenerator {
-    static async generate(data, size = 120) {
-        return new Promise((resolve) => {
+    static generate(data, size) {
+        size = size || 120;
+        return new Promise(function (resolve) {
             try {
                 const container = document.createElement('div');
-                container.style.cssText = `
-                    width: ${size}px;
-                    height: ${size}px;
-                    position: absolute;
-                    left: -9999px;
-                    top: -9999px;
-                `;
+                container.style.cssText = [
+                    'width:' + size + 'px',
+                    'height:' + size + 'px',
+                    'position:absolute',
+                    'left:-9999px',
+                    'top:-9999px'
+                ].join(';');
                 document.body.appendChild(container);
 
                 new QRCode(container, {
@@ -285,23 +230,21 @@ class QRGenerator {
                 });
 
                 let attempts = 0;
-                const maxAttempts = 10;
-                
-                const checkCanvas = setInterval(() => {
+                const check = setInterval(function () {
                     attempts++;
                     const canvas = container.querySelector('canvas');
                     if (canvas) {
-                        clearInterval(checkCanvas);
+                        clearInterval(check);
                         const dataUrl = canvas.toDataURL('image/png');
                         document.body.removeChild(container);
                         resolve(dataUrl);
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkCanvas);
-                        document.body.removeChild(container);
+                    } else if (attempts >= 12) {
+                        clearInterval(check);
+                        if (container.parentNode) document.body.removeChild(container);
                         resolve(null);
                     }
                 }, 100);
-            } catch (error) {
+            } catch (e) {
                 resolve(null);
             }
         });
@@ -309,160 +252,60 @@ class QRGenerator {
 }
 
 // ============================================================
-// 6. APPLY PROFESSIONAL BOOK STYLES (PDF CLEAN VERSION)
+// 6. STYLE HELPERS (for PDF page content)
 // ============================================================
-function applyProfessionalBookStyles(clone, isPdfMode = true) {
-    // ---- ALL PARAGRAPHS (compact for PDF) ----
-    clone.querySelectorAll('.chapter p').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '12.5px';
-        el.style.lineHeight = '1.6';
-        el.style.textAlign = 'justify';
-        el.style.marginBottom = '8px';
-        el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.2px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- STRONG TEXT ----
-    clone.querySelectorAll('.chapter strong').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontWeight = '700';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- LIST ITEMS ----
-    clone.querySelectorAll('.chapter ul li').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '12.5px';
-        el.style.lineHeight = '1.6';
-        el.style.marginBottom = '5px';
-        el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.2px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- QUOTES (compact) ----
-    clone.querySelectorAll('.quote-box').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.fontSize = '13px';
-        el.style.lineHeight = '1.5';
-        el.style.fontStyle = 'italic';
-        el.style.borderLeft = '3px solid #DAA520';
-        el.style.padding = '12px 18px';
-        el.style.margin = '12px 0';
-        el.style.fontWeight = '400';
-        el.style.letterSpacing = '0.3px';
-        el.style.textAlign = 'center';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.quote-box .author').forEach(el => {
-        el.style.color = '#DAA520';
-        el.style.fontWeight = '600';
-        el.style.fontStyle = 'normal';
-        el.style.textAlign = 'right';
-        el.style.marginTop = '6px';
-        el.style.fontSize = '11px';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.letterSpacing = '0.5px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- FAMILY ITEMS ----
-    clone.querySelectorAll('.family-item').forEach(el => {
-        el.style.background = isPdfMode ? 'transparent' : '#fafafa';
-        el.style.border = isPdfMode ? 'none' : '1px solid #e8e8e8';
-        el.style.borderRadius = isPdfMode ? '0' : '8px';
-        el.style.padding = isPdfMode ? '4px 0' : '14px 18px';
-        el.style.marginBottom = '6px';
-    });
-    
-    clone.querySelectorAll('.family-item .label').forEach(el => {
-        el.style.color = '#999999';
-        el.style.fontSize = '11px';
-        el.style.textTransform = 'uppercase';
-        el.style.letterSpacing = '0.8px';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.fontWeight = '400';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.family-item .value').forEach(el => {
-        el.style.color = '#000000';
-        el.style.fontSize = '12.5px';
-        el.style.fontWeight = '600';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.letterSpacing = '0.3px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- TEACHER TRIBUTE ----
-    clone.querySelectorAll('.teacher-tribute').forEach(el => {
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-            el.style.border = 'none';
-            el.style.borderRadius = '0';
-            el.style.padding = '8px 0';
-        } else {
-            el.style.background = 'rgba(108,92,231,0.04)';
-            el.style.border = '1px solid rgba(108,92,231,0.12)';
-            el.style.borderRadius = '8px';
-            el.style.padding = '20px 24px';
-        }
-        el.style.margin = '14px 0';
-    });
-    
-    clone.querySelectorAll('.teacher-tribute h4').forEach(el => {
-        el.style.color = '#DAA520';
-        el.style.fontSize = '14px';
-        el.style.fontWeight = '600';
-        el.style.fontFamily = "'Playfair Display', 'Georgia', 'Times New Roman', serif";
-        el.style.letterSpacing = '0.5px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    clone.querySelectorAll('.teacher-tribute p').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontSize = '12.5px';
-        el.style.lineHeight = '1.6';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.3px';
-        if (isPdfMode) el.style.background = 'transparent';
-    });
-    
-    // ---- FRIEND MEMORY ----
-    clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
-        el.style.color = '#1a1a1a';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        el.style.fontWeight = '450';
-        el.style.letterSpacing = '0.3px';
-        el.style.lineHeight = '1.6';
-        if (isPdfMode) {
-            el.style.background = 'transparent';
-            el.style.border = 'none';
-            el.style.borderRadius = '0';
-            el.style.padding = '8px 0';
-        } else {
-            el.style.background = '#ffffff';
-            el.style.border = '1px dashed #DAA520';
-            el.style.borderRadius = '8px';
-            el.style.padding = '24px 28px';
-        }
-        el.style.margin = '14px 0';
-    });
-    
-    clone.querySelectorAll('.friend-memory-pdf strong').forEach(el => {
-        el.style.color = '#DAA520';
-        el.style.fontWeight = '700';
-        el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
-        if (isPdfMode) el.style.background = 'transparent';
-    });
+const PDF_STYLES = {
+    serifHead:   "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+    serifBody:   "'Lora', 'Georgia', 'Times New Roman', serif",
+    gold:        '#8B6F3F',
+    ink:         '#1A1A1A',
+    soft:        '#4A423C',
+    muted:       '#7A7068',
+    line:        '#E5DED2'
+};
+
+function makePage() {
+    const div = document.createElement('div');
+    div.style.cssText = [
+        'padding:60px 50px',
+        'background:#ffffff',
+        'display:flex',
+        'flex-direction:column',
+        'justify-content:center',
+        'min-height:100%',
+        'box-sizing:border-box',
+        'font-family:' + PDF_STYLES.serifBody
+    ].join(';');
+    return div;
+}
+
+function makeHeading(text) {
+    return '<h2 style="font-family:' + PDF_STYLES.serifHead + ';' +
+        'font-size:26px;' +
+        'font-weight:700;' +
+        'color:#000000;' +
+        'letter-spacing:2px;' +
+        'text-align:center;' +
+        'margin:0 0 24px 0;">' + text + '</h2>';
+}
+
+function makeGoldRule(center) {
+    return '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';' +
+        'margin:0 ' + (center ? 'auto' : '0') + ' 24px ' + (center ? 'auto' : '0') + ';"></div>';
+}
+
+function makeBodyParagraph(text) {
+    return '<p style="font-family:' + PDF_STYLES.serifBody + ';' +
+        'font-size:13px;' +
+        'line-height:1.75;' +
+        'color:' + PDF_STYLES.ink + ';' +
+        'text-align:justify;' +
+        'margin:0 0 14px 0;">' + text + '</p>';
+}
+
+function makeSignature(author) {
+    return '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px 0;"></div>' +
+        '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:15px;color:' + PDF_STYLES.gold + ';margin:0;">— ' + author + '</p>';
 }
 
 // ============================================================
@@ -477,1021 +320,472 @@ class EbookGenerator {
         this.isGenerating = false;
         this.cancelled = false;
         this.resources = null;
-        this.readerData = null; // ⭐ Set by wizard flow
     }
 
-    async generate(lang, langLabel, readerData = null, onProgress = null) {
+    async generate(lang, langLabel) {
         if (this.isGenerating) return;
 
         this.isGenerating = true;
         this.cancelled = false;
         this.currentPage = 0;
-        this.readerData = readerData; // ⭐ Store for getPageBuilders
 
-        // Progress helper (works with both pill + wizard callback)
-        const reportProgress = (percent, message) => {
-            showPdfProgress(percent, message || 'Generating PDF');
-            if (typeof onProgress === 'function') {
-                try { onProgress(percent, message); } catch (e) {}
-            }
+        const report = (percent, msg) => {
+            showPdfProgress(percent, msg || 'Generating PDF');
         };
 
-        reportProgress(0, 'Preparing...');
+        report(0, 'Preparing…');
 
         try {
-            this.resources = await ResourceValidator.validateAllImages();
+            this.resources = await ResourceValidator.validateAll();
             await LibraryLoader.loadAll();
 
-            reportProgress(10, 'Building pages...');
+            report(10, 'Building pages…');
 
             const content = this.getContent(lang);
-            if (!content) {
-                throw new Error('Content not found');
-            }
+            if (!content) throw new Error('Content not found. Is book.html open?');
 
-            this.pages = await this.buildPages(content, lang, reportProgress);
+            this.pages = await this.buildPages(content);
             this.totalPages = this.pages.length;
 
-            reportProgress(45, 'Rendering PDF...');
+            report(45, 'Rendering PDF…');
 
-            await this.generatePDF(langLabel, reportProgress);
+            await this.generatePDF(langLabel, report);
 
-            reportProgress(100, 'Saving...');
+            report(100, 'Saving…');
 
-            const filename = `My_Autobiography_${EBOOK_CONFIG.author.replace(/\s/g, '_')}_${langLabel}.pdf`;
+            const filename = 'A_Boy_Who_Never_Thought_' + langLabel + '.pdf';
             this.pdf.save(filename);
-            
-            toast.success(`${langLabel} ebook downloaded successfully!`);
+
+            showToast(langLabel + ' edition downloaded.');
         } catch (error) {
             console.error('Ebook generation failed:', error);
-            toast.error(`Failed: ${error.message}`);
-            throw error; // ⭐ Re-throw so wizard can catch
+            showToast('Failed: ' + error.message, 'error');
+            throw error;
         } finally {
             this.isGenerating = false;
-            this.readerData = null;
-            setTimeout(() => hidePdfProgress(), 800);
+            setTimeout(hidePdfProgress, 800);
             this.cleanup();
         }
     }
 
-    // ========================================================
-    // ✅ getContent() — Silent, no DOM touch
-    // ========================================================
+    // --------------------------------------------------------
+    // getContent — clones .reading-main, picks language, unhides all chapters
+    // --------------------------------------------------------
     getContent(lang) {
-        const wrapper = document.querySelector('.autobio-wrapper');
+        const wrapper = document.querySelector('.reading-main');
         if (!wrapper) return null;
 
-        // Clone the wrapper — DO NOT modify actual DOM
-        const clonedWrapper = wrapper.cloneNode(true);
+        const clone = wrapper.cloneNode(true);
 
-        const containerId = lang === 'en' ? 'chaptersEn' : 'chaptersHi';
-        const otherId = lang === 'en' ? 'chaptersHi' : 'chaptersEn';
+        const currentId = lang === 'hi' ? 'chaptersHi' : 'chaptersEn';
+        const otherId   = lang === 'hi' ? 'chaptersEn' : 'chaptersHi';
 
-        const clonedCurrent = clonedWrapper.querySelector('#' + containerId);
-        const clonedOther = clonedWrapper.querySelector('#' + otherId);
+        const current = clone.querySelector('#' + currentId);
+        const other   = clone.querySelector('#' + otherId);
 
-        if (clonedCurrent) clonedCurrent.style.display = 'block';
-        if (clonedOther) clonedOther.style.display = 'none';
+        if (other) other.remove();
+        if (!current) return null;
 
-        let clonedChapters = [];
-        if (clonedCurrent) {
-            clonedChapters = clonedCurrent.querySelectorAll('.chapter');
-            clonedChapters.forEach(ch => {
-                ch.style.display = 'block';
-                ch.classList.add('active');
-            });
-        }
+        current.hidden = false;
+
+        const chapters = Array.prototype.slice.call(
+            current.querySelectorAll('article.chapter')
+        );
+
+        chapters.forEach(function (ch) {
+            ch.hidden = false;
+            ch.style.display = 'block';
+        });
 
         return {
-            wrapper: clonedWrapper,
-            chapters: clonedChapters,
-            containerId: containerId
+            wrapper: clone,
+            chapters: chapters
         };
     }
 
-    async buildPages(content, lang, reportProgress = null) {
+    // --------------------------------------------------------
+    // buildPages — sequence of 22 pages
+    // --------------------------------------------------------
+    async buildPages(content) {
         const pages = [];
-        const clone = content.wrapper;
-        const containerId = content.containerId;
+        const images = this.resources;
+        const qrDataUrl = await QRGenerator.generate(
+            EBOOK_CONFIG.qr.url,
+            EBOOK_CONFIG.qr.size
+        );
 
-        this.cleanClone(clone);
+        const add = (fn) => pages.push(fn());
 
-        const cloneContainer = clone.querySelector('#' + containerId);
-        const cloneChapters = cloneContainer ? cloneContainer.querySelectorAll('.chapter') : [];
+        // ---- FRONT MATTER ----
+        add(() => this.pageCover(images.cover));
+        add(() => this.pageTitle());
+        add(() => this.pageCopyright());
+        add(() => this.pageDedication());
+        add(() => this.pageAuthorsNote());
+        add(() => this.pageTOC(content.chapters));
+        add(() => this.pageHowToRead());
 
-        applyProfessionalBookStyles(clone, true);
+        // ---- CHAPTERS ----
+        content.chapters.forEach((ch, i) => {
+            add(() => this.pageChapter(ch, i));
+        });
 
-        const qrDataUrl = await QRGenerator.generate(EBOOK_CONFIG.qr.url, EBOOK_CONFIG.qr.size);
-
-        const pageBuilders = this.getPageBuilders(cloneChapters, qrDataUrl);
-        
-        for (const builder of pageBuilders) {
-            if (this.cancelled) break;
-            
-            const page = await builder();
-            if (page) {
-                pages.push(page);
-                this.currentPage++;
-                this.updateProgress(null, reportProgress);
-            }
-        }
+        // ---- BACK MATTER ----
+        add(() => this.pageStoryBehind());
+        add(() => this.pageAboutAuthor(images.author, qrDataUrl));
+        add(() => this.pageColophon());
+        add(() => this.pageBlank());
 
         return pages;
     }
 
     // ========================================================
-    // ✅ getPageBuilders — with reader page integrated
+    // PAGE BUILDERS
     // ========================================================
-    getPageBuilders(chapters, qrDataUrl) {
-        const builders = [];
-        const images = this.resources;
-        const readerData = this.readerData; // ⭐
 
-        // ---- FRONT MATTER ----
-        builders.push(async () => this.createCoverPage(images.cover));
-        builders.push(async () => this.createTitlePage());
-        builders.push(async () => this.createCopyrightPage());
-        builders.push(async () => this.createDedicationPage());
-        builders.push(async () => this.createEpigraphPage());
-        builders.push(async () => this.createPrefacePage());
-        builders.push(async () => this.createAuthorsNotePage());
-        builders.push(async () => this.createAcknowledgementsPage());
-        builders.push(async () => this.createTOCPage(chapters));
-        builders.push(async () => this.createHowToReadPage());
-        builders.push(async () => this.createOverviewPage());
+    pageCover(coverImage) {
+        const div = document.createElement('div');
+        div.style.cssText = 'padding:0;margin:0;background:#ffffff;width:100%;height:100%;display:flex;align-items:center;justify-content:center;';
+        div.innerHTML = '<img src="' + coverImage + '" alt="Book Cover" style="width:100%;height:100%;object-fit:contain;">';
+        return div;
+    }
 
-        // ---- MAIN CONTENT ----
-        chapters.forEach((ch, index) => {
-            builders.push(async () => this.createChapterPage(ch, index));
+    pageTitle() {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                '<div style="width:60px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 32px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 12px 0;">A Book by</p>' +
+                '<h1 style="font-family:' + PDF_STYLES.serifHead + ';font-size:34px;font-weight:700;color:#000000;letter-spacing:1px;line-height:1.2;margin:0 0 16px 0;">' + EBOOK_CONFIG.title + '</h1>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';margin:0 0 6px 0;">' + EBOOK_CONFIG.subtitle + '</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:14px;color:' + PDF_STYLES.muted + ';margin:0 0 32px 0;">गुंजते सन्नाटे</p>' +
+                '<div style="width:60px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 24px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:20px;font-weight:600;color:#000000;letter-spacing:1px;margin:0 0 6px 0;">' + EBOOK_CONFIG.author + '</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';letter-spacing:2px;text-transform:uppercase;margin:0;">Patna, India · ' + EBOOK_CONFIG.currentYear + '</p>' +
+            '</div>';
+        return div;
+    }
+
+    pageCopyright() {
+        const div = makePage();
+        div.innerHTML =
+            '<div style="max-width:440px;margin:0 auto;width:100%;">' +
+                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:12px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 20px 0;">Copyright</p>' +
+                makeBodyParagraph('© 2024 ' + EBOOK_CONFIG.author + '. All rights reserved.') +
+                makeBodyParagraph('No part of this book may be reproduced or transmitted in any form without prior written permission from the author.') +
+                makeBodyParagraph('This book is not for sale. For personal reading only.') +
+                makeBodyParagraph('First written in 2024. Ongoing.') +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px 0;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';margin:0;">' + EBOOK_CONFIG.author + '<br>Patna, India</p>' +
+            '</div>';
+        return div;
+    }
+
+    pageDedication() {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<div style="max-width:480px;margin:0 auto;width:100%;">' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 6px 0;">To my parents, who gave me the courage to dream.</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 6px 0;">To my sisters, who taught me patience.</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0;">To the friends who stayed.</p>' +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:32px auto 16px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:15px;color:' + PDF_STYLES.gold + ';margin:0;">— ' + EBOOK_CONFIG.author + '</p>' +
+            '</div>';
+        return div;
+    }
+
+    pageAuthorsNote() {
+        const div = makePage();
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                makeHeading("Author's Note") +
+                makeBodyParagraph('This book is not fiction. Every name, every date, every memory is real. I wrote it for my parents, my sisters, and for the boy I used to be.') +
+                makeBodyParagraph('Some memories are painful. Some are joyful. All of them are mine.') +
+                makeBodyParagraph('I have tried to be honest. I have tried to remember things exactly as they happened — though memory, like everything, fades with time.') +
+                makeBodyParagraph('If you find yourself in these pages, know that you mattered. You still do.') +
+                makeSignature(EBOOK_CONFIG.author) +
+            '</div>';
+        return div;
+    }
+
+    pageTOC(chapters) {
+        const div = makePage();
+        let rows = '';
+
+        chapters.forEach(function (ch, i) {
+            const numEl   = ch.querySelector('.chapter-num');
+            const titleEl = ch.querySelector('.chapter-title');
+            const yearEl  = ch.querySelector('.chapter-year');
+
+            const title = titleEl ? titleEl.textContent.trim() : 'Chapter ' + (i + 1);
+            const year  = yearEl ? yearEl.textContent.trim() : '';
+
+            const label = (i === 10) ? 'Epilogue' : ('Chapter ' + (i + 1));
+
+            rows +=
+                '<div style="display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #f0f0f0;">' +
+                    '<div style="flex:1;min-width:0;">' +
+                        '<span style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:2px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin-right:10px;">' + label + '</span>' +
+                        '<span style="font-family:' + PDF_STYLES.serifBody + ';font-size:14px;color:' + PDF_STYLES.ink + ';">' + title + '</span>' +
+                    '</div>' +
+                    '<div style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';white-space:nowrap;">' + year + '</div>' +
+                '</div>';
         });
 
-        // ---- BACK MATTER ----
-        builders.push(async () => this.createConclusionPage());
-        builders.push(async () => this.createStoryBehindTheStoryPage());
-        builders.push(async () => this.createAboutPage(images.author, qrDataUrl));
-        builders.push(async () => this.createEmotionalPage(images.signature));
-        builders.push(async () => this.createColophonPage());
-
-        // ⭐ READER PAGE — only if readerData provided (wizard flow)
-        if (readerData && readerData.name && readerData.photo) {
-            builders.push(async () => this.createAboutTheReaderPage(readerData));
-        }
-
-        builders.push(async () => this.createBlankPage());
-
-        return builders;
-    }
-
-    // ========================================================
-    // 🆕 READER PAGE: About the Reader (personalized)
-    // ========================================================
-    createAboutTheReaderPage(readerData) {
-        if (!readerData || !readerData.name || !readerData.photo) {
-            return null;
-        }
-
-        const message = (typeof window.buildReaderMessage === 'function')
-            ? window.buildReaderMessage(readerData.name, readerData.gender)
-            : this.getFallbackMessage(readerData.name, readerData.gender);
-
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 50px 45px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100%;
-            font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
-            box-sizing: border-box;
-        `;
-
-        const paragraphs = message
-            .split('\n\n')
-            .map(p => p.trim())
-            .filter(p => p.length > 0)
-            .map(p => `
-                <p style="
-                    font-size: 12.5px;
-                    line-height: 1.75;
-                    color: #1a1a1a;
-                    font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
-                    text-align: justify;
-                    margin: 0 0 10px 0;
-                    font-weight: 450;
-                    letter-spacing: 0.2px;
-                ">${p}</p>
-            `)
-            .join('');
-
-        div.innerHTML = `
-            <div style="max-width: 520px; margin: 0 auto; width: 100%;">
-
-                <h2 style="
-                    font-size: 26px;
-                    font-weight: 700;
-                    color: #000000;
-                    font-family: 'Playfair Display', 'Georgia', serif;
-                    text-align: center;
-                    margin: 0 0 6px 0;
-                    letter-spacing: 2px;
-                ">About the Reader</h2>
-
-                <div style="
-                    width: 60px;
-                    height: 2px;
-                    background: #DAA520;
-                    margin: 0 auto 22px auto;
-                "></div>
-
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="${readerData.photo}"
-                         style="
-                            width: 130px;
-                            height: 130px;
-                            object-fit: cover;
-                            border-radius: 50%;
-                            border: 3px solid #DAA520;
-                            display: inline-block;
-                            box-shadow: 0 4px 14px rgba(218,165,32,0.25);
-                         ">
-                </div>
-
-                <p style="
-                    font-size: 20px;
-                    font-weight: 700;
-                    color: #000000;
-                    font-family: 'Playfair Display', 'Georgia', serif;
-                    text-align: center;
-                    margin: 0 0 20px 0;
-                    letter-spacing: 0.5px;
-                ">${readerData.name}</p>
-
-                <div style="margin-bottom: 24px;">
-                    ${paragraphs}
-                </div>
-
-                <div style="width: 60px; height: 2px; background: #DAA520; margin: 20px auto 14px auto;"></div>
-                <p style="
-                    font-size: 15px;
-                    color: #DAA520;
-                    font-family: 'Playfair Display', 'Georgia', serif;
-                    text-align: right;
-                    margin: 0;
-                    font-style: italic;
-                ">— ${EBOOK_CONFIG.author}</p>
-
-            </div>
-        `;
-
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                makeHeading('Table of Contents') +
+                rows +
+            '</div>';
         return div;
     }
 
-    // Fallback message builder (if window.buildReaderMessage is unavailable)
-    getFallbackMessage(name, gender) {
-        let pronoun, possessive, obj;
-        if (gender === 'male') { pronoun = 'he'; possessive = 'his'; obj = 'him'; }
-        else if (gender === 'female') { pronoun = 'she'; possessive = 'her'; obj = 'her'; }
-        else { pronoun = 'they'; possessive = 'their'; obj = 'them'; }
-
-        return `${name} is someone who is easy to write about, because there is no pretence at all.
-
-Less talk, more action — that's who ${pronoun} is. Even in a crowd, ${pronoun} stands out, not because of clothes or style, but because of ${possessive} nature.
-
-The best thing about ${name} is that ${pronoun} understands. Without being told, ${pronoun} knows when to be there and when to stay quiet. People like this are rare these days.
-
-Hardworking and determined — once ${pronoun} sets ${possessive} mind on something, ${pronoun} gets it done. ${pronoun.charAt(0).toUpperCase() + pronoun.slice(1)} has a pure heart, which is why it feels safe to be around ${obj}.
-
-Some people come into life and leave, some become a memory. ${name} is one of those who doesn't just become a memory, but becomes a part of life.`;
-    }
-
-    // ========================================================
-    // NEW PAGE: Author's Note
-    // ========================================================
-    createAuthorsNotePage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Author's Note</h2>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">This book is not a work of fiction. Every name, every date, every memory is real. I wrote this for my parents, my sisters, my brothers, and for the boy I used to be.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">Some memories are painful. Some are joyful. But all of them are mine.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I have tried to be honest. I have tried to be kind. And I have tried to remember everything exactly as it happened — though memory, like all things, fades with time.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">If you find yourself in these pages, know that you mattered. You still do.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
+    pageHowToRead() {
+        const div = makePage();
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                makeHeading('How to Read This Book') +
+                makeBodyParagraph('This is a memoir — a true story of a boy growing up in Begusarai, Bihar. It covers the years 2008 to 2019, across eleven chapters.') +
+                makeBodyParagraph('You can read it in order, or begin anywhere. Each chapter is a self-contained memory. The Hinglish edition is available alongside the English.') +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px auto 20px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-style:italic;font-size:14px;color:' + PDF_STYLES.gold + ';text-align:center;line-height:1.7;margin:0;">Begin anywhere. Read slowly.<br>This story belongs to you now.</p>' +
+            '</div>';
         return div;
     }
 
-    // ========================================================
-    // NEW PAGE: How to Read This Book (Book Map)
-    // ========================================================
-    createHowToReadPage() {
+    pageChapter(chapterEl, index) {
         const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 50px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:580px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:8px;letter-spacing:2px;">How to Read This Book</h2>
-                <div style="width:50px;height:2px;background:#DAA520;margin:0 auto 20px auto;"></div>
+        div.style.cssText = [
+            'padding:50px 55px 60px 55px',
+            'background:#ffffff',
+            'display:flex',
+            'flex-direction:column',
+            'min-height:100%',
+            'box-sizing:border-box',
+            'position:relative',
+            'font-family:' + PDF_STYLES.serifBody
+        ].join(';');
 
-                <p style="font-size:13.5px;line-height:1.7;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:22px;font-weight:450;letter-spacing:0.2px;">This is a memoir — a true story of a boy from Begusarai, Bihar. It is divided into ten short chapters, each covering a specific year or phase of his life.</p>
+        const clone = chapterEl.cloneNode(true);
 
-                <div style="background:#f8f8f8;border-radius:8px;padding:14px 18px;margin-bottom:14px;">
-                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 8px 0;font-weight:600;">Front Matter</p>
-                    <p style="font-size:12.5px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia',serif;margin:0;">Title &amp; Copyright · Dedication &amp; Epigraph · Preface · Author's Note · Acknowledgements · Table of Contents · How to Read This Book · Overview</p>
-                </div>
-
-                <div style="background:#fafafa;border:1px solid #ececec;border-radius:8px;padding:14px 18px;margin-bottom:14px;">
-                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 10px 0;font-weight:600;">The Story · Chapters 1–10</p>
-                    <table style="width:100%;border-collapse:collapse;font-family:'Lora','Georgia',serif;font-size:12.5px;line-height:1.6;color:#1a1a1a;">
-                        <tr><td style="padding:2px 0;">1.</td><td style="padding:2px 0;">The Beginning</td><td style="padding:2px 0;text-align:right;color:#888;">2008</td></tr>
-                        <tr><td style="padding:2px 0;">2.</td><td style="padding:2px 0;">A Loss &amp; A New Start</td><td style="padding:2px 0;text-align:right;color:#888;">2009</td></tr>
-                        <tr><td style="padding:2px 0;">3.</td><td style="padding:2px 0;">A Changing Home</td><td style="padding:2px 0;text-align:right;color:#888;">2010–12</td></tr>
-                        <tr><td style="padding:2px 0;">4.</td><td style="padding:2px 0;">First Steps into School</td><td style="padding:2px 0;text-align:right;color:#888;">2013</td></tr>
-                        <tr><td style="padding:2px 0;">5.</td><td style="padding:2px 0;">A House Divided</td><td style="padding:2px 0;text-align:right;color:#888;">2014–16</td></tr>
-                        <tr><td style="padding:2px 0;">6.</td><td style="padding:2px 0;">A Boy Called 'Suraj Bhaiya'</td><td style="padding:2px 0;text-align:right;color:#888;">2017</td></tr>
-                        <tr><td style="padding:2px 0;">7.</td><td style="padding:2px 0;">The Desire to Rise</td><td style="padding:2px 0;text-align:right;color:#888;">2018</td></tr>
-                        <tr><td style="padding:2px 0;">8.</td><td style="padding:2px 0;">A Dream Takes Shape</td><td style="padding:2px 0;text-align:right;color:#888;">2018–19</td></tr>
-                        <tr><td style="padding:2px 0;">9.</td><td style="padding:2px 0;">A Tribute &amp; A Farewell</td><td style="padding:2px 0;text-align:right;color:#888;">2019</td></tr>
-                        <tr><td style="padding:2px 0;">10.</td><td style="padding:2px 0;">Epilogue — To Be Continued…</td><td style="padding:2px 0;text-align:right;color:#888;">—</td></tr>
-                    </table>
-                </div>
-
-                <div style="background:#f8f8f8;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
-                    <p style="font-family:'Playfair Display','Georgia',serif;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;margin:0 0 8px 0;font-weight:600;">Back Matter</p>
-                    <p style="font-size:12.5px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia',serif;margin:0;">Conclusion · The Story Behind the Story · About the Author · A Note of Gratitude · Colophon</p>
-                </div>
-
-                <div style="width:50px;height:1px;background:#d0d0d0;margin:0 auto 14px auto;"></div>
-
-                <p style="font-family:'Playfair Display','Georgia',serif;font-style:italic;font-size:13px;color:#DAA520;text-align:center;line-height:1.7;margin:0;">Begin anywhere. Read slowly.<br>This story belongs to you now.</p>
-            </div>
-        `;
-        return div;
-    }
-
-    // ========================================================
-    // NEW PAGE: The Story Behind the Story
-    // ========================================================
-    createStoryBehindTheStoryPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:26px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">The Story Behind the Story</h2>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I didn't plan to write a book. I just started writing — one memory at a time. One evening. One cup of chai.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">It began as a school assignment. Then it became a diary. Then it became a way to understand myself.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:14px;font-weight:450;letter-spacing:0.3px;">I wrote about my childhood because I wanted to remember it. I wrote about my struggles because I wanted to survive them. And I wrote about my dreams because I still believe in them.</p>
-                <p style="font-size:15px;line-height:1.75;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">This book is not the end. It is just the beginning of a longer conversation — with myself, and with you.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    // ========================================================
-    // NEW PAGE: Blank Page
-    // ========================================================
-    createBlankPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <p style="font-family:'Lora','Georgia',serif;font-size:12px;color:#bbbbbb;font-style:italic;letter-spacing:1px;">This page intentionally left blank.</p>
-        `;
-        return div;
-    }
-
-    createCoverPage(coverImage) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 0;
-            margin: 0;
-            background: #ffffff;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        `;
-        div.innerHTML = `<img src="${coverImage}" alt="Book Cover" style="width:100%;height:100%;object-fit:contain;">`;
-        return div;
-    }
-
-    createTitlePage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <div style="width:80px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
-                <h1 style="font-size:36px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:10px;letter-spacing:2px;">${EBOOK_CONFIG.title}</h1>
-                <p style="font-size:18px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin:15px 0;">—</p>
-                <p style="font-size:24px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:10px 0;font-weight:500;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:16px;color:#666;font-style:italic;font-family:'Lora','Georgia','Times New Roman',serif;margin:10px 0;">"${EBOOK_CONFIG.subtitle}"</p>
-                <p style="font-size:15px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin:6px 0;">From ${EBOOK_CONFIG.birthplace} to the World</p>
-                <div style="width:80px;height:2px;background:#DAA520;margin:30px auto;"></div>
-                <p style="font-size:14px;color:#aaa;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.currentYear}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createCopyrightPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:450px;margin:0 auto;width:100%;">
-                <h2 style="font-size:14px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;letter-spacing:2px;margin-bottom:20px;">COPYRIGHT</h2>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">© 2024 ${EBOOK_CONFIG.author}<br>All rights reserved.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the author.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;"><strong>Published by</strong><br>${EBOOK_CONFIG.author.toUpperCase()} PUBLICATION<br>Patna, India</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">This book is not for sale.<br>For personal use only.</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:8px;">ISBN: 2026-9102224871</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:16px;">(India · Fiction · Autobiography)</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:4px;">First Edition: 2024</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:4px;">Published on 26th March 2024</p>
-                <p style="font-size:13px;line-height:1.8;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">Second Impression: 2026</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createDedicationPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my parents, who gave me the courage to dream.</p>
-                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my siblings, who taught me patience and love.</p>
-                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;font-style:italic;">To my friends, who never let me feel alone.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:30px auto;"></div>
-                <p style="font-size:18px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createEpigraphPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
-                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.7;font-style:italic;margin-bottom:16px;">"The only impossible journey is the one you never begin."</p>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— Tony Robbins</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:30px auto 0 auto;"></div>
-            </div>
-        `;
-        return div;
-    }
-
-    createPrefacePage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Preface</h2>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">This book is a collection of my memories, thoughts, and experiences from my journey so far. I wrote this to share my story with the world and to inspire others to chase their dreams.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">Life is a beautiful journey, and every chapter of this book is a piece of my heart. I hope you enjoy reading it as much as I enjoyed writing it.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createAcknowledgementsPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Acknowledgements</h2>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">First and foremost, I would like to thank my parents for their unwavering support and encouragement.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">I am also grateful to my teachers who guided me and shaped my thinking.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">A special thanks to my friends who stood by me through thick and thin.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">And to everyone who believed in me when I didn't believe in myself.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    createTOCPage(chapters) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        
-        let tocHTML = `
-            <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:30px;letter-spacing:2px;">Table of Contents</h2>
-            <ul style="list-style:none;padding:0;font-family:'Lora','Georgia','Times New Roman',serif;font-size:15px;line-height:2.8;max-width:550px;margin:0 auto;width:100%;">
-        `;
-        
-        let pageNum = 12;
-        chapters.forEach((ch, idx) => {
-            const h3 = ch.querySelector('h3');
-            let title = h3 ? h3.textContent.trim() : `Chapter ${idx+1}`;
-            title = title.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
-            title = title.replace(/[^\w\s\-\.:]/g, '').trim();
-            tocHTML += `
-                <li style="border-bottom:1px solid #f0f0f0;padding:4px 0;display:flex;justify-content:space-between;">
-                    <span style="color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;font-size:14px;font-weight:450;letter-spacing:0.3px;">${title}</span>
-                    <span style="color:#999;font-family:'Playfair Display','Georgia','Times New Roman',serif;font-size:13px;">${pageNum + idx}</span>
-                </li>
-            `;
+        // Remove navigation & UI elements not needed in PDF
+        clone.querySelectorAll('.chapter-nav, .menu-btn, .back-link, .lang-switch').forEach(function (el) {
+            el.remove();
         });
-        tocHTML += `</ul>`;
-        div.innerHTML = tocHTML;
-        return div;
-    }
 
-    createOverviewPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;text-align:center;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Overview</h2>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;text-align:justify;font-family:'Lora','Georgia','Times New Roman',serif;margin-bottom:20px;font-weight:450;letter-spacing:0.3px;">This autobiography takes you through the journey of ${EBOOK_CONFIG.author} — from his humble beginnings in ${EBOOK_CONFIG.birthplace}, to becoming a passionate coder and dreamer. It covers childhood memories, school days, family, friendships, struggles, and the joy of building something from nothing. A story of a boy who never thought he would, but did.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:450px;margin:0 auto;width:100%;">
-                    <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">10</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Chapters</p>
-                    </div>
-                    <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.birthYear}</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Year of Birth</p>
-                    </div>
-                    <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">3+</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Years Coding</p>
-                    </div>
-                    <div style="background:#f5f5f5;padding:14px;border-radius:10px;text-align:center;">
-                        <span style="font-size:22px;font-weight:700;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">14</span>
-                        <p style="font-size:12px;color:#666;margin:2px 0;font-family:'Lora','Georgia','Times New Roman',serif;">Friends</p>
-                    </div>
-                </div>
-            </div>
-        `;
-        return div;
-    }
+        // Extract head info
+        const numEl   = clone.querySelector('.chapter-num');
+        const titleEl = clone.querySelector('.chapter-title');
+        const yearEl  = clone.querySelector('.chapter-year');
 
-    // ========================================================
-    // createChapterPage() — Textbook Style
-    // ========================================================
-    createChapterPage(chapter, index) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 45px 55px 60px 55px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100%;
-            box-sizing: border-box;
-            position: relative;
-            font-family: 'Lora', 'Georgia', 'Times New Roman', serif;
-        `;
+        const numText   = numEl ? numEl.textContent.trim() : 'Chapter ' + (index + 1);
+        const titleText = titleEl ? titleEl.textContent.trim() : '';
+        const yearText  = yearEl ? yearEl.textContent.trim() : '';
 
-        const clone = chapter.cloneNode(true);
+        // Remove head + rule from body clone
+        const head = clone.querySelector('.chapter-head');
+        if (head) head.remove();
 
-        clone.querySelectorAll('.nav-buttons, .copy-link-btn, .upload-hint').forEach(el => el.remove());
+        const rule = clone.querySelector('.chapter-rule');
+        if (rule) rule.remove();
 
-        const h3 = clone.querySelector('h3');
-        let fullTitle = h3 ? h3.textContent.trim() : `Chapter ${index + 1}`;
-        fullTitle = fullTitle.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+        // Extract body
+        const bodyEl = clone.querySelector('.chapter-body') || clone;
 
-        let chapterNum = index + 1;
-        let chapterName = fullTitle;
-        let chapterYear = '';
-
-        const yearMatch = fullTitle.match(/\((\d{4}(?:[–-]\d{4})?)\)/);
-        if (yearMatch) {
-            chapterYear = yearMatch[1];
-            chapterName = chapterName.replace(yearMatch[0], '').trim();
-        }
-
-        const chapterMatch = chapterName.match(/^Chapter\s+(\d+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|Thirteen)[:\s-]+(.*)$/i);
-        if (chapterMatch) {
-            const num = chapterMatch[1];
-            const numMap = {
-                'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
-                'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
-                'eleven': 11, 'twelve': 12, 'thirteen': 13
-            };
-            chapterNum = parseInt(num) || numMap[String(num).toLowerCase()] || (index + 1);
-            chapterName = chapterMatch[2].trim();
-        } else if (/^Epilogue/i.test(chapterName)) {
-            chapterName = chapterName.replace(/^Epilogue[:\s-]*/i, '').trim() || 'To Be Continued...';
-            chapterNum = 'E';
-        }
-
-        if (h3) h3.remove();
-
-        const photoPlaceholder = clone.querySelector('.chapter-photo-placeholder');
-        let photoHTML = '';
-        if (photoPlaceholder) {
-            const img = photoPlaceholder.querySelector('img');
-            if (img) {
-                const src = img.getAttribute('src');
-                photoHTML = `
-                    <div style="text-align:center;margin:24px auto 0 auto;">
-                        <img src="${src}" 
-                             style="width:170px;height:170px;object-fit:cover;border-radius:6px;border:1px solid #e0e0e0;display:block;margin:0 auto;"
-                             crossorigin="anonymous">
-                    </div>
-                `;
-            }
-            photoPlaceholder.remove();
-        }
-
-        const headerHTML = `
-            <div style="margin-bottom:24px;">
-                <div style="
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                    margin-bottom: 16px;
-                ">
-                    <div style="
-                        flex-shrink: 0;
-                        width: 72px;
-                        height: 72px;
-                        min-width: 72px;
-                        min-height: 72px;
-                        border-radius: 50%;
-                        background: #f0f0f0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border: 3px solid #ffffff;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                        box-sizing: border-box;
-                    ">
-                        <span style="
-                            font-family: 'Playfair Display', 'Georgia', serif;
-                            font-size: 36px;
-                            font-weight: 800;
-                            color: #1a1a1a;
-                            line-height: 1;
-                            letter-spacing: -1px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            width: 100%;
-                            height: 100%;
-                            margin: 0;
-                            padding: 0;
-                        ">${chapterNum}</span>
-                    </div>
-
-                    <div style="flex: 1;">
-                        <h2 style="
-                            font-family: 'Playfair Display', 'Georgia', serif;
-                            font-size: 24px;
-                            font-weight: 700;
-                            color: #000000;
-                            margin: 0;
-                            letter-spacing: 0.5px;
-                            line-height: 1.25;
-                        ">${chapterName}</h2>
-                        ${chapterYear ? `
-                            <p style="
-                                font-family: 'Lora', 'Georgia', serif;
-                                font-size: 13px;
-                                color: #888888;
-                                font-style: italic;
-                                margin: 4px 0 0 0;
-                                letter-spacing: 1px;
-                            ">~ ${chapterYear}</p>
-                        ` : ''}
-                    </div>
-                </div>
-
-                <div style="
-                    width: 100%;
-                    height: 1px;
-                    background: #d0d0d0;
-                "></div>
-            </div>
-        `;
-
-        const bodyDiv = document.createElement('div');
-
-        clone.querySelectorAll('p').forEach(el => {
-            el.style.color = '#1a1a1a';
-            el.style.fontFamily = "'Lora', 'Georgia', 'Times New Roman', serif";
+        // Force clean typography for PDF
+        bodyEl.querySelectorAll('p').forEach(function (el) {
+            el.style.color = PDF_STYLES.ink;
+            el.style.fontFamily = PDF_STYLES.serifBody;
             el.style.fontSize = '12.5px';
-            el.style.lineHeight = '1.6';
+            el.style.lineHeight = '1.7';
             el.style.textAlign = 'justify';
-            el.style.marginBottom = '8px';
-            el.style.fontWeight = '450';
+            el.style.marginBottom = '10px';
             el.style.letterSpacing = '0.2px';
             el.style.background = 'transparent';
-            el.style.textIndent = '0';
         });
 
-        clone.querySelectorAll('strong').forEach(el => {
+        bodyEl.querySelectorAll('strong').forEach(function (el) {
             el.style.color = '#000000';
             el.style.fontWeight = '700';
         });
 
-        clone.querySelectorAll('em').forEach(el => {
-            el.style.color = '#1a1a1a';
+        bodyEl.querySelectorAll('em').forEach(function (el) {
+            el.style.color = PDF_STYLES.soft;
             el.style.fontStyle = 'italic';
         });
 
-        clone.querySelectorAll('.quote-box').forEach(el => {
-            el.style.padding = '10px 16px';
-            el.style.margin = '12px 0';
-            el.style.fontSize = '13px';
-            el.style.fontStyle = 'italic';
-            el.style.borderLeft = '3px solid #1a1a1a';
-            el.style.background = '#f8f8f8';
-            el.style.textAlign = 'left';
-            el.style.fontFamily = "'Lora', 'Georgia', serif";
-            el.style.lineHeight = '1.5';
-            el.style.borderRadius = '4px';
+        bodyEl.querySelectorAll('.pull-quote').forEach(function (el) {
+            el.style.borderLeft = '3px solid ' + PDF_STYLES.gold;
+            el.style.paddingLeft = '16px';
+            el.style.margin = '16px 0';
+            el.style.background = 'transparent';
+            const p = el.querySelector('p');
+            if (p) {
+                p.style.fontFamily = PDF_STYLES.serifHead;
+                p.style.fontSize = '14px';
+                p.style.fontStyle = 'italic';
+                p.style.color = PDF_STYLES.ink;
+                p.style.lineHeight = '1.5';
+                p.style.textAlign = 'left';
+                p.style.margin = '0 0 6px 0';
+            }
+            const f = el.querySelector('footer');
+            if (f) {
+                f.style.fontFamily = PDF_STYLES.serifBody;
+                f.style.fontSize = '10px';
+                f.style.fontStyle = 'normal';
+                f.style.color = PDF_STYLES.gold;
+                f.style.letterSpacing = '1.5px';
+                f.style.textTransform = 'uppercase';
+                f.style.margin = '0';
+            }
         });
 
-        clone.querySelectorAll('.quote-box .author').forEach(el => {
-            el.style.fontSize = '11px';
-            el.style.marginTop = '6px';
-            el.style.color = '#666';
-            el.style.fontStyle = 'normal';
-            el.style.textAlign = 'right';
+        bodyEl.querySelectorAll('.chapter-photo').forEach(function (el) {
+            el.style.margin = '20px auto';
+            el.style.textAlign = 'center';
+            el.style.maxWidth = '380px';
+            const img = el.querySelector('img');
+            if (img) {
+                img.style.width = '100%';
+                img.style.height = 'auto';
+                img.style.borderRadius = '4px';
+                img.style.border = '1px solid #E5DED2';
+            }
+            const cap = el.querySelector('figcaption');
+            if (cap) {
+                cap.style.fontFamily = PDF_STYLES.serifBody;
+                cap.style.fontSize = '10px';
+                cap.style.color = PDF_STYLES.muted;
+                cap.style.letterSpacing = '1px';
+                cap.style.textTransform = 'uppercase';
+                cap.style.marginTop = '8px';
+                cap.style.textAlign = 'center';
+            }
         });
 
-        clone.querySelectorAll('.friend-memory-pdf').forEach(el => {
-            el.style.padding = '10px 14px';
-            el.style.margin = '12px 0';
-            el.style.background = '#f8f8f8';
-            el.style.border = '1px solid #e8e8e8';
-            el.style.borderRadius = '6px';
+        // Footnotes — convert to inline superscript-ish
+        bodyEl.querySelectorAll('.footnote').forEach(function (el) {
+            el.style.color = PDF_STYLES.gold;
+            el.style.borderBottom = 'none';
+            el.style.cursor = 'auto';
         });
 
-        clone.querySelectorAll('.pdf-label').forEach(el => el.remove());
+        // Chapter header
+        const displayNum = (index === 10) ? '—' : String(index + 1);
 
-        while (clone.firstChild) {
-            bodyDiv.appendChild(clone.firstChild);
-        }
+        const headerHTML =
+            '<div style="margin-bottom:24px;">' +
+                '<div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">' +
+                    '<div style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#F4F1EA;display:flex;align-items:center;justify-content:center;">' +
+                        '<span style="font-family:' + PDF_STYLES.serifHead + ';font-size:30px;font-weight:700;color:#000000;line-height:1;">' + displayNum + '</span>' +
+                    '</div>' +
+                    '<div style="flex:1;">' +
+                        '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 4px 0;">' + numText + '</p>' +
+                        '<h2 style="font-family:' + PDF_STYLES.serifHead + ';font-size:22px;font-weight:700;color:#000000;line-height:1.25;letter-spacing:0.3px;margin:0;">' + titleText + '</h2>' +
+                        (yearText ? '<p style="font-family:' + PDF_STYLES.serifBody + ';font-style:italic;font-size:12px;color:' + PDF_STYLES.muted + ';margin:4px 0 0 0;">' + yearText + '</p>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<div style="width:100%;height:1px;background:#E5DED2;"></div>' +
+            '</div>';
 
-        const photoDiv = document.createElement('div');
-        photoDiv.innerHTML = photoHTML;
+        const headerWrap = document.createElement('div');
+        headerWrap.innerHTML = headerHTML;
+
+        const bodyWrap = document.createElement('div');
+        while (bodyEl.firstChild) bodyWrap.appendChild(bodyEl.firstChild);
 
         const pageNum = document.createElement('div');
-        pageNum.style.cssText = `
-            position: absolute;
-            bottom: 22px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-family: 'Playfair Display', 'Georgia', serif;
-            font-size: 11px;
-            color: #999999;
-            letter-spacing: 2px;
-        `;
-        pageNum.textContent = '— ' + (index + 1) + ' —';
+        pageNum.style.cssText = 'position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:' + PDF_STYLES.serifHead + ';font-size:10px;color:#B0AAA2;letter-spacing:3px;';
+        pageNum.textContent = String(index + 1);
 
-        div.innerHTML = headerHTML;
-        div.appendChild(bodyDiv);
-        div.appendChild(photoDiv);
+        div.appendChild(headerWrap);
+        div.appendChild(bodyWrap);
         div.appendChild(pageNum);
 
         return div;
     }
 
-    createConclusionPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-        `;
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">Conclusion</h2>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">As I look back on my journey, I realize that life is not about where you start, but about how far you are willing to go.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">Every struggle made me stronger. Every failure taught me something new. Every success reminded me why I started.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;margin-bottom:16px;font-weight:450;letter-spacing:0.3px;">This is not the end of my story. It is just the beginning.</p>
-                <p style="font-size:16px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">The best is yet to come.</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px 0;"></div>
-                <p style="font-size:16px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-            </div>
-        `;
+    pageStoryBehind() {
+        const div = makePage();
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                makeHeading('The Story Behind the Story') +
+                makeBodyParagraph("I didn't plan to write a book. I started writing — one memory at a time. One evening. One cup of chai.") +
+                makeBodyParagraph('It began as a diary. Then it became a way to understand myself.') +
+                makeBodyParagraph('I wrote about my childhood because I wanted to remember it. I wrote about my struggles because I wanted to survive them. And I wrote about my dreams because I still believe in them.') +
+                makeBodyParagraph('This book is not the end. It is the beginning of a longer conversation — with myself, and with you.') +
+                makeSignature(EBOOK_CONFIG.author) +
+            '</div>';
         return div;
     }
 
-    createAboutPage(authorImage, qrDataUrl) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        
-        const qrHTML = qrDataUrl ? `
-            <div style="margin:14px auto 0 auto;">
-                <img src="${qrDataUrl}" alt="QR Code" style="width:120px;height:120px;display:block;margin:0 auto;border:2px solid #DAA520;border-radius:8px;padding:4px;">
-                <p style="font-size:10px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;margin-top:4px;">Scan to visit my portfolio</p>
-            </div>
-        ` : '';
-        
-        div.innerHTML = `
-            <div style="max-width:550px;margin:0 auto;width:100%;">
-                <h2 style="font-size:28px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:20px;letter-spacing:2px;">About the Author</h2>
-                <div style="width:120px;height:120px;border-radius:50%;border:3px solid #DAA520;margin:0 auto 16px;overflow:hidden;">
-                    <img src="${authorImage}" alt="${EBOOK_CONFIG.author}" style="width:100%;height:100%;object-fit:cover;">
-                </div>
-                <p style="font-size:22px;font-weight:700;color:#000000;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin:4px 0;">${EBOOK_CONFIG.author}</p>
-                <p style="font-size:15px;color:#DAA520;font-family:'Playfair Display','Georgia','Times New Roman',serif;margin-bottom:14px;letter-spacing:1px;">Author · Developer · Dreamer</p>
-                <div style="max-width:500px;margin:0 auto;">
-                    <p style="font-size:15px;line-height:1.7;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;text-align:justify;font-weight:450;letter-spacing:0.3px;">${EBOOK_CONFIG.author} was born in March ${EBOOK_CONFIG.birthYear} in ${EBOOK_CONFIG.birthplace}. A self-taught developer, he discovered coding in 2020 and has since built over 5 projects. He is currently learning JavaScript and dreams of launching his own startup. When not coding, he enjoys reading novels and cycling.</p>
-                </div>
-                <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:16px;font-style:italic;color:#6c5ce7;font-family:'Lora','Georgia','Times New Roman',serif;">"Somewhere Between I Want It & I Got It"</p>
-                
-                <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">💻 3+ Years Coding</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">🚀 5+ Projects</span>
-                    <span style="background:#f5f5f5;padding:4px 14px;border-radius:20px;font-size:12px;color:#333;font-family:'Lora','Georgia','Times New Roman',serif;">📚 Loves Novels</span>
-                </div>
-                
-                ${qrHTML}
-            </div>
-        `;
+    pageAboutAuthor(authorImage, qrDataUrl) {
+        const div = makePage();
+        div.style.textAlign = 'center';
+
+        const qrHTML = qrDataUrl ? (
+            '<div style="margin:20px auto 0 auto;">' +
+                '<img src="' + qrDataUrl + '" alt="QR Code" style="width:110px;height:110px;display:block;margin:0 auto;border:2px solid ' + PDF_STYLES.gold + ';border-radius:6px;padding:6px;background:#ffffff;">' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:10px;color:' + PDF_STYLES.muted + ';margin-top:8px;letter-spacing:1px;text-transform:uppercase;">Scan to visit</p>' +
+            '</div>'
+        ) : '';
+
+        div.innerHTML =
+            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
+                makeHeading('About the Author') +
+                '<div style="width:110px;height:110px;border-radius:50%;border:2px solid ' + PDF_STYLES.gold + ';margin:0 auto 18px;overflow:hidden;">' +
+                    '<img src="' + authorImage + '" alt="' + EBOOK_CONFIG.author + '" style="width:100%;height:100%;object-fit:cover;">' +
+                '</div>' +
+                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:20px;font-weight:700;color:#000000;margin:0 0 4px 0;">' + EBOOK_CONFIG.author + '</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.gold + ';letter-spacing:3px;text-transform:uppercase;margin:0 0 24px 0;">Author</p>' +
+                '<div style="text-align:left;">' +
+                    makeBodyParagraph('Ravi Raj Singh is a writer based in Patna, India. He has kept a personal diary since childhood, and began writing online around 2023–24.') +
+                    makeBodyParagraph('<em>"A Boy Who Never Thought"</em> is his first book. It grew out of that habit. The book is written in both English and Hinglish, and remains in progress.') +
+                    makeBodyParagraph('His writing focuses on ordinary lives, small moments, and the quiet ways a person grows.') +
+                '</div>' +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px auto;"></div>' +
+                qrHTML +
+            '</div>';
         return div;
     }
 
-    createEmotionalPage(signatureImage) {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #fafafa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <div style="max-width:500px;margin:0 auto;width:100%;">
-                <div style="font-size:48px;margin-bottom:20px;">❤️</div>
-                <p style="font-size:20px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.7;font-style:italic;">"Thank you for reading my story. Every chapter of this book is a piece of my heart. I hope my journey inspires you to chase your own dreams."</p>
-                <div style="margin:24px auto 10px auto;max-width:200px;">
-                    <img src="${signatureImage}" alt="${EBOOK_CONFIG.author} Signature" style="width:100%;height:auto;display:block;">
-                </div>
-                <p style="font-size:18px;color:#DAA520;margin:6px 0 12px 0;font-family:'Playfair Display','Georgia','Times New Roman',serif;">— ${EBOOK_CONFIG.author}</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:16px auto;"></div>
-                <p style="font-size:14px;color:#666;font-family:'Lora','Georgia','Times New Roman',serif;">With love &amp; gratitude ❤️</p>
-                <p style="font-size:13px;color:#999;margin-top:6px;font-family:'Lora','Georgia','Times New Roman',serif;">${EBOOK_CONFIG.author} · ${EBOOK_CONFIG.currentYear}</p>
-                <p style="font-size:13px;color:#aaa;margin-top:4px;font-family:'Lora','Georgia','Times New Roman',serif;">📖 From ${EBOOK_CONFIG.birthplace} to the World</p>
-            </div>
-        `;
+    pageColophon() {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<div style="max-width:440px;margin:0 auto;width:100%;">' +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 30px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:13px;color:' + PDF_STYLES.soft + ';line-height:2;margin:0;">Written in Patna, India</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:13px;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 20px 0;">' + EBOOK_CONFIG.currentYear + '</p>' +
+                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 20px auto;"></div>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">Set in Playfair Display &amp; Lora</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">Typeset by hand</p>' +
+                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">No frameworks</p>' +
+            '</div>';
         return div;
     }
 
-    createColophonPage() {
-        const div = document.createElement('div');
-        div.style.cssText = `
-            padding: 60px 40px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
-            text-align: center;
-        `;
-        div.innerHTML = `
-            <div style="max-width:450px;margin:0 auto;width:100%;">
-                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 30px auto;"></div>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:8px;">This book was written with love,</p>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:8px;">Designed in Begusarai, Bihar,</p>
-                <p style="font-size:14px;font-weight:400;color:#1a1a1a;font-family:'Lora','Georgia','Times New Roman',serif;line-height:2;margin-bottom:20px;">Printed in India, 2026</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:0 auto 20px auto;"></div>
-                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Fonts: Lora · Playfair Display</p>
-                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Paper: Premium Offset</p>
-                <p style="font-size:12px;color:#999;font-family:'Lora','Georgia','Times New Roman',serif;line-height:1.8;">Cover: Matte Finish</p>
-                <div style="width:60px;height:2px;background:#DAA520;margin:20px auto;"></div>
-                <p style="font-size:11px;color:#aaa;font-family:'Lora','Georgia','Times New Roman',serif;font-style:italic;">"A story from the heart"</p>
-            </div>
-        `;
+    pageBlank() {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:#C0BAB1;font-style:italic;letter-spacing:2px;margin:0;">This page is intentionally left blank.</p>';
         return div;
     }
 
-    cleanClone(clone) {
-        const removeSelectors = [
-            '.lang-controls', '.download-actions', '.nav-buttons', 
-            '.progress-dots', '.chapter-progress-info', '.copy-link-btn',
-            '.back-to-top', '.reading-mode-toggle', '.toast', '.modal-overlay',
-            '.pdf-progress-pill', '.theme-toggle-wrapper'
-        ];
-        removeSelectors.forEach(selector => {
-            clone.querySelectorAll(selector).forEach(el => el.remove());
-        });
-    }
+    // ========================================================
+    // PDF RENDERING
+    // ========================================================
+    async generatePDF(langLabel, report) {
+        const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+        if (!jsPDFCtor) throw new Error('jsPDF not available');
 
-    async generatePDF(langLabel, reportProgress = null) {
-        const { jsPDF } = window.jspdf;
         const config = EBOOK_CONFIG.pdf;
-        
-        this.pdf = new jsPDF({
+
+        this.pdf = new jsPDFCtor({
             unit: 'mm',
             format: config.format,
             orientation: 'portrait',
@@ -1502,14 +796,14 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             title: EBOOK_CONFIG.title,
             author: EBOOK_CONFIG.author,
             subject: 'Autobiography',
-            keywords: 'autobiography, life story, memoir, inspiration',
-            creator: `${EBOOK_CONFIG.author} Publishing`
+            keywords: 'autobiography, memoir, Bihar, India',
+            creator: EBOOK_CONFIG.author
         });
 
-        const pageWidth = 210;
+        const pageWidth  = 210;
         const pageHeight = 297;
         const margin = config.margin;
-        const contentWidth = pageWidth - (margin * 2);
+        const contentWidth  = pageWidth  - (margin * 2);
         const contentHeight = pageHeight - (margin * 2);
 
         let isFirstPage = true;
@@ -1519,52 +813,30 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             if (this.cancelled) break;
 
             const batch = this.pages.slice(i, i + batchSize);
-            const batchPromises = batch.map((page) => {
-                return this.renderPage(page, contentWidth, contentHeight);
+            const results = await Promise.all(
+                batch.map((page) => this.renderPage(page, contentWidth, contentHeight))
+            );
+
+            results.forEach((dataUrl) => {
+                if (!dataUrl) return;
+                if (!isFirstPage) this.pdf.addPage();
+                isFirstPage = false;
+                this.pdf.addImage(dataUrl, 'JPEG', margin, margin, contentWidth, contentHeight, undefined, 'FAST');
             });
 
-            const results = await Promise.all(batchPromises);
-            
-            for (const result of results) {
-                if (result) {
-                    if (!isFirstPage) {
-                        this.pdf.addPage();
-                    }
-                    isFirstPage = false;
-                    
-                    this.pdf.addImage(
-                        result,
-                        'JPEG',
-                        margin,
-                        margin,
-                        contentWidth,
-                        contentHeight,
-                        undefined,
-                        'FAST'
-                    );
-                }
-            }
+            const pct = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
+            const visual = Math.max(45, 45 + Math.round((pct / 100) * 55));
+            report(visual, 'Rendering PDF…');
 
-            const progress = Math.min(100, Math.round(((i + batch.length) / this.pages.length) * 100));
-            this.updateProgress(progress, reportProgress);
-            
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise((r) => setTimeout(r, 40));
         }
     }
 
     async renderPage(element, width, height) {
         try {
             const container = document.createElement('div');
-            container.style.cssText = `
-                position: absolute;
-                left: -9999px;
-                top: -9999px;
-                width: ${width}mm;
-                background: #ffffff;
-                padding: 0;
-                margin: 0;
-            `;
-            
+            container.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:' + width + 'mm;background:#ffffff;padding:0;margin:0;';
+
             const clone = element.cloneNode(true);
             clone.style.width = '100%';
             clone.style.height = '100%';
@@ -1572,126 +844,109 @@ Some people come into life and leave, some become a memory. ${name} is one of th
             container.appendChild(clone);
             document.body.appendChild(container);
 
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise((r) => setTimeout(r, 60));
 
             const canvas = await html2canvas(container, {
                 scale: EBOOK_CONFIG.pdf.scale,
                 useCORS: true,
                 backgroundColor: '#ffffff',
-                logging: false,
-                width: width * 3.78,
-                height: height * 3.78
+                logging: false
             });
 
-            document.body.removeChild(container);
+            if (container.parentNode) container.parentNode.removeChild(container);
 
-            if (canvas) {
-                return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
-            }
+            if (canvas) return canvas.toDataURL('image/jpeg', EBOOK_CONFIG.pdf.quality);
             return null;
         } catch (error) {
-            console.error('Page rendering failed:', error);
+            console.error('Page render failed:', error);
             return null;
-        }
-    }
-
-    updateProgress(percent, reportProgress = null) {
-        const progressBar = document.querySelector('.progress-bar');
-        const progressText = document.querySelector('.progress-text');
-        
-        const p = Math.min(100, percent || 
-            Math.round((this.currentPage / this.totalPages) * 100));
-        
-        if (progressBar) progressBar.style.width = p + '%';
-        if (progressText) progressText.textContent = `${p}%`;
-
-        // Update floating pill (map 0-100 → 45-100, since 0-45 is prep)
-        const visualPercent = Math.max(45, 45 + Math.round((p / 100) * 55));
-        showPdfProgress(visualPercent, 'Generating PDF');
-
-        // Notify wizard (if callback provided)
-        if (typeof reportProgress === 'function') {
-            try { reportProgress(visualPercent, 'Generating PDF'); } catch (e) {}
         }
     }
 
     cleanup() {
-        document.querySelectorAll('div[style*="left: -9999px"]').forEach(el => el.remove());
-        document.querySelectorAll('canvas').forEach(el => {
-            if (el.width > 1000) el.remove();
+        document.querySelectorAll('div[style*="left: -9999px"], div[style*="left:-9999px"]').forEach(function (el) {
+            if (el.parentNode) el.parentNode.removeChild(el);
         });
         this.pages = [];
         this.pdf = null;
-        if (window.gc) window.gc();
     }
 
     cancel() {
         this.cancelled = true;
         this.isGenerating = false;
-        toast.warning('Generation cancelled');
         hidePdfProgress();
         this.cleanup();
     }
 }
 
 // ============================================================
-// 8. EXPOSE FUNCTIONS
+// 8. PUBLIC API
 // ============================================================
 const ebookGenerator = new EbookGenerator();
 
-window.downloadEnglishEbook = async function() {
+window.downloadEnglishEbook = async function () {
     await ebookGenerator.generate('en', 'English');
 };
 
-window.downloadHinglishEbook = async function() {
+window.downloadHinglishEbook = async function () {
     await ebookGenerator.generate('hi', 'Hinglish');
 };
 
-// ⭐ NEW: Wizard flow — reader data ke saath ebook generate karo
-window.generateEbookWithReader = async function(readerData, onProgress) {
-    const lang = readerData.language || 'en';
-    const langLabel = lang === 'en' ? 'English' : 'Hinglish';
-    
-    await ebookGenerator.generate(lang, langLabel, readerData, onProgress);
-};
-
-window.cancelEbookGeneration = function() {
+window.cancelEbookGeneration = function () {
     ebookGenerator.cancel();
 };
 
-window.showToast = function(message, type = 'info') {
-    toast.show(message, type);
-};
-
-window.closeModal = function() {
-    modal.close();
-};
-
 // ============================================================
-// 9. KEYBOARD SHORTCUTS
+// 9. KEYBOARD SHORTCUT
 // ============================================================
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (modal.isOpen) modal.close();
-        if (ebookGenerator.isGenerating) ebookGenerator.cancel();
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && ebookGenerator && ebookGenerator.isGenerating) {
+        ebookGenerator.cancel();
     }
 });
 
 // ============================================================
-// 10. PROGRESS INDICATOR SETUP
+// 10. PROGRESS PILL — inject if missing
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-    const progressContainer = document.querySelector('.progress-container');
-    if (progressContainer) {
-        progressContainer.innerHTML = `
-            <div class="progress-bar-wrapper" style="width:100%;background:#f0f0f0;border-radius:8px;overflow:hidden;height:8px;">
-                <div class="progress-bar" style="width:0%;height:100%;background:#DAA520;transition:width 0.3s ease;"></div>
-            </div>
-            <p class="progress-text" style="text-align:center;font-size:12px;color:#666;margin-top:4px;">0%</p>
-        `;
+document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('pdfProgressPill')) {
+        const pill = document.createElement('div');
+        pill.id = 'pdfProgressPill';
+        pill.style.cssText = [
+            'position:fixed',
+            'bottom:24px',
+            'right:24px',
+            'background:#1A1A1A',
+            'color:#FAFAF7',
+            'padding:14px 18px',
+            'border-radius:6px',
+            'min-width:220px',
+            'font-family:Inter,system-ui,sans-serif',
+            'font-size:12px',
+            'letter-spacing:0.02em',
+            'box-shadow:0 8px 24px rgba(0,0,0,0.2)',
+            'opacity:0',
+            'transform:translateY(12px)',
+            'transition:opacity .3s ease, transform .3s ease',
+            'z-index:9998',
+            'pointer-events:none'
+        ].join(';');
+        pill.innerHTML =
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+                '<span id="pdfPillText" style="font-weight:500;">Generating PDF</span>' +
+                '<span id="pdfPillPercent" style="color:#8B6F3F;font-weight:600;">0%</span>' +
+            '</div>' +
+            '<div style="width:100%;height:2px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden;">' +
+                '<div id="pdfPillFill" style="width:0%;height:100%;background:#8B6F3F;transition:width .25s ease;"></div>' +
+            '</div>';
+        document.body.appendChild(pill);
+
+        // Ensure 'active' class toggles visibility
+        const style = document.createElement('style');
+        style.textContent = '#pdfProgressPill.active{opacity:1 !important;transform:translateY(0) !important;}';
+        document.head.appendChild(style);
     }
 });
 
-console.log('✅ Ebook Generator loaded successfully!');
-console.log('📖 Use downloadEnglishEbook() or downloadHinglishEbook()');
-console.log('✨ Wizard flow: window.generateEbookWithReader(readerData, onProgress)');
+// ============================================================
+console.log('✅ ebook.js v2 loaded — honest content, 22 pages');
