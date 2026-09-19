@@ -1,6 +1,7 @@
 /* ==========================================================================
    FRIENDS CORNER — friends.js
    Search + Photo + Certificate + New friend request flow
+   v3: Normal webcam (no mirror) · Landscape certificate
    Companion: friends.html · friends.css
    ========================================================================== */
 
@@ -11,114 +12,31 @@
        1. CONFIG
        ====================================================================== */
     const CONFIG = {
-        themeKey: 'friends-theme',
         maxSearchResults: 6,
-        certificateFilename: 'Friendship_Certificate'
+        minSearchChars: 3,
+        certificateFilename: 'Friendship_Certificate',
+        signatureImage: 'assets/images/signature.jpg',
+        issuerImage: 'assets/images/casual.jpg'
     };
 
     /* ======================================================================
        2. FRIENDS DATA
-       (14 friends — firstName, connection, experience, sinceClass, tag)
        ====================================================================== */
     const friendsData = [
-        {
-            firstName: 'Sitanashu',
-            connection: 'Best Friend',
-            experience: "Friends since Class 1 — same bench, same lunch, same mischief. He taught me how to ride a bicycle. We still meet every Sunday to play cricket.",
-            sinceClass: 1,
-            tag: 'Oldest Friend'
-        },
-        {
-            firstName: 'Rohit',
-            connection: 'Best Friend',
-            experience: "Class 1 se saath — we've watched each other grow up. We started our coding journey together in Class 6. Partner in crime, always.",
-            sinceClass: 1,
-            tag: 'Day One Friend'
-        },
-        {
-            firstName: 'Suraj',
-            connection: 'Cricket Partner',
-            experience: "Played in the school cricket team — he hit the winning six in the final. The most aggressive batsman I've ever seen.",
-            sinceClass: 6,
-            tag: 'Sports Buddy'
-        },
-        {
-            firstName: 'Shresth',
-            connection: 'Gaming Buddy',
-            experience: "We played PUBG and Free Fire all night during lockdown. He taught me how to snipe. The most chill person I know.",
-            sinceClass: 6,
-            tag: 'Gamer Friend'
-        },
-        {
-            firstName: 'Ayush',
-            connection: 'Drama Partner',
-            experience: "We performed together at the school annual function — he forgot his lines and I saved him. He can dance, act, and make anyone laugh.",
-            sinceClass: 6,
-            tag: 'Funniest Friend'
-        },
-        {
-            firstName: 'Rishidev',
-            connection: 'Study Partner',
-            experience: "We sat together in Class 10, shared notes, and helped each other pass exams. The most disciplined person I know.",
-            sinceClass: 6,
-            tag: 'Scholar Friend'
-        },
-        {
-            firstName: 'Jigyasha',
-            connection: 'Classmate',
-            experience: "She sits next to me in class. We share notes, gossip, and laugh at bad jokes. The most positive person I've ever met.",
-            sinceClass: 6,
-            tag: 'Positive Vibes'
-        },
-        {
-            firstName: 'Sudhanshu',
-            connection: 'Best Friend',
-            experience: "We grew up together, played cricket every evening, and copied each other's homework. The most loyal friend I have.",
-            sinceClass: 7,
-            tag: 'Most Loyal'
-        },
-        {
-            firstName: 'Priyam',
-            connection: 'Coding Buddy',
-            experience: "We learned HTML together in Class 6. He's the reason I started coding. Always coming up with creative solutions.",
-            sinceClass: 8,
-            tag: 'Tech Genius'
-        },
-        {
-            firstName: 'Harsh',
-            connection: 'Music Partner',
-            experience: "We started a band together in Class 9 — he plays guitar, I sing (badly). He practices six hours a day.",
-            sinceClass: 8,
-            tag: 'Rockstar Friend'
-        },
-        {
-            firstName: 'Keshav',
-            connection: 'Chess Rival',
-            experience: "We played chess every break. He beat me 20 times, I beat him once and celebrated. He calculates five moves ahead.",
-            sinceClass: 9,
-            tag: 'Smartest Friend'
-        },
-        {
-            firstName: 'Rani',
-            connection: 'Childhood Friend',
-            experience: "Friends since we were five — she's like a sister to me. She knows all my secrets and still loves me. She bakes the best cakes.",
-            sinceClass: 12,
-            tag: 'Sweetest Friend'
-        },
-        {
-            firstName: 'Sneha',
-            connection: 'Drama Partner',
-            experience: "We performed together at the school annual function — I forgot my lines but she saved me. The most confident person I know.",
-            sinceClass: 12,
-            tag: 'Confident Friend'
-        },
-        {
-            firstName: 'Rohini',
-            connection: 'Art Partner',
-            experience: "We painted posters for school events together. She taught me how to draw. We've won several inter-school competitions together.",
-            sinceClass: 12,
-            tag: 'Creative Friend'
-        }
+        { firstName: 'Sitanashu', connection: 'Best Friend',      experience: "Friends since Class 1 — same bench, same lunch, same mischief. He taught me how to ride a bicycle. We still meet every Sunday to play cricket.", sinceClass: 1,  tag: 'Oldest Friend' },
+        { firstName: 'Rohit',     connection: 'Best Friend',      experience: "Class 1 se saath — we've watched each other grow up. We started our coding journey together in Class 6. Partner in crime, always.", sinceClass: 1,  tag: 'Day One Friend' },
+        { firstName: 'Suraj',     connection: 'Cricket Partner',  experience: "Played in the school cricket team — he hit the winning six in the final. The most aggressive batsman I've ever seen.", sinceClass: 6,  tag: 'Sports Buddy' },
+        { firstName: 'Shresth',   connection: 'Gaming Buddy',     experience: "We played PUBG and Free Fire all night during lockdown. He taught me how to snipe. The most chill person I know.", sinceClass: 6,  tag: 'Gamer Friend' },
+        { firstName: 'Ayush',     connection: 'Drama Partner',    experience: "We performed together at the school annual function — he forgot his lines and I saved him. He can dance, act, and make anyone laugh.", sinceClass: 6,  tag: 'Funniest Friend' },
+        { firstName: 'Rishidev',  connection: 'Study Partner',    experience: "We sat together in Class 10, shared notes, and helped each other pass exams. The most disciplined person I know.", sinceClass: 6,  tag: 'Scholar Friend' },
+        { firstName: 'Jigyasha',  connection: 'Classmate',        experience: "She sits next to me in class. We share notes, gossip, and laugh at bad jokes. The most positive person I've ever met.", sinceClass: 6,  tag: 'Positive Vibes' },
+        { firstName: 'Sudhanshu', connection: 'Best Friend',      experience: "We grew up together, played cricket every evening, and copied each other's homework. The most loyal friend I have.", sinceClass: 7,  tag: 'Most Loyal' },
+        { firstName: 'Priyam',    connection: 'Coding Buddy',     experience: "We learned HTML together in Class 6. He's the reason I started coding. Always coming up with creative solutions.", sinceClass: 8,  tag: 'Tech Genius' },
+        { firstName: 'Harsh',     connection: 'Music Partner',    experience: "We started a band together in Class 9 — he plays guitar, I sing (badly). He practices six hours a day.", sinceClass: 8,  tag: 'Rockstar Friend' },
+        { firstName: 'Keshav',    connection: 'Chess Rival',      experience: "We played chess every break. He beat me 20 times, I beat him once and celebrated. He calculates five moves ahead.", sinceClass: 9,  tag: 'Smartest Friend' },
+        { firstName: 'Rani',      connection: 'Childhood Friend', experience: "Friends since we were five — she's like a sister to me. She knows all my secrets and still loves me. She bakes the best cakes.", sinceClass: 12, tag: 'Sweetest Friend' },
+        { firstName: 'Sneha',     connection: 'Drama Partner',    experience: "We performed together at the school annual function — I forgot my lines but she saved me. The most confident person I know.", sinceClass: 12, tag: 'Confident Friend' },
+        { firstName: 'Rohini',    connection: 'Art Partner',      experience: "We painted posters for school events together. She taught me how to draw. We've won several inter-school competitions together.", sinceClass: 12, tag: 'Creative Friend' }
     ];
 
     /* ======================================================================
@@ -140,41 +58,37 @@
     const $$ = (sel, ctx) => Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
 
     const DOM = {
-        searchArea:       $('#searchArea'),
-        friendSearch:     $('#friendSearch'),
-        searchClear:      $('#searchClear'),
-        suggestionsList:  $('#suggestionsList'),
+        searchArea:        $('#searchArea'),
+        friendSearch:      $('#friendSearch'),
+        searchClear:       $('#searchClear'),
+        suggestionsList:   $('#suggestionsList'),
 
-        photoScreen:      $('#photoScreen'),
-        photoFriendName:  $('#photoFriendName'),
-        webcamVideo:      $('#webcamVideo'),
-        webcamPlaceholder:$('#webcamPlaceholder'),
-        captureBtn:       $('#captureBtn'),
-        photoUploadInput: $('#photoUploadInput'),
-        permissionDenied: $('#permissionDenied'),
-        permissionMessage:$('#permissionMessage'),
+        photoScreen:       $('#photoScreen'),
+        photoFriendName:   $('#photoFriendName'),
+        webcamVideo:       $('#webcamVideo'),
+        webcamPlaceholder: $('#webcamPlaceholder'),
+        captureBtn:        $('#captureBtn'),
+        photoUploadInput:  $('#photoUploadInput'),
+        permissionDenied:  $('#permissionDenied'),
+        permissionMessage: $('#permissionMessage'),
 
-        foundScreen:      $('#foundScreen'),
-        foundAvatar:      $('#foundAvatar'),
-        foundName:        $('#foundName'),
-        foundTag:         $('#foundTag'),
-        timelineBar:      $('#timelineBar'),
-        timelineText:     $('#timelineText'),
+        foundScreen:       $('#foundScreen'),
+        foundAvatar:       $('#foundAvatar'),
+        foundName:         $('#foundName'),
+        foundTag:          $('#foundTag'),
 
-        newFriendScreen:  $('#newFriendScreen'),
-        newFriendName:    $('#newFriendName'),
+        newFriendScreen:   $('#newFriendScreen'),
+        newFriendName:     $('#newFriendName'),
 
-        detailsScreen:    $('#detailsScreen'),
-        profileAvatar:    $('#profileAvatar'),
-        displayName:      $('#displayName'),
-        displayConnection:$('#displayConnection'),
-        displayTag:       $('#displayTag'),
-        displaySince:     $('#displaySince'),
-        displayClass:     $('#displayClass'),
-        displayYears:     $('#displayYears'),
-        displayExperience:$('#displayExperience'),
-        detailsTimelineBar:  $('#detailsTimelineBar'),
-        detailsTimelineText: $('#detailsTimelineText'),
+        detailsScreen:     $('#detailsScreen'),
+        profileAvatar:     $('#profileAvatar'),
+        displayName:       $('#displayName'),
+        displayConnection: $('#displayConnection'),
+        displayTag:        $('#displayTag'),
+        displaySince:      $('#displaySince'),
+        displayClass:      $('#displayClass'),
+        displayYears:      $('#displayYears'),
+        displayExperience: $('#displayExperience'),
 
         confettiContainer: $('#confettiContainer')
     };
@@ -214,14 +128,14 @@
     }
 
     /* ======================================================================
-       6. SEARCH + SUGGESTIONS
+       6. SEARCH + SUGGESTIONS (min 3 chars)
        ====================================================================== */
     function openSuggestions(query) {
         if (!DOM.suggestionsList) return;
 
         const q = String(query || '').trim().toLowerCase();
 
-        if (!q) {
+        if (q.length < CONFIG.minSearchChars) {
             DOM.suggestionsList.hidden = true;
             DOM.suggestionsList.innerHTML = '';
             return;
@@ -277,7 +191,7 @@
         const input = DOM.friendSearch ? DOM.friendSearch.value.trim() : '';
 
         if (!input) {
-            openSuggestions('');
+            closeSuggestions();
             return;
         }
 
@@ -310,12 +224,16 @@
     }
 
     /* ======================================================================
-       8. WEBCAM
+       8. WEBCAM (NORMAL — no mirror)
        ====================================================================== */
     async function startWebcam() {
         try {
             state.stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: 640, height: 480 },
+                video: {
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
                 audio: false
             });
 
@@ -328,7 +246,6 @@
             if (DOM.webcamPlaceholder) DOM.webcamPlaceholder.style.display = 'none';
             if (DOM.permissionDenied) DOM.permissionDenied.hidden = true;
             if (DOM.captureBtn) DOM.captureBtn.disabled = false;
-
         } catch (err) {
             state.webcamActive = false;
             if (DOM.permissionDenied) DOM.permissionDenied.hidden = false;
@@ -357,10 +274,11 @@
     function applyFilterToVideo(filter) {
         state.currentFilter = filter;
         const filters = {
-            normal:  'none',
-            bw:      'grayscale(100%)',
-            sepia:   'sepia(100%)',
-            vintage: 'sepia(50%) contrast(120%) brightness(90%)'
+            normal:   'none',
+            bw:       'grayscale(100%)',
+            sepia:    'sepia(100%)',
+            vintage:  'sepia(50%) contrast(120%) brightness(90%)',
+            portrait: 'contrast(105%) saturate(110%) brightness(102%)'
         };
         if (DOM.webcamVideo) {
             DOM.webcamVideo.style.filter = filters[filter] || 'none';
@@ -378,31 +296,31 @@
 
         const video = DOM.webcamVideo;
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
+        canvas.width  = video.videoWidth  || 1280;
+        canvas.height = video.videoHeight || 720;
         const ctx = canvas.getContext('2d');
 
         if (state.currentFilter !== 'normal') {
             ctx.filter = video.style.filter || 'none';
         }
+
+        // Normal capture — no mirror, no flip.
         ctx.drawImage(video, 0, 0);
 
-        state.capturedPhoto = canvas.toDataURL('image/jpeg', 0.85);
+        state.capturedPhoto = canvas.toDataURL('image/jpeg', 0.92);
         stopWebcam();
         proceedAfterPhoto();
     }
 
     function uploadPhoto() {
-        if (DOM.photoUploadInput) {
-            DOM.photoUploadInput.click();
-        }
+        if (DOM.photoUploadInput) DOM.photoUploadInput.click();
     }
 
     function onPhotoUpload(e) {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
         if (!file.type.startsWith('image/')) {
-            if (typeof showToast === 'function') showToast('Please choose an image file.', 'error');
+            showToast('Please choose an image file.', 'error');
             return;
         }
 
@@ -432,7 +350,7 @@
     }
 
     /* ======================================================================
-       10. FRIEND FOUND
+       10. FRIEND FOUND / NEW FRIEND
        ====================================================================== */
     function avatarHtml(dataUrl) {
         if (dataUrl) {
@@ -466,9 +384,6 @@
         if (text) text.textContent = 'Since Class ' + state.currentFriend.sinceClass + ' · ' + years + ' years of friendship';
     }
 
-    /* ======================================================================
-       11. NEW FRIEND (request flow)
-       ====================================================================== */
     function showNewFriend() {
         if (DOM.newFriendName) DOM.newFriendName.textContent = state.currentFriend.firstName;
         showScreen(DOM.newFriendScreen);
@@ -486,7 +401,7 @@
     }
 
     /* ======================================================================
-       12. DETAILS SCREEN
+       11. DETAILS SCREEN
        ====================================================================== */
     function proceedToDetails() {
         if (!state.currentFriend) return;
@@ -513,7 +428,7 @@
     }
 
     /* ======================================================================
-       13. RESET
+       12. RESET
        ====================================================================== */
     function resetSearch() {
         stopWebcam();
@@ -533,7 +448,7 @@
     }
 
     /* ======================================================================
-       14. CONFETTI
+       13. CONFETTI
        ====================================================================== */
     function launchConfetti() {
         const container = DOM.confettiContainer;
@@ -574,7 +489,7 @@
     }
 
     /* ======================================================================
-       15. CERTIFICATE GENERATION
+       14. CERTIFICATE (LANDSCAPE)
        ====================================================================== */
     function loadCertificateLibraries() {
         const libs = [
@@ -607,9 +522,7 @@
             await loadCertificateLibraries();
         } catch (err) {
             console.error(err);
-            if (typeof showToast === 'function') {
-                showToast('Could not load certificate tools. Check connection.', 'error');
-            }
+            showToast('Could not load certificate tools. Check connection.', 'error');
             return;
         }
 
@@ -619,14 +532,13 @@
             'position:fixed',
             'left:-99999px',
             'top:0',
-            'width:210mm',
+            'width:297mm',
             'background:#ffffff',
             'padding:0',
             'margin:0'
         ].join(';');
         document.body.appendChild(container);
 
-        // Wait for images inside
         const imgs = Array.prototype.slice.call(container.querySelectorAll('img'));
         await Promise.all(imgs.map(function (img) {
             if (img.complete) return Promise.resolve();
@@ -635,8 +547,7 @@
             });
         }));
 
-        // Small breather
-        await new Promise(function (r) { setTimeout(r, 150); });
+        await new Promise(function (r) { setTimeout(r, 200); });
 
         try {
             const canvas = await html2canvas(container, {
@@ -649,10 +560,14 @@
             if (container.parentNode) container.parentNode.removeChild(container);
 
             const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-            const pdf = new jsPDFCtor('p', 'mm', 'a4');
+            const pdf = new jsPDFCtor({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.92);
-            const pdfWidth = 210;
+            const pdfWidth  = 297;
             const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
 
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
@@ -660,23 +575,19 @@
             const filename = CONFIG.certificateFilename + '_' + (state.currentFriend.firstName || 'Friend') + (isTemporary ? '_Temp' : '') + '.pdf';
             pdf.save(filename);
 
-            if (typeof showToast === 'function') {
-                showToast('Certificate downloaded.', 'success');
-            }
+            showToast('Certificate downloaded.', 'success');
         } catch (err) {
             console.error('Certificate failed:', err);
             if (container.parentNode) container.parentNode.removeChild(container);
-            if (typeof showToast === 'function') {
-                showToast('Could not generate certificate.', 'error');
-            }
+            showToast('Could not generate certificate.', 'error');
         }
     }
 
     function buildCertificateHtml(isTemporary) {
-        const friendName = escapeHtml((state.currentFriend.firstName || 'Friend').toUpperCase());
+        const friendName = escapeHtml((state.currentFriend.firstName || 'Friend'));
+        const friendNameUpper = friendName.toUpperCase();
         const tag = escapeHtml(state.currentFriend.tag || (isTemporary ? 'New Friend' : 'Friend'));
         const connection = escapeHtml(state.currentFriend.connection || 'Friend');
-        const issuerPhoto = 'assets/images/casual.jpg';
         const friendPhoto = state.capturedPhoto || '';
 
         const now = new Date();
@@ -688,33 +599,36 @@
 
         const friendPhotoHtml = friendPhoto
             ? '<img src="' + friendPhoto + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-            : '<div style="color:#7c3aed;font-size:42px;line-height:110px;text-align:center;font-family:Georgia,serif;">' + (friendName.charAt(0) || 'F') + '</div>';
+            : '<div style="color:#1f3a5f;font-size:48px;line-height:120px;text-align:center;font-family:Georgia,serif;font-weight:700;">' + (friendName.charAt(0) || 'F') + '</div>';
 
         const badgeText = isTemporary ? 'NEW FRIEND' : 'CONNECTED';
         const footerText = isTemporary
-            ? 'A temporary certificate. Once Ravi adds your details, you get the full one.'
-            : 'Their friendship has been officially recognised and recorded.';
+            ? 'A temporary certificate. Once Ravi adds your details, you receive the full one.'
+            : 'Their friendship is hereby recognized and celebrated.';
 
         return (
             '<div style="' +
-                'width:210mm;' +
-                'min-height:297mm;' +
-                'padding:25mm 20mm;' +
+                'width:297mm;' +
+                'height:210mm;' +
+                'padding:18mm 22mm;' +
                 'background:#ffffff;' +
                 'font-family:Georgia,\'Times New Roman\',serif;' +
                 'color:#1a1a1a;' +
                 'box-sizing:border-box;' +
                 'position:relative;' +
+                'display:flex;' +
+                'flex-direction:column;' +
+                'border:3px double #b08d3f;' +
             '">' +
 
-                '<div style="text-align:center;margin-bottom:22px;">' +
+                '<div style="text-align:center;margin-bottom:8px;">' +
                     '<span style="' +
                         'display:inline-block;' +
                         'background:#b08d3f;' +
                         'color:#ffffff;' +
-                        'padding:6px 22px;' +
+                        'padding:5px 22px;' +
                         'border-radius:20px;' +
-                        'font-size:11px;' +
+                        'font-size:10px;' +
                         'font-weight:700;' +
                         'letter-spacing:3px;' +
                         'font-family:Arial,sans-serif;' +
@@ -723,41 +637,42 @@
 
                 '<h1 style="' +
                     'text-align:center;' +
-                    'font-size:26px;' +
-                    'letter-spacing:3px;' +
+                    'font-size:30px;' +
+                    'letter-spacing:5px;' +
                     'font-weight:700;' +
-                    'margin:0 0 8px 0;' +
+                    'margin:0 0 6px 0;' +
                     'font-family:Georgia,serif;' +
+                    'color:#1a1a1a;' +
                 '">CERTIFICATE OF FRIENDSHIP</h1>' +
 
-                '<div style="width:80px;height:2px;background:#b08d3f;margin:0 auto 40px auto;"></div>' +
+                '<div style="width:100px;height:2px;background:#b08d3f;margin:0 auto 20px auto;"></div>' +
 
-                '<div style="display:flex;justify-content:center;align-items:flex-start;gap:48px;margin-bottom:36px;">' +
+                '<div style="display:flex;justify-content:center;align-items:flex-start;gap:50px;margin-bottom:14px;">' +
 
                     '<div style="text-align:center;">' +
                         '<div style="' +
-                            'width:110px;height:110px;' +
+                            'width:90px;height:90px;' +
                             'border-radius:50%;' +
                             'border:3px solid #b08d3f;' +
                             'overflow:hidden;' +
-                            'margin:0 auto 10px auto;' +
+                            'margin:0 auto 8px auto;' +
                             'background:#f5f5f5;' +
                         '">' +
-                            '<img src="' + issuerPhoto + '" alt="" style="width:100%;height:100%;object-fit:cover;">' +
+                            '<img src="' + CONFIG.issuerImage + '" alt="" style="width:100%;height:100%;object-fit:cover;">' +
                         '</div>' +
-                        '<div style="font-size:13px;font-weight:700;color:#b08d3f;letter-spacing:1.5px;">RAVI RAJ</div>' +
-                        '<div style="font-size:10px;color:#888;margin-top:2px;">Issuer</div>' +
+                        '<div style="font-size:12px;font-weight:700;color:#b08d3f;letter-spacing:1.5px;">RAVI RAJ</div>' +
+                        '<div style="font-size:9px;color:#888;margin-top:2px;">Issuer</div>' +
                     '</div>' +
 
-                    '<div style="text-align:center;padding-top:24px;">' +
+                    '<div style="text-align:center;padding-top:20px;">' +
                         '<div style="' +
-                            'width:48px;height:48px;' +
+                            'width:46px;height:46px;' +
                             'border-radius:50%;' +
                             'background:#b08d3f;' +
                             'display:flex;align-items:center;justify-content:center;' +
-                            'margin:0 auto 8px auto;' +
+                            'margin:0 auto 6px auto;' +
                             'color:#ffffff;' +
-                            'font-size:18px;' +
+                            'font-size:20px;' +
                             'font-family:Arial,sans-serif;' +
                         '">&#10003;</div>' +
                         '<div style="font-size:10px;font-weight:700;color:#b08d3f;letter-spacing:2px;">' + badgeText + '</div>' +
@@ -765,15 +680,15 @@
 
                     '<div style="text-align:center;">' +
                         '<div style="' +
-                            'width:110px;height:110px;' +
+                            'width:90px;height:90px;' +
                             'border-radius:50%;' +
                             'border:3px solid #1f3a5f;' +
                             'overflow:hidden;' +
-                            'margin:0 auto 10px auto;' +
+                            'margin:0 auto 8px auto;' +
                             'background:#f5f5f5;' +
                         '">' + friendPhotoHtml + '</div>' +
-                        '<div style="font-size:13px;font-weight:700;color:#1f3a5f;letter-spacing:1.5px;">' + friendName + '</div>' +
-                        '<div style="font-size:10px;color:#888;margin-top:2px;">' + connection + '</div>' +
+                        '<div style="font-size:12px;font-weight:700;color:#1f3a5f;letter-spacing:1.5px;">' + friendNameUpper + '</div>' +
+                        '<div style="font-size:9px;color:#888;margin-top:2px;">' + connection + '</div>' +
                     '</div>' +
 
                 '</div>' +
@@ -781,16 +696,16 @@
                 '<p style="' +
                     'text-align:center;' +
                     'font-size:15px;' +
-                    'line-height:1.85;' +
+                    'line-height:1.8;' +
                     'color:#333;' +
-                    'margin:44px auto 56px auto;' +
-                    'max-width:500px;' +
+                    'margin:16px auto 22px auto;' +
+                    'max-width:600px;' +
                 '">' +
-                    'This certificate celebrates the friendship between <strong>Ravi Raj</strong> and the above person. ' +
+                    'This certificate celebrates the friendship between <strong>Ravi Raj</strong> and <strong>' + friendName + '</strong>. ' +
                     footerText +
                 '</p>' +
 
-                '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:64px;padding:0 10px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;padding:0 12px 4px 12px;">' +
 
                     '<div style="font-size:11px;color:#555;line-height:1.9;font-family:Arial,sans-serif;">' +
                         '<div><strong>Issued on:</strong> ' + dateStr + '</div>' +
@@ -798,14 +713,15 @@
                     '</div>' +
 
                     '<div style="text-align:center;">' +
-                        '<div style="font-family:cursive;font-size:28px;color:#1a1a1a;margin-bottom:4px;">Ravi Raj</div>' +
-                        '<div style="font-size:10px;color:#888;">Founder, Friends Corner</div>' +
+                        '<img src="' + CONFIG.signatureImage + '" alt="Signature" style="width:130px;height:auto;display:block;margin:0 auto 4px auto;">' +
+                        '<div style="font-size:11px;font-weight:700;color:#1a1a1a;">Ravi Raj</div>' +
+                        '<div style="font-size:9px;color:#888;">Founder, Friends Corner</div>' +
                     '</div>' +
 
                 '</div>' +
 
-                '<div style="width:100%;height:1px;background:#b08d3f;margin:28px 0 16px 0;"></div>' +
-                '<div style="text-align:center;font-size:10px;color:#999;letter-spacing:1px;font-family:Arial,sans-serif;">' +
+                '<div style="width:100%;height:1px;background:#b08d3f;margin:14px 0 8px 0;"></div>' +
+                '<div style="text-align:center;font-size:9px;color:#999;letter-spacing:1px;font-family:Arial,sans-serif;">' +
                     '&copy; 2026 Ravi Raj &middot; All Rights Reserved' +
                 '</div>' +
 
@@ -814,7 +730,7 @@
     }
 
     /* ======================================================================
-       16. TOAST (lightweight)
+       15. TOAST
        ====================================================================== */
     function showToast(message, type) {
         let toast = document.getElementById('toast');
@@ -857,10 +773,9 @@
     }
 
     /* ======================================================================
-       17. INIT
+       16. INIT
        ====================================================================== */
     function init() {
-        // --- Search input ---
         if (DOM.friendSearch) {
             DOM.friendSearch.addEventListener('input', function (e) {
                 if (DOM.searchClear) DOM.searchClear.hidden = !e.target.value;
@@ -877,18 +792,16 @@
             });
 
             DOM.friendSearch.addEventListener('focus', function () {
-                if (DOM.friendSearch.value.trim()) {
+                if (DOM.friendSearch.value.trim().length >= CONFIG.minSearchChars) {
                     openSuggestions(DOM.friendSearch.value);
                 }
             });
         }
 
-        // --- Suggestion click ---
         if (DOM.suggestionsList) {
             DOM.suggestionsList.addEventListener('click', onSuggestionClick);
         }
 
-        // --- Clear button ---
         if (DOM.searchClear) {
             DOM.searchClear.addEventListener('click', function () {
                 if (DOM.friendSearch) {
@@ -900,30 +813,27 @@
             });
         }
 
-        // --- Click outside closes suggestions ---
         document.addEventListener('click', function (e) {
             if (!e.target.closest('#searchArea')) {
                 closeSuggestions();
             }
         });
 
-        // --- Photo upload input ---
         if (DOM.photoUploadInput) {
             DOM.photoUploadInput.addEventListener('change', onPhotoUpload);
         }
 
-        // --- Filter buttons (also on inline onclick, but bind here) ---
         $$('.filter-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 applyFilterToVideo(btn.dataset.filter);
             });
         });
 
-        console.log('✅ friends.js loaded — ' + friendsData.length + ' friends in database');
+        console.log('✅ friends.js v3 loaded — ' + friendsData.length + ' friends');
     }
 
     /* ======================================================================
-       18. PUBLIC API (used by inline onclick in HTML)
+       17. PUBLIC API
        ====================================================================== */
     window.searchFriend = searchFriend;
     window.resetSearch = resetSearch;
@@ -938,7 +848,7 @@
     window.showToast = showToast;
 
     /* ======================================================================
-       19. BOOT
+       18. BOOT
        ====================================================================== */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
