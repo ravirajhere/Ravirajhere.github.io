@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-beej-version="9.0-merged">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0a0f1e" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f3e6b5" media="(prefers-color-scheme: light)" />
+
+<title>PROJECT BEEJ — A Living Birthday 🌱</title>
+<meta name="description" content="A self-evolving birthday civilization for my friends. Runs entirely in your browser. No server, no tracking, no uploads." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="PROJECT BEEJ — A Living Birthday" />
+<meta property="og:description" content="Har dost ke saath evolve hone wala birthday. Sab kuch aapke browser me." />
+<meta property="og:image" content="./og-beej.png" />
+<meta property="og:locale" content="en_IN" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="PROJECT BEEJ — A Living Birthday" />
+<meta name="twitter:description" content="A birthday page that grows with every friend." />
+<meta name="twitter:image" content="./og-beej.png" />
+
+<!-- PWA -->
+<link rel="manifest" href="./beej.manifest.json" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌱%3C/text%3E%3C/svg%3E" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+
+<!-- Styles -->
+<link rel="stylesheet" href="birthday.css" />
+</head>
+
+<body data-stage="gate" style="--hue: 45; --chain-len: 0;">
+
+<!-- ============ AMBIENT BACKGROUND ============ -->
+<div class="ambient-layer" aria-hidden="true">
+  <div class="ambient-fluid"></div>
+  <div class="ambient-grain"></div>
+  <div class="ambient-vignette"></div>
+</div>
+
+<!-- ============ MAIN STAGE ============ -->
+<main id="stage" class="stage" role="main" aria-live="polite">
+
+  <!-- ========== 01. SECRET GATE ========== -->
+  <section class="scene scene--active" id="scene-gate" data-scene="0" aria-labelledby="gate-title">
+    <header>
+      <h1 id="gate-title" class="title">Secret Gate</h1>
+      <p class="subtitle">
+        <span id="gate-chain-count">0</span> blocks mined • Proof-of-Dosti
+      </p>
+    </header>
+
+    <div class="gate-box" id="gate-box" role="status" aria-live="polite">
+      <p id="gate-status">Sirf doston ke liye • Hint: hum kya hain?</p>
+    </div>
+
+    <form id="gate-form" autocomplete="off" novalidate>
+      <input
+        type="password"
+        id="gate-pass"
+        class="input"
+        placeholder="Password..."
+        autocomplete="off"
+        aria-label="Password"
+        required
+      />
+      <button type="submit" class="btn" id="gate-btn">
+        Unlock →
+      </button>
+    </form>
+
+    <p class="error" id="gate-error" role="alert"></p>
+    <p class="hint mono tiny">
+      Tip: Password tumhara aur mera common word hai.
+    </p>
+  </section>
+
+  <!-- ========== 02. SOUL ID ========== -->
+  <section class="scene" id="scene-id" data-scene="1" hidden aria-labelledby="id-title">
+    <header>
+      <h1 id="id-title" class="title">Soul ID</h1>
+      <p class="subtitle">Tumhari frequency se rang banega</p>
+    </header>
+
+    <input
+      type="text"
+      id="friend-name"
+      class="input"
+      placeholder="Tumhara naam?"
+      maxlength="20"
+      autocomplete="name"
+      aria-label="Name"
+      spellcheck="false"
+    />
+
+    <p class="label">Tum kaun ho?</p>
+    <div class="gender-group" role="group" aria-label="Gender selection">
+      <button type="button" class="gender-btn" data-gender="male" aria-pressed="false">
+        👦 Male
+      </button>
+      <button type="button" class="gender-btn" data-gender="female" aria-pressed="false">
+        👧 Female
+      </button>
+      <button type="button" class="gender-btn" data-gender="other" aria-pressed="false">
+        🌈 Other
+      </button>
+    </div>
+
+    <output id="freq-preview" class="freq-preview" aria-live="polite">
+      Freq: -- Hz • Hue: --°
+    </output>
+
+    <button class="btn" id="id-next" disabled>
+      Generate Frequency →
+    </button>
+    <p class="error" id="id-error" role="alert"></p>
+  </section>
+
+  <!-- ========== 03. EMOTION BOOTH ========== -->
+  <section class="scene" id="scene-booth" data-scene="2" hidden aria-labelledby="booth-title">
+    <header>
+      <h1 id="booth-title" class="title">Emotion Booth</h1>
+      <p class="subtitle">Muskurao toh magic hoga ✨</p>
+    </header>
+
+    <div class="video-wrap">
+      <video id="video" autoplay playsinline muted disablepictureinpicture></video>
+      <canvas id="overlay-canvas"></canvas>
+    </div>
+
+    <canvas id="booth-canvas" hidden></canvas>
+    <div id="photo-strip" role="list" aria-label="Captured photos"></div>
+
+    <p id="smile-status" class="subtitle">
+      On-device • No upload • 100% private
+    </p>
+
+    <div class="booth-actions">
+      <button type="button" class="btn" id="booth-start">
+        📸 Camera On
+      </button>
+      <button type="button" class="btn btn--ghost" id="booth-skip">
+        Skip →
+      </button>
+    </div>
+  </section>
+
+  <!-- ========== 04. MEMORY HACK ========== -->
+  <section class="scene" id="scene-hack" data-scene="3" hidden aria-labelledby="hack-title">
+    <header>
+      <h1 id="hack-title" class="title">Memory Hack</h1>
+      <p class="subtitle">Dosti chain compile ho rahi hai...</p>
+    </header>
+
+    <div class="terminal" id="terminal" role="log" aria-live="polite"></div>
+
+    <div class="progress"
+         role="progressbar"
+         aria-valuenow="0"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         id="hack-progress">
+      <div class="bar" id="hack-bar"></div>
+    </div>
+
+    <p id="hash-preview" class="mono tiny">SHA256: computing...</p>
+  </section>
+
+  <!-- ========== 05. MAIN CIVILIZATION ========== -->
+  <section class="scene" id="scene-main" data-scene="4" hidden aria-labelledby="wish-title">
+
+    <!-- 5.1 Wish -->
+    <h1 id="wish-title" class="title title--mega"></h1>
+    <p id="typewriter" class="typewriter"></p>
+
+    <!-- 5.2 Chain -->
+    <h2 class="section-title">⛓️ Dosti Chain</h2>
+    <div id="chain-view"></div>
+
+    <!-- 5.3 Balloon Game -->
+    <h2 class="section-title">
+      🎈 Balloon Pop • <span id="balloon-score">0</span>
+    </h2>
+    <div id="balloon-zone" role="application" aria-label="Balloon game"></div>
+
+    <!-- 5.4 Cake -->
+    <h2 class="section-title">🎂 Birthday Cake</h2>
+    <div id="cake-zone">
+      <div id="candles" aria-hidden="true">🕯️🕯️🕯️</div>
+      <div id="cake-3d" class="cake" aria-hidden="true">🎂</div>
+      <p class="subtitle">
+        Mic pe phook maro 💨
+        <span id="db-meter" class="mono tiny">-- dB</span>
+      </p>
+      <button type="button" class="btn" id="mic-enable">
+        🎤 Mic Enable
+      </button>
+    </div>
+
+    <!-- 5.5 Letter -->
+    <h2 class="section-title">💌 Message from RaviRaj</h2>
+    <div id="letter-card" class="card">
+      <p id="letter-text"></p>
+      <div class="letter-actions">
+        <button type="button" class="btn" id="letter-download-png">
+          📥 PNG
+        </button>
+        <button type="button" class="btn btn--ghost" id="letter-download-txt">
+          📄 TXT
+        </button>
+      </div>
+    </div>
+
+    <!-- 5.6 Certificate -->
+    <h2 class="section-title">🏆 Certificate of Dosti</h2>
+    <div id="cert-zone"></div>
+
+    <!-- 5.7 Footer -->
+    <footer class="main-footer">
+      <button type="button" class="btn btn--icon" id="music-toggle" aria-label="Toggle music">
+        🔇
+      </button>
+      <button type="button" class="btn btn--ghost" id="restart-btn">
+        🔄 Naya Dost
+      </button>
+      <p class="mono tiny">
+        BEEJ v9 • Chain: <span id="footer-hash">GENESIS</span> • Fully Offline
+      </p>
+    </footer>
+
+  </section>
+
+</main>
+
+<!-- ============ SERVICE WORKER (offline support) ============ -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./beej-sw.js').catch(() => {
+        /* silent — file missing ho toh ignore */
+      });
+    });
+  }
+</script>
+
+<!-- ============ MAIN ENGINE ============ -->
+<script type="module" src="./birthday.js"></script>
+
+<!-- ============ NO-JS FALLBACK ============ -->
+<noscript>
+  <style>
+    .scene { display: none !important; }
+    .scene--active { display: block !important; }
+    .no-js-msg {
+      padding: 24px;
+      color: #f1f5f9;
+      background: #0a0f1e;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  <div class="no-js-msg">
+    <div>
+      <h1>🌱 PROJECT BEEJ</h1>
+      <p>Ye ek living page hai. JavaScript on karo, phir wapas aao.</p>
+    </div>
+  </div>
+</noscript>
+
+</body>
+</html>
