@@ -1,9 +1,9 @@
 /* ==========================================================================
-   RAVI RAJ SINGH — EBOOK GENERATOR v2
-   Generates a print-quality PDF of "A Boy Who Never Thought"
+   RAVI RAJ SINGH — EBOOK GENERATOR v3
+   "A Boy Who Never Thought" — Print-quality PDF with classic book design
    Companion: book.html · book.js · book.css
-   Version: 2.0
-   No wizard. No fluff. Honest content only.
+   Version: 3.0
+   24 pages · drop caps · fleurons · running headers · dotted TOC
    ========================================================================== */
 
 // ============================================================
@@ -13,6 +13,7 @@ const EBOOK_CONFIG = {
     author: 'Ravi Raj Singh',
     title: 'A Boy Who Never Thought',
     subtitle: 'Safar Se Safar Tak',
+    subtitleHindi: 'गुंजते सन्नाटे',
     birthYear: 2008,
     birthplace: 'Begusarai, Bihar',
     currentYear: new Date().getFullYear(),
@@ -35,6 +36,21 @@ const EBOOK_CONFIG = {
 };
 
 // ============================================================
+// STYLE CONSTANTS
+// ============================================================
+const S = {
+    serifHead: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+    serifBody: "'Lora', 'Georgia', 'Times New Roman', serif",
+    ink:       '#1A1A1A',
+    soft:      '#4A423C',
+    muted:     '#7A7068',
+    gold:      '#8B6F3F',
+    line:      '#E5DED2'
+};
+
+const FLEURON = '❦';
+
+// ============================================================
 // 1. PROGRESS PILL
 // ============================================================
 function showPdfProgress(percent, label) {
@@ -44,7 +60,6 @@ function showPdfProgress(percent, label) {
     const fill = document.getElementById('pdfPillFill');
 
     if (!pill) return;
-
     pill.classList.add('active');
 
     const p = Math.max(0, Math.min(100, Math.round(percent)));
@@ -71,19 +86,14 @@ window.showPdfProgress = showPdfProgress;
 window.hidePdfProgress = hidePdfProgress;
 
 // ============================================================
-// 2. TOAST (minimal — falls back to console)
+// 2. TOAST (fallback — uses console + creates its own)
 // ============================================================
 function showToast(message, type) {
-    if (typeof window.showToast === 'function' && window.showToast !== showToast) {
-        // avoid recursion
-    }
-    // Simple: use native alert-free approach — console only
     try {
         if (type === 'error') console.error('[ebook]', message);
         else console.log('[ebook]', message);
     } catch (e) {}
 
-    // Attempt to show a lightweight toast if container exists
     let toast = document.getElementById('toast');
     if (!toast) {
         toast = document.createElement('div');
@@ -211,13 +221,7 @@ class QRGenerator {
         return new Promise(function (resolve) {
             try {
                 const container = document.createElement('div');
-                container.style.cssText = [
-                    'width:' + size + 'px',
-                    'height:' + size + 'px',
-                    'position:absolute',
-                    'left:-9999px',
-                    'top:-9999px'
-                ].join(';');
+                container.style.cssText = 'width:' + size + 'px;height:' + size + 'px;position:absolute;left:-9999px;top:-9999px;';
                 document.body.appendChild(container);
 
                 new QRCode(container, {
@@ -236,7 +240,7 @@ class QRGenerator {
                     if (canvas) {
                         clearInterval(check);
                         const dataUrl = canvas.toDataURL('image/png');
-                        document.body.removeChild(container);
+                        if (container.parentNode) document.body.removeChild(container);
                         resolve(dataUrl);
                     } else if (attempts >= 12) {
                         clearInterval(check);
@@ -252,60 +256,59 @@ class QRGenerator {
 }
 
 // ============================================================
-// 6. STYLE HELPERS (for PDF page content)
+// 6. PAGE HELPERS
 // ============================================================
-const PDF_STYLES = {
-    serifHead:   "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-    serifBody:   "'Lora', 'Georgia', 'Times New Roman', serif",
-    gold:        '#8B6F3F',
-    ink:         '#1A1A1A',
-    soft:        '#4A423C',
-    muted:       '#7A7068',
-    line:        '#E5DED2'
-};
-
-function makePage() {
+function makePage(extra) {
     const div = document.createElement('div');
     div.style.cssText = [
-        'padding:60px 50px',
+        'padding:60px 55px 55px 55px',
         'background:#ffffff',
         'display:flex',
         'flex-direction:column',
         'justify-content:center',
         'min-height:100%',
         'box-sizing:border-box',
-        'font-family:' + PDF_STYLES.serifBody
-    ].join(';');
+        'position:relative',
+        'font-family:' + S.serifBody
+    ].join(';') + (extra || '');
     return div;
 }
 
-function makeHeading(text) {
-    return '<h2 style="font-family:' + PDF_STYLES.serifHead + ';' +
-        'font-size:26px;' +
-        'font-weight:700;' +
-        'color:#000000;' +
-        'letter-spacing:2px;' +
-        'text-align:center;' +
-        'margin:0 0 24px 0;">' + text + '</h2>';
+function runningHeader(leftText, rightText) {
+    return '<div style="position:absolute;top:22px;left:55px;right:55px;display:flex;justify-content:space-between;font-family:' + S.serifBody + ';font-size:9px;color:#B0AAA2;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid #F0EDE6;padding-bottom:6px;">' +
+        '<span>' + leftText + '</span>' +
+        '<span>' + rightText + '</span>' +
+    '</div>';
 }
 
-function makeGoldRule(center) {
-    return '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';' +
-        'margin:0 ' + (center ? 'auto' : '0') + ' 24px ' + (center ? 'auto' : '0') + ';"></div>';
+function goldRule(width, centered) {
+    width = width || 50;
+    const align = centered ? 'margin:0 auto 24px auto;' : 'margin:0 0 24px 0;';
+    return '<div style="width:' + width + 'px;height:1px;background:' + S.gold + ';' + align + '"></div>';
 }
 
-function makeBodyParagraph(text) {
-    return '<p style="font-family:' + PDF_STYLES.serifBody + ';' +
-        'font-size:13px;' +
+function fleuron(centered) {
+    const align = centered ? 'text-align:center;' : 'text-align:left;';
+    return '<div style="' + align + 'font-family:' + S.serifHead + ';font-size:18px;color:' + S.gold + ';letter-spacing:1em;padding-left:1em;margin:20px 0;">' + FLEURON + '</div>';
+}
+
+function para(text, opts) {
+    opts = opts || {};
+    const indent = opts.indent ? 'text-indent:1.5em;' : '';
+    const size = opts.size || '12.5px';
+    const align = opts.align || 'justify';
+    return '<p style="font-family:' + S.serifBody + ';' +
+        'font-size:' + size + ';' +
         'line-height:1.75;' +
-        'color:' + PDF_STYLES.ink + ';' +
-        'text-align:justify;' +
-        'margin:0 0 14px 0;">' + text + '</p>';
+        'color:' + S.ink + ';' +
+        'text-align:' + align + ';' +
+        indent +
+        'margin:0 0 12px 0;">' + text + '</p>';
 }
 
-function makeSignature(author) {
-    return '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px 0;"></div>' +
-        '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:15px;color:' + PDF_STYLES.gold + ';margin:0;">— ' + author + '</p>';
+function signature(author) {
+    return '<div style="width:50px;height:1px;background:' + S.gold + ';margin:24px 0;"></div>' +
+        '<p style="font-family:' + S.serifHead + ';font-size:15px;color:' + S.gold + ';margin:0;">— ' + author + '</p>';
 }
 
 // ============================================================
@@ -329,9 +332,7 @@ class EbookGenerator {
         this.cancelled = false;
         this.currentPage = 0;
 
-        const report = (percent, msg) => {
-            showPdfProgress(percent, msg || 'Generating PDF');
-        };
+        const report = function (p, m) { showPdfProgress(p, m || 'Generating PDF'); };
 
         report(0, 'Preparing…');
 
@@ -369,7 +370,7 @@ class EbookGenerator {
     }
 
     // --------------------------------------------------------
-    // getContent — clones .reading-main, picks language, unhides all chapters
+    // getContent — clone .reading-main, pick language
     // --------------------------------------------------------
     getContent(lang) {
         const wrapper = document.querySelector('.reading-main');
@@ -397,14 +398,11 @@ class EbookGenerator {
             ch.style.display = 'block';
         });
 
-        return {
-            wrapper: clone,
-            chapters: chapters
-        };
+        return { wrapper: clone, chapters: chapters };
     }
 
     // --------------------------------------------------------
-    // buildPages — sequence of 22 pages
+    // buildPages — 24 pages
     // --------------------------------------------------------
     async buildPages(content) {
         const pages = [];
@@ -414,10 +412,12 @@ class EbookGenerator {
             EBOOK_CONFIG.qr.size
         );
 
-        const add = (fn) => pages.push(fn());
+        const add = function (fn) { pages.push(fn()); };
 
-        // ---- FRONT MATTER ----
+        // FRONT MATTER (9 pages)
         add(() => this.pageCover(images.cover));
+        add(() => this.pageHalfTitle());
+        add(() => this.pageFrontispiece(images.author));
         add(() => this.pageTitle());
         add(() => this.pageCopyright());
         add(() => this.pageDedication());
@@ -425,12 +425,12 @@ class EbookGenerator {
         add(() => this.pageTOC(content.chapters));
         add(() => this.pageHowToRead());
 
-        // ---- CHAPTERS ----
+        // MAIN CONTENT (11 chapters)
         content.chapters.forEach((ch, i) => {
             add(() => this.pageChapter(ch, i));
         });
 
-        // ---- BACK MATTER ----
+        // BACK MATTER (4 pages)
         add(() => this.pageStoryBehind());
         add(() => this.pageAboutAuthor(images.author, qrDataUrl));
         add(() => this.pageColophon());
@@ -440,9 +440,8 @@ class EbookGenerator {
     }
 
     // ========================================================
-    // PAGE BUILDERS
+    // PAGE 1 — COVER
     // ========================================================
-
     pageCover(coverImage) {
         const div = document.createElement('div');
         div.style.cssText = 'padding:0;margin:0;background:#ffffff;width:100%;height:100%;display:flex;align-items:center;justify-content:center;';
@@ -450,132 +449,222 @@ class EbookGenerator {
         return div;
     }
 
+    // ========================================================
+    // PAGE 2 — HALF-TITLE
+    // ========================================================
+    pageHalfTitle() {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<div style="max-width:500px;margin:0 auto;width:100%;">' +
+                '<h1 style="font-family:' + S.serifHead + ';font-size:28px;font-weight:700;color:' + S.ink + ';letter-spacing:2px;line-height:1.3;margin:0;">' +
+                    EBOOK_CONFIG.title +
+                '</h1>' +
+            '</div>';
+        return div;
+    }
+
+    // ========================================================
+    // PAGE 3 — FRONTISPIECE
+    // ========================================================
+    pageFrontispiece(authorImage) {
+        const div = makePage();
+        div.style.textAlign = 'center';
+        div.innerHTML =
+            '<div style="max-width:400px;margin:0 auto;width:100%;">' +
+                '<div style="width:100%;max-width:320px;margin:0 auto;border:1px solid ' + S.line + ';padding:8px;background:#ffffff;">' +
+                    '<img src="' + authorImage + '" alt="' + EBOOK_CONFIG.author + '" style="width:100%;height:auto;display:block;">' +
+                '</div>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:10px;color:' + S.muted + ';letter-spacing:2px;text-transform:uppercase;margin:20px 0 0 0;">' +
+                    EBOOK_CONFIG.author +
+                '</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:10px;color:' + S.muted + ';letter-spacing:2px;text-transform:uppercase;margin:4px 0 0 0;">' +
+                    'Patna, India · ' + EBOOK_CONFIG.currentYear +
+                '</p>' +
+            '</div>';
+        return div;
+    }
+
+    // ========================================================
+    // PAGE 4 — TITLE
+    // ========================================================
     pageTitle() {
         const div = makePage();
         div.style.textAlign = 'center';
         div.innerHTML =
             '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                '<div style="width:60px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 32px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 12px 0;">A Book by</p>' +
-                '<h1 style="font-family:' + PDF_STYLES.serifHead + ';font-size:34px;font-weight:700;color:#000000;letter-spacing:1px;line-height:1.2;margin:0 0 16px 0;">' + EBOOK_CONFIG.title + '</h1>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';margin:0 0 6px 0;">' + EBOOK_CONFIG.subtitle + '</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:14px;color:' + PDF_STYLES.muted + ';margin:0 0 32px 0;">गुंजते सन्नाटे</p>' +
-                '<div style="width:60px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 24px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:20px;font-weight:600;color:#000000;letter-spacing:1px;margin:0 0 6px 0;">' + EBOOK_CONFIG.author + '</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';letter-spacing:2px;text-transform:uppercase;margin:0;">Patna, India · ' + EBOOK_CONFIG.currentYear + '</p>' +
+                '<div style="width:60px;height:1px;background:' + S.gold + ';margin:0 auto 32px auto;"></div>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + S.muted + ';margin:0 0 16px 0;">A Book by</p>' +
+                '<h1 style="font-family:' + S.serifHead + ';font-size:36px;font-weight:700;color:#000000;letter-spacing:1px;line-height:1.2;margin:0 0 20px 0;">' +
+                    EBOOK_CONFIG.title +
+                '</h1>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:15px;font-style:italic;color:' + S.soft + ';margin:0 0 6px 0;">' +
+                    EBOOK_CONFIG.subtitle +
+                '</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:13px;color:' + S.muted + ';margin:0 0 40px 0;">' +
+                    EBOOK_CONFIG.subtitleHindi +
+                '</p>' +
+                '<div style="width:60px;height:1px;background:' + S.gold + ';margin:0 auto 32px auto;"></div>' +
+                '<p style="font-family:' + S.serifHead + ';font-size:20px;font-weight:600;color:#000000;letter-spacing:1px;margin:0 0 6px 0;">' +
+                    EBOOK_CONFIG.author +
+                '</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;color:' + S.muted + ';letter-spacing:2px;text-transform:uppercase;margin:0;">' +
+                    'Patna, India · ' + EBOOK_CONFIG.currentYear +
+                '</p>' +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // PAGE 5 — COPYRIGHT
+    // ========================================================
     pageCopyright() {
         const div = makePage();
         div.innerHTML =
             '<div style="max-width:440px;margin:0 auto;width:100%;">' +
-                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:12px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 20px 0;">Copyright</p>' +
-                makeBodyParagraph('© 2024 ' + EBOOK_CONFIG.author + '. All rights reserved.') +
-                makeBodyParagraph('No part of this book may be reproduced or transmitted in any form without prior written permission from the author.') +
-                makeBodyParagraph('This book is not for sale. For personal reading only.') +
-                makeBodyParagraph('First written in 2024. Ongoing.') +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px 0;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';margin:0;">' + EBOOK_CONFIG.author + '<br>Patna, India</p>' +
+                '<p style="font-family:' + S.serifHead + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + S.muted + ';margin:0 0 20px 0;">Copyright</p>' +
+                para('© 2024 ' + EBOOK_CONFIG.author + '. All rights reserved.', { align: 'left' }) +
+                para('No part of this book may be reproduced or transmitted in any form without prior written permission from the author.', { align: 'left' }) +
+                para('This book is not for sale. For personal reading only.', { align: 'left' }) +
+                para('First written in 2024. Ongoing.', { align: 'left' }) +
+                '<div style="width:50px;height:1px;background:' + S.gold + ';margin:24px 0;"></div>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;color:' + S.muted + ';margin:0;line-height:1.8;">' +
+                    EBOOK_CONFIG.author + '<br>' +
+                    'Patna, India<br>' +
+                    'raviraj2k09@gmail.com' +
+                '</p>' +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // PAGE 6 — DEDICATION
+    // ========================================================
     pageDedication() {
         const div = makePage();
         div.style.textAlign = 'center';
         div.innerHTML =
             '<div style="max-width:480px;margin:0 auto;width:100%;">' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 6px 0;">To my parents, who gave me the courage to dream.</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 6px 0;">To my sisters, who taught me patience.</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:16px;font-style:italic;color:' + PDF_STYLES.soft + ';line-height:2;margin:0;">To the friends who stayed.</p>' +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:32px auto 16px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:15px;color:' + PDF_STYLES.gold + ';margin:0;">— ' + EBOOK_CONFIG.author + '</p>' +
+                fleuron(true) +
+                '<p style="font-family:' + S.serifBody + ';font-size:16px;font-style:italic;color:' + S.soft + ';line-height:2;margin:0 0 6px 0;">To my parents, who gave me the courage to dream.</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:16px;font-style:italic;color:' + S.soft + ';line-height:2;margin:0 0 6px 0;">To my sisters, who taught me patience.</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:16px;font-style:italic;color:' + S.soft + ';line-height:2;margin:0;">To the friends who stayed.</p>' +
+                fleuron(true) +
+                '<p style="font-family:' + S.serifHead + ';font-size:14px;color:' + S.gold + ';margin:16px 0 0 0;">— ' + EBOOK_CONFIG.author + '</p>' +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // PAGE 7 — AUTHOR'S NOTE
+    // ========================================================
     pageAuthorsNote() {
         const div = makePage();
         div.innerHTML =
-            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                makeHeading("Author's Note") +
-                makeBodyParagraph('This book is not fiction. Every name, every date, every memory is real. I wrote it for my parents, my sisters, and for the boy I used to be.') +
-                makeBodyParagraph('Some memories are painful. Some are joyful. All of them are mine.') +
-                makeBodyParagraph('I have tried to be honest. I have tried to remember things exactly as they happened — though memory, like everything, fades with time.') +
-                makeBodyParagraph('If you find yourself in these pages, know that you mattered. You still do.') +
-                makeSignature(EBOOK_CONFIG.author) +
+            runningHeader(EBOOK_CONFIG.author, "Author's Note") +
+            '<div style="max-width:520px;margin:60px auto 0;width:100%;">' +
+                '<h2 style="font-family:' + S.serifHead + ';font-size:24px;font-weight:700;color:#000000;letter-spacing:1px;text-align:center;margin:0 0 20px 0;">' +
+                    "Author's Note" +
+                '</h2>' +
+                goldRule(50, true) +
+                para('This book is not fiction. Every name, every date, every memory is real. I wrote it for my parents, my sisters, and for the boy I used to be.', { indent: true }) +
+                para('Some memories are painful. Some are joyful. All of them are mine.', { indent: true }) +
+                para('I have tried to be honest. I have tried to remember things exactly as they happened — though memory, like everything, fades with time.', { indent: true }) +
+                para('If you find yourself in these pages, know that you mattered. You still do.', { indent: true }) +
+                signature(EBOOK_CONFIG.author) +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // PAGE 8 — TABLE OF CONTENTS (dotted leaders)
+    // ========================================================
     pageTOC(chapters) {
         const div = makePage();
         let rows = '';
+        const basePageNum = 10;
 
         chapters.forEach(function (ch, i) {
-            const numEl   = ch.querySelector('.chapter-num');
             const titleEl = ch.querySelector('.chapter-title');
             const yearEl  = ch.querySelector('.chapter-year');
 
             const title = titleEl ? titleEl.textContent.trim() : 'Chapter ' + (i + 1);
             const year  = yearEl ? yearEl.textContent.trim() : '';
 
-            const label = (i === 10) ? 'Epilogue' : ('Chapter ' + (i + 1));
+            const label = (i === 10) ? 'EPILOGUE' : 'CHAPTER ' + (i + 1);
+            const pg = basePageNum + i;
 
             rows +=
-                '<div style="display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #f0f0f0;">' +
+                '<div style="display:flex;align-items:baseline;gap:12px;padding:9px 0;">' +
+                    '<div style="flex-shrink:0;font-family:' + S.serifBody + ';font-size:10px;letter-spacing:2px;text-transform:uppercase;color:' + S.gold + ';width:80px;">' + label + '</div>' +
                     '<div style="flex:1;min-width:0;">' +
-                        '<span style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:2px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin-right:10px;">' + label + '</span>' +
-                        '<span style="font-family:' + PDF_STYLES.serifBody + ';font-size:14px;color:' + PDF_STYLES.ink + ';">' + title + '</span>' +
+                        '<div style="font-family:' + S.serifBody + ';font-size:14px;color:' + S.ink + ';">' + title + '</div>' +
+                        (year ? '<div style="font-family:' + S.serifBody + ';font-size:10px;color:' + S.muted + ';font-style:italic;margin-top:1px;">' + year + '</div>' : '') +
                     '</div>' +
-                    '<div style="font-family:' + PDF_STYLES.serifBody + ';font-size:12px;color:' + PDF_STYLES.muted + ';white-space:nowrap;">' + year + '</div>' +
-                '</div>';
+                    '<div style="flex-shrink:0;font-family:' + S.serifBody + ';font-size:13px;color:' + S.soft + ';">' + pg + '</div>' +
+                '</div>' +
+                '<div style="height:1px;border-bottom:1px dotted #E0DAD0;margin:0 0 4px 0;"></div>';
         });
 
         div.innerHTML =
-            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                makeHeading('Table of Contents') +
+            runningHeader(EBOOK_CONFIG.author, 'Contents') +
+            '<div style="max-width:560px;margin:60px auto 0;width:100%;">' +
+                '<h2 style="font-family:' + S.serifHead + ';font-size:26px;font-weight:700;color:#000000;letter-spacing:2px;text-align:center;margin:0 0 8px 0;">' +
+                    'Table of Contents' +
+                '</h2>' +
+                goldRule(50, true) +
                 rows +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // PAGE 9 — HOW TO READ
+    // ========================================================
     pageHowToRead() {
         const div = makePage();
         div.innerHTML =
-            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                makeHeading('How to Read This Book') +
-                makeBodyParagraph('This is a memoir — a true story of a boy growing up in Begusarai, Bihar. It covers the years 2008 to 2019, across eleven chapters.') +
-                makeBodyParagraph('You can read it in order, or begin anywhere. Each chapter is a self-contained memory. The Hinglish edition is available alongside the English.') +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px auto 20px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-style:italic;font-size:14px;color:' + PDF_STYLES.gold + ';text-align:center;line-height:1.7;margin:0;">Begin anywhere. Read slowly.<br>This story belongs to you now.</p>' +
+            runningHeader(EBOOK_CONFIG.author, 'How to Read') +
+            '<div style="max-width:520px;margin:60px auto 0;width:100%;">' +
+                '<h2 style="font-family:' + S.serifHead + ';font-size:24px;font-weight:700;color:#000000;letter-spacing:1px;text-align:center;margin:0 0 20px 0;">' +
+                    'How to Read This Book' +
+                '</h2>' +
+                goldRule(50, true) +
+                para('This is a memoir — a true story of a boy growing up in Begusarai, Bihar. It covers the years 2008 to 2019, across eleven chapters.', { indent: true }) +
+                para('You can read it in order, or begin anywhere. Each chapter is a self-contained memory. The Hinglish edition is available alongside the English.', { indent: true }) +
+                para('The story continues. It is still being written.', { indent: true }) +
+                fleuron(true) +
+                '<p style="font-family:' + S.serifHead + ';font-style:italic;font-size:14px;color:' + S.gold + ';text-align:center;line-height:1.8;margin:20px 0 0 0;">' +
+                    'Begin anywhere. Read slowly.<br>This story belongs to you now.' +
+                '</p>' +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // CHAPTER PAGE — with drop cap + fleuron
+    // ========================================================
     pageChapter(chapterEl, index) {
         const div = document.createElement('div');
         div.style.cssText = [
-            'padding:50px 55px 60px 55px',
+            'padding:60px 55px 60px 55px',
             'background:#ffffff',
             'display:flex',
             'flex-direction:column',
             'min-height:100%',
             'box-sizing:border-box',
             'position:relative',
-            'font-family:' + PDF_STYLES.serifBody
+            'font-family:' + S.serifBody
         ].join(';');
 
         const clone = chapterEl.cloneNode(true);
 
-        // Remove navigation & UI elements not needed in PDF
+        // Remove UI elements
         clone.querySelectorAll('.chapter-nav, .menu-btn, .back-link, .lang-switch').forEach(function (el) {
             el.remove();
         });
 
-        // Extract head info
+        // Extract header info
         const numEl   = clone.querySelector('.chapter-num');
         const titleEl = clone.querySelector('.chapter-title');
         const yearEl  = clone.querySelector('.chapter-year');
@@ -584,111 +673,131 @@ class EbookGenerator {
         const titleText = titleEl ? titleEl.textContent.trim() : '';
         const yearText  = yearEl ? yearEl.textContent.trim() : '';
 
-        // Remove head + rule from body clone
         const head = clone.querySelector('.chapter-head');
         if (head) head.remove();
 
         const rule = clone.querySelector('.chapter-rule');
         if (rule) rule.remove();
 
-        // Extract body
         const bodyEl = clone.querySelector('.chapter-body') || clone;
 
-        // Force clean typography for PDF
-        bodyEl.querySelectorAll('p').forEach(function (el) {
-            el.style.color = PDF_STYLES.ink;
-            el.style.fontFamily = PDF_STYLES.serifBody;
+        // Process paragraphs
+        const paragraphs = Array.prototype.slice.call(bodyEl.querySelectorAll('p'));
+
+        paragraphs.forEach(function (el, i) {
+            el.style.color = S.ink;
+            el.style.fontFamily = S.serifBody;
             el.style.fontSize = '12.5px';
-            el.style.lineHeight = '1.7';
+            el.style.lineHeight = '1.75';
             el.style.textAlign = 'justify';
-            el.style.marginBottom = '10px';
+            el.style.marginBottom = '11px';
             el.style.letterSpacing = '0.2px';
             el.style.background = 'transparent';
+
+            // Drop cap on first paragraph only
+            if (i === 0 && el.textContent.trim().length > 0) {
+                const text = el.textContent.trim();
+                const firstChar = text.charAt(0);
+                const rest = text.slice(1);
+
+                el.innerHTML =
+                    '<span style="float:left;font-family:' + S.serifHead + ';font-size:48px;font-weight:700;color:' + S.gold + ';line-height:0.85;padding:6px 10px 0 0;margin-top:4px;">' +
+                        firstChar +
+                    '</span>' +
+                    rest;
+            }
         });
 
+        // Process strong / em
         bodyEl.querySelectorAll('strong').forEach(function (el) {
             el.style.color = '#000000';
             el.style.fontWeight = '700';
         });
-
         bodyEl.querySelectorAll('em').forEach(function (el) {
-            el.style.color = PDF_STYLES.soft;
+            el.style.color = S.soft;
             el.style.fontStyle = 'italic';
         });
 
+        // Process pull-quotes with fleurons
         bodyEl.querySelectorAll('.pull-quote').forEach(function (el) {
-            el.style.borderLeft = '3px solid ' + PDF_STYLES.gold;
-            el.style.paddingLeft = '16px';
-            el.style.margin = '16px 0';
+            el.style.border = 'none';
+            el.style.padding = '8px 0';
+            el.style.margin = '20px 0';
             el.style.background = 'transparent';
+            el.style.textAlign = 'center';
+            el.innerHTML =
+                '<div style="font-family:' + S.serifHead + ';font-size:14px;color:' + S.gold + ';letter-spacing:0.4em;margin-bottom:8px;">' + FLEURON + '</div>' +
+                el.innerHTML +
+                '<div style="font-family:' + S.serifHead + ';font-size:14px;color:' + S.gold + ';letter-spacing:0.4em;margin-top:8px;">' + FLEURON + '</div>';
+
             const p = el.querySelector('p');
             if (p) {
-                p.style.fontFamily = PDF_STYLES.serifHead;
+                p.style.fontFamily = S.serifHead;
                 p.style.fontSize = '14px';
                 p.style.fontStyle = 'italic';
-                p.style.color = PDF_STYLES.ink;
-                p.style.lineHeight = '1.5';
-                p.style.textAlign = 'left';
+                p.style.color = S.ink;
+                p.style.lineHeight = '1.6';
+                p.style.textAlign = 'center';
                 p.style.margin = '0 0 6px 0';
             }
             const f = el.querySelector('footer');
             if (f) {
-                f.style.fontFamily = PDF_STYLES.serifBody;
+                f.style.fontFamily = S.serifBody;
                 f.style.fontSize = '10px';
                 f.style.fontStyle = 'normal';
-                f.style.color = PDF_STYLES.gold;
-                f.style.letterSpacing = '1.5px';
+                f.style.color = S.gold;
+                f.style.letterSpacing = '2px';
                 f.style.textTransform = 'uppercase';
+                f.style.textAlign = 'center';
                 f.style.margin = '0';
             }
         });
 
+        // Process photos
         bodyEl.querySelectorAll('.chapter-photo').forEach(function (el) {
-            el.style.margin = '20px auto';
+            el.style.margin = '22px auto';
             el.style.textAlign = 'center';
             el.style.maxWidth = '380px';
             const img = el.querySelector('img');
             if (img) {
                 img.style.width = '100%';
                 img.style.height = 'auto';
-                img.style.borderRadius = '4px';
-                img.style.border = '1px solid #E5DED2';
+                img.style.border = '1px solid ' + S.line;
             }
             const cap = el.querySelector('figcaption');
             if (cap) {
-                cap.style.fontFamily = PDF_STYLES.serifBody;
+                cap.style.fontFamily = S.serifBody;
                 cap.style.fontSize = '10px';
-                cap.style.color = PDF_STYLES.muted;
+                cap.style.color = S.muted;
                 cap.style.letterSpacing = '1px';
                 cap.style.textTransform = 'uppercase';
-                cap.style.marginTop = '8px';
+                cap.style.marginTop = '10px';
                 cap.style.textAlign = 'center';
             }
         });
 
-        // Footnotes — convert to inline superscript-ish
+        // Footnotes
         bodyEl.querySelectorAll('.footnote').forEach(function (el) {
-            el.style.color = PDF_STYLES.gold;
+            el.style.color = S.gold;
             el.style.borderBottom = 'none';
-            el.style.cursor = 'auto';
         });
 
-        // Chapter header
+        // Header
         const displayNum = (index === 10) ? '—' : String(index + 1);
 
         const headerHTML =
-            '<div style="margin-bottom:24px;">' +
-                '<div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">' +
-                    '<div style="flex-shrink:0;width:64px;height:64px;border-radius:50%;background:#F4F1EA;display:flex;align-items:center;justify-content:center;">' +
-                        '<span style="font-family:' + PDF_STYLES.serifHead + ';font-size:30px;font-weight:700;color:#000000;line-height:1;">' + displayNum + '</span>' +
+            '<div style="margin-bottom:30px;">' +
+                '<div style="display:flex;align-items:center;gap:20px;margin-bottom:16px;">' +
+                    '<div style="flex-shrink:0;width:70px;height:70px;border-radius:50%;background:#F4F1EA;display:flex;align-items:center;justify-content:center;">' +
+                        '<span style="font-family:' + S.serifHead + ';font-size:32px;font-weight:700;color:' + S.ink + ';line-height:1;">' + displayNum + '</span>' +
                     '</div>' +
                     '<div style="flex:1;">' +
-                        '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;letter-spacing:3px;text-transform:uppercase;color:' + PDF_STYLES.muted + ';margin:0 0 4px 0;">' + numText + '</p>' +
-                        '<h2 style="font-family:' + PDF_STYLES.serifHead + ';font-size:22px;font-weight:700;color:#000000;line-height:1.25;letter-spacing:0.3px;margin:0;">' + titleText + '</h2>' +
-                        (yearText ? '<p style="font-family:' + PDF_STYLES.serifBody + ';font-style:italic;font-size:12px;color:' + PDF_STYLES.muted + ';margin:4px 0 0 0;">' + yearText + '</p>' : '') +
+                        '<p style="font-family:' + S.serifBody + ';font-size:10px;letter-spacing:3px;text-transform:uppercase;color:' + S.muted + ';margin:0 0 4px 0;">' + numText + '</p>' +
+                        '<h2 style="font-family:' + S.serifHead + ';font-size:22px;font-weight:700;color:#000000;line-height:1.25;letter-spacing:0.3px;margin:0;">' + titleText + '</h2>' +
+                        (yearText ? '<p style="font-family:' + S.serifBody + ';font-style:italic;font-size:11px;color:' + S.muted + ';margin:4px 0 0 0;">' + yearText + '</p>' : '') +
                     '</div>' +
                 '</div>' +
-                '<div style="width:100%;height:1px;background:#E5DED2;"></div>' +
+                '<div style="width:100%;height:1px;background:' + S.line + ';"></div>' +
             '</div>';
 
         const headerWrap = document.createElement('div');
@@ -698,9 +807,13 @@ class EbookGenerator {
         while (bodyEl.firstChild) bodyWrap.appendChild(bodyEl.firstChild);
 
         const pageNum = document.createElement('div');
-        pageNum.style.cssText = 'position:absolute;bottom:22px;left:0;right:0;text-align:center;font-family:' + PDF_STYLES.serifHead + ';font-size:10px;color:#B0AAA2;letter-spacing:3px;';
-        pageNum.textContent = String(index + 1);
+        pageNum.style.cssText = 'position:absolute;bottom:24px;left:0;right:0;text-align:center;font-family:' + S.serifHead + ';font-size:10px;color:#B0AAA2;letter-spacing:3px;';
+        pageNum.textContent = String(index + 10);
 
+        const header = document.createElement('div');
+        header.innerHTML = runningHeader(EBOOK_CONFIG.author, titleText);
+
+        div.appendChild(header);
         div.appendChild(headerWrap);
         div.appendChild(bodyWrap);
         div.appendChild(pageNum);
@@ -708,71 +821,90 @@ class EbookGenerator {
         return div;
     }
 
+    // ========================================================
+    // STORY BEHIND THE STORY
+    // ========================================================
     pageStoryBehind() {
         const div = makePage();
         div.innerHTML =
-            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                makeHeading('The Story Behind the Story') +
-                makeBodyParagraph("I didn't plan to write a book. I started writing — one memory at a time. One evening. One cup of chai.") +
-                makeBodyParagraph('It began as a diary. Then it became a way to understand myself.') +
-                makeBodyParagraph('I wrote about my childhood because I wanted to remember it. I wrote about my struggles because I wanted to survive them. And I wrote about my dreams because I still believe in them.') +
-                makeBodyParagraph('This book is not the end. It is the beginning of a longer conversation — with myself, and with you.') +
-                makeSignature(EBOOK_CONFIG.author) +
+            runningHeader(EBOOK_CONFIG.author, 'The Story Behind') +
+            '<div style="max-width:520px;margin:60px auto 0;width:100%;">' +
+                '<h2 style="font-family:' + S.serifHead + ';font-size:24px;font-weight:700;color:#000000;letter-spacing:1px;text-align:center;margin:0 0 20px 0;">' +
+                    'The Story Behind the Story' +
+                '</h2>' +
+                goldRule(50, true) +
+                para("I didn't plan to write a book. I started writing — one memory at a time. One evening. One cup of chai.", { indent: true }) +
+                para('It began as a diary. Then it became a way to understand myself.', { indent: true }) +
+                para('I wrote about my childhood because I wanted to remember it. I wrote about my struggles because I wanted to survive them. And I wrote about my dreams because I still believe in them.', { indent: true }) +
+                para('This book is not the end. It is the beginning of a longer conversation — with myself, and with you.', { indent: true }) +
+                signature(EBOOK_CONFIG.author) +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // ABOUT THE AUTHOR
+    // ========================================================
     pageAboutAuthor(authorImage, qrDataUrl) {
         const div = makePage();
         div.style.textAlign = 'center';
 
         const qrHTML = qrDataUrl ? (
-            '<div style="margin:20px auto 0 auto;">' +
-                '<img src="' + qrDataUrl + '" alt="QR Code" style="width:110px;height:110px;display:block;margin:0 auto;border:2px solid ' + PDF_STYLES.gold + ';border-radius:6px;padding:6px;background:#ffffff;">' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:10px;color:' + PDF_STYLES.muted + ';margin-top:8px;letter-spacing:1px;text-transform:uppercase;">Scan to visit</p>' +
+            '<div style="margin:24px auto 0 auto;">' +
+                '<img src="' + qrDataUrl + '" alt="QR Code" style="width:110px;height:110px;display:block;margin:0 auto;border:1px solid ' + S.gold + ';padding:8px;background:#ffffff;">' +
+                '<p style="font-family:' + S.serifBody + ';font-size:9px;color:' + S.muted + ';margin-top:10px;letter-spacing:2px;text-transform:uppercase;">Scan to visit</p>' +
             '</div>'
         ) : '';
 
         div.innerHTML =
-            '<div style="max-width:520px;margin:0 auto;width:100%;">' +
-                makeHeading('About the Author') +
-                '<div style="width:110px;height:110px;border-radius:50%;border:2px solid ' + PDF_STYLES.gold + ';margin:0 auto 18px;overflow:hidden;">' +
+            runningHeader(EBOOK_CONFIG.author, 'About the Author') +
+            '<div style="max-width:520px;margin:60px auto 0;width:100%;">' +
+                '<h2 style="font-family:' + S.serifHead + ';font-size:24px;font-weight:700;color:#000000;letter-spacing:1px;text-align:center;margin:0 0 20px 0;">' +
+                    'About the Author' +
+                '</h2>' +
+                goldRule(50, true) +
+                '<div style="width:120px;height:120px;border-radius:50%;border:2px solid ' + S.gold + ';margin:0 auto 20px;overflow:hidden;">' +
                     '<img src="' + authorImage + '" alt="' + EBOOK_CONFIG.author + '" style="width:100%;height:100%;object-fit:cover;">' +
                 '</div>' +
-                '<p style="font-family:' + PDF_STYLES.serifHead + ';font-size:20px;font-weight:700;color:#000000;margin:0 0 4px 0;">' + EBOOK_CONFIG.author + '</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.gold + ';letter-spacing:3px;text-transform:uppercase;margin:0 0 24px 0;">Author</p>' +
+                '<p style="font-family:' + S.serifHead + ';font-size:20px;font-weight:700;color:#000000;margin:0 0 4px 0;">' + EBOOK_CONFIG.author + '</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:10px;color:' + S.gold + ';letter-spacing:4px;text-transform:uppercase;margin:0 0 26px 0;">Author</p>' +
                 '<div style="text-align:left;">' +
-                    makeBodyParagraph('Ravi Raj Singh is a writer based in Patna, India. He has kept a personal diary since childhood, and began writing online around 2023–24.') +
-                    makeBodyParagraph('<em>"A Boy Who Never Thought"</em> is his first book. It grew out of that habit. The book is written in both English and Hinglish, and remains in progress.') +
-                    makeBodyParagraph('His writing focuses on ordinary lives, small moments, and the quiet ways a person grows.') +
+                    para('Ravi Raj Singh is a writer based in Patna, India. He has kept a personal diary since childhood, and began writing online around 2023–24.', { indent: true }) +
+                    para('<em>"A Boy Who Never Thought"</em> is his first book. It grew out of that habit. The book is written in both English and Hinglish, and remains in progress.', { indent: true }) +
+                    para('His writing focuses on ordinary lives, small moments, and the quiet ways a person grows.', { indent: true }) +
                 '</div>' +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:24px auto;"></div>' +
                 qrHTML +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // COLOPHON
+    // ========================================================
     pageColophon() {
         const div = makePage();
         div.style.textAlign = 'center';
         div.innerHTML =
             '<div style="max-width:440px;margin:0 auto;width:100%;">' +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 30px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:13px;color:' + PDF_STYLES.soft + ';line-height:2;margin:0;">Written in Patna, India</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:13px;color:' + PDF_STYLES.soft + ';line-height:2;margin:0 0 20px 0;">' + EBOOK_CONFIG.currentYear + '</p>' +
-                '<div style="width:50px;height:1px;background:' + PDF_STYLES.gold + ';margin:0 auto 20px auto;"></div>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">Set in Playfair Display &amp; Lora</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">Typeset by hand</p>' +
-                '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:' + PDF_STYLES.muted + ';line-height:1.9;margin:0;">No frameworks</p>' +
+                fleuron(true) +
+                '<p style="font-family:' + S.serifBody + ';font-size:13px;color:' + S.soft + ';line-height:2;margin:0;">Written in Patna, India</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:13px;color:' + S.soft + ';line-height:2;margin:0 0 24px 0;">' + EBOOK_CONFIG.currentYear + '</p>' +
+                fleuron(true) +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;color:' + S.muted + ';line-height:1.9;margin:0;">Set in Playfair Display &amp; Lora</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;color:' + S.muted + ';line-height:1.9;margin:0;">Typeset by hand</p>' +
+                '<p style="font-family:' + S.serifBody + ';font-size:11px;color:' + S.muted + ';line-height:1.9;margin:0;">No frameworks</p>' +
             '</div>';
         return div;
     }
 
+    // ========================================================
+    // BLANK PAGE
+    // ========================================================
     pageBlank() {
         const div = makePage();
         div.style.textAlign = 'center';
         div.innerHTML =
-            '<p style="font-family:' + PDF_STYLES.serifBody + ';font-size:11px;color:#C0BAB1;font-style:italic;letter-spacing:2px;margin:0;">This page is intentionally left blank.</p>';
+            '<p style="font-family:' + S.serifBody + ';font-size:10px;color:#C0BAB1;font-style:italic;letter-spacing:2px;margin:0;">This page is intentionally left blank.</p>';
         return div;
     }
 
@@ -906,7 +1038,7 @@ document.addEventListener('keydown', function (e) {
 });
 
 // ============================================================
-// 10. PROGRESS PILL — inject if missing
+// 10. PROGRESS PILL — auto-inject
 // ============================================================
 document.addEventListener('DOMContentLoaded', function () {
     if (!document.getElementById('pdfProgressPill')) {
@@ -941,7 +1073,6 @@ document.addEventListener('DOMContentLoaded', function () {
             '</div>';
         document.body.appendChild(pill);
 
-        // Ensure 'active' class toggles visibility
         const style = document.createElement('style');
         style.textContent = '#pdfProgressPill.active{opacity:1 !important;transform:translateY(0) !important;}';
         document.head.appendChild(style);
@@ -949,4 +1080,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ============================================================
-console.log('✅ ebook.js v2 loaded — honest content, 22 pages');
+console.log('✅ ebook.js v3 loaded — 24 pages, classic book design');
