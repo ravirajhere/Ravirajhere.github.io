@@ -1,16 +1,17 @@
 /* ============================================================
-   PROJECT BEEJ — birthday.js (v11 Phase 2)
-   + Photo Filters, Wheel, Gifts, Quiz, Wish Wall,
-     Memory Match, Fortune, Timeline
+   PROJECT BEEJ — birthday.js (v12 Phase 3)
+   + Name to Music, Time Capsule, Voice Command,
+     URL Sharing, QR Code
    ============================================================ */
 
 /* ---------- CONFIG ---------- */
 const BEEJ_CONFIG = {
   secretPassword: 'dost',
-  storageKey: 'beej_chain_v11',
-  hueKey: 'beej_hue_v11',
-  themeKey: 'beej_theme_v11',
-  wishKey: 'beej_wishes_v11',
+  storageKey: 'beej_chain_v12',
+  hueKey: 'beej_hue_v12',
+  themeKey: 'beej_theme_v12',
+  wishKey: 'beej_wishes_v12',
+  capsuleKey: 'beej_capsules_v12',
   userName: 'RaviRaj',
   maxChainLength: 50,
   balloonCount: 6,
@@ -18,6 +19,7 @@ const BEEJ_CONFIG = {
   micThreshold: 65,
   quizCount: 5,
   memoryPairs: 6,
+  capsuleDefaultDays: 365,
 };
 
 /* ---------- STATE ---------- */
@@ -41,6 +43,9 @@ const state = {
   quizIndex: 0,
   quizScore: 0,
   wheelSpinning: false,
+  voiceRecognition: null,
+  voiceListening: false,
+  nameTunePlaying: false,
 };
 
 /* ---------- HELPERS ---------- */
@@ -97,6 +102,26 @@ async function sha256(str) {
     }
     return Math.abs(hash).toString(16).padStart(16, '0');
   }
+}
+
+/* Simple XOR encryption for capsules */
+function simpleEncrypt(text, key) {
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  }
+  return btoa(result);
+}
+
+function simpleDecrypt(encoded, key) {
+  try {
+    const text = atob(encoded);
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+      result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return result;
+  } catch { return null; }
 }
 
 /* ============================================================
@@ -184,7 +209,7 @@ function fireConfetti(count = 60) {
 }
 
 /* ============================================================
-   08. THEME SWITCHER
+   08. THEMES
    ============================================================ */
 const THEMES = {
   dark:   { '--bg': '#0a0f1e', '--bg-soft': '#121a32', '--gold': '#d4af37', '--gold-soft': '#f3e6b5', '--text': '#eef2ff', '--muted': '#9aa4c7' },
@@ -236,7 +261,7 @@ function initThemeSwitcher() {
 }
 
 /* ============================================================
-   09. COMPLIMENT GENERATOR
+   09. COMPLIMENTS
    ============================================================ */
 const COMPLIMENTS = [
   "Tu sabse funny insaan hai jise main jaanta hun 😄",
@@ -398,7 +423,6 @@ function initWheel() {
   btn.addEventListener('click', () => {
     if (state.wheelSpinning) return;
     state.wheelSpinning = true;
-
     const spins = 5 + Math.floor(Math.random() * 3);
     const finalAngle = Math.random() * 360;
     const totalRotation = spins * 360 + finalAngle;
@@ -531,9 +555,8 @@ function initQuiz() {
    15. WISH WALL
    ============================================================ */
 function loadWishes() {
-  try {
-    return JSON.parse(localStorage.getItem(BEEJ_CONFIG.wishKey) || '[]');
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(BEEJ_CONFIG.wishKey) || '[]'); }
+  catch { return []; }
 }
 function saveWishes(w) {
   try { localStorage.setItem(BEEJ_CONFIG.wishKey, JSON.stringify(w)); } catch {}
@@ -551,7 +574,7 @@ function initWishWall() {
       listEl.innerHTML = '<p class="tiny mono" style="opacity:0.6;text-align:center">Abhi koi wish nahi — pehli wish tum likho!</p>';
       return;
     }
-    listEl.innerHTML = wishes.slice(-10).reverse().map((w, i) => `
+    listEl.innerHTML = wishes.slice(-10).reverse().map((w) => `
       <div class="wish-item">
         <p><strong>${escapeHtml(w.name)}</strong> — ${escapeHtml(w.text)}</p>
         <span class="tiny mono">${w.time}</span>
@@ -710,7 +733,7 @@ function initTimeline() {
   const zone = $('#timeline-zone');
   if (!zone || zone.children.length > 0) return;
 
-  zone.innerHTML = TIMELINE_DATA.map((item, i) => `
+  zone.innerHTML = TIMELINE_DATA.map((item) => `
     <div class="timeline-item">
       <div class="timeline-dot"></div>
       <div class="timeline-content">
@@ -722,7 +745,395 @@ function initTimeline() {
 }
 
 /* ============================================================
-   19. GATE
+   19. 🆕 NAME TO MUSIC
+   ============================================================ */
+function nameToNotes(name) {
+  const baseFreqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
+  const notes = [];
+  for (let i = 0; i < name.length; i++) {
+    const code = name.charCodeAt(i);
+    const freq = baseFreqs[code % baseFreqs.length];
+    notes.push(freq);
+  }
+  return notes;
+}
+
+function initNameTune() {
+  const playBtn = $('#nametune-play');
+  const stopBtn = $('#nametune-stop');
+  const visual = $('#nametune-visual');
+  if (!playBtn || !visual) return;
+
+  const name = state.friend.name || 'Dost';
+  const notes = nameToNotes(name);
+  const chars = [...name];
+
+  // Visual bars
+  visual.innerHTML = chars.map((c, i) => `
+    <div class="nametune-bar" data-freq="${notes[i]}" title="${c}">
+      <span>${c}</span>
+    </div>
+  `).join('');
+
+  playBtn.addEventListener('click', () => {
+    if (state.nameTunePlaying) return;
+    state.nameTunePlaying = true;
+
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    let time = ctx.currentTime;
+
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+
+      gain.gain.setValueAtTime(0.0001, time);
+      gain.gain.exponentialRampToValueAtTime(0.2, time + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.35);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(time);
+      osc.stop(time + 0.4);
+
+      // Visual pulse
+      const bar = visual.querySelectorAll('.nametune-bar')[i];
+      setTimeout(() => {
+        bar?.classList.add('playing');
+        vibrate(15);
+        setTimeout(() => bar?.classList.remove('playing'), 350);
+      }, i * 400);
+
+      time += 0.4;
+    });
+
+    setTimeout(() => {
+      ctx.close().catch(() => {});
+      state.nameTunePlaying = false;
+      sfxSuccess();
+      fireConfetti(20);
+    }, notes.length * 400 + 400);
+  });
+
+  stopBtn?.addEventListener('click', () => {
+    state.nameTunePlaying = false;
+    visual.querySelectorAll('.nametune-bar').forEach(b => b.classList.remove('playing'));
+  });
+}
+
+/* ============================================================
+   20. 🆕 TIME CAPSULE
+   ============================================================ */
+function loadCapsules() {
+  try { return JSON.parse(localStorage.getItem(BEEJ_CONFIG.capsuleKey) || '[]'); }
+  catch { return []; }
+}
+function saveCapsules(c) {
+  try { localStorage.setItem(BEEJ_CONFIG.capsuleKey, JSON.stringify(c)); } catch {}
+}
+
+function initTimeCapsule() {
+  const input = $('#capsule-input');
+  const dateInput = $('#capsule-date');
+  const saveBtn = $('#capsule-save');
+  const list = $('#capsule-list');
+  if (!input || !saveBtn) return;
+
+  // Default date: 1 saal baad
+  const defaultDate = new Date();
+  defaultDate.setFullYear(defaultDate.getFullYear() + 1);
+  dateInput.value = defaultDate.toISOString().split('T')[0];
+  dateInput.min = new Date().toISOString().split('T')[0];
+
+  function renderList() {
+    const capsules = loadCapsules();
+    const friendName = state.friend.name || 'Dost';
+    const mine = capsules.filter(c => c.owner === friendName);
+
+    if (mine.length === 0) {
+      list.innerHTML = '<p class="tiny mono" style="opacity:0.6;text-align:center;margin-top:12px">Koi capsule nahi — pehla banao!</p>';
+      return;
+    }
+
+    list.innerHTML = mine.map(c => {
+      const unlockDate = new Date(c.unlockDate);
+      const now = new Date();
+      const isUnlocked = now >= unlockDate;
+
+      if (isUnlocked) {
+        const decrypted = simpleDecrypt(c.encrypted, c.owner + 'beej');
+        return `
+          <div class="capsule-item unlocked">
+            <p class="tiny mono">🔓 Unlocked on ${unlockDate.toLocaleDateString('en-IN')}</p>
+            <p class="capsule-content">${escapeHtml(decrypted || '(decrypt failed)')}</p>
+          </div>
+        `;
+      } else {
+        const daysLeft = Math.ceil((unlockDate - now) / 86400000);
+        return `
+          <div class="capsule-item locked">
+            <p class="tiny mono">🔒 Unlocks in ${daysLeft} din</p>
+            <p class="tiny" style="color:var(--muted)">Message encrypted hai</p>
+          </div>
+        `;
+      }
+    }).join('');
+  }
+
+  saveBtn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) { sfxError(); vibrate([50, 30, 50]); return; }
+    if (!dateInput.value) { sfxError(); return; }
+
+    const friendName = state.friend.name || 'Dost';
+    const encrypted = simpleEncrypt(text, friendName + 'beej');
+
+    const capsules = loadCapsules();
+    capsules.push({
+      owner: friendName,
+      encrypted,
+      unlockDate: dateInput.value,
+      created: new Date().toLocaleString('en-IN'),
+    });
+    saveCapsules(capsules);
+
+    input.value = '';
+    renderList();
+    sfxSuccess();
+    vibrate([30, 50, 30]);
+    fireConfetti(30);
+  });
+
+  renderList();
+}
+
+/* ============================================================
+   21. 🆕 VOICE COMMAND
+   ============================================================ */
+function initVoiceCommand() {
+  const startBtn = $('#voice-start');
+  const stopBtn = $('#voice-stop');
+  const status = $('#voice-status');
+  const visual = $('#voice-visual');
+  if (!startBtn || !status) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    status.textContent = '❌ Browser support nahi karta';
+    startBtn.disabled = true;
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-IN';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = () => {
+    state.voiceListening = true;
+    status.textContent = '🎤 Sun raha hun... bolo "Happy Birthday"';
+    visual?.classList.add('active');
+    sfxClick();
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = Array.from(event.results)
+      .map(r => r[0].transcript.toLowerCase())
+      .join(' ');
+
+    if (transcript.includes('happy birthday') ||
+        transcript.includes('happy bday') ||
+        transcript.includes('birthday')) {
+      status.textContent = '✅ Suna! Candles bujh gaye 🎉';
+      recognition.stop();
+      triggerCakeBlow();
+    }
+  };
+
+  recognition.onerror = (e) => {
+    status.textContent = `❌ Error: ${e.error}`;
+    visual?.classList.remove('active');
+    state.voiceListening = false;
+  };
+
+  recognition.onend = () => {
+    visual?.classList.remove('active');
+    state.voiceListening = false;
+  };
+
+  startBtn.addEventListener('click', () => {
+    try {
+      recognition.start();
+      state.voiceRecognition = recognition;
+    } catch (e) {
+      status.textContent = '❌ Start nahi ho paya';
+    }
+  });
+
+  stopBtn?.addEventListener('click', () => {
+    try { recognition.stop(); } catch {}
+    status.textContent = 'Mic band hai';
+    visual?.classList.remove('active');
+  });
+}
+
+function triggerCakeBlow() {
+  const candles = $('#candles');
+  const micBtn = $('#mic-enable');
+  if (candles && !candles.classList.contains('blown')) {
+    candles.classList.add('blown');
+    candles.textContent = '💨 💨 💨';
+    if (micBtn) micBtn.textContent = '🎉 Wish poori ho!';
+  }
+  fireConfetti(100);
+  vibrate([50, 100, 50, 100, 50]);
+  sfxSuccess();
+}
+
+/* ============================================================
+   22. 🆕 URL SHARING
+   ============================================================ */
+function initUrlSharing() {
+  const generateBtn = $('#share-generate');
+  const copyBtn = $('#share-copy');
+  const whatsappBtn = $('#share-whatsapp');
+  const linkInput = $('#share-link');
+  if (!generateBtn || !linkInput) return;
+
+  function generateLink() {
+    const data = {
+      n: state.friend.name,
+      g: state.friend.gender,
+      h: state.friend.hash,
+      c: state.chain.length,
+      hue: state.friend.hue,
+      t: Date.now(),
+    };
+    const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+    const url = `${window.location.origin}${window.location.pathname}?data=${encoded}`;
+    linkInput.value = url;
+    return url;
+  }
+
+  generateBtn.addEventListener('click', () => {
+    generateLink();
+    sfxClick();
+    vibrate(30);
+    fireConfetti(15);
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!linkInput.value) generateLink();
+    try {
+      await navigator.clipboard.writeText(linkInput.value);
+      copyBtn.textContent = '✅ Copied!';
+      sfxSuccess();
+      vibrate([30, 50, 30]);
+      setTimeout(() => copyBtn.textContent = '📋 Copy', 2000);
+    } catch {
+      linkInput.select();
+      document.execCommand('copy');
+    }
+  });
+
+  whatsappBtn?.addEventListener('click', () => {
+    if (!linkInput.value) generateLink();
+    const text = `🎂 Ye tera birthday page hai! Kholo: ${linkInput.value}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    sfxClick();
+  });
+
+  // Auto-load from URL if data present
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('data')) {
+    try {
+      const decoded = JSON.parse(decodeURIComponent(atob(params.get('data'))));
+      if (decoded.n) {
+        setTimeout(() => {
+          const banner = document.createElement('div');
+          banner.className = 'shared-banner';
+          banner.innerHTML = `
+            <p>👋 <strong>${escapeHtml(decoded.n)}</strong> ne ye page share kiya!</p>
+            <p class="tiny mono">Chain: ${decoded.c || 0} blocks</p>
+          `;
+          document.body.appendChild(banner);
+          setTimeout(() => banner.classList.add('show'), 100);
+        }, 500);
+      }
+    } catch {}
+  }
+}
+
+/* ============================================================
+   23. 🆕 QR CODE
+   ============================================================ */
+function initQRCode() {
+  const qrZone = $('#qr-code');
+  const downloadBtn = $('#qr-download');
+  if (!qrZone) return;
+
+  // Simple QR-like pattern from hash (real QR needs library)
+  const hash = state.friend.hash || 'GENESIS0000';
+  const size = 21;
+  const scale = 8;
+  const canvas = document.createElement('canvas');
+  canvas.width = size * scale;
+  canvas.height = size * scale;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0a0f1e';
+
+  // Finder patterns (3 corners)
+  const drawFinder = (x, y) => {
+    for (let i = 0; i < 7; i++) {
+      for (let j = 0; j < 7; j++) {
+        const isBorder = i === 0 || i === 6 || j === 0 || j === 6;
+        const isCenter = i >= 2 && i <= 4 && j >= 2 && j <= 4;
+        if (isBorder || isCenter) {
+          ctx.fillRect((x + i) * scale, (y + j) * scale, scale, scale);
+        }
+      }
+    }
+  };
+  drawFinder(0, 0);
+  drawFinder(size - 7, 0);
+  drawFinder(0, size - 7);
+
+  // Data pattern from hash
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      if ((i < 8 && j < 8) || (i >= size - 8 && j < 8) || (i < 8 && j >= size - 8)) continue;
+      const charIdx = (i * size + j) % hash.length;
+      const charCode = hash.charCodeAt(charIdx);
+      if ((charCode + i + j) % 2 === 0) {
+        ctx.fillRect(i * scale, j * scale, scale, scale);
+      }
+    }
+  }
+
+  qrZone.innerHTML = '';
+  qrZone.appendChild(canvas);
+
+  downloadBtn?.addEventListener('click', () => {
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `QR-${state.friend.name || 'Dost'}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    sfxClick();
+    vibrate(30);
+  });
+}
+
+/* ============================================================
+   24. GATE
    ============================================================ */
 function initGate() {
   loadChain();
@@ -756,7 +1167,7 @@ function initGate() {
 }
 
 /* ============================================================
-   20. SOUL ID
+   25. SOUL ID
    ============================================================ */
 function initSoulId() {
   const nameInput = $('#friend-name');
@@ -832,7 +1243,7 @@ function computeHue(name) {
 }
 
 /* ============================================================
-   21. BOOTH
+   26. BOOTH
    ============================================================ */
 function initBooth() {
   const startBtn = $('#booth-start');
@@ -904,7 +1315,7 @@ function initBooth() {
 }
 
 /* ============================================================
-   22. HACK TERMINAL
+   27. HACK TERMINAL
    ============================================================ */
 async function startHackSequence(name) {
   showScene('#scene-hack');
@@ -917,12 +1328,13 @@ async function startHackSequence(name) {
   terminal.innerHTML = '';
   const hash = await sha256(`${name}-${Date.now()}`);
   const lines = [
-    `> Initializing Beej Protocol v11...`,
+    `> Initializing Beej Protocol v12...`,
     `> Fetching memories of ${name}...`,
     `> Decoding Dosti Chain [${state.chain.length} blocks]`,
     `> Hue: ${state.friend.hue}° assigned`,
-    `> Loading 15 features...`,
-    `> Voice + Confetti ready`,
+    `> Loading 20+ features...`,
+    `> Voice + Confetti + Music ready`,
+    `> Capsule + QR + Share ready`,
     `> SHA256: ${hash}`,
     `> Done. Welcome. 🌱`,
   ];
@@ -946,7 +1358,7 @@ async function startHackSequence(name) {
 }
 
 /* ============================================================
-   23. MAIN LAUNCH
+   28. MAIN
    ============================================================ */
 function launchMain() {
   showScene('#scene-main');
@@ -983,6 +1395,13 @@ function launchMain() {
   initMemoryMatch();
   initFortune();
   initTimeline();
+
+  // Phase 3
+  initNameTune();
+  initTimeCapsule();
+  initVoiceCommand();
+  initUrlSharing();
+  initQRCode();
 
   // Welcome
   speakWish(name, gender);
@@ -1045,7 +1464,7 @@ function escapeHtml(str) {
 }
 
 /* ============================================================
-   24. BALLOON GAME
+   29. BALLOON
    ============================================================ */
 function initBalloons() {
   const zone = $('#balloon-zone');
@@ -1080,7 +1499,7 @@ function initBalloons() {
 }
 
 /* ============================================================
-   25. CAKE
+   30. CAKE
    ============================================================ */
 function initCake() {
   const micBtn = $('#mic-enable');
@@ -1141,7 +1560,7 @@ function cleanupMic() {
 }
 
 /* ============================================================
-   26. CERTIFICATE
+   31. CERTIFICATE
    ============================================================ */
 function renderCertificate() {
   const zone = $('#cert-zone');
@@ -1225,7 +1644,7 @@ function downloadCertificateAsPNG() {
 }
 
 /* ============================================================
-   27. LETTER DOWNLOADS
+   32. LETTER DOWNLOADS
    ============================================================ */
 function initLetterDownloads() {
   $('#letter-download-png')?.addEventListener('click', () => {
@@ -1319,7 +1738,7 @@ function wrapText(ctx, text, maxWidth) {
 }
 
 /* ============================================================
-   28. MUSIC
+   33. MUSIC
    ============================================================ */
 function initMusic() {
   const btn = $('#music-toggle');
@@ -1367,7 +1786,7 @@ function stopMusic() {
 }
 
 /* ============================================================
-   29. RESTART
+   34. RESTART
    ============================================================ */
 function initRestart() {
   const btn = $('#restart-btn');
@@ -1400,6 +1819,9 @@ function initRestart() {
     cleanupMic();
     stopMusic();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (state.voiceRecognition) {
+      try { state.voiceRecognition.stop(); } catch {}
+    }
 
     sfxWhoosh();
     showScene('#scene-gate');
@@ -1407,7 +1829,7 @@ function initRestart() {
 }
 
 /* ============================================================
-   30. RESTORE HUE
+   35. RESTORE HUE
    ============================================================ */
 function restoreHue() {
   const saved = localStorage.getItem(BEEJ_CONFIG.hueKey);
@@ -1415,7 +1837,7 @@ function restoreHue() {
 }
 
 /* ============================================================
-   31. BOOT
+   36. BOOT
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   restoreHue();
