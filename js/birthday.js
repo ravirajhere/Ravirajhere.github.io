@@ -1,21 +1,18 @@
 /* ============================================================
-   PROJECT BEEJ — birthday.js (v15 Journey + Language + Photo)
-   Pure Frontend • No Backend • GitHub Pages Ready
+   PROJECT BEEJ — birthday.js (v16 Final)
+   Language + Journey + Photo + All Features
    ============================================================ */
 
-/* ============================================================
-   CONFIG
-   ============================================================ */
+/* ---------- CONFIG ---------- */
 const BEEJ_CONFIG = {
   secretPassword: 'dost',
-  storageKey: 'beej_chain_v15',
-  hueKey: 'beej_hue_v15',
-  themeKey: 'beej_theme_v15',
-  wishKey: 'beej_wishes_v15',
-  capsuleKey: 'beej_capsules_v15',
-  langKey: 'beej_lang_v15',
-  stepKey: 'beej_step_v15',
-  photoKey: 'beej_photo_v15',
+  storageKey: 'beej_chain_v16',
+  hueKey: 'beej_hue_v16',
+  themeKey: 'beej_theme_v16',
+  wishKey: 'beej_wishes_v16',
+  capsuleKey: 'beej_capsules_v16',
+  langKey: 'beej_lang_v16',
+  stepKey: 'beej_step_v16',
   userName: 'RaviRaj',
   casualPhoto: './assets/images/casual.jpg',
   maxChainLength: 50,
@@ -24,13 +21,10 @@ const BEEJ_CONFIG = {
   micThreshold: 65,
   quizCount: 5,
   memoryPairs: 6,
-  capsuleDefaultDays: 365,
   totalChapters: 9,
 };
 
-/* ============================================================
-   STATE
-   ============================================================ */
+/* ---------- STATE ---------- */
 const state = {
   lang: 'hinglish',
   chain: [],
@@ -56,24 +50,25 @@ const state = {
   voiceListening: false,
   nameTunePlaying: false,
   currentStep: 1,
-  casualImageLoaded: false,
   photoStream: null,
   capturedPhoto: null,
 };
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
+/* ---------- HELPERS ---------- */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 /* ============================================================
-   TRANSLATIONS — English + Hinglish
+   TRANSLATIONS
    ============================================================ */
 const I18N = {
   english: {
+    'lang.title': '🌐 Choose Language',
     'lang.subtitle': 'Choose your language',
-    'lang.hint': 'You can change later',
+    'lang.hint': 'You can change later from footer',
+    'lang.descEn': 'Formal • Elegant',
+    'lang.descHi': 'Dost-friendly • Fun',
+    'lang.changeTitle': '🌐 Change Language',
     'gate.title': 'Secret Gate',
     'gate.blocks': 'blocks mined',
     'gate.proof': 'Proof-of-Dosti',
@@ -161,12 +156,14 @@ const I18N = {
     'nav.back': 'Back',
     'nav.next': 'Next',
     'error.wrongPass': '❌ Wrong password, think again!',
-    'error.nameTooShort': '❌ Name too short',
-    'error.genderMissing': '❌ Select gender',
   },
   hinglish: {
+    'lang.title': '🌐 Bhasha Chuno',
     'lang.subtitle': 'Apni bhasha chuno',
-    'lang.hint': 'Baad me change kar sakte ho',
+    'lang.hint': 'Baad me footer se change kar sakte ho',
+    'lang.descEn': 'Formal • Elegant',
+    'lang.descHi': 'Dost-friendly • Fun',
+    'lang.changeTitle': '🌐 Bhasha Badlo',
     'gate.title': 'Secret Gate',
     'gate.blocks': 'blocks mined',
     'gate.proof': 'Proof-of-Dosti',
@@ -254,8 +251,6 @@ const I18N = {
     'nav.back': 'Peeche',
     'nav.next': 'Aage',
     'error.wrongPass': '❌ Galat password, dobara soch!',
-    'error.nameTooShort': '❌ Naam chhota hai',
-    'error.genderMissing': '❌ Gender select karo',
   }
 };
 
@@ -269,19 +264,16 @@ function applyLanguage(lang) {
   document.body.setAttribute('data-lang', lang);
   document.documentElement.lang = lang === 'english' ? 'en' : 'hi';
 
-  // Update all data-i18n elements
   $$('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
 
-  // Update placeholders
   $$('[data-i18n-placeholder]').forEach((el) => {
     const key = el.getAttribute('data-i18n-placeholder');
     el.placeholder = t(key);
   });
 
-  // Update lang buttons
   $$('.lang-btn').forEach((btn) => {
     btn.setAttribute('aria-pressed', btn.dataset.lang === lang ? 'true' : 'false');
   });
@@ -359,7 +351,7 @@ function simpleDecrypt(encoded, key) {
 }
 
 /* ============================================================
-   VOICE WISH (TTS)
+   VOICE WISH
    ============================================================ */
 function speakWish(name, gender) {
   if (!('speechSynthesis' in window)) return;
@@ -565,9 +557,7 @@ function updateChapterHeader() {
   const fill = $('#journey-progress-fill');
 
   if (label) {
-    label.textContent = state.lang === 'english'
-      ? `Chapter ${state.currentStep} / ${BEEJ_CONFIG.totalChapters}`
-      : `Chapter ${state.currentStep} / ${BEEJ_CONFIG.totalChapters}`;
+    label.textContent = `Chapter ${state.currentStep} / ${BEEJ_CONFIG.totalChapters}`;
   }
   if (title) {
     const name = state.lang === 'english' ? chapter.en : chapter.hi;
@@ -577,34 +567,28 @@ function updateChapterHeader() {
   if (fill) fill.style.width = percent + '%';
   if (progress) progress.setAttribute('aria-valuenow', percent);
 
-  // Update nav buttons
   const backBtn = $('#nav-back');
   const nextBtn = $('#nav-next');
-  if (backBtn) backBtn.disabled = state.currentStep <= 1;
+  if (backBtn) {
+    backBtn.disabled = state.currentStep <= 1;
+    backBtn.innerHTML = `← <span data-i18n="nav.back">${t('nav.back')}</span>`;
+  }
   if (nextBtn) {
     nextBtn.disabled = state.currentStep >= BEEJ_CONFIG.totalChapters;
-    nextBtn.textContent = state.currentStep >= BEEJ_CONFIG.totalChapters
-      ? (state.lang === 'english' ? '🎉 Done' : '🎉 Poora Hua')
-      : t('nav.next') + ' →';
-    // Add arrow to text node
-    nextBtn.innerHTML = state.currentStep >= BEEJ_CONFIG.totalChapters
-      ? (state.lang === 'english' ? '🎉 Done' : '🎉 Poora Hua')
-      : `<span data-i18n="nav.next">${t('nav.next')}</span> →`;
-  }
-  if (backBtn) {
-    backBtn.innerHTML = `← <span data-i18n="nav.back">${t('nav.back')}</span>`;
+    if (state.currentStep >= BEEJ_CONFIG.totalChapters) {
+      nextBtn.innerHTML = state.lang === 'english' ? '🎉 Done' : '🎉 Poora Hua';
+    } else {
+      nextBtn.innerHTML = `<span data-i18n="nav.next">${t('nav.next')}</span> →`;
+    }
   }
 }
 
 function showStep(stepNum) {
-  const steps = $$('.step');
   const currentStepEl = document.querySelector(`.step[data-step="${state.currentStep}"]`);
   const nextStepEl = document.querySelector(`.step[data-step="${stepNum}"]`);
 
-  if (!nextStepEl) return;
-  if (stepNum === state.currentStep) return;
+  if (!nextStepEl || stepNum === state.currentStep) return;
 
-  // Exit animation on current
   if (currentStepEl) {
     currentStepEl.classList.add('step--exiting');
     setTimeout(() => {
@@ -612,16 +596,12 @@ function showStep(stepNum) {
       currentStepEl.hidden = true;
       currentStepEl.classList.remove('step--active');
 
-      // Enter animation on next
       nextStepEl.hidden = false;
       nextStepEl.classList.add('step--active');
       state.currentStep = stepNum;
       localStorage.setItem(BEEJ_CONFIG.stepKey, stepNum);
       updateChapterHeader();
-
-      // Init step-specific content
       onStepEnter(stepNum);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 350);
   } else {
@@ -649,79 +629,111 @@ function prevStep() {
 }
 
 function onStepEnter(stepNum) {
-  // Lazy init per step
   switch (stepNum) {
-    case 1:
-      // Welcome - already done in launchMain
-      break;
-    case 2:
-      renderChain();
-      renderCertificate();
-      break;
-    case 3:
-      initPhotoFrame();
-      break;
-    case 4:
-      initBalloons();
-      initMemoryMatch();
-      initQuiz();
-      break;
-    case 5:
-      // Letter already written
-      initWishWall();
-      initTimeline();
-      break;
-    case 6:
-      initCake();
-      initFortune();
-      break;
-    case 7:
-      initWheel();
-      initGiftBoxes();
-      initCompliment();
-      break;
-    case 8:
-      initNameTune();
-      initTimeCapsule();
-      initCountdown();
-      break;
-    case 9:
-      initVoiceCommand();
-      initUrlSharing();
-      initQRCode();
-      initThemeSwitcher();
-      break;
+    case 1: break;
+    case 2: renderChain(); renderCertificate(); break;
+    case 3: initPhotoFrame(); break;
+    case 4: initBalloons(); initMemoryMatch(); initQuiz(); break;
+    case 5: initWishWall(); initTimeline(); break;
+    case 6: initCake(); initFortune(); break;
+    case 7: initWheel(); initGiftBoxes(); initCompliment(); break;
+    case 8: initNameTune(); initTimeCapsule(); initCountdown(); break;
+    case 9: initVoiceCommand(); initUrlSharing(); initQRCode(); initThemeSwitcher(); initLangChange(); break;
   }
 }
 
 /* ============================================================
-   00. LANGUAGE SELECT
+   00. LANGUAGE SELECT — ALWAYS SHOWS
    ============================================================ */
 function initLanguageSelect() {
   const langBtns = $$('.lang-btn');
 
+  // Apply saved language (for translations) but ALWAYS show screen
   const saved = localStorage.getItem(BEEJ_CONFIG.langKey);
   if (saved) {
+    state.lang = saved;
     applyLanguage(saved);
-    showScene('#scene-gate');
-    return;
+  } else {
+    applyLanguage('hinglish');
   }
 
+  // Always show language screen
+  showScene('#scene-language');
+
+  // Mark active button
   langBtns.forEach((btn) => {
+    btn.setAttribute('aria-pressed', btn.dataset.lang === state.lang ? 'true' : 'false');
+  });
+
+  // Click handlers
+  langBtns.forEach((btn) => {
+    // Remove old handlers by cloning
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+  });
+
+  // Re-query after cloning
+  const freshBtns = $$('.lang-btn');
+  freshBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const lang = btn.dataset.lang;
       applyLanguage(lang);
       sfxClick();
       vibrate(30);
 
-      // Visual feedback
-      langBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      freshBtns.forEach(b => b.setAttribute('aria-pressed', 'false'));
       btn.setAttribute('aria-pressed', 'true');
 
       setTimeout(() => {
         fireConfetti(20);
         showScene('#scene-gate');
       }, 400);
+    });
+  });
+}
+
+/* ============================================================
+   LANGUAGE CHANGE (Footer)
+   ============================================================ */
+function initLangChange() {
+  const container = $('#lang-change-container');
+  if (!container || container.querySelector('.language-grid')) return;
+
+  const saved = localStorage.getItem(BEEJ_CONFIG.langKey) || 'hinglish';
+
+  container.innerHTML = `
+    <div class="language-grid">
+      <button type="button" class="lang-btn" data-lang="english" aria-pressed="${saved === 'english'}">
+        <span class="lang-flag">🇬🇧</span>
+        <span class="lang-name">English</span>
+      </button>
+      <button type="button" class="lang-btn" data-lang="hinglish" aria-pressed="${saved === 'hinglish'}">
+        <span class="lang-flag">🇮🇳</span>
+        <span class="lang-name">Hinglish</span>
+      </button>
+    </div>
+  `;
+
+  container.querySelectorAll('.lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      if (lang === state.lang) return;
+
+      applyLanguage(lang);
+      sfxSuccess();
+      vibrate([30, 50, 30]);
+      fireConfetti(15);
+
+      container.querySelectorAll('.lang-btn').forEach(b => {
+        b.setAttribute('aria-pressed', b.dataset.lang === lang ? 'true' : 'false');
+      });
+
+      // Refresh dynamic content
+      updateChapterHeader();
+      renderChain();
+      renderCertificate();
+      initTimeline();
+      initGiftBoxes();
     });
   });
 }
@@ -738,7 +750,8 @@ function initGate() {
   const input = $('#gate-pass');
   const errorEl = $('#gate-error');
   const box = $('#gate-box');
-  if (!form) return;
+  if (!form || form.dataset.init === 'true') return;
+  form.dataset.init = 'true';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -769,7 +782,8 @@ function initSoulId() {
   const nextBtn = $('#id-next');
   const freqEl = $('#freq-preview');
   const errorEl = $('#id-error');
-  if (!nameInput) return;
+  if (!nameInput || nameInput.dataset.init === 'true') return;
+  nameInput.dataset.init = 'true';
 
   nameInput.addEventListener('input', () => {
     const name = nameInput.value.trim();
@@ -844,7 +858,8 @@ function initBooth() {
   const skipBtn = $('#booth-skip');
   const video = $('#video');
   const status = $('#smile-status');
-  if (!startBtn || !video) return;
+  if (!startBtn || !video || startBtn.dataset.init === 'true') return;
+  startBtn.dataset.init = 'true';
 
   let stream = null;
 
@@ -875,9 +890,7 @@ function initBooth() {
 
   function capturePhoto() {
     if (state.photoStripCount >= BEEJ_CONFIG.photoCount) {
-      status.textContent = state.lang === 'english'
-        ? '✅ Booth complete!'
-        : '✅ Booth complete!';
+      status.textContent = '✅ Booth complete!';
       if (stream) stream.getTracks().forEach((t) => t.stop());
       setTimeout(() => showScene('#scene-hack'), 500);
       return;
@@ -899,9 +912,7 @@ function initBooth() {
     strip.appendChild(img);
 
     state.photoStripCount++;
-    status.textContent = state.lang === 'english'
-      ? `📸 ${state.photoStripCount}/${BEEJ_CONFIG.photoCount} photos!`
-      : `📸 ${state.photoStripCount}/${BEEJ_CONFIG.photoCount} photos!`;
+    status.textContent = `📸 ${state.photoStripCount}/${BEEJ_CONFIG.photoCount} photos!`;
     sfxClick(); vibrate(40); fireConfetti(15);
 
     if (state.photoStripCount >= BEEJ_CONFIG.photoCount) {
@@ -929,22 +940,22 @@ async function startHackSequence(name) {
   const hash = await sha256(`${name}-${Date.now()}`);
   const lines = state.lang === 'english'
     ? [
-        `> Initializing Beej Protocol v15...`,
+        `> Initializing Beej Protocol v16...`,
         `> Fetching memories of ${name}...`,
         `> Decoding Dosti Chain [${state.chain.length} blocks]`,
         `> Hue: ${state.friend.hue}° assigned`,
-        `> Loading 20+ features...`,
+        `> Loading features...`,
         `> Voice + Confetti + Music ready`,
         `> Photo Frame ready`,
         `> SHA256: ${hash}`,
         `> Done. Welcome. 🌱`,
       ]
     : [
-        `> Beej Protocol v15 start ho raha hai...`,
+        `> Beej Protocol v16 start ho raha hai...`,
         `> ${name} ki yaadein aa rahi hain...`,
         `> Dosti Chain decode [${state.chain.length} blocks]`,
         `> Hue: ${state.friend.hue}° assign hua`,
-        `> 20+ features load ho rahe hain...`,
+        `> Features load ho rahe hain...`,
         `> Voice + Confetti + Music ready`,
         `> Photo Frame ready`,
         `> SHA256: ${hash}`,
@@ -977,10 +988,7 @@ function launchMain() {
 
   const { name, gender, hash } = state.friend;
 
-  // Step 1 — Wish
-  $('#wish-title').textContent = state.lang === 'english'
-    ? `Happy Birthday, ${name} 🎂`
-    : `Happy Birthday, ${name} 🎂`;
+  $('#wish-title').textContent = `Happy Birthday, ${name} 🎂`;
 
   const letterText = buildLetter(name, gender);
   typeWriter('#letter-text', letterText, 40);
@@ -989,34 +997,13 @@ function launchMain() {
   const footerHash = $('#footer-hash');
   if (footerHash) footerHash.textContent = hash;
 
-  // Init all features
-  initBalloons();
-  initCake();
-  renderChain();
-  renderCertificate();
-  initLetterDownloads();
+  // Init all features (once)
   initMusic();
   initRestart();
-  initWishWall();
-  initTimeline();
-  initMemoryMatch();
-  initQuiz();
-  initWheel();
-  initGiftBoxes();
-  initCompliment();
-  initFortune();
-  initNameTune();
-  initTimeCapsule();
-  initCountdown();
-  initVoiceCommand();
-  initUrlSharing();
-  initQRCode();
-  initThemeSwitcher();
+  initLetterDownloads();
 
-  // Restore step
-  const savedStep = parseInt(localStorage.getItem(BEEJ_CONFIG.stepKey) || '1');
+  // Reset steps to 1
   state.currentStep = 1;
-  // Always start at step 1 for full experience
   const steps = $$('.step');
   steps.forEach((s, i) => {
     if (i === 0) {
@@ -1029,9 +1016,20 @@ function launchMain() {
   });
   updateChapterHeader();
 
-  // Nav buttons
-  $('#nav-back')?.addEventListener('click', prevStep);
-  $('#nav-next')?.addEventListener('click', nextStep);
+  // Nav buttons (once)
+  const backBtn = $('#nav-back');
+  const nextBtn = $('#nav-next');
+  if (backBtn && backBtn.dataset.init !== 'true') {
+    backBtn.dataset.init = 'true';
+    backBtn.addEventListener('click', prevStep);
+  }
+  if (nextBtn && nextBtn.dataset.init !== 'true') {
+    nextBtn.dataset.init = 'true';
+    nextBtn.addEventListener('click', nextStep);
+  }
+
+  // Init step 1 content
+  onStepEnter(1);
 
   // Welcome
   speakWish(name, gender);
@@ -1115,7 +1113,7 @@ function escapeHtml(str) {
 }
 
 /* ============================================================
-   PHOTO WITH RAVIRAJ — Chapter 3
+   PHOTO WITH RAVIRAJ
    ============================================================ */
 function initPhotoFrame() {
   const startBtn = $('#photoframe-start');
@@ -1123,16 +1121,12 @@ function initPhotoFrame() {
   const retakeBtn = $('#photoframe-retake');
   const video = $('#photoframe-video');
   const canvas = $('#photoframe-canvas');
-  const composite = $('#photoframe-composite');
   const preview = $('#photoframe-preview');
   const webcamDiv = $('#photoframe-webcam');
   const status = $('#photoframe-status');
   const downloads = $('#photoframe-downloads');
 
-  if (!startBtn || !video) return;
-
-  // Avoid re-init
-  if (startBtn.dataset.init === 'true') return;
+  if (!startBtn || !video || startBtn.dataset.init === 'true') return;
   startBtn.dataset.init = 'true';
 
   startBtn.addEventListener('click', async () => {
@@ -1162,7 +1156,6 @@ function initPhotoFrame() {
   clickBtn?.addEventListener('click', async () => {
     if (!video.videoWidth) return;
 
-    // Capture photo
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
@@ -1172,10 +1165,8 @@ function initPhotoFrame() {
 
     state.capturedPhoto = canvas.toDataURL('image/jpeg', 0.85);
 
-    // Build composite
     await buildComposite(state.capturedPhoto);
 
-    // Show preview
     webcamDiv.hidden = true;
     preview.hidden = false;
     clickBtn.hidden = true;
@@ -1186,7 +1177,6 @@ function initPhotoFrame() {
       ? '✨ Beautiful! Download or share.'
       : '✨ Kya baat! Download ya share karo.';
 
-    // Stop camera
     if (state.photoStream) {
       state.photoStream.getTracks().forEach((t) => t.stop());
       state.photoStream = null;
@@ -1207,16 +1197,9 @@ function initPhotoFrame() {
     sfxClick();
   });
 
-  // Downloads
-  $('#photoframe-download-png')?.addEventListener('click', () => {
-    downloadPhoto('png');
-  });
-  $('#photoframe-download-jpg')?.addEventListener('click', () => {
-    downloadPhoto('jpeg');
-  });
-  $('#photoframe-share')?.addEventListener('click', () => {
-    sharePhotoWhatsApp();
-  });
+  $('#photoframe-download-png')?.addEventListener('click', () => downloadPhoto('png'));
+  $('#photoframe-download-jpg')?.addEventListener('click', () => downloadPhoto('jpeg'));
+  $('#photoframe-share')?.addEventListener('click', () => sharePhotoWhatsApp());
 }
 
 async function buildComposite(friendPhotoDataUrl) {
@@ -1229,35 +1212,29 @@ async function buildComposite(friendPhotoDataUrl) {
   composite.height = H;
   const ctx = composite.getContext('2d');
 
-  // Background (warm cream)
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0, '#fdf6e3');
   grad.addColorStop(1, '#f3e6b5');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // Load both images
   const casualImg = await loadImage(BEEJ_CONFIG.casualPhoto).catch(() => null);
   const friendImg = await loadImage(friendPhotoDataUrl);
 
-  // Photo area dimensions (2 polaroids side by side)
   const photoW = 340;
   const photoH = 340;
   const gap = 40;
   const startX = (W - (photoW * 2 + gap)) / 2;
   const startY = 160;
 
-  // Polaroid style for each photo
   drawPolaroid(ctx, casualImg, startX, startY, photoW, photoH, 'RaviRaj');
   drawPolaroid(ctx, friendImg, startX + photoW + gap, startY, photoW, photoH, state.friend.name || 'Dost');
 
-  // Title text
   ctx.fillStyle = '#0a0f1e';
   ctx.textAlign = 'center';
   ctx.font = 'bold 54px Georgia, serif';
   ctx.fillText('Happy Birthday!', W / 2, 100);
 
-  // Names + date
   ctx.fillStyle = '#8a6a1f';
   ctx.font = 'italic 32px Georgia, serif';
   ctx.fillText(`${BEEJ_CONFIG.userName} & ${state.friend.name || 'Dost'}`, W / 2, 600);
@@ -1265,57 +1242,45 @@ async function buildComposite(friendPhotoDataUrl) {
   ctx.font = '24px Georgia, serif';
   ctx.fillStyle = '#1e293b';
   const dateStr = new Date().toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    day: 'numeric', month: 'long', year: 'numeric',
   });
   ctx.fillText(dateStr, W / 2, 650);
 
-  // Bottom message
   ctx.font = 'italic 26px Georgia, serif';
   ctx.fillStyle = '#5a4a1a';
   ctx.fillText('Best Friends Forever 💛', W / 2, 720);
 
-  // Heart divider
   ctx.font = '60px serif';
   ctx.fillText('💛', W / 2, 800);
 
-  // Footer
   ctx.font = '18px monospace';
   ctx.fillStyle = '#666';
   ctx.fillText(`PROJECT BEEJ • SHA: ${state.friend.hash}`, W / 2, H - 40);
 
-  // Show/hide canvas
   composite.style.display = 'block';
 }
 
 function drawPolaroid(ctx, img, x, y, w, h, caption) {
-  // White polaroid frame
   const padX = 20;
   const padTop = 20;
   const padBottom = 80;
 
   ctx.save();
 
-  // Shadow
   ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
   ctx.shadowBlur = 20;
   ctx.shadowOffsetY = 8;
 
-  // White frame
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(x, y, w + padX * 2, h + padTop + padBottom);
 
-  // Reset shadow
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.shadowOffsetY = 0;
 
-  // Photo
   if (img) {
     ctx.drawImage(img, x + padX, y + padTop, w, h);
   } else {
-    // Placeholder
     ctx.fillStyle = '#ccc';
     ctx.fillRect(x + padX, y + padTop, w, h);
     ctx.fillStyle = '#666';
@@ -1324,7 +1289,6 @@ function drawPolaroid(ctx, img, x, y, w, h, caption) {
     ctx.fillText('No Photo', x + padX + w / 2, y + padTop + h / 2);
   }
 
-  // Caption
   ctx.fillStyle = '#0a0f1e';
   ctx.font = 'italic 28px Georgia, serif';
   ctx.textAlign = 'center';
@@ -1373,8 +1337,6 @@ function sharePhotoWhatsApp() {
     ? `🎂 Look at this birthday memory with RaviRaj!`
     : `🎂 RaviRaj ke saath ye birthday yaad dekho!`;
 
-  // WhatsApp doesn't accept direct file upload from web reliably
-  // Best approach: Download first, then share link
   composite.toBlob((blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1394,7 +1356,7 @@ function sharePhotoWhatsApp() {
 }
 
 /* ============================================================
-   BALLOON GAME
+   BALLOON
    ============================================================ */
 function initBalloons() {
   const zone = $('#balloon-zone');
@@ -1428,7 +1390,7 @@ function initBalloons() {
 }
 
 /* ============================================================
-   CAKE + MIC
+   CAKE
    ============================================================ */
 function initCake() {
   const micBtn = $('#mic-enable');
@@ -1891,7 +1853,7 @@ function initQuiz() {
 
     const q = questions[state.quizIndex];
     zone.innerHTML = `
-      <div class="quiz-progress">${state.lang === 'english' ? 'Question' : 'Sawaal'} ${state.quizIndex + 1}/${questions.length} • ${state.lang === 'english' ? 'Score' : 'Score'}: ${state.quizScore}</div>
+      <div class="quiz-progress">${state.lang === 'english' ? 'Question' : 'Sawaal'} ${state.quizIndex + 1}/${questions.length} • Score: ${state.quizScore}</div>
       <p class="quiz-question">${q.q}</p>
       <div class="quiz-options">
         ${q.a.map((opt, i) => `<button type="button" class="quiz-opt" data-i="${i}">${opt}</button>`).join('')}
@@ -2031,7 +1993,7 @@ function initGiftBoxes() {
 }
 
 /* ============================================================
-   COMPLIMENT MACHINE
+   COMPLIMENT
    ============================================================ */
 function initCompliment() {
   const btn = $('#compliment-btn');
@@ -2050,7 +2012,7 @@ function initCompliment() {
 }
 
 /* ============================================================
-   FORTUNE COOKIE
+   FORTUNE
    ============================================================ */
 const FORTUNES = {
   english: [
@@ -2103,7 +2065,7 @@ function initFortune() {
    ============================================================ */
 const TIMELINE_DATA = {
   english: [
-    { year: 'First Meet', text: 'When we met, I didn\'t know this journey would be so good.' },
+    { year: 'First Meet', text: "When we met, I didn't know this journey would be so good." },
     { year: 'First Talk', text: 'First message, first laugh — I remember it all.' },
     { year: 'First Fight', text: 'A small fight, a bigger apology.' },
     { year: 'Best Memory', text: 'That day we both will never forget.' },
@@ -2484,7 +2446,6 @@ function initUrlSharing() {
     sfxClick();
   });
 
-  // Auto-load from URL if data present
   const params = new URLSearchParams(window.location.search);
   if (params.has('data')) {
     try {
@@ -2653,10 +2614,8 @@ function initRestart() {
     const photoStrip = $('#photo-strip');
     if (photoStrip) photoStrip.innerHTML = '';
 
-    // Reset all data-init flags
     $$('[data-init="true"]').forEach(el => el.dataset.init = 'false');
 
-    // Reset steps
     $$('.step').forEach((s, i) => {
       if (i === 0) {
         s.classList.add('step--active');
@@ -2667,7 +2626,6 @@ function initRestart() {
       }
     });
 
-    // Clear step-specific containers
     ['#chain-view', '#cert-zone', '#balloon-zone', '#memory-grid', '#quiz-content',
      '#gift-zone', '#timeline-zone', '#wish-list', '#capsule-list',
      '#nametune-visual', '#qr-code', '#theme-picker-container'].forEach((sel) => {
@@ -2708,19 +2666,15 @@ function restoreHue() {
    BOOT
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
-  // Restore language
-  const savedLang = localStorage.getItem(BEEJ_CONFIG.langKey);
-  if (savedLang) {
-    state.lang = savedLang;
-    applyLanguage(savedLang);
-  } else {
-    applyLanguage('hinglish');
-  }
+  // ALWAYS show language screen (fresh experience)
+  const savedLang = localStorage.getItem(BEEJ_CONFIG.langKey) || 'hinglish';
+  state.lang = savedLang;
+  applyLanguage(savedLang);
 
   restoreHue();
 
-  // Init first screens
-  initLanguageSelect();
+  // Init scenes
+  initLanguageSelect();   // Always shows language screen
   initGate();
   initSoulId();
   initBooth();
