@@ -2,7 +2,7 @@
    RAVI RAJ SINGH — AUTHOR WEBSITE STYLESHEET
    Design: Editorial Author · Warm Paper + Antique Gold
    Companion: author.html · author.js
-   Version: 1.0
+   Version: 1.1 — hero-book-title added
    ========================================================================== */
 
 /* ==========================================================================
@@ -585,12 +585,28 @@ em {
 
 .hero-title {
     font-family: var(--font-serif);
-    font-size: var(--fs-5xl);
+    font-size: var(--fs-4xl);
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.02em;
     color: var(--text);
+    margin-bottom: var(--space-3);
+}
+
+.hero-book-title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-3xl);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
     margin-bottom: var(--space-5);
+}
+
+.hero-book-title em {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .hero-tagline {
@@ -1216,6 +1232,10 @@ em {
         font-size: clamp(2rem, 9vw, 2.75rem);
     }
 
+    .hero-book-title {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+
     .hero-tagline,
     .hero-hook {
         font-size: var(--fs-base);
@@ -1321,6 +1341,10 @@ em {
         font-size: 1.85rem;
     }
 
+    .hero-book-title {
+        font-size: 1.35rem;
+    }
+
     .section-head h2 {
         font-size: 1.6rem;
     }
@@ -1408,6 +1432,10 @@ em {
 
     .hero-title {
         font-size: 1.75rem;
+    }
+
+    .hero-book-title {
+        font-size: 1.35rem;
     }
 
     .section-head h2 {
