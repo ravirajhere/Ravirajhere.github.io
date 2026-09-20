@@ -3,12 +3,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ravi Raj — Resume</title>
+    <title>Ravi Raj — Frontend Developer Resume</title>
 
     <!-- ====== SEO ====== -->
-    <meta name="description" content="Ravi Raj — Frontend developer from Patna, India. Resume for internships." />
+    <meta name="description" content="Resume of Ravi Raj — Frontend Developer from Patna, India. HTML5, CSS3, JavaScript, React (learning). 500+ commits. Open to internships and junior frontend roles." />
+    <meta name="author" content="Ravi Raj" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://ravirajhere.vercel.app/resume-pdf.html" />
+
+    <!-- ====== OPEN GRAPH ====== -->
+    <meta property="og:title" content="Ravi Raj — Frontend Developer Resume" />
+    <meta property="og:description" content="Frontend developer from Patna, India. Hand-written HTML, CSS, JavaScript. Open to internships." />
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://ravirajhere.vercel.app/resume-pdf.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ravi Raj — Resume" />
+    <meta name="twitter:description" content="Frontend developer from Patna, India." />
 
     <!-- ====== FAVICON ====== -->
     <link rel="icon" type="image/png" href="assets/favicon.png" />
@@ -21,7 +32,6 @@
     <style>
         /* ============================================================
            RESUME — SINGLE COLUMN · ATS-FRIENDLY · PRINT-OPTIMIZED
-           Level 2 polish · Deeper navy · Rhythm · Active voice
            ============================================================ */
 
         /* ---------- RESET ---------- */
@@ -48,6 +58,31 @@
 
         img { max-width: 100%; display: block; }
         a { color: inherit; text-decoration: none; }
+
+        /* ---------- FOCUS STATES ---------- */
+        :focus-visible {
+            outline: 2px solid #0f2e5c;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        /* ---------- SKIP LINK ---------- */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 16px;
+            background: #0f2e5c;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            z-index: 10000;
+            transition: top 0.15s ease;
+        }
+
+        .skip-link:focus {
+            top: 16px;
+        }
 
         /* ---------- ACTION BAR ---------- */
         .action-bar {
@@ -394,11 +429,14 @@
 
             .btn {
                 justify-content: center;
+                padding: 12px 20px;
+                min-height: 48px;
             }
 
             .resume {
                 padding: 32px 24px;
                 border-radius: 0;
+                box-shadow: none;
             }
 
             .name {
@@ -455,7 +493,7 @@
            ============================================================ */
         @page {
             size: A4;
-            margin: 14mm 16mm;
+            margin: 16mm 18mm;
         }
 
         @media print {
@@ -467,7 +505,8 @@
                 line-height: 1.4;
             }
 
-            .action-bar {
+            .action-bar,
+            .skip-link {
                 display: none;
             }
 
@@ -493,8 +532,13 @@
             }
 
             .section {
-                page-break-inside: avoid;
                 margin-bottom: 16px;
+            }
+
+            .project,
+            .edu-item,
+            .skill-row {
+                page-break-inside: avoid;
             }
 
             .header {
@@ -504,10 +548,12 @@
 
             .name {
                 font-size: 22pt;
+                color: #000;
             }
 
             .role {
                 font-size: 11pt;
+                color: #333;
             }
 
             .section-title {
@@ -522,6 +568,15 @@
             .languages,
             .connect-list {
                 font-size: 10.5pt;
+            }
+
+            .skill-level,
+            .skill-since,
+            .project-year,
+            .edu-year,
+            .project-tag,
+            .edu-note {
+                color: #555;
             }
 
             .footer {
@@ -545,13 +600,18 @@
 <body>
 
     <!-- ============================================================
+         SKIP LINK
+    ============================================================ -->
+    <a href="#main" class="skip-link">Skip to resume content</a>
+
+    <!-- ============================================================
          ACTION BAR (hidden on print)
     ============================================================ -->
     <div class="action-bar">
         <a href="index.html" class="btn btn-quiet">
             ← Back to portfolio
         </a>
-        <button class="btn btn-primary" id="printBtn" type="button">
+        <button class="btn btn-primary" id="printBtn" type="button" aria-label="Print or save resume as PDF">
             Print / Save as PDF
         </button>
     </div>
@@ -559,7 +619,7 @@
     <!-- ============================================================
          RESUME
     ============================================================ -->
-    <main class="resume" role="main">
+    <main class="resume" id="main">
 
         <!-- ===== HEADER ===== -->
         <header class="header">
@@ -567,10 +627,10 @@
             <p class="role">Frontend Developer</p>
             <p class="contact-line">
                 <span>Patna, India</span>
-                <span class="dot">·</span>
+                <span class="dot" aria-hidden="true">·</span>
                 <a href="mailto:raviraj2k09@gmail.com">raviraj2k09@gmail.com</a>
-                <span class="dot">·</span>
-                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener noreferrer">ravirajhere.github.io</a>
+                <span class="dot" aria-hidden="true">·</span>
+                <a href="https://ravirajhere.vercel.app" target="_blank" rel="noopener noreferrer">ravirajhere.vercel.app</a>
             </p>
         </header>
 
@@ -579,8 +639,9 @@
             <h2 class="section-title">Summary</h2>
             <p>
                 Frontend developer from Patna, India. Built two complete projects —
-                an 11-chapter book reader and a print-optimized resume page.
-                Currently learning React and Python. Open to internships.
+                an 11-chapter book reader and a print-optimized resume.
+                Currently learning React and Python. Seeking a frontend internship
+                where I can ship real work.
             </p>
         </section>
 
@@ -626,13 +687,13 @@
             </div>
         </section>
 
-        <!-- ===== PROJECTS (with milestones merged) ===== -->
+        <!-- ===== PROJECTS ===== -->
         <section class="section">
             <h2 class="section-title">Projects</h2>
 
             <article class="project">
                 <div class="project-head">
-                    <span class="project-name">"A Boy Who Never Thought" — Book Reader</span>
+                    <span class="project-name">A Boy Who Never Thought — Book Reader</span>
                     <span class="project-year">2024 — Now</span>
                 </div>
                 <p class="project-tag">HTML · CSS · JS only · No frameworks</p>
@@ -686,13 +747,13 @@
             </div>
         </section>
 
-        <!-- ===== LANGUAGES (compact) ===== -->
+        <!-- ===== LANGUAGES ===== -->
         <section class="section">
             <h2 class="section-title">Languages</h2>
             <p class="languages">
                 <span><span class="lang-item">Hindi</span> <span class="lang-level">(Native)</span></span>
                 <span><span class="lang-item">English</span> <span class="lang-level">(Professional)</span></span>
-                <span><span class="lang-item">Maithili (Angika)</span> <span class="lang-level">(Conversational)</span></span>
+                <span><span class="lang-item">Maithili</span> <span class="lang-level">(Conversational)</span></span>
             </p>
         </section>
 
@@ -702,7 +763,7 @@
             <div class="connect-list">
                 <a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
                 <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-                <a href="https://ravirajhere.github.io" target="_blank" rel="noopener noreferrer">Website ↗</a>
+                <a href="https://ravirajhere.vercel.app" target="_blank" rel="noopener noreferrer">Website ↗</a>
             </div>
         </section>
 
@@ -726,7 +787,17 @@
                 yearEl.textContent = String(new Date().getFullYear());
             }
 
-            /* ===== PRINT BUTTON ===== */
+            /* ===== PRINT BUTTON =====
+             * TODO: Backend PDF generation
+             * Replace with:
+             *   const res = await fetch('/api/pdf', {
+             *     method: 'POST',
+             *     headers: { 'Content-Type': 'application/json' },
+             *     body: JSON.stringify({ type: 'resume' })
+             *   });
+             *   const { url } = await res.json();
+             *   window.location.href = url;
+             */
             const printBtn = document.getElementById('printBtn');
             if (printBtn) {
                 printBtn.addEventListener('click', function () {
