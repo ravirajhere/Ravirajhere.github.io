@@ -1,6 +1,6 @@
 /* ==========================================================================
    RAVI RAJ SINGH — BOOK READER SCRIPT
-   Version: 1.0
+   Version: 1.1
    Handles: Header state · Sidebar drawer · Language switch
             Chapter navigation · Reading progress · Hash sync
             Footnotes · Keyboard nav · External links · Console greeting
@@ -357,16 +357,40 @@
         /* Persist */
         try { localStorage.setItem('book-chapter', id); } catch (e) {}
 
-        /* Scroll to top */
+        /* Scroll to chapter heading (not page top) */
         if (opts.scroll !== false) {
-            const topOffset = header ? header.offsetHeight : 0;
-            window.scrollTo({
-                top: 0,
-                behavior: prefersReduced ? 'auto' : 'smooth'
-            });
-            /* Alternative: scroll to chapter head */
-            void topOffset;
+            scrollToChapterHeading(id);
         }
+    }
+
+    function scrollToChapterHeading(chapterId) {
+        const container = state.currentLang === 'hi' ? chaptersHi : chaptersEn;
+        if (!container) {
+            window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+            return;
+        }
+
+        const chapterEl = container.querySelector('.chapter[data-chapter="' + chapterId + '"]');
+        if (!chapterEl) {
+            window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+            return;
+        }
+
+        /* Prefer a heading inside the chapter */
+        const heading = chapterEl.querySelector('h1, h2, h3, .chapter-title, .chapter-heading')
+                     || chapterEl;
+
+        const headerOffset = header ? header.offsetHeight : 0;
+        const buffer = 16; /* breathing room below sticky header */
+
+        const rect = heading.getBoundingClientRect();
+        const currentY = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = Math.max(0, rect.top + currentY - headerOffset - buffer);
+
+        window.scrollTo({
+            top: targetY,
+            behavior: prefersReduced ? 'auto' : 'smooth'
+        });
     }
 
     function highlightToc(chapterId) {
