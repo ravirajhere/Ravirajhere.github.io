@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { put, head } from '@vercel/blob';
 
-const CACHE_KEY = 'pdf/resume-v1.pdf';
+const CACHE_KEY = 'pdf/resume-v3.pdf';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
