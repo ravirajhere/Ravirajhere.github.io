@@ -11,7 +11,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // Simple in-memory rate limit
 const rateLimit = new Map();
 const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
-const RATE_MAX = 3;
+const RATE_MAX = 10;
 
 function getIP(req) {
   return (
