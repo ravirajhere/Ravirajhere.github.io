@@ -1,239 +1,224 @@
 /* ==========================================================================
-   RAVI RAJ SINGH — PRINT SCRIPT v2
-   Fix: robust fetch with fallbacks + detailed error handling
+   RAVI RAJ SINGH — PRINT SCRIPT v3
+   Clean rewrite · no async traps · reveal always runs
    ========================================================================== */
 
 (function () {
     'use strict';
 
+    console.log('[print] v3 starting');
+
     // ============================================================
     // 1. CONFIG
     // ============================================================
-    const LANG = (function () {
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const l = params.get('lang') || 'en';
-            return l === 'hi' ? 'hi' : 'en';
-        } catch (e) {
-            return 'en';
+    var LANG = 'en';
+    try {
+        var params = new URLSearchParams(window.location.search);
+        var l = params.get('lang');
+        if (l === 'hi') LANG = 'hi';
+    } catch (e) {}
+
+    var CHAPTERS_ID = LANG === 'hi' ? 'chaptersHi' : 'chaptersEn';
+    var FIRST_CHAPTER_PAGE = 10;
+
+    // ============================================================
+    // 2. IMMEDIATE UI FEEDBACK
+    // ============================================================
+    function setStatus(msg) {
+        var loadingEl = document.getElementById('loading');
+        if (loadingEl) {
+            loadingEl.innerHTML = '<p style="font-family:system-ui;color:#7A7068;font-size:13px;">' + msg + '</p>';
         }
-    })();
-
-    const CHAPTERS_ID = LANG === 'hi' ? 'chaptersHi' : 'chaptersEn';
-
-    // Try multiple URL patterns — Vercel might redirect
-    const SOURCE_URLS = [
-        '/book.html',
-        '/book',
-        'book.html',
-        window.location.origin + '/book.html'
-    ];
-
-    const FIRST_CHAPTER_PAGE = 10;
-    const FETCH_TIMEOUT_MS = 10000;
-
-    // ============================================================
-    // 2. HELPERS
-    // ============================================================
-    const $ = (sel, ctx) => (ctx || document).querySelector(sel);
-    const $$ = (sel, ctx) => Array.prototype.slice.call(
-        (ctx || document).querySelectorAll(sel)
-    );
-
-    function log(...args) {
-        try { console.log('[print]', ...args); } catch (e) {}
+        console.log('[print] status:', msg);
     }
 
-    function warn(...args) {
-        try { console.warn('[print]', ...args); } catch (e) {}
+    function revealBook(err) {
+        console.log('[print] REVEAL called, error:', err);
+
+        var loadingEl = document.getElementById('loading');
+        var rootEl = document.getElementById('book-root');
+
+        if (loadingEl) {
+            loadingEl.hidden = true;
+            loadingEl.style.display = 'none';
+        }
+        if (rootEl) {
+            rootEl.hidden = false;
+            rootEl.style.display = '';
+            rootEl.classList.add('ready');
+        }
+        document.body.classList.add('print-ready');
+
+        console.log('[print] REVEAL done');
     }
 
-    function error(...args) {
-        try { console.error('[print]', ...args); } catch (e) {}
-    }
-
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function showError(message, detail) {
-        const loadingEl = document.getElementById('loading');
-        if (!loadingEl) return;
-
-        loadingEl.innerHTML =
-            '<div style="max-width:500px;margin:40px auto;padding:24px;text-align:left;font-family:system-ui,sans-serif;">' +
-                '<h2 style="color:#B91C1C;margin:0 0 12px;font-size:18px;">Could not load book</h2>' +
-                '<p style="color:#1A1A1A;margin:0 0 8px;font-size:14px;">' + escapeHtml(message) + '</p>' +
-                (detail
-                    ? '<pre style="background:#F4F1EA;padding:12px;border-radius:4px;font-size:11px;color:#4A423C;overflow-x:auto;white-space:pre-wrap;word-break:break-word;">' + escapeHtml(detail) + '</pre>'
-                    : '') +
-                '<p style="color:#7A7068;margin:12px 0 0;font-size:12px;">Open the browser console for details.</p>' +
-            '</div>';
+    function showFatalError(msg) {
+        var loadingEl = document.getElementById('loading');
+        if (loadingEl) {
+            loadingEl.innerHTML =
+                '<div style="max-width:500px;margin:40px auto;padding:20px;font-family:system-ui;">' +
+                    '<h2 style="color:#B91C1C;font-size:16px;margin:0 0 8px;">Error</h2>' +
+                    '<pre style="background:#F4F1EA;padding:12px;border-radius:4px;font-size:11px;white-space:pre-wrap;word-break:break-word;">' +
+                        String(msg).replace(/</g, '&lt;') +
+                    '</pre>' +
+                '</div>';
+        }
     }
 
     // ============================================================
     // 3. FETCH WITH TIMEOUT
     // ============================================================
-    function fetchWithTimeout(url, timeout) {
+    function fetchTimeout(url, ms) {
         return new Promise(function (resolve, reject) {
-            const controller = new AbortController();
-            const timer = setTimeout(function () {
+            var controller = new AbortController();
+            var timer = setTimeout(function () {
                 controller.abort();
-                reject(new Error('Timeout after ' + timeout + 'ms'));
-            }, timeout);
+                reject(new Error('Timeout: ' + url));
+            }, ms);
 
-            fetch(url, {
-                method: 'GET',
-                cache: 'no-store',
-                signal: controller.signal,
-                headers: { 'Accept': 'text/html' }
-            })
-            .then(function (res) {
-                clearTimeout(timer);
-                resolve(res);
-            })
-            .catch(function (err) {
-                clearTimeout(timer);
-                reject(err);
-            });
+            fetch(url, { signal: controller.signal, cache: 'no-store' })
+                .then(function (res) {
+                    clearTimeout(timer);
+                    resolve(res);
+                })
+                .catch(function (err) {
+                    clearTimeout(timer);
+                    reject(err);
+                });
         });
     }
 
     // ============================================================
-    // 4. FETCH book.html — try multiple URLs
+    // 4. FETCH book.html
     // ============================================================
-    async function fetchBookHtml() {
-        const errors = [];
+    function fetchBook() {
+        var urls = ['/book.html', '/book', 'book.html'];
+        var errors = [];
 
-        for (let i = 0; i < SOURCE_URLS.length; i++) {
-            const url = SOURCE_URLS[i];
-            log('Trying URL #' + (i + 1) + ':', url);
-
-            try {
-                const res = await fetchWithTimeout(url, FETCH_TIMEOUT_MS);
-
-                if (!res.ok) {
-                    errors.push(url + ' → HTTP ' + res.status);
-                    continue;
-                }
-
-                const text = await res.text();
-
-                if (!text || text.length < 500) {
-                    errors.push(url + ' → too short (' + text.length + ' chars)');
-                    continue;
-                }
-
-                // Sanity check — should contain chapters
-                if (text.indexOf('chaptersEn') === -1 && text.indexOf('chaptersHi') === -1) {
-                    errors.push(url + ' → no chapters found');
-                    continue;
-                }
-
-                log('Success with URL #' + (i + 1) + ':', url, '(' + text.length + ' chars)');
-                return text;
-
-            } catch (err) {
-                errors.push(url + ' → ' + err.message);
-                warn('Failed:', url, err.message);
+        function tryNext(i) {
+            if (i >= urls.length) {
+                return Promise.reject(new Error('All URLs failed:\n' + errors.join('\n')));
             }
+
+            var url = urls[i];
+            setStatus('Loading ' + url + '…');
+
+            return fetchTimeout(url, 10000)
+                .then(function (res) {
+                    if (!res.ok) {
+                        errors.push(url + ' → HTTP ' + res.status);
+                        return tryNext(i + 1);
+                    }
+                    return res.text();
+                })
+                .then(function (text) {
+                    if (!text || text.length < 500) {
+                        errors.push(url + ' → too short');
+                        return tryNext(i + 1);
+                    }
+                    if (text.indexOf('chaptersEn') === -1 && text.indexOf('chaptersHi') === -1) {
+                        errors.push(url + ' → no chapters marker');
+                        return tryNext(i + 1);
+                    }
+                    console.log('[print] fetched', url, text.length, 'chars');
+                    return text;
+                })
+                .catch(function (err) {
+                    errors.push(url + ' → ' + err.message);
+                    return tryNext(i + 1);
+                });
         }
 
-        throw new Error('All URLs failed:\n' + errors.join('\n'));
+        return tryNext(0);
     }
 
     // ============================================================
-    // 5. IMPORT CHAPTERS
+    // 5. EXTRACT CHAPTERS
     // ============================================================
-    async function importChapters() {
-        const html = await fetchBookHtml();
-        const doc = new DOMParser().parseFromString(html, 'text/html');
+    function extractChapters(html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var container = doc.querySelector('#' + CHAPTERS_ID);
 
-        const container = doc.querySelector('#' + CHAPTERS_ID);
         if (!container) {
-            throw new Error('Chapters container #' + CHAPTERS_ID + ' not found in book.html');
+            throw new Error('#' + CHAPTERS_ID + ' not found');
         }
 
-        const chapters = Array.prototype.slice.call(
+        var chapters = Array.prototype.slice.call(
             container.querySelectorAll('article.chapter')
         );
 
-        if (!chapters.length) {
-            throw new Error('No article.chapter elements found in #' + CHAPTERS_ID);
+        if (chapters.length === 0) {
+            throw new Error('No chapters in #' + CHAPTERS_ID);
         }
 
-        log('Found', chapters.length, 'chapters');
+        console.log('[print] extracted', chapters.length, 'chapters');
         return chapters;
     }
 
     // ============================================================
-    // 6. BUILD A CHAPTER PAGE
+    // 6. ESCAPE HTML
     // ============================================================
-    let chapterCount = 0;
+    function esc(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
 
-    function buildChapterPage(originalChapter, index) {
-        const pageNumber = FIRST_CHAPTER_PAGE + index;
-        const isLast = index === (chapterCount - 1);
+    // ============================================================
+    // 7. BUILD CHAPTER PAGE
+    // ============================================================
+    function buildChapterPage(original, index, total) {
+        var clone = original.cloneNode(true);
 
-        const clone = originalChapter.cloneNode(true);
+        // Remove interactive elements
+        var removeSel = '.chapter-nav, .menu-btn, .back-link, .lang-switch, .chapter-rule';
+        var removeEls = clone.querySelectorAll(removeSel);
+        for (var r = 0; r < removeEls.length; r++) {
+            removeEls[r].parentNode.removeChild(removeEls[r]);
+        }
 
-        clone.querySelectorAll(
-            '.chapter-nav, .menu-btn, .back-link, .lang-switch, .chapter-rule'
-        ).forEach(function (el) { el.remove(); });
+        // Extract metadata
+        var numEl = clone.querySelector('.chapter-num');
+        var titleEl = clone.querySelector('.chapter-title');
+        var yearEl = clone.querySelector('.chapter-year');
 
-        const numEl   = clone.querySelector('.chapter-num');
-        const titleEl = clone.querySelector('.chapter-title');
-        const yearEl  = clone.querySelector('.chapter-year');
+        var numText = numEl ? numEl.textContent.trim() : 'Chapter ' + (index + 1);
+        var titleText = titleEl ? titleEl.textContent.trim() : '';
+        var yearText = yearEl ? yearEl.textContent.trim() : '';
 
-        const numText   = numEl   ? numEl.textContent.trim()   : 'Chapter ' + (index + 1);
-        const titleText = titleEl ? titleEl.textContent.trim() : '';
-        const yearText  = yearEl  ? yearEl.textContent.trim()  : '';
+        // Remove original head
+        var head = clone.querySelector('.chapter-head');
+        if (head && head.parentNode) head.parentNode.removeChild(head);
 
-        const head = clone.querySelector('.chapter-head');
-        if (head) head.remove();
+        // Extract body
+        var bodyEl = clone.querySelector('.chapter-body');
 
-        const page = document.createElement('section');
+        // Build new page
+        var page = document.createElement('section');
         page.className = 'chapter';
         page.id = 'pdf-chapter-' + (index + 1);
-        page.setAttribute('data-chapter-num', String(index + 1));
 
-        // Running header
-        const runningHeader = document.createElement('div');
+        var runningHeader = document.createElement('div');
         runningHeader.className = 'chapter-running-header';
-        runningHeader.innerHTML =
-            '<span>Ravi Raj Singh</span>' +
-            '<span>' + escapeHtml(titleText) + '</span>';
+        runningHeader.innerHTML = '<span>Ravi Raj Singh</span><span>' + esc(titleText) + '</span>';
         page.appendChild(runningHeader);
 
-        // Chapter header block
-        const headerBlock = document.createElement('div');
+        var headerBlock = document.createElement('div');
         headerBlock.className = 'chapter-header';
-
-        const displayNum = (index === 10) ? '—' : String(index + 1);
-
+        var displayNum = (index === 10) ? '—' : String(index + 1);
         headerBlock.innerHTML =
-            '<div class="chapter-number-circle">' +
-                '<span>' + displayNum + '</span>' +
-            '</div>' +
+            '<div class="chapter-number-circle"><span>' + displayNum + '</span></div>' +
             '<div class="chapter-header-text">' +
-                '<p class="chapter-number">' + escapeHtml(numText) + '</p>' +
-                '<h2 class="chapter-title">' + escapeHtml(titleText) + '</h2>' +
-                (yearText
-                    ? '<p class="chapter-year">' + escapeHtml(yearText) + '</p>'
-                    : '') +
+                '<p class="chapter-number">' + esc(numText) + '</p>' +
+                '<h2 class="chapter-title">' + esc(titleText) + '</h2>' +
+                (yearText ? '<p class="chapter-year">' + esc(yearText) + '</p>' : '') +
             '</div>';
-
         page.appendChild(headerBlock);
 
-        // Chapter body
-        const bodyEl = clone.querySelector('.chapter-body');
         if (bodyEl) {
-            const bodyWrapper = document.createElement('div');
+            var bodyWrapper = document.createElement('div');
             bodyWrapper.className = 'chapter-body';
             while (bodyEl.firstChild) {
                 bodyWrapper.appendChild(bodyEl.firstChild);
@@ -241,123 +226,114 @@
             page.appendChild(bodyWrapper);
         }
 
-        // Page number
-        const pageNum = document.createElement('div');
+        var pageNum = document.createElement('div');
         pageNum.className = 'chapter-page-number';
-        pageNum.textContent = String(pageNumber);
+        pageNum.textContent = String(FIRST_CHAPTER_PAGE + index);
         page.appendChild(pageNum);
-
-        if (isLast) {
-            page.classList.add('chapter-last');
-        }
 
         return page;
     }
 
     // ============================================================
-    // 7. BUILD TOC
+    // 8. BUILD TOC
     // ============================================================
     function buildTOC(chapters) {
-        const tocList = document.getElementById('toc-list');
-        if (!tocList) {
-            warn('TOC list not found');
-            return;
-        }
+        var tocList = document.getElementById('toc-list');
+        if (!tocList) return;
 
         tocList.innerHTML = '';
 
-        chapters.forEach(function (chapterEl, index) {
-            const titleEl = chapterEl.querySelector('.chapter-title');
-            const yearEl  = chapterEl.querySelector('.chapter-year');
+        for (var i = 0; i < chapters.length; i++) {
+            var chapterEl = chapters[i];
+            var titleEl = chapterEl.querySelector('.chapter-title');
+            var yearEl = chapterEl.querySelector('.chapter-year');
 
-            const title = titleEl ? titleEl.textContent.trim() : 'Chapter ' + (index + 1);
-            const year  = yearEl  ? yearEl.textContent.trim()  : '';
+            var title = titleEl ? titleEl.textContent.trim() : 'Chapter ' + (i + 1);
+            var year = yearEl ? yearEl.textContent.trim() : '';
+            var label = (i === 10) ? 'Epilogue' : 'Chapter ' + (i + 1);
+            var pageNum = FIRST_CHAPTER_PAGE + i;
 
-            const label = (index === 10) ? 'Epilogue' : 'Chapter ' + (index + 1);
-            const pageNum = FIRST_CHAPTER_PAGE + index;
-
-            const li = document.createElement('li');
+            var li = document.createElement('li');
             li.innerHTML =
-                '<span class="toc-num">' + escapeHtml(label) + '</span>' +
-                '<span class="toc-title">' + escapeHtml(title) + '</span>' +
-                (year ? '<span class="toc-year">' + escapeHtml(year) + '</span>' : '') +
+                '<span class="toc-num">' + esc(label) + '</span>' +
+                '<span class="toc-title">' + esc(title) + '</span>' +
+                (year ? '<span class="toc-year">' + esc(year) + '</span>' : '') +
                 '<span class="toc-page-num">' + pageNum + '</span>';
-
             tocList.appendChild(li);
-        });
+        }
 
-        log('TOC built with', chapters.length, 'items');
+        console.log('[print] TOC built');
     }
 
     // ============================================================
-    // 8. MAIN
+    // 9. MAIN — SIMPLE, NO ASYNC TRAPS
     // ============================================================
-    async function main() {
-        const loadingEl = document.getElementById('loading');
-        const rootEl    = document.getElementById('book-root');
+    function run() {
+        console.log('[print] run() called, lang:', LANG);
 
-        log('Starting — lang:', LANG, '| container: #' + CHAPTERS_ID);
+        setStatus('Loading book…');
 
-        try {
-            const chapters = await importChapters();
-            chapterCount = chapters.length;
+        fetchBook()
+            .then(function (html) {
+                setStatus('Parsing…');
+                var chapters = extractChapters(html);
 
-            buildTOC(chapters);
+                setStatus('Building TOC…');
+                buildTOC(chapters);
 
-            const contentContainer = document.getElementById('book-content');
-            if (!contentContainer) {
-                throw new Error('#book-content container not found in print.html');
-            }
+                setStatus('Building pages…');
+                var contentContainer = document.getElementById('book-content');
+                if (!contentContainer) {
+                    throw new Error('#book-content not found');
+                }
 
-            contentContainer.innerHTML = '';
+                contentContainer.innerHTML = '';
 
-            chapters.forEach(function (chapterEl, index) {
-                const page = buildChapterPage(chapterEl, index);
-                contentContainer.appendChild(page);
+                for (var i = 0; i < chapters.length; i++) {
+                    var page = buildChapterPage(chapters[i], i, chapters.length);
+                    contentContainer.appendChild(page);
+                }
+
+                console.log('[print] all pages built');
+
+                // Small delay then reveal
+                setTimeout(function () {
+                    revealBook(null);
+                }, 500);
+            })
+            .catch(function (err) {
+                console.error('[print] FATAL:', err);
+                showFatalError(err.message || 'Unknown error');
             });
+    }
 
-            log('All', chapters.length, 'chapters injected');
-
-            // Wait for fonts
-            if (document.fonts && document.fonts.ready) {
-                try { await document.fonts.ready; } catch (e) {}
-            }
-
-            // Wait for images
-            await Promise.all(
-                Array.prototype.slice.call(document.images).map(function (img) {
-                    if (img.complete) return Promise.resolve();
-                    return new Promise(function (resolve) {
-                        img.onload = img.onerror = function () { resolve(); };
-                    });
-                })
-            );
-
-            await new Promise(function (r) { setTimeout(r, 400); });
-
-            // Reveal
-            if (loadingEl) loadingEl.hidden = true;
-            if (rootEl) {
-                rootEl.hidden = false;
-                rootEl.classList.add('ready');
-            }
-            document.body.classList.add('print-ready');
-
-            log('Print ready — done');
-
-        } catch (err) {
-            error('Failed:', err);
-            showError(err.message || 'Unknown error', err.stack || '');
+    // ============================================================
+    // 10. INIT — MULTIPLE SAFETY NETS
+    // ============================================================
+    function init() {
+        console.log('[print] init, readyState:', document.readyState);
+        try {
+            run();
+        } catch (e) {
+            console.error('[print] init threw:', e);
+            showFatalError(e.message);
         }
     }
 
-    // ============================================================
-    // 9. INIT
-    // ============================================================
+    // Fire on DOM ready OR immediately if already loaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', main);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        main();
+        init();
     }
+
+    // Final safety net: after 15 seconds, force reveal
+    setTimeout(function () {
+        var rootEl = document.getElementById('book-root');
+        if (rootEl && rootEl.hidden) {
+            console.warn('[print] 15s timeout — forcing reveal');
+            revealBook('timeout');
+        }
+    }, 15000);
 
 })();
