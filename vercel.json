@@ -1,8 +1,5 @@
 {
   "functions": {
-    "api/book-pdf.js": {
-      "maxDuration": 60
-    },
     "api/pdf.js": {
       "maxDuration": 60
     }
