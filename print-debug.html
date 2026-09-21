@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Debug — print.js</title>
+    <title>Debug v2 — print.js runtime test</title>
     <style>
         body { font-family: system-ui, sans-serif; padding: 20px; background: #F7F4EE; color: #1A1A1A; line-height: 1.6; }
         h1 { font-size: 18px; margin: 0 0 16px; }
@@ -16,13 +16,12 @@
 </head>
 <body>
 
-<h1>Debug — print.js diagnostic</h1>
+<h1>Debug v2 — print.js runtime test</h1>
 <div id="out"></div>
 
 <script>
 (function () {
     const out = document.getElementById('out');
-
     function addStep(type, msg) {
         const div = document.createElement('div');
         div.className = 'step ' + type;
@@ -30,106 +29,80 @@
         out.appendChild(div);
     }
 
-    function test() {
-        addStep('info', 'Starting diagnostic...');
-        addStep('info', 'URL: ' + window.location.href);
-        addStep('info', 'Origin: ' + window.location.origin);
-
-        // Step 1: Check print.js loaded
-        addStep('info', '\n[1] Testing print.js load...');
-        fetch('/js/print.js')
-            .then(r => {
-                if (r.ok) {
-                    addStep('ok', 'print.js exists → HTTP ' + r.status);
-                    return r.text();
+    // Test 1: check URL params
+    addStep('info', 'URL: ' + window.location.href);
+    
+    // Test 2: manually load print.html into DOM
+    addStep('info', '\n[1] Fetching print.html into iframe...');
+    
+    const iframe = document.createElement('iframe');
+    iframe.src = '/print.html?lang=en';
+    iframe.style.cssText = 'width:100%;height:400px;border:2px solid #8B6F3F;margin-top:12px;background:#fff;';
+    iframe.onload = function () {
+        addStep('ok', 'iframe loaded');
+        
+        setTimeout(function () {
+            try {
+                const doc = iframe.contentDocument;
+                const win = iframe.contentWindow;
+                
+                addStep('info', '\n[2] Checking iframe state...');
+                
+                // Loading element
+                const loading = doc.getElementById('loading');
+                if (loading) {
+                    addStep('ok', 'loading element found. hidden=' + loading.hidden);
+                    addStep('info', 'loading HTML: ' + loading.textContent.substring(0, 200));
                 } else {
-                    addStep('fail', 'print.js → HTTP ' + r.status);
-                    return null;
+                    addStep('fail', 'loading element NOT found');
                 }
-            })
-            .then(text => {
-                if (text) {
-                    addStep('ok', 'print.js size: ' + text.length + ' chars');
-                    if (text.indexOf('fetchBookHtml') !== -1) {
-                        addStep('ok', 'print.js contains new fetchBookHtml function ✓');
-                    } else {
-                        addStep('warn', 'print.js is OLD version (no fetchBookHtml)');
-                    }
+                
+                // book-root
+                const root = doc.getElementById('book-root');
+                if (root) {
+                    addStep('ok', 'book-root found. hidden=' + root.hidden);
+                } else {
+                    addStep('fail', 'book-root NOT found');
                 }
-
-                // Step 2: Test fetch /book.html
-                addStep('info', '\n[2] Testing fetch /book.html...');
-                return fetch('/book.html', { cache: 'no-store' });
-            })
-            .then(r => {
-                if (!r.ok) {
-                    addStep('fail', '/book.html → HTTP ' + r.status);
-                    return null;
+                
+                // book-content children
+                const content = doc.getElementById('book-content');
+                if (content) {
+                    addStep('ok', 'book-content children: ' + content.children.length);
                 }
-                addStep('ok', '/book.html → HTTP ' + r.status);
-                return r.text();
-            })
-            .then(text => {
-                if (text) {
-                    addStep('ok', '/book.html size: ' + text.length + ' chars');
-                    if (text.indexOf('chaptersEn') !== -1) {
-                        addStep('ok', '/book.html contains chaptersEn ✓');
-                    } else {
-                        addStep('fail', '/book.html DOES NOT contain chaptersEn');
-                    }
-                    if (text.indexOf('chaptersHi') !== -1) {
-                        addStep('ok', '/book.html contains chaptersHi ✓');
-                    }
+                
+                // toc-list children
+                const toc = doc.getElementById('toc-list');
+                if (toc) {
+                    addStep('ok', 'toc-list children: ' + toc.children.length);
                 }
-
-                // Step 3: Test DOMParser
-                addStep('info', '\n[3] Testing DOMParser...');
-                try {
-                    const doc = new DOMParser().parseFromString(text || '', 'text/html');
-                    const container = doc.querySelector('#chaptersEn');
-                    if (container) {
-                        const chapters = container.querySelectorAll('article.chapter');
-                        addStep('ok', 'Found #chaptersEn with ' + chapters.length + ' chapters');
-                    } else {
-                        addStep('fail', '#chaptersEn NOT found after parse');
-                    }
-                } catch (e) {
-                    addStep('fail', 'DOMParser error: ' + e.message);
-                }
-
-                // Step 4: Test print.html elements
-                addStep('info', '\n[4] Checking print.html elements...');
-                fetch('/print.html')
-                    .then(r => r.text())
-                    .then(html => {
-                        const checks = [
-                            ['id="loading"', 'loading element'],
-                            ['id="book-root"', 'book-root element'],
-                            ['id="book-content"', 'book-content element'],
-                            ['id="toc-list"', 'toc-list element'],
-                            ['css/print.css', 'print.css link'],
-                            ['js/print.js', 'print.js script']
-                        ];
-                        checks.forEach(function (c) {
-                            if (html.indexOf(c[0]) !== -1) {
-                                addStep('ok', '✓ ' + c[1]);
-                            } else {
-                                addStep('fail', '✗ MISSING: ' + c[1] + ' (' + c[0] + ')');
-                            }
-                        });
-                        addStep('info', '\n[DONE] Diagnostic complete.');
-                    })
-                    .catch(e => {
-                        addStep('fail', 'Could not fetch print.html: ' + e.message);
-                    });
-            })
-            .catch(err => {
-                addStep('fail', 'FATAL: ' + err.message);
-                addStep('fail', 'Stack: ' + err.stack);
-            });
-    }
-
-    test();
+                
+                // Check for console errors from iframe
+                addStep('info', '\n[3] iframe body text (first 300 chars):');
+                addStep('info', doc.body.innerText.substring(0, 300));
+                
+                // Check if print.js actually executed
+                addStep('info', '\n[4] Checking if print.js executed...');
+                const scriptTags = doc.querySelectorAll('script');
+                addStep('info', 'Script tags in iframe: ' + scriptTags.length);
+                scriptTags.forEach(function (s, i) {
+                    addStep('info', '  [' + i + '] src=' + (s.src || 'inline'));
+                });
+                
+                addStep('info', '\n[DONE] Check complete.');
+                
+            } catch (e) {
+                addStep('fail', 'Cannot access iframe: ' + e.message);
+                addStep('fail', 'Note: cross-origin iframe mein access nahi milega');
+            }
+        }, 3000);
+    };
+    iframe.onerror = function () {
+        addStep('fail', 'iframe load error');
+    };
+    
+    document.body.appendChild(iframe);
+    
 })();
 </script>
 
