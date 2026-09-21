@@ -1492,3 +1492,121 @@ em {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
 }
+
+/* ==========================================================================
+   21. NEWSLETTER
+   ========================================================================== */
+.section-newsletter {
+    background: var(--paper);
+}
+
+.newsletter-lede {
+    max-width: var(--max-prose);
+    margin: 0 auto var(--space-10);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: var(--fs-lg);
+    line-height: 1.7;
+    color: var(--text-soft);
+}
+
+.newsletter-form {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.newsletter-input-group {
+    display: flex;
+    gap: var(--space-2);
+    align-items: stretch;
+}
+
+.newsletter-input-group input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--paper-elev);
+    border: 1px solid var(--paper-border-strong);
+    border-radius: var(--r-md);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newsletter-input-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(139, 111, 63, 0.12);
+}
+
+.newsletter-input-group input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.newsletter-input-group .btn {
+    padding: 12px 20px;
+    white-space: nowrap;
+}
+
+.newsletter-input-group .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.newsletter-status {
+    margin-top: var(--space-4);
+    padding: 10px 14px;
+    border-radius: var(--r-sm);
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    line-height: 1.5;
+    display: none;
+    border: 1px solid transparent;
+    text-align: center;
+}
+
+.newsletter-status.is-visible {
+    display: block;
+}
+
+.newsletter-status.is-success {
+    background: rgba(21, 128, 61, 0.08);
+    border-color: rgba(21, 128, 61, 0.3);
+    color: #15803D;
+}
+
+.newsletter-status.is-error {
+    background: rgba(185, 28, 28, 0.08);
+    border-color: rgba(185, 28, 28, 0.3);
+    color: #B91C1C;
+}
+
+.newsletter-status.is-loading {
+    background: rgba(139, 111, 63, 0.08);
+    border-color: rgba(139, 111, 63, 0.3);
+    color: var(--accent);
+}
+
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 640px) {
+    .newsletter-input-group {
+        flex-direction: column;
+    }
+
+    .newsletter-input-group .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
