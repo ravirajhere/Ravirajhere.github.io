@@ -108,13 +108,18 @@
             text-decoration: none;
         }
 
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .btn-primary {
             background: #0f2e5c;
             color: #fff;
             border-color: #0f2e5c;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #0a2346;
             border-color: #0a2346;
         }
@@ -611,8 +616,8 @@
         <a href="index.html" class="btn btn-quiet">
             ← Back to portfolio
         </a>
-        <button class="btn btn-primary" id="printBtn" type="button" aria-label="Print or save resume as PDF">
-            Print / Save as PDF
+        <button class="btn btn-primary" id="printBtn" type="button" aria-label="Download resume as PDF">
+            Download PDF
         </button>
     </div>
 
@@ -787,21 +792,53 @@
                 yearEl.textContent = String(new Date().getFullYear());
             }
 
-            /* ===== PRINT BUTTON =====
-             * TODO: Backend PDF generation
-             * Replace with:
-             *   const res = await fetch('/api/pdf', {
-             *     method: 'POST',
-             *     headers: { 'Content-Type': 'application/json' },
-             *     body: JSON.stringify({ type: 'resume' })
-             *   });
-             *   const { url } = await res.json();
-             *   window.location.href = url;
-             */
+            /* ===== PDF DOWNLOAD BUTTON ===== */
             const printBtn = document.getElementById('printBtn');
+
             if (printBtn) {
-                printBtn.addEventListener('click', function () {
-                    window.print();
+                printBtn.addEventListener('click', async function () {
+                    const btn = this;
+                    const originalText = btn.innerHTML;
+
+                    btn.disabled = true;
+                    btn.innerHTML = 'Generating…';
+
+                    try {
+                        const res = await fetch('/api/pdf', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ type: 'resume' })
+                        });
+
+                        if (!res.ok) {
+                            throw new Error('Server error: ' + res.status);
+                        }
+
+                        const data = await res.json();
+
+                        if (!data.url) {
+                            throw new Error('No PDF URL returned');
+                        }
+
+                        // Trigger download
+                        window.location.href = data.url;
+
+                        // Reset button after short delay
+                        setTimeout(function () {
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        }, 1500);
+
+                    } catch (err) {
+                        console.error('[pdf] Download failed:', err);
+
+                        // Fallback to browser print
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+
+                        console.warn('Falling back to browser print');
+                        window.print();
+                    }
                 });
             }
 
