@@ -1,9 +1,9 @@
 /* ==========================================================================
    RAVI RAJ — PORTFOLIO SCRIPT
-   Version: 4.0 (Portfolio Only · Error-Free)
+   Version: 4.1 (Portfolio Only · Live Stats)
    Handles: Year · Mobile Menu · Command Palette (K) · Smooth Scroll
             Copy Email · Active Nav · Scroll Cue · External Links
-            Console Greeting · Reduced Motion
+            Console Greeting · Reduced Motion · Live GitHub Stats
    No dependencies. No frameworks.
    ========================================================================== */
 
@@ -517,5 +517,39 @@
 
         sessionSet('rr-greeted', '1');
     }
+
+    /* ======================================================================
+       13. LIVE GITHUB STATS
+       ====================================================================== */
+    (function initLiveStats() {
+        const lastCommitEl = $('[data-live="last-commit"]');
+
+        if (!lastCommitEl) return;
+
+        fetch('/api/stats')
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
+                if (!data || !data.lastCommit) return;
+
+                const days = data.lastCommit.daysAgo;
+
+                if (days === 0) {
+                    lastCommitEl.textContent = 'Committed today';
+                } else if (days === 1) {
+                    lastCommitEl.textContent = 'Last commit: yesterday';
+                } else if (days !== null && days >= 0) {
+                    lastCommitEl.textContent = 'Last commit: ' + days + 'd ago';
+                }
+
+                console.log('[stats] Live data loaded:', data);
+            })
+            .catch(function (err) {
+                console.warn('[stats] Failed to load:', err.message);
+                // Silent fail — static content remains
+            });
+    })();
 
 })();
