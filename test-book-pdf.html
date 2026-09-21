@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test — Book PDF</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #F7F4EE; color: #1A1A1A; }
+        button { padding: 16px 24px; font-size: 16px; font-weight: 600; background: #8B6F3F; color: white; border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 12px; }
+        button:disabled { opacity: 0.6; }
+        #log { background: #FFF; padding: 16px; border-radius: 6px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; min-height: 200px; border: 1px solid #E5DED2; }
+        .err { color: #B91C1C; }
+        .ok { color: #15803D; }
+    </style>
+</head>
+<body>
+
+<h2>Test — Book PDF Generation</h2>
+
+<button id="btnEn" onclick="gen('en')">Generate English PDF</button>
+<button id="btnHi" onclick="gen('hi')">Generate Hinglish PDF</button>
+
+<div id="log">Ready. Tap a button above.</div>
+
+<script>
+const logEl = document.getElementById('log');
+const btnEn = document.getElementById('btnEn');
+const btnHi = document.getElementById('btnHi');
+
+function log(msg, cls) {
+    const time = new Date().toLocaleTimeString();
+    logEl.innerHTML += '\n[' + time + '] ' + msg;
+    if (cls) logEl.className = cls;
+    logEl.scrollTop = logEl.scrollHeight;
+}
+
+async function gen(lang) {
+    btnEn.disabled = true;
+    btnHi.disabled = true;
+    logEl.textContent = 'Starting...';
+
+    const start = Date.now();
+    log('POST /api/book-pdf { lang: "' + lang + '" }');
+    log('This may take 30-60 seconds. Please wait...');
+
+    try {
+        const res = await fetch('/api/book-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lang: lang })
+        });
+
+        const elapsed = Math.round((Date.now() - start) / 1000);
+        log('Response: HTTP ' + res.status + ' (' + elapsed + 's)');
+
+        const data = await res.json();
+        log('JSON: ' + JSON.stringify(data, null, 2));
+
+        if (data.url) {
+            log('SUCCESS! URL: ' + data.url, 'ok');
+            log('Cached: ' + data.cached);
+            log('Opening PDF in new tab...');
+            setTimeout(function () {
+                window.open(data.url, '_blank');
+            }, 500);
+        } else {
+            log('FAILED: no url in response', 'err');
+        }
+
+    } catch (err) {
+        log('ERROR: ' + err.message, 'err');
+    } finally {
+        btnEn.disabled = false;
+        btnHi.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
