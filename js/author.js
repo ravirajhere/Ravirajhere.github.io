@@ -1,8 +1,8 @@
 /* ==========================================================================
    RAVI RAJ SINGH — AUTHOR WEBSITE SCRIPT
-   Version: 1.0
+   Version: 1.1 (with newsletter)
    Handles: Year · Header scroll state · Mobile menu · Smooth scroll
-            External link security · Console greeting
+            External link security · Console greeting · Newsletter form
    No dependencies. No frameworks.
    ========================================================================== */
 
@@ -299,6 +299,85 @@
 
             sessionSet('rrs-author-greeted', '1');
         } catch (e) {}
+    })();
+
+    /* ======================================================================
+       11. NEWSLETTER FORM
+       ====================================================================== */
+    (function initNewsletter() {
+        const form = document.getElementById('newsletterForm');
+        const emailInput = document.getElementById('nl_email');
+        const submitBtn = document.getElementById('nlSubmit');
+        const statusEl = document.getElementById('nlStatus');
+        const honeypot = document.getElementById('nl_website');
+
+        if (!form || !emailInput || !submitBtn || !statusEl) return;
+
+        let statusTimer = null;
+
+        function showStatus(msg, type) {
+            if (statusTimer) clearTimeout(statusTimer);
+            statusEl.textContent = msg;
+            statusEl.className = 'newsletter-status is-visible is-' + type;
+            if (type !== 'loading') {
+                statusTimer = setTimeout(function () {
+                    statusEl.className = 'newsletter-status';
+                }, 6000);
+            }
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            /* Honeypot */
+            if (honeypot && honeypot.value.trim() !== '') {
+                return;
+            }
+
+            const email = (emailInput.value || '').trim();
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+                showStatus('Please enter a valid email.', 'error');
+                return;
+            }
+
+            showStatus('Subscribing…', 'loading');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing…';
+
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    source: 'author',
+                    website: ''
+                })
+            })
+            .then(function (res) {
+                return res.json().then(function (data) {
+                    return { ok: res.ok, status: res.status, data: data };
+                });
+            })
+            .then(function (result) {
+                if (result.ok) {
+                    const msg = (result.data && result.data.message) || 'Subscribed. Check your inbox.';
+                    showStatus(msg, 'success');
+                    form.reset();
+                } else {
+                    const msg = (result.data && result.data.error) || 'Subscription failed.';
+                    showStatus(msg, 'error');
+                }
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe';
+            })
+            .catch(function (err) {
+                console.error('[newsletter] Error:', err);
+                showStatus('Network error. Try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Subscribe';
+            });
+        });
     })();
 
 })();
