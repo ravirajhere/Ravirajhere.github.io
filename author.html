@@ -67,14 +67,8 @@
 </head>
 <body>
 
-    <!-- ============================================================
-         SKIP LINK
-    ============================================================ -->
     <a href="#main" class="skip-link">Skip to content</a>
 
-    <!-- ============================================================
-         HEADER
-    ============================================================ -->
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
             <a href="author.html" class="brand" aria-label="Ravi Raj Singh — Home">
@@ -87,6 +81,7 @@
             <nav class="primary-nav" aria-label="Primary">
                 <a href="#book">Book</a>
                 <a href="#about">About</a>
+                <a href="#newsletter">Newsletter</a>
                 <a href="#contact">Contact</a>
             </nav>
 
@@ -99,9 +94,6 @@
         </div>
     </header>
 
-    <!-- ============================================================
-         MOBILE NAV
-    ============================================================ -->
     <div class="mobile-overlay" id="mobileOverlay" hidden aria-hidden="true"></div>
 
     <nav class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden aria-hidden="true">
@@ -111,7 +103,8 @@
         <ul>
             <li><a href="#book"><span>01</span>Book</a></li>
             <li><a href="#about"><span>02</span>About</a></li>
-            <li><a href="#contact"><span>03</span>Contact</a></li>
+            <li><a href="#newsletter"><span>03</span>Newsletter</a></li>
+            <li><a href="#contact"><span>04</span>Contact</a></li>
         </ul>
         <div class="mobile-nav-foot">
             <p>Patna, India</p>
@@ -119,14 +112,8 @@
         </div>
     </nav>
 
-    <!-- ============================================================
-         MAIN
-    ============================================================ -->
     <main id="main" tabindex="-1">
 
-        <!-- ========================================================
-             HERO
-        ======================================================== -->
         <section class="hero" id="hero" aria-labelledby="hero-heading">
             <div class="hero-grid">
 
@@ -196,9 +183,6 @@
             </div>
         </section>
 
-        <!-- ========================================================
-             01 / FROM THE BOOK
-        ======================================================== -->
         <section class="section section-quote" id="from-the-book" aria-labelledby="frombook-heading">
             <header class="section-head">
                 <span class="section-num">01 / From the Book</span>
@@ -219,9 +203,6 @@
             </blockquote>
         </section>
 
-        <!-- ========================================================
-             02 / ABOUT THE AUTHOR
-        ======================================================== -->
         <section class="section section-about" id="about" aria-labelledby="about-heading">
             <header class="section-head section-head--center">
                 <span class="section-num">02 / About</span>
@@ -243,9 +224,6 @@
             </div>
         </section>
 
-        <!-- ========================================================
-             03 / THE BOOK
-        ======================================================== -->
         <section class="section section-book" id="book" aria-labelledby="book-heading">
             <header class="section-head">
                 <span class="section-num">03 / The Book</span>
@@ -304,12 +282,45 @@
             </div>
         </section>
 
-        <!-- ========================================================
-             04 / CONTACT
-        ======================================================== -->
+        <section class="section section-newsletter" id="newsletter" aria-labelledby="newsletter-heading">
+            <header class="section-head section-head--center">
+                <span class="section-num">04 / Newsletter</span>
+                <h2 id="newsletter-heading">Get <em>book updates</em></h2>
+            </header>
+
+            <p class="newsletter-lede">
+                New chapters, occasional notes from Patna. No spam, no drama — just the story.
+            </p>
+
+            <form class="newsletter-form" id="newsletterForm" novalidate>
+                <div class="hp-field" aria-hidden="true">
+                    <label for="nl_website">Website (leave empty)</label>
+                    <input type="text" id="nl_website" name="website" tabindex="-1" autocomplete="off" />
+                </div>
+
+                <div class="newsletter-input-group">
+                    <label for="nl_email" class="sr-only">Your email</label>
+                    <input
+                        type="email"
+                        id="nl_email"
+                        name="email"
+                        placeholder="your@email.com"
+                        autocomplete="email"
+                        required
+                        maxlength="120"
+                    />
+                    <button type="submit" class="btn btn-primary" id="nlSubmit">
+                        Subscribe
+                    </button>
+                </div>
+
+                <p class="newsletter-status" id="nlStatus" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
         <section class="section section-contact" id="contact" aria-labelledby="contact-heading">
             <header class="section-head section-head--center">
-                <span class="section-num">04 / Contact</span>
+                <span class="section-num">05 / Contact</span>
                 <h2 id="contact-heading">Get in <em>Touch</em></h2>
             </header>
 
@@ -323,7 +334,7 @@
             </div>
 
             <div class="contact-cta">
-                <a href="emailjs.html" class="btn btn-dark btn-lg">
+                <a href="contact.html?from=author" class="btn btn-dark btn-lg">
                     Send a message
                     <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
                 </a>
@@ -332,9 +343,6 @@
 
     </main>
 
-    <!-- ============================================================
-         FOOTER
-    ============================================================ -->
     <footer class="site-footer" role="contentinfo">
         <div class="footer-inner">
 
@@ -348,6 +356,7 @@
                 <ul>
                     <li><a href="#book">Book</a></li>
                     <li><a href="#about">About</a></li>
+                    <li><a href="#newsletter">Newsletter</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -377,9 +386,6 @@
         </div>
     </footer>
 
-    <!-- ============================================================
-         SCRIPTS
-    ============================================================ -->
     <script src="js/author.js" defer></script>
 
 </body>
