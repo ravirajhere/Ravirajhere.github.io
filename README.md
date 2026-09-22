@@ -1,20 +1,18 @@
-# Ravi Raj — Portfolio & Author Website
+# Ravi Raj — Portfolio
 
-Personal website of **Ravi Raj Singh** — full-stack developer and author from Patna, India.
+Personal portfolio of **Ravi Raj** — full-stack developer from Patna, India.
 
 Live: [ravirajhere.vercel.app](https://ravirajhere.vercel.app)
+
+**Companion project:** [Author Website + Book Reader](https://github.com/ravirajhere/author-website) — for readers of "A Boy Who Never Thought".
 
 ---
 
 ## About
 
-A hand-written portfolio + book reader, now with a serverless backend. Built without frameworks. Every line of HTML, CSS, and JavaScript written by hand.
+A hand-written portfolio for recruiters and collaborators. Built without frameworks — every line of HTML, CSS, and JavaScript written by hand. Now with a serverless backend for contact, PDF generation, and live GitHub stats.
 
-**What's inside:**
-- **Portfolio** — for recruiters and collaborators
-- **Book reader** — 11 chapters, English + Hinglish
-- **Author site** — for readers
-- **Serverless API** — 5 endpoints for contact, PDF, newsletter, and live stats
+**Built by hand. Since 2024.**
 
 ---
 
@@ -22,23 +20,12 @@ A hand-written portfolio + book reader, now with a serverless backend. Built wit
 
 | Page | Purpose |
 |------|---------|
-| [index.html](index.html) | Portfolio — for recruiters and collaborators |
-| [author.html](author.html) | Author website — for readers |
-| [book.html](book.html) | Book reader — 11 chapters, English + Hinglish |
+| [index.html](index.html) | Portfolio — hero, work, skills, currently, milestones, contact |
 | [resume-pdf.html](resume-pdf.html) | Resume — print-optimized, ATS-friendly |
-| [contact.html](contact.html) | Contact form |
-| [friends.html](friends.html) | Friends gallery |
+| [contact.html](contact.html) | Contact form — server-side |
 | [404.html](404.html) | Custom 404 page |
 
----
-
-## About the Book
-
-**"A Boy Who Never Thought"** — Safar Se Safar Tak.
-
-An 18-year journey from 2008 to 2026. Written in both **English** and **Hinglish**. Currently 11 chapters — the story continues.
-
-Read free: [book.html](book.html)
+**Related:** [Author website + book reader](https://ravirajhere-author.vercel.app) — separate project.
 
 ---
 
@@ -53,9 +40,8 @@ Read free: [book.html](book.html)
 
 ### Backend (Serverless)
 
-- **Vercel Functions** — 5 API endpoints
-- **Resend** — email delivery (contact form, newsletter)
-- **Supabase** — Postgres database (newsletter subscribers)
+- **Vercel Functions** — 3 API endpoints
+- **Resend** — email delivery (contact form)
 - **Vercel Blob** — file storage (PDF cache)
 - **Puppeteer + Chromium** — server-side PDF generation
 
@@ -67,9 +53,7 @@ Read free: [book.html](book.html)
 |----------|--------|---------|
 | `/api/contact` | POST | Contact form — rate-limited, honeypot-protected, sends via Resend |
 | `/api/pdf` | POST | Resume PDF — Puppeteer + Blob cache |
-| `/api/subscribe` | POST | Newsletter — Supabase + welcome email |
 | `/api/stats` | GET | Live GitHub commits — cached 10 min |
-| `/api/book-pdf` | POST | Book PDF — Chromium (work in progress) |
 
 ---
 
@@ -83,18 +67,10 @@ Read free: [book.html](book.html)
 - **Command palette** — press `K` to navigate
 - **Honest skill levels** — "Working" vs "Learning"
 
-### For Readers
-
-- **Bilingual book reader** — English + Hinglish toggle
-- **Reading progress** — saved across sessions
-- **PDF export** — client-side (server-side in progress)
-- **Newsletter** — subscribe for book updates
-- **Author site** — dedicated space for the book
-
 ### Infrastructure
 
 - **Custom 404** — playful error page
-- **SEO** — canonical tags, OG tags, Schema.org JSON-LD
+- **SEO** — canonical tags, OG tags, Schema.org JSON-LD (Person)
 - **Accessibility** — skip links, focus states, ARIA labels, reduced-motion
 - **Security** — server-side keys, rate limiting, honeypot, CORS headers
 
@@ -103,37 +79,27 @@ Read free: [book.html](book.html)
 ## Folder Structure
 
     /
-    ├── index.html
-    ├── author.html
-    ├── book.html
-    ├── resume-pdf.html
-    ├── contact.html
-    ├── friends.html
-    ├── 404.html
-    ├── print.html              # Print route for book PDF
+    ├── index.html              # Portfolio
+    ├── resume-pdf.html         # Resume (print-optimized)
+    ├── contact.html            # Contact form
+    ├── 404.html                # Custom 404
     ├── package.json            # Backend dependencies
     ├── vercel.json             # Function config
     ├── api/                    # Serverless functions
     │   ├── contact.js
     │   ├── pdf.js
-    │   ├── subscribe.js
-    │   ├── stats.js
-    │   └── book-pdf.js
+    │   └── stats.js
     ├── css/
     │   ├── style.css
-    │   ├── author.css
-    │   ├── book.css
-    │   ├── print.css
     │   └── 404.css
     ├── js/
-    │   ├── script.js
-    │   ├── author.js
-    │   ├── book.js
-    │   ├── ebook.js            # Client-side PDF fallback
-    │   └── print.js
+    │   └── script.js
     └── assets/
         ├── favicon.png
         └── images/
+            ├── formal.jpg
+            ├── casual.jpg
+            └── Singh_ravirajhere.jpeg
 
 ---
 
@@ -162,8 +128,6 @@ Then run:
 Required environment variables:
 
     RESEND_API_KEY=re_xxxxx
-    SUPABASE_URL=https://xxxxx.supabase.co
-    SUPABASE_ANON_KEY=sb_publishable_xxxxx
     BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxxxx
     AWS_LAMBDA_JS_RUNTIME=nodejs22.x
 
@@ -187,28 +151,20 @@ Set in Vercel dashboard → Project → Settings → Environment Variables:
 
 | Variable | Purpose |
 |----------|---------|
-| `RESEND_API_KEY` | Email delivery (contact, newsletter) |
-| `SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Supabase public key |
+| `RESEND_API_KEY` | Email delivery (contact) |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage access |
 | `AWS_LAMBDA_JS_RUNTIME` | Chromium runtime compatibility |
 
 ---
 
-## Database Schema
+## Related Projects
 
-### Supabase — `subscribers` table
+- **[Author Website](https://github.com/ravirajhere/author-website)** — `ravirajhere-author.vercel.app`
+  - Author home, book reader (11 chapters, EN + HI), newsletter, custom 404
+  - Serverless: newsletter + book PDF
 
-    create table subscribers (
-      id bigserial primary key,
-      email text not null unique,
-      source text default 'author',
-      created_at timestamptz default now()
-    );
-
-Row Level Security enabled:
-- Anonymous insert allowed (subscribe form)
-- Anonymous reads blocked (privacy)
+- **[Book](https://ravirajhere-author.vercel.app/book.html)** — "A Boy Who Never Thought"
+  - Bilingual memoir — 11 chapters so far
 
 ---
 
@@ -224,7 +180,7 @@ Or use the [contact form](contact.html).
 
 ## License
 
-Content © 2026 Ravi Raj Singh. All rights reserved.
+Content © 2026 Ravi Raj. All rights reserved.
 
 Code is open for reference and learning.
 
