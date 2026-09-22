@@ -4,7 +4,10 @@ Personal portfolio of **Ravi Raj** — full-stack developer from Patna, India.
 
 Live: [ravirajhere.vercel.app](https://ravirajhere.vercel.app)
 
-**Companion project:** [Author Website + Book Reader](https://github.com/ravirajhere/author-website) — for readers of "A Boy Who Never Thought".
+**Companion projects:**
+- [Author Website + Book Reader](https://github.com/ravirajhere/author-website) — for readers of "A Boy Who Never Thought"
+- [Snake Game](https://github.com/ravirajhere/snake-game) — Nokia Snake, hand-written
+- [CLI Portfolio](https://github.com/ravirajhere/cli-portfolio) — `npx ravirajhere`
 
 ---
 
@@ -25,7 +28,9 @@ A hand-written portfolio for recruiters and collaborators. Built without framewo
 | [contact.html](contact.html) | Contact form — server-side |
 | [404.html](404.html) | Custom 404 page |
 
-**Related:** [Author website + book reader](https://ravirajhere-author.vercel.app) — separate project.
+**Related:**
+- [Author website + book reader](https://ravirajhere-author.vercel.app) — separate project
+- [Snake game](https://ravirajhere-snake.vercel.app) — separate project
 
 ---
 
@@ -69,10 +74,12 @@ A hand-written portfolio for recruiters and collaborators. Built without framewo
 
 ### Infrastructure
 
-- **Custom 404** — playful error page
-- **SEO** — canonical tags, OG tags, Schema.org JSON-LD (Person)
+- **Custom 404** — playful error page (dark + amber theme)
+- **SEO** — canonical tags, OG tags, Twitter cards, Schema.org JSON-LD (Person), sitemap.xml, robots.txt
+- **Analytics** — Vercel Web Analytics (privacy-friendly, no cookies)
 - **Accessibility** — skip links, focus states, ARIA labels, reduced-motion
 - **Security** — server-side keys, rate limiting, honeypot, CORS headers
+- **Social** — custom OG image (`og-cover.jpg`, 1200×630)
 
 ---
 
@@ -83,6 +90,8 @@ A hand-written portfolio for recruiters and collaborators. Built without framewo
     ├── resume-pdf.html         # Resume (print-optimized)
     ├── contact.html            # Contact form
     ├── 404.html                # Custom 404
+    ├── sitemap.xml             # SEO sitemap
+    ├── robots.txt              # Crawler rules
     ├── package.json            # Backend dependencies
     ├── vercel.json             # Function config
     ├── api/                    # Serverless functions
@@ -99,7 +108,8 @@ A hand-written portfolio for recruiters and collaborators. Built without framewo
         └── images/
             ├── formal.jpg
             ├── casual.jpg
-            └── Singh_ravirajhere.jpeg
+            ├── Singh_ravirajhere.jpeg
+            └── og-cover.jpg    # Social share image (1200×630)
 
 ---
 
@@ -165,6 +175,14 @@ Set in Vercel dashboard → Project → Settings → Environment Variables:
 
 - **[Book](https://ravirajhere-author.vercel.app/book.html)** — "A Boy Who Never Thought"
   - Bilingual memoir — 11 chapters so far
+
+- **[Snake Game](https://github.com/ravirajhere/snake-game)** — `ravirajhere-snake.vercel.app`
+  - Classic Nokia Snake rebuilt for the browser
+  - HTML5 Canvas, vanilla JS, no frameworks
+
+- **[CLI Portfolio](https://github.com/ravirajhere/cli-portfolio)** — `npx ravirajhere`
+  - Terminal portfolio, zero dependencies
+  - Node.js, ANSI colors, typewriter effect
 
 ---
 
