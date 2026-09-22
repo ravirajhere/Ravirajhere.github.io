@@ -1,8 +1,20 @@
 # Ravi Raj — Portfolio & Author Website
 
-Personal website of **Ravi Raj Singh** — frontend developer and author from Patna, India.
+Personal website of **Ravi Raj Singh** — full-stack developer and author from Patna, India.
 
 Live: [ravirajhere.vercel.app](https://ravirajhere.vercel.app)
+
+---
+
+## About
+
+A hand-written portfolio + book reader, now with a serverless backend. Built without frameworks. Every line of HTML, CSS, and JavaScript written by hand.
+
+**What's inside:**
+- **Portfolio** — for recruiters and collaborators
+- **Book reader** — 11 chapters, English + Hinglish
+- **Author site** — for readers
+- **Serverless API** — 5 endpoints for contact, PDF, newsletter, and live stats
 
 ---
 
@@ -37,16 +49,15 @@ Read free: [book.html](book.html)
 - **HTML5** — hand-written, semantic
 - **CSS3** — custom properties, no frameworks
 - **JavaScript** — vanilla, no dependencies
+- **No build step** — every line written by hand
 
 ### Backend (Serverless)
 
 - **Vercel Functions** — 5 API endpoints
-- **Resend** — email delivery (contact form, newsletter welcome)
+- **Resend** — email delivery (contact form, newsletter)
 - **Supabase** — Postgres database (newsletter subscribers)
 - **Vercel Blob** — file storage (PDF cache)
 - **Puppeteer + Chromium** — server-side PDF generation
-
-No build step for frontend. Every line written by hand.
 
 ---
 
@@ -54,11 +65,11 @@ No build step for frontend. Every line written by hand.
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `/api/contact` | POST | Contact form — sends email via Resend |
-| `/api/pdf` | POST | Resume PDF generation (Puppeteer + Blob cache) |
-| `/api/subscribe` | POST | Newsletter signup (Supabase + welcome email) |
-| `/api/stats` | GET | Live GitHub commits data |
-| `/api/book-pdf` | POST | Book PDF generation (Chromium, in progress) |
+| `/api/contact` | POST | Contact form — rate-limited, honeypot-protected, sends via Resend |
+| `/api/pdf` | POST | Resume PDF — Puppeteer + Blob cache |
+| `/api/subscribe` | POST | Newsletter — Supabase + welcome email |
+| `/api/stats` | GET | Live GitHub commits — cached 10 min |
+| `/api/book-pdf` | POST | Book PDF — Chromium (work in progress) |
 
 ---
 
@@ -68,7 +79,7 @@ No build step for frontend. Every line written by hand.
 
 - **Live GitHub commits** — hero section shows "Committed today"
 - **Server-side resume PDF** — ATS-friendly, consistent output
-- **Contact form** — server-side, rate-limited, honeypot-protected
+- **Contact form** — server-side, rate-limited, spam-protected
 - **Command palette** — press `K` to navigate
 - **Honest skill levels** — "Working" vs "Learning"
 
@@ -85,6 +96,7 @@ No build step for frontend. Every line written by hand.
 - **Custom 404** — playful error page
 - **SEO** — canonical tags, OG tags, Schema.org JSON-LD
 - **Accessibility** — skip links, focus states, ARIA labels, reduced-motion
+- **Security** — server-side keys, rate limiting, honeypot, CORS headers
 
 ---
 
