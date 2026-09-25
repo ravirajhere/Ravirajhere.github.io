@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ravi Raj — Frontend Developer, Patna</title>
+    <meta name="description" content="Frontend Developer from Patna. I build fast, accessible websites by hand — HTML, CSS, JS. No frameworks. Author of 'A Boy Who Never Thought' — 11 chapters live." />
+    <meta name="author" content="Ravi Raj" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="canonical" href="https://ravirajhere.vercel.app/" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:title" content="Ravi Raj — Frontend Developer from Patna" />
+    <meta property="og:description" content="Hand-written HTML/CSS/JS. 2 live projects. No frameworks, no templates." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ravirajhere.vercel.app/" />
+    <meta property="og:image" content="https://ravirajhere.vercel.app/assets/images/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ravi Raj — Frontend Developer Portfolio" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ravi Raj — Frontend Developer from Patna" />
+    <meta name="twitter:description" content="Hand-written HTML/CSS/JS. 2 live projects. No frameworks." />
+    <meta name="twitter:image" content="https://ravirajhere.vercel.app/assets/images/og-cover.jpg" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ravi Raj",
+      "url": "https://ravirajhere.vercel.app/",
+      "image": "https://ravirajhere.vercel.app/assets/images/formal.jpg",
+      "jobTitle": "Frontend Developer",
+      "description": "Frontend Developer from Patna. Hand-written HTML, CSS, JS. No frameworks.",
+      "email": "mailto:raviraj2k09@gmail.com",
+      "address": { "@type": "PostalAddress", "addressLocality": "Patna", "addressRegion": "Bihar", "addressCountry": "India" },
+      "knowsAbout": ["HTML5", "CSS3", "JavaScript", "Responsive Design", "Accessibility", "Git"],
+      "sameAs": ["https://github.com/ravirajhere", "https://linkedin.com/in/Ravirajhere"]
+    }
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <div class="top-bar">
+        <div class="top-bar-inner">
+            <span class="tb-live"><span class="dot" aria-hidden="true"></span> Available for internships</span>
+            <span class="tb-sep" aria-hidden="true">·</span>
+            <span class="tb-item">Patna, India (IST)</span>
+            <span class="tb-spacer"></span>
+            <button class="kbd-hint" id="kbdHint" type="button" aria-label="Press K for keyboard shortcuts"><kbd>K</kbd> jump</button>
+        </div>
+    </div>
+
+    <header class="site-header" id="siteHeader">
+        <div class="header-inner">
+            <a href="#hero" class="brand" aria-label="Ravi Raj — Home">
+                <span class="brand-mark" aria-hidden="true"><span class="bm-dot"></span> RR</span>
+                <span class="brand-text"><strong>Ravi Raj</strong><em>Frontend Developer</em></span>
+            </a>
+            <nav class="primary-nav" aria-label="Primary">
+                <a href="#work">Work</a>
+                <a href="#approach">Approach</a>
+                <a href="#author">Writing</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="header-actions">
+                <a href="resume.html" class="btn btn-quiet"><span>Resume</span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></a>
+                <a href="#contact" class="btn btn-primary">Get in touch</a>
+            </div>
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav" type="button">
+                <span class="menu-lines" aria-hidden="true"><span></span><span></span></span>
+                <span class="menu-label">Menu</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-overlay" id="mobileOverlay" hidden aria-hidden="true"></div>
+    <nav class="mobile-nav" id="mobileNav" role="dialog" aria-modal="true" aria-label="Mobile navigation" hidden aria-hidden="true">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        </button>
+        <ul>
+            <li><a href="#work"><span>01</span>Work</a></li>
+            <li><a href="#approach"><span>02</span>Approach</a></li>
+            <li><a href="#author"><span>03</span>Writing</a></li>
+            <li><a href="#contact"><span>04</span>Contact</a></li>
+        </ul>
+        <div class="mobile-nav-foot"><p>Patna, India · IST</p><p>raviraj2k09@gmail.com</p></div>
+    </nav>
+
+    <main id="main" tabindex="-1">
+        <section class="hero" id="hero" aria-labelledby="hero-heading">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <p class="hero-eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Hand-written since 2024. No frameworks.</p>
+                    <h1 id="hero-heading" class="hero-title">I build fast,<br>accessible websites<br><em>that work on paper too.</em></h1>
+                    <p class="hero-lede">I'm Ravi — 17, from Patna. I don't use templates. Every line is mine. Currently obsessed with print-CSS, accessibility, and shipping small things daily.</p>
+                    <div class="hero-actions">
+                        <a href="#work" class="btn btn-primary btn-lg">See selected work ↓</a>
+                        <a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer" class="btn btn-quiet btn-lg">GitHub — 500+ commits</a>
+                    </div>
+                    <dl class="hero-meta" aria-label="Quick facts">
+                        <div><dt>Core</dt><dd>HTML · CSS · JS</dd></div>
+                        <div><dt>Learning</dt><dd>React + A11y</dd></div>
+                        <div><dt>Location</dt><dd>Patna, India · Remote</dd></div>
+                    </dl>
+                </div>
+                <aside class="hero-side" aria-label="Portrait">
+                    <figure class="hero-portrait">
+                        <img src="assets/images/formal.jpg" alt="Ravi Raj, photographed in Patna" width="280" height="280" loading="eager" />
+                        <figcaption><span class="photo-note">"Real afternoon. Not stock."</span><span class="photo-credit">— Patna, 2026</span></figcaption>
+                    </figure>
+                </aside>
+            </div>
+            <div class="scroll-cue" aria-hidden="true"><span>Scroll — the work begins</span><span class="scroll-line"></span></div>
+        </section>
+
+        <section class="section" id="work" aria-labelledby="work-heading">
+            <header class="section-head">
+                <span class="section-num">01 / Selected Work</span>
+                <h2 id="work-heading">Two projects. <em>Built to last.</em></h2>
+            </header>
+            <div class="work-list">
+                <article class="work-item">
+                    <header class="work-head"><span class="work-year">2024 → Present</span><h3>Autobiography Reader — A Book, Not a Blog</h3><p class="work-tag">11 Chapters Live · Audio · PDF Export · 100% Hand-written</p></header>
+                    <dl class="work-detail">
+                        <div><dt>The Challenge</dt><dd>Personal archive scattered in notebooks. Needed a reading experience that feels like a book, with progress save and print support.</dd></div>
+                        <div><dt>What I Built</dt><dd>Custom reader with vanilla JS, localStorage progress, Web Speech API, print stylesheet. Lighthouse: 98 Performance, 100 A11y.</dd></div>
+                        <div><dt>Stack</dt><dd>HTML, CSS, Vanilla JS — 0 dependencies.</dd></div>
+                    </dl>
+                    <footer class="work-foot">
+                        <a href="https://ravirajhere-author.vercel.app/book.html" target="_blank" rel="noopener noreferrer">View live <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></a>
+                        <span class="work-tech">HTML · CSS · JS only</span>
+                    </footer>
+                </article>
+                <article class="work-item">
+                    <header class="work-head"><span class="work-year">2024</span><h3>Resume That Actually Prints</h3><p class="work-tag">ATS + Print CSS · Used for 30+ applications</p></header>
+                    <dl class="work-detail">
+                        <div><dt>The Challenge</dt><dd>Online resumes break on paper and confuse ATS parsers.</dd></div>
+                        <div><dt>What I Built</dt><dd>One semantic HTML file with @media print and @page. Identical on screen, paper, and ATS preview.</dd></div>
+                    </dl>
+                    <footer class="work-foot"><a href="resume.html" target="_blank" rel="noopener noreferrer">View resume <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></a><span class="work-tech">Print CSS</span></footer>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="approach" aria-labelledby="approach-heading">
+            <header class="section-head"><span class="section-num">02 / Approach</span><h2 id="approach-heading">How I work. <em>3 rules.</em></h2></header>
+            <div class="currently-grid">
+                <div class="currently-item"><span class="currently-label">01 — No Frameworks, By Choice</span><p class="currently-text">If I can build it in vanilla, I understand it. Frameworks later.</p></div>
+                <div class="currently-item"><span class="currently-label">02 — Accessibility First</span><p class="currently-text">Skip links, keyboard nav (Press K), proper headings. Works without a mouse.</p></div>
+                <div class="currently-item"><span class="currently-label">03 — Ship Small, Daily</span><p class="currently-text">500+ commits. Daily. Consistency over intensity.</p></div>
+            </div>
+        </section>
+
+        <section class="section" id="author" aria-labelledby="author-heading">
+            <header class="section-head">
+                <span class="section-num">03 / Writing</span>
+                <h2 id="author-heading">I also write a book. <em>11 chapters live. Started at 16.</em></h2>
+                <p class="section-lede">Not a tech blog — a real autobiography from a village near Begusarai to Patna. Taught me storytelling, structure, and patience.</p>
+            </header>
+            <div class="work-list">
+                <article class="work-item">
+                    <header class="work-head"><span class="work-year">2008 — 2026</span><h3>A Boy Who Never Thought</h3><p class="work-tag">English & Hinglish · 11 Chapters Live · Audio</p></header>
+                    <footer class="work-foot"><a href="https://ravirajhere-author.vercel.app/book.html" target="_blank" rel="noopener noreferrer">Read the book ↗</a><span class="work-tech">My best project, non-tech</span></footer>
+                </article>
+            </div>
+        </section>
+
+        <section class="section contact" id="contact" aria-labelledby="contact-heading">
+            <header class="section-head"><span class="section-num">04 / Contact</span><h2 id="contact-heading">Let's build something.</h2></header>
+            <p class="contact-lede">Open to frontend internships and freelance. I reply in 24h, I don't ghost.</p>
+            <div class="skills-table" role="table" aria-label="Skills matrix">
+                <div class="skills-row skills-head" role="row"><span role="columnheader">Stack</span><span role="columnheader">Level</span><span role="columnheader">Proof</span></div>
+                <div class="skills-row" role="row"><span role="cell">HTML / CSS / JS</span><span role="cell"><span class="pill pill-working">Working</span></span><span role="cell">This site, book reader</span></div>
+                <div class="skills-row" role="row"><span role="cell">Git / Vercel</span><span role="cell"><span class="pill pill-working">Working</span></span><span role="cell">500+ commits</span></div>
+                <div class="skills-row" role="row"><span role="cell">React</span><span role="cell"><span class="pill pill-learning">Learning</span></span><span role="cell">Daily practice</span></div>
+            </div>
+            <div class="contact-primary contact-primary-spaced">
+                <button class="contact-email" id="copyEmail" type="button" aria-label="Copy email to clipboard" data-label="raviraj2k09@gmail.com">
+                    <span id="emailText">raviraj2k09@gmail.com</span>
+                    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+                </button>
+                <p class="contact-note">Average reply: 24 hours · Patna, India · Open to remote</p>
+                <div class="contact-cta"><a href="contact.html?from=recruiter" class="btn btn-dark">Send email</a><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer" class="btn btn-quiet">LinkedIn ↗</a></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-inner">
+            <div class="footer-col footer-brand-col"><p class="footer-brand">Ravi Raj</p><p class="footer-tag">Frontend Developer. Patna, India. 17.</p></div>
+            <div class="footer-col"><p class="footer-label">Navigate</p><ul><li><a href="#work">Work</a></li><li><a href="#author">Writing</a></li><li><a href="#contact">Contact</a></li></ul></div>
+            <div class="footer-col"><p class="footer-label">Elsewhere</p><ul><li><a href="https://github.com/ravirajhere" target="_blank" rel="noopener noreferrer">GitHub</a></li><li><a href="https://linkedin.com/in/Ravirajhere" target="_blank" rel="noopener noreferrer">LinkedIn</a></li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>© <span id="year">2026</span> Ravi Raj. Hand-written in Patna.</p><p class="footer-kbd">Press <kbd>K</kbd> to navigate · Built without frameworks.</p></div>
+    </footer>
+
+    <div class="cmd-palette" id="cmdPalette" role="dialog" aria-modal="true" aria-labelledby="cmdLabel" hidden>
+        <div class="cmd-overlay" id="cmdOverlay"></div>
+        <div class="cmd-box">
+            <label for="cmdInput" id="cmdLabel" class="sr-only">Jump to section</label>
+            <input id="cmdInput" type="text" placeholder="Jump to… (work, approach, writing, contact)" autocomplete="off" spellcheck="false" />
+            <ul class="cmd-list" id="cmdList" role="listbox" aria-label="Sections">
+                <li role="option" data-target="#work" tabindex="-1"><span>01</span>Work</li>
+                <li role="option" data-target="#approach" tabindex="-1"><span>02</span>Approach</li>
+                <li role="option" data-target="#author" tabindex="-1"><span>03</span>Writing</li>
+                <li role="option" data-target="#contact" tabindex="-1"><span>04</span>Contact</li>
+                <li role="option" data-target="resume.html" tabindex="-1"><span>05</span>Resume</li>
+            </ul>
+            <div class="cmd-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+        </div>
+    </div>
+
+    <script src="js/script.js" defer></script>
+</body>
+</html>
